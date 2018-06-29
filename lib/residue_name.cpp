@@ -83,7 +83,7 @@ std::ostream& benchmarker::operator<<(std::ostream& os, const ResidueName& res_n
 
 std::ostream& benchmarker::operator<<(std::ostream& os, const ResidueNameCount& rnc) {
     for (auto i : rnc) {
-        os << i.first << "\t" << i.second;
+        os << i.first << "\t" << i.second << "\n";
     }
     return os;
 }

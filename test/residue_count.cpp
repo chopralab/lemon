@@ -121,5 +121,5 @@ TEST_CASE("Residue to text") {
     ResidueNameCount rnc;
     rnc[res_name] = 75;
     ss2 << rnc;
-    CHECK(ss2.str() == "ALA\t75");
+    CHECK(ss2.str() == "ALA\t75\n");
 }
