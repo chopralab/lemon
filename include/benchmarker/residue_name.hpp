@@ -15,6 +15,7 @@ namespace benchmarker {
         friend bool operator!=(const ResidueName& lhs, const ResidueName& rhs);
         friend bool operator!=(const ResidueName& lhs, const std::string& rhs);
         friend bool operator!=(const std::string& lhs, const ResidueName& rhs);
+        friend std::ostream& operator<<(std::ostream& os, const ResidueName&);
         using super::operator[];
     public:
         ResidueName(const std::string& s);
@@ -71,6 +72,8 @@ namespace benchmarker {
     }
 
     typedef std::unordered_map<ResidueName, std::size_t, ResidueNameHash> ResidueNameCount;
+
+    std::ostream& operator<<(std::ostream& os, const ResidueNameCount& rnc);
 }
 
 #endif

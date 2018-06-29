@@ -1,5 +1,6 @@
 #include "benchmarker/residue_name.hpp"
 #include <cstring>
+#include <ostream>
 
 using namespace benchmarker;
 
@@ -72,4 +73,17 @@ const std::array<char, 3>& ResidueName::operator*() const {
 
 size_t ResidueNameHash::operator()(const ResidueName& resn) const {
     return resn.hash();
+}
+
+std::ostream& benchmarker::operator<<(std::ostream& os, const ResidueName& res_name) {
+    auto& resn = *res_name;
+    os << resn[0] << resn[1] << resn[2];
+    return os;
+}
+
+std::ostream& benchmarker::operator<<(std::ostream& os, const ResidueNameCount& rnc) {
+    for (auto i : rnc) {
+        os << i.first << "\t" << i.second;
+    }
+    return os;
 }

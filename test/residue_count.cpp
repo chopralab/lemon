@@ -1,5 +1,6 @@
 #include "benchmarker/parse.hpp"
 #include <chemfiles.hpp>
+#include <sstream>
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
@@ -107,4 +108,18 @@ TEST_CASE("Residue Count") {
     // No change
     CHECK(counter["CA"]  == 6);
     CHECK(counter["K"]   == 1);
+}
+
+TEST_CASE("Residue to text") {
+    auto res_name = ResidueName("ALA");
+    std::stringstream ss;
+
+    ss << res_name;
+    CHECK(ss.str() == "ALA");
+
+    ss = std::stringstream();
+    ResidueNameCount rnc;
+    rnc[res_name] = 75;
+    ss << rnc;
+    CHECK(ss.str() == "ALA\t75");
 }
