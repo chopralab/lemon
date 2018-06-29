@@ -1,0 +1,10 @@
+# Compiled Object files
+**/.DS_Store
+*.slo
+*.lo
+*.o
+*.obj
+
+## Local
+
+build*
