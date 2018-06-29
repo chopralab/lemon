@@ -2,7 +2,7 @@
 
 namespace benchmarker {
 
-void retreive_residue_counts(const chemfiles::Frame& file, ResnCount& resn_count) {
+void retreive_residue_counts(const chemfiles::Frame& file, ResidueNameCount& resn_count) {
     auto& residues = file.topology().residues();
 
     for (auto& residue : residues) {
