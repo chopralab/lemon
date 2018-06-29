@@ -16,8 +16,10 @@ int main(int argc, char *argv[]) {
     }
 
     benchmarker::ResidueNameCount resn_count;
+    size_t complex_count = 0;
 
     for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
+        ++complex_count;
         auto traj = chemfiles::Trajectory(entry.path().string());
 
         if (traj.nsteps() > 1) {
@@ -26,7 +28,12 @@ int main(int argc, char *argv[]) {
 
         auto complex = traj.read();
         benchmarker::retreive_residue_counts(complex, resn_count);
+
+        if(complex_count % 1000 == 0) {
+            std::cerr << "#";
+        }
     }
 
+    std::cerr << std::endl;
     std::cout << resn_count;
 }
