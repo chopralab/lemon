@@ -117,9 +117,9 @@ TEST_CASE("Residue to text") {
     ss << res_name;
     CHECK(ss.str() == "ALA");
 
-    ss = std::stringstream();
+    std::stringstream ss2;
     ResidueNameCount rnc;
     rnc[res_name] = 75;
-    ss << rnc;
-    CHECK(ss.str() == "ALA\t75");
+    ss2 << rnc;
+    CHECK(ss2.str() == "ALA\t75");
 }
