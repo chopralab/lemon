@@ -63,7 +63,7 @@ char clamp_(char c) {
     return 10 + c - 'A';
 }
 
-size_t ResidueName::hash() const {
+unsigned short ResidueName::hash() const {
     return clamp_((*this)[0]) + clamp_((*this)[1]) * 37 + clamp_((*this)[2]) * (37 * 37);
 }
 
@@ -71,7 +71,7 @@ const std::array<char, 3>& ResidueName::operator*() const {
     return *this;
 }
 
-size_t ResidueNameHash::operator()(const ResidueName& resn) const {
+unsigned short ResidueNameHash::operator()(const ResidueName& resn) const {
     return resn.hash();
 }
 
@@ -79,6 +79,14 @@ std::ostream& benchmarker::operator<<(std::ostream& os, const ResidueName& res_n
     auto& resn = *res_name;
     os << resn[0] << resn[1] << resn[2];
     return os;
+}
+
+ResidueNameCount& benchmarker::operator+=(ResidueNameCount& lhs, const ResidueNameCount& rhs) {
+    for (auto iter : rhs) {
+        lhs[iter.first] += iter.second;
+    }
+
+    return lhs;
 }
 
 std::ostream& benchmarker::operator<<(std::ostream& os, const ResidueNameCount& rnc) {

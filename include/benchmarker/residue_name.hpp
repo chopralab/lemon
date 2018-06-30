@@ -21,12 +21,12 @@ namespace benchmarker {
         ResidueName(const std::string& s);
         ResidueName(const char* s);
 
-        size_t hash() const;
+        unsigned short hash() const;
         const std::array<char, 3>& operator*() const;
     };
 
     struct ResidueNameHash {
-        size_t operator()(const ResidueName& resn) const;
+        unsigned short operator()(const ResidueName& resn) const;
     };
 
     inline bool operator==(const ResidueName& lhs, const ResidueName& rhs) {
@@ -73,6 +73,7 @@ namespace benchmarker {
 
     typedef std::unordered_map<ResidueName, std::size_t, ResidueNameHash> ResidueNameCount;
 
+    ResidueNameCount& operator+=(ResidueNameCount& lhs, const ResidueNameCount& rhs);
     std::ostream& operator<<(std::ostream& os, const ResidueNameCount& rnc);
 }
 

@@ -62,10 +62,10 @@ TEST_CASE("Residue Name") {
 TEST_CASE("Residue Count") {
     ResidueNameCount counter;
     auto traj = chemfiles::Trajectory("files/5w1d.pdb", 'r');
-    auto test = traj.read();
+    auto test1 = traj.read();
 
 
-    retreive_residue_counts(test, counter);
+    retreive_residue_counts(test1, counter);
 
     CHECK(counter.size() == 22);
 
@@ -95,9 +95,9 @@ TEST_CASE("Residue Count") {
     CHECK(counter["K"]   == 1);
 
     traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
-    test = traj.read();
+    auto test2 = traj.read();
 
-    retreive_residue_counts(test, counter);
+    retreive_residue_counts(test2, counter);
     CHECK(counter.size() == 24);
 
     // Check the simple updates
@@ -108,6 +108,12 @@ TEST_CASE("Residue Count") {
     // No change
     CHECK(counter["CA"]  == 6);
     CHECK(counter["K"]   == 1);
+
+    ResidueNameCount counter2;
+    retreive_residue_counts(test1, counter2);
+    retreive_residue_counts(test2, counter2);
+
+    CHECK(counter2 == counter);
 }
 
 TEST_CASE("Residue to text") {
