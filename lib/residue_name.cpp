@@ -77,7 +77,11 @@ unsigned short ResidueNameHash::operator()(const ResidueName& resn) const {
 
 std::ostream& benchmarker::operator<<(std::ostream& os, const ResidueName& res_name) {
     auto& resn = *res_name;
-    os << resn[0] << resn[1] << resn[2];
+    os <<
+        (resn[0]? resn[0] : ' ') <<
+        (resn[1]? resn[1] : ' ') <<
+        (resn[2]? resn[2] : ' ')
+    ;
     return os;
 }
 
@@ -85,7 +89,6 @@ ResidueNameCount& benchmarker::operator+=(ResidueNameCount& lhs, const ResidueNa
     for (auto iter : rhs) {
         lhs[iter.first] += iter.second;
     }
-
     return lhs;
 }
 
