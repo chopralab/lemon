@@ -4,7 +4,7 @@
 
 using namespace benchmarker;
 
-const chemfiles::Residue& benchmarker::select_small_molecule(const chemfiles::Frame& input, size_t min_atoms) {
+std::set<size_t> benchmarker::select_small_molecule(const chemfiles::Frame& input, size_t min_atoms) {
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
@@ -33,11 +33,22 @@ const chemfiles::Residue& benchmarker::select_small_molecule(const chemfiles::Fr
         iter->second++;
     }
 
-    if (selected_residues.size() == 0) {
-        throw std::range_error("No suitable residue found");
-    } else if (selected_residues.size() == 1) {
-        return residues[ *selected_residues.begin() ];
+    return selected_residues;
+}
+
+std::set<size_t> benchmarker::select_metal_ions(const chemfiles::Frame& input) {
+    const auto& residues = input.topology().residues();
+
+    std::set<size_t> selected_residues;
+    std::unordered_map<std::string, size_t> named_residues;
+
+    for (size_t selected_residue = 0; selected_residue < residues.size(); ++selected_residue) {
+        const auto& residue = residues[selected_residue];
+
+        if (residue.size() == 1 && input[*residue.begin()].charge() > 0.0 ) {
+            selected_residues.insert(selected_residue);
+        }
     }
 
-    throw std::range_error("Multiple suitable residues found");
+    return selected_residues;
 }
