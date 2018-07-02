@@ -18,9 +18,13 @@ open my $pdbs, '<', \$entries or die "$!\n";
 while ( my $line = <$pdbs> ) {
 
     my $pdb = substr( $line, 0, 4);
-    next if -s "$pdb.mmtf.gz";
+
+    my $first = substr( $pdb, 0, 1);
+    my $second= substr( $pdb, 1, 1);
+
+    next if -s "$first/$second/$pdb.mmtf.gz";
 
     print "$pdb\n";
 
-    `wget http://mmtf.rcsb.org/v1.0/full/$pdb.mmtf.gz`;
+    `wget -q http://mmtf.rcsb.org/v1.0/full/$pdb.mmtf.gz -o $first/$second/$pdb.mmtf.gz`;
 }

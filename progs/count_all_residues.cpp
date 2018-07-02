@@ -45,8 +45,7 @@ int main(int argc, char *argv[]) {
 
     auto worker = [&p,&resn_counts] (iter begin, iter end, size_t id) {
         for(auto it = begin; it != end; ++it) {
-        
-            path entry = p / std::string(it->data(), 4);
+            path entry = p / std::string(it->data(), 1) / std::string(it->data() + 1, 1) / std::string(it->data(), 4);
             entry += std::string(".mmtf.gz");
 
             try {
