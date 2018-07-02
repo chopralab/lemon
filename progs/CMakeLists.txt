@@ -13,6 +13,7 @@ function(add_cpp_prog _file_)
         benchmarker
         chemfiles
         ${Boost_LIBRARIES}
+        pthread
     )
 endfunction()
 
