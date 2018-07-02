@@ -2,6 +2,7 @@ include(ExternalProject)
 
 ExternalProject_Add( CHEMFILES
     GIT_REPOSITORY https://github.com/chemfiles/chemfiles.git
+    GIT_TAG additional_mmtf_support
     SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_build
     CMAKE_CACHE_ARGS    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/chemfiles
 )

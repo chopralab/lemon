@@ -4,6 +4,7 @@
 #include <array>
 #include <string>
 #include <unordered_map>
+#include <set>
 
 namespace benchmarker {
 
@@ -75,6 +76,8 @@ namespace benchmarker {
 
     ResidueNameCount& operator+=(ResidueNameCount& lhs, const ResidueNameCount& rhs);
     std::ostream& operator<<(std::ostream& os, const ResidueNameCount& rnc);
+
+    typedef std::set<ResidueName> ResidueNameSet;
 }
 
 #endif
