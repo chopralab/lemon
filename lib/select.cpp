@@ -46,7 +46,7 @@ std::set<size_t> benchmarker::select_metal_ions(const chemfiles::Frame& input) {
         const auto& residue = residues[selected_residue];
 
         if (residue.size() == 1 && input[*residue.begin()].charge() > 0.0 ) {
-            selected_residues.insert(selected_residue);
+            selected_residues.insert(*residue.begin());
         }
     }
 
