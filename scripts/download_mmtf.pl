@@ -26,5 +26,5 @@ while ( my $line = <$pdbs> ) {
 
     print "$pdb\n";
 
-    `wget -q http://mmtf.rcsb.org/v1.0/full/$pdb.mmtf.gz -o $first/$second/$pdb.mmtf.gz`;
+    `wget -q http://mmtf.rcsb.org/v1.0/full/$pdb.mmtf.gz -O $first/$second/$pdb.mmtf.gz`;
 }
