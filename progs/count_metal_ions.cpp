@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
                 for (auto atom_id : result) {
                     auto iter = metals.find(complex[atom_id].type());
                     if (iter == metals.end()) {
-                        metals[complex[atom_id].name()] = 1;
+                        metals[complex[atom_id].type()] = 1;
                         continue;
                     }
                     ++iter->second;
@@ -97,6 +97,11 @@ int main(int argc, char *argv[]) {
 
     for (const auto& iter : resn_counts) {
         for (const auto& iter2 : iter) {
+
+            if (iter2.second.size() == 0) {
+                continue;
+            }
+
             std::cout << iter2.first;
 
             for (const auto iter3 : iter2.second) {

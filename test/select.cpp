@@ -22,3 +22,24 @@ TEST_CASE("Select FE from 2WTL") {
     const auto& res = benchmarker::select_metal_ions(frame);
     CHECK(res.size() == 12);
 }
+
+TEST_CASE("Select CD from 1D7D") {
+    auto traj = chemfiles::Trajectory("files/1D7D.mmtf.gz", 'r');
+    auto frame = traj.read();
+
+    const auto& res = benchmarker::select_metal_ions(frame);
+    CHECK(res.size() == 6);
+
+    std::unordered_map<std::string, size_t> metals;
+    for (auto atom_id : res) {
+        auto iter = metals.find(frame[atom_id].type());
+        if (iter == metals.end()) {
+            metals[frame[atom_id].type()] = 1;
+            continue;
+        }
+        ++iter->second;
+        std::cout << iter->second << std::endl;
+    }
+
+    CHECK(metals["Cd"] == 6);
+}
