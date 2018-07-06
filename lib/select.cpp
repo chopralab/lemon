@@ -23,14 +23,6 @@ std::set<size_t> benchmarker::select_small_molecule(const chemfiles::Frame& inpu
         }
 
         selected_residues.insert(selected_residue);
-
-        auto iter = named_residues.find(residue.name());
-        if (iter == named_residues.end()) {
-            named_residues[residue.name()] = 0;
-            continue;
-        }
-
-        iter->second++;
     }
 
     return selected_residues;

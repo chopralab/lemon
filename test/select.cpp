@@ -15,6 +15,17 @@ TEST_CASE("Select PSI from 1AAQ") {
     CHECK(frame.topology().residues()[id].name() == "PSI");
 }
 
+TEST_CASE("Select P30 from 4XUF") {
+    auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
+    auto frame = traj.read();
+
+    const auto& res = benchmarker::select_small_molecule(frame);
+    CHECK(res.size() == 2);
+
+    size_t id = *res.begin();
+    CHECK(frame.topology().residues()[id].name() == "P30");
+}
+
 TEST_CASE("Select FE from 2WTL") {
     auto traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     auto frame = traj.read();
