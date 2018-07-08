@@ -17,4 +17,17 @@ void retreive_residue_counts(const chemfiles::Frame& file, ResidueNameCount& res
     }
 }
 
+size_t count_bioassemblies(const chemfiles::Frame& file) {
+    auto& residues = file.topology().residues();
+    std::set<std::string> assembies;
+
+    for (auto& residue : residues) {
+        if (residue.get("assembly")) {
+            assembies.insert(residue.get("assembly")->as_string());
+        }
+    }
+
+    return assembies.size();
+}
+
 }

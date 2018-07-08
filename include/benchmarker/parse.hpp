@@ -7,6 +7,7 @@
 
 namespace benchmarker {
     void retreive_residue_counts(const chemfiles::Frame&, ResidueNameCount& resn_count);
+    size_t count_bioassemblies(const chemfiles::Frame&);
 }
 
 #endif
