@@ -59,6 +59,20 @@ TEST_CASE("Residue Name") {
     CHECK(ResidueName("Z").hash() == 35 + 36 * 37 + 36 * 37 * 37);
 }
 
+TEST_CASE("Residue set") {
+    ResidueNameSet rns {"ALA", "GLY", "ALA"};
+    CHECK(rns.size() == 2);
+
+    rns.insert("GLY");
+    CHECK(rns.size() == 2);
+
+    rns.insert("VAL");
+    CHECK(rns.size() == 3);
+
+    rns.insert("GLY");
+    CHECK(rns.size() == 3);
+}
+
 TEST_CASE("Residue to text") {
     auto res_name = ResidueName("ALA");
     std::stringstream ss;

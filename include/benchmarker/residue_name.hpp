@@ -16,6 +16,7 @@ namespace benchmarker {
         friend bool operator!=(const ResidueName& lhs, const ResidueName& rhs);
         friend bool operator!=(const ResidueName& lhs, const std::string& rhs);
         friend bool operator!=(const std::string& lhs, const ResidueName& rhs);
+        friend bool operator<(const ResidueName& lhs, const ResidueName& rhs);
         friend std::ostream& operator<<(std::ostream& os, const ResidueName&);
         using super::operator[];
     public:
@@ -70,6 +71,30 @@ namespace benchmarker {
 
     inline bool operator!=(const std::string& lhs, const ResidueName& rhs) {
         return !(lhs == rhs);
+    }
+
+    inline bool operator<(const ResidueName& lhs, const ResidueName& rhs) {
+        if (lhs[0] < rhs[0]) {
+            return true;
+        }
+
+        if (lhs[0] > rhs[0]) {
+            return false;
+        }
+
+        if (lhs[1] < rhs[1]) {
+            return true;
+        }
+        
+        if (lhs[1] > rhs[1]) {
+            return false;
+        }
+
+        if (lhs[2] < rhs[2]) {
+            return true;
+        }
+
+        return false;
     }
 
     typedef std::unordered_map<ResidueName, std::size_t, ResidueNameHash> ResidueNameCount;
