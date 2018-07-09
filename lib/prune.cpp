@@ -10,7 +10,8 @@ const ResidueNameSet common_cofactors {
     {"CLA"},
     {"HEM"}, {"HEA"}, {"HEB"}, {"HEC"},
     {"ADP"}, {"ATP"},
-    {"GDP"}, {"GTP"}
+    {"GDP"}, {"GTP"},
+    {"UNL"},
 };
 
 void remove_identical_residues(const chemfiles::Frame& file, std::set<size_t>& residue_ids) {

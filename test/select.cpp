@@ -49,8 +49,15 @@ TEST_CASE("Select CD from 1D7D") {
             continue;
         }
         ++iter->second;
-        std::cout << iter->second << std::endl;
     }
 
     CHECK(metals["Cd"] == 6);
+}
+
+TEST_CASE("Select nothing from 2WTL") {
+    auto traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
+    auto frame = traj.read();
+
+    auto res = benchmarker::select_small_molecule(frame);
+    CHECK(res.size() == 3); //3 UNLs exist in the structure
 }

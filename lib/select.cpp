@@ -13,12 +13,26 @@ std::set<size_t> benchmarker::select_small_molecule(const chemfiles::Frame& inpu
     for (size_t selected_residue = 0; selected_residue < residues.size(); ++selected_residue) {
         const auto& residue = residues[selected_residue];
 
+        // Quick check, filters out many ions and small molecules before more expensive checks.
+        // For example, water 
+        if (residue.size() < min_atoms) {
+            continue;
+        }
+
         auto composition_type = residue.get("composition_type")->as_string();
         if ( composition_type != "NON-POLYMER" && composition_type != "OTHER" && composition_type != "PEPTIDE-LIKE") {
             continue;
         }
 
-        if (residue.size() < min_atoms) {
+        size_t num_heavy_atoms = std::count_if(
+            std::begin(residue),
+            std::end(residue),
+            [&input](size_t index) {
+                return *(input[index].atomic_number()) != 1;
+            }
+        );
+
+        if (num_heavy_atoms < min_atoms) {
             continue;
         }
 
