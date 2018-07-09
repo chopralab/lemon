@@ -62,10 +62,13 @@ int main(int argc, char *argv[]) {
                 benchmarker::remove_identical_residues(complex, result);
                 benchmarker::remove_common_cofactors(complex, result);
                 std::unordered_map<std::string, size_t> small_molecules;
+
+                const auto& residues = complex.topology().residues();
+
                 for (auto atom_id : result) {
-                    auto iter = small_molecules.find(complex[atom_id].type());
+                    auto iter = small_molecules.find(residues[atom_id].name());
                     if (iter == small_molecules.end()) {
-                        small_molecules[complex[atom_id].type()] = 1;
+                        small_molecules[residues[atom_id].name()] = 1;
                         continue;
                     }
                     ++iter->second;
