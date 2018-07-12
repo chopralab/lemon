@@ -1,4 +1,4 @@
 ---
-BasedOnStyle: Mozilla
+BasedOnStyle: Google
 PointerBindsToType: true
-...
+IndentWidth: 4
