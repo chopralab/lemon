@@ -2,6 +2,7 @@ function(add_cpp_prog _file_)
     get_filename_component(_name_ ${_file_} NAME_WE)
     
     add_executable(${_name_} ${_file_})
+    add_dependencies(${_name_} chemfiles)
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
     target_include_directories(${_name_} SYSTEM PRIVATE
         ${CMAKE_SOURCE_DIR}/include
@@ -10,7 +11,6 @@ function(add_cpp_prog _file_)
     )
 
     target_link_libraries( ${_name_}
-        benchmarker
         chemfiles
         ${Boost_LIBRARIES}
         pthread
