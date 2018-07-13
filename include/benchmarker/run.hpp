@@ -4,6 +4,7 @@
 #include <iterator>
 #include <string>
 #include <vector>
+#include <thread>
 
 #include <boost/filesystem.hpp>
 
@@ -53,7 +54,7 @@ void call_multithreaded(Function&& worker, const container& vec, size_t ncpu) {
     auto work_iter = std::cbegin(vec);
     size_t id = 0;
     for (auto it = std::begin(threads); it != std::end(threads) - 1; ++it) {
-        *it = std::thread([&] {
+        *it = std::thread([=] {
             call_function(worker, work_iter, work_iter + grainsize, id);
         });
         ++id;
