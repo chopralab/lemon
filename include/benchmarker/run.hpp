@@ -47,21 +47,43 @@ void call_function(Function&& f, iter begin, iter end, size_t threadid) {
 }
 
 template <class Function, class container>
-void call_multithreaded(Function&& worker, const container& vec, size_t ncpu) {
+void call_multithreaded(Function&& worker, const container& vec, size_t ncpu, size_t chunk = 1) {
     std::vector<std::thread> threads(ncpu);
-    const int grainsize = vec.size() / ncpu;
+
+    // Total number of jobs for each thread
+    const size_t grainsize = vec.size() / ncpu;
+
+    // Total number of jobs submitted to be run each time a thread is spun
+    const size_t chunksize = grainsize / chunk;
 
     auto work_iter = std::cbegin(vec);
     size_t id = 0;
+
+    for (size_t chunk_id = 1; chunk_id < chunk; ++chunk_id) {
+        id = 0;
+        for (auto it = std::begin(threads); it != std::end(threads); ++it) {
+            *it = std::thread([=] {
+                call_function(worker, work_iter, work_iter + chunksize, id);
+            });
+            ++id;
+            work_iter += chunksize;
+        }
+
+        for (auto&& i : threads) {
+            i.join();
+        }
+    }
+
+    id = 0;
     for (auto it = std::begin(threads); it != std::end(threads) - 1; ++it) {
         *it = std::thread([=] {
-            call_function(worker, work_iter, work_iter + grainsize, id);
+            call_function(worker, work_iter, work_iter + chunksize, id);
         });
         ++id;
-        work_iter += grainsize;
+        work_iter += chunksize;
     }
     threads.back() = std::thread(
-        [&] { call_function(worker, work_iter, work_iter + grainsize, id); });
+        [&] { call_function(worker, work_iter, std::cend(vec), id); });
 
     for (auto&& i : threads) {
         i.join();
