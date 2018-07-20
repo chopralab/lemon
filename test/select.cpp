@@ -57,6 +57,14 @@ TEST_CASE("Select CD from 1D7D") {
     CHECK(metals["Cd"] == 6);
 }
 
+TEST_CASE("Select HOH from 1OQ5") {
+    auto traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
+    auto frame = traj.read();
+
+    const auto& res = benchmarker::select_specific_residues(frame,{"HOH"});
+    CHECK(res.size() == 233);
+}
+
 TEST_CASE("Select nothing from 2WTL") {
     auto traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     auto frame = traj.read();

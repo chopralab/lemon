@@ -11,7 +11,6 @@ std::set<size_t> select_small_molecule(const chemfiles::Frame& input,
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
-    std::unordered_map<std::string, size_t> named_residues;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -24,7 +23,8 @@ std::set<size_t> select_small_molecule(const chemfiles::Frame& input,
             continue;
         }
 
-        const auto& composition_type = residue.get("composition_type")->as_string();
+        const auto& composition_type =
+            residue.get("composition_type")->as_string();
         if (composition_type != "NON-POLYMER" && composition_type != "OTHER" &&
             composition_type != "PEPTIDE-LIKE") {
             continue;
@@ -49,7 +49,6 @@ std::set<size_t> select_metal_ions(const chemfiles::Frame& input) {
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
-    std::unordered_map<std::string, size_t> named_residues;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -67,7 +66,6 @@ std::set<size_t> select_nucleic_acids(const chemfiles::Frame& input) {
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
-    std::unordered_map<std::string, size_t> named_residues;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -76,6 +74,26 @@ std::set<size_t> select_nucleic_acids(const chemfiles::Frame& input) {
 
         if (comp_type.find("DNA") == std::string::npos &&
             comp_type.find("RNA") == std::string::npos) {
+            continue;
+        }
+
+        selected_residues.insert(selected_residue);
+    }
+
+    return selected_residues;
+}
+
+std::set<size_t> select_specific_residues(
+    const chemfiles::Frame& input, const std::set<std::string>& resnames) {
+    const auto& residues = input.topology().residues();
+
+    std::set<size_t> selected_residues;
+
+    for (size_t selected_residue = 0; selected_residue < residues.size();
+         ++selected_residue) {
+        const auto& residue = residues[selected_residue];
+
+        if (resnames.count(residue.name()) == 0) {
             continue;
         }
 
