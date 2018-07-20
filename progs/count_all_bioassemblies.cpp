@@ -33,8 +33,10 @@ int main(int argc, char* argv[]) {
 
     auto worker = [](const chemfiles::Frame& complex, const std::string& pdbid) {
 
+        // Desired info is obtained directly 
         auto result = lemon::count_bioassemblies(complex);
 
+        // Custom output phase
         std::stringstream ss;
         ss << pdbid << " " << result << "\n";
         std::cout << ss.str();

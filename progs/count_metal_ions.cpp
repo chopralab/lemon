@@ -33,33 +33,12 @@ int main(int argc, char* argv[]) {
 
     auto worker = [](const chemfiles::Frame& complex,
                      const std::string& pdbid) {
+
+        // Selection phase
         auto result = lemon::select_metal_ions(complex);
 
-        if (result.empty()) {
-            return;
-        }
-
-        const auto& residues = complex.topology().residues();
-
-        std::unordered_map<std::string, size_t> metals;
-        for (auto res_id : result) {
-            auto atom_id = *(residues[res_id].begin());
-            auto iter = metals.find(complex[atom_id].type());
-            if (iter == metals.end()) {
-                metals[complex[atom_id].type()] = 1;
-                continue;
-            }
-            ++iter->second;
-        }
-
-        std::stringstream ss;
-        ss << pdbid;
-        for (const auto iter : metals) {
-            ss << " " << iter.first << " " << iter.second;
-        }
-        ss << "\n";
-
-        std::cout << ss.str();
+        // No pruning, straight to out output phase
+        lemon::print_residue_name_counts(std::cout, pdbid, complex, result);
     };
 
     current_path(p);

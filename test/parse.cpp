@@ -5,14 +5,12 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-using namespace lemon;
-
 TEST_CASE("Residue Count") {
-    ResidueNameCount counter;
+    lemon::ResidueNameCount counter;
     auto traj = chemfiles::Trajectory("files/5w1d.pdb", 'r');
     auto test1 = traj.read();
 
-    retreive_residue_counts(test1, counter);
+    lemon::count_residues(test1, counter);
 
     CHECK(counter.size() == 22);
 
@@ -44,7 +42,7 @@ TEST_CASE("Residue Count") {
     traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test2 = traj.read();
 
-    retreive_residue_counts(test2, counter);
+    lemon::count_residues(test2, counter);
     CHECK(counter.size() == 24);
 
     // Check the simple updates
@@ -56,9 +54,9 @@ TEST_CASE("Residue Count") {
     CHECK(counter["CA"]  == 6);
     CHECK(counter["K"]   == 1);
 
-    ResidueNameCount counter2;
-    retreive_residue_counts(test1, counter2);
-    retreive_residue_counts(test2, counter2);
+    lemon::ResidueNameCount counter2;
+    lemon::count_residues(test1, counter2);
+    lemon::count_residues(test2, counter2);
 
     CHECK(counter2 == counter);
 }
@@ -67,15 +65,15 @@ TEST_CASE("Assembly count") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test = traj.read();
 
-    CHECK(count_bioassemblies(test) == 1);
+    CHECK(lemon::count_bioassemblies(test) == 1);
 
     traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     test = traj.read();
 
-    CHECK(count_bioassemblies(test) == 2);
+    CHECK(lemon::count_bioassemblies(test) == 2);
 
     traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     test = traj.read();
 
-    CHECK(count_bioassemblies(test) == 1);
+    CHECK(lemon::count_bioassemblies(test) == 1);
 }

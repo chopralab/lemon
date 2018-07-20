@@ -36,43 +36,22 @@ int main(int argc, char* argv[]) {
     std::vector<std::array<char, 4>> vec;
     lemon::read_entry_file(entries.string(), vec);
 
-    auto worker = [dist_cutoff](chemfiles::Frame& complex,
+    auto worker = [dist_cutoff](const chemfiles::Frame& complex,
                                 const std::string& pdbid) {
 
+        // Selection phase
         auto nucleic_acids = lemon::select_nucleic_acids(complex);
         auto smallm = lemon::select_small_molecule(complex);
+
+        // Pruning phase
         lemon::remove_identical_residues(complex, smallm);
         lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
         lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
-        complex.set_cell(chemfiles::UnitCell());
         lemon::find_interactions(complex, smallm, nucleic_acids,
                                        dist_cutoff);
 
-        if (smallm.empty()) {
-            return;
-        }
-
-        std::unordered_map<std::string, size_t> small_molecules;
-
-        const auto& residues = complex.topology().residues();
-
-        for (auto res_id : smallm) {
-            auto iter = small_molecules.find(residues[res_id].name());
-            if (iter == small_molecules.end()) {
-                small_molecules[residues[res_id].name()] = 1;
-                continue;
-            }
-            ++iter->second;
-        }
-
-        std::stringstream ss;
-        ss << pdbid;
-        for (const auto iter : small_molecules) {
-            ss << " " << iter.first << " " << iter.second;
-        }
-        ss << "\n";
-
-        std::cout << ss.str();
+        // Output phase
+        lemon::print_residue_name_counts(std::cout, pdbid, complex, smallm);
     };
 
     current_path(p);

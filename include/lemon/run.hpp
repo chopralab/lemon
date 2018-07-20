@@ -21,12 +21,14 @@ void call_function(Function&& f, iter begin, iter end) {
         try {
             auto traj = chemfiles::Trajectory(entry.string());
 
+#ifndef NDEBUG
             if (traj.nsteps() > 1) {
                 std::cerr << "File: " << entry
                           << " contrains more than more model. Only "
                              "considering the first"
                           << std::endl;
             }
+#endif
 
             auto complex = traj.read();
             f(complex, pdbid);

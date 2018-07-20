@@ -1,11 +1,14 @@
 #ifndef PARSE_HPP
 #define PARSE_HPP
 
+#include <sstream>
+#include <set>
+
 #include <chemfiles.hpp>
 #include "lemon/residue_name.hpp"
 
 namespace lemon {
-void retreive_residue_counts(const chemfiles::Frame& file,
+void count_residues(const chemfiles::Frame& file,
                              ResidueNameCount& resn_count) {
     auto& residues = file.topology().residues();
 
@@ -32,6 +35,35 @@ size_t count_bioassemblies(const chemfiles::Frame& file) {
     }
 
     return assembies.size();
+}
+
+void print_residue_name_counts(std::ostream& os, const std::string& pdbid,
+                               const chemfiles::Frame& complex,
+                               const std::set<size_t>& res_ids) {
+
+    if (res_ids.empty()) {
+        return;
+    }
+
+    std::unordered_map<std::string, size_t> residue_counts;
+    const auto& residues = complex.topology().residues();
+    for (auto res_id : res_ids) {
+        auto iter = residue_counts.find(residues[res_id].name());
+        if (iter == residue_counts.end()) {
+            residue_counts[residues[res_id].name()] = 1;
+            continue;
+        }
+        ++iter->second;
+    }
+
+    std::stringstream ss;
+    ss << pdbid;
+    for (const auto iter : residue_counts) {
+        ss << " " << iter.first << " " << iter.second;
+    }
+    ss << "\n";
+
+    os << ss.str();
 }
 }
 

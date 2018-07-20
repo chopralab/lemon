@@ -33,8 +33,10 @@ int main(int argc, char* argv[]) {
         resn_counts;
     auto worker = [&resn_counts](const chemfiles::Frame& complex,
                                  const std::string& pdbid) {
+
+        // Desired info is calculated directly, no pruning, output is done
         auto th = std::this_thread::get_id();
-        lemon::retreive_residue_counts(complex, resn_counts[th]);
+        lemon::count_residues(complex, resn_counts[th]);
     };
 
     current_path(p);

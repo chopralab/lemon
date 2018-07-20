@@ -35,35 +35,16 @@ int main(int argc, char* argv[]) {
     auto worker = [](const chemfiles::Frame& complex,
                      const std::string& pdbid) {
 
+        // Selection phase
         auto smallm = lemon::select_small_molecule(complex);
+
+        // Pruning phase
         lemon::remove_identical_residues(complex, smallm);
         lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
         lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
-        std::unordered_map<std::string, size_t> small_molecules;
 
-        if (smallm.empty()) {
-            return;
-        }
-
-        const auto& residues = complex.topology().residues();
-
-        for (auto res_id : smallm) {
-            auto iter = small_molecules.find(residues[res_id].name());
-            if (iter == small_molecules.end()) {
-                small_molecules[residues[res_id].name()] = 1;
-                continue;
-            }
-            ++iter->second;
-        }
-
-        std::stringstream ss;
-        ss << pdbid;
-        for (const auto iter : small_molecules) {
-            ss << " " << iter.first << " " << iter.second;
-        }
-        ss << "\n";
-
-        std::cout << ss.str();
+        // Output phase
+        lemon::print_residue_name_counts(std::cout, pdbid, complex, smallm);
     };
 
     current_path(p);
