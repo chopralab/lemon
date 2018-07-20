@@ -83,6 +83,27 @@ std::set<size_t> select_nucleic_acids(const chemfiles::Frame& input) {
     return selected_residues;
 }
 
+std::set<size_t> select_peptides(const chemfiles::Frame& input) {
+    const auto& residues = input.topology().residues();
+
+    std::set<size_t> selected_residues;
+
+    for (size_t selected_residue = 0; selected_residue < residues.size();
+         ++selected_residue) {
+        const chemfiles::Residue& residue = residues[selected_residue];
+        const auto& comp_type = residue.get("composition_type")->as_string();
+
+        if (comp_type.find("PEPTIDE") == std::string::npos ||
+            comp_type == "PEPTIDE-LIKE") {
+            continue;
+        }
+
+        selected_residues.insert(selected_residue);
+    }
+
+    return selected_residues;
+}
+
 std::set<size_t> select_specific_residues(
     const chemfiles::Frame& input, const std::set<std::string>& resnames) {
     const auto& residues = input.topology().residues();

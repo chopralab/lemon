@@ -72,3 +72,17 @@ TEST_CASE("Select nothing from 2WTL") {
     auto res = lemon::select_small_molecules(frame);
     CHECK(res.size() == 3); //3 UNLs exist in the structure
 }
+
+TEST_CASE("Select peptides") {
+    auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
+    auto frame = traj.read();
+
+    auto peptides = lemon::select_peptides(frame);
+    CHECK(peptides.size() == 544);
+
+    traj = chemfiles::Trajectory("files/entry_10/1/0/100D.mmtf.gz", 'r');
+    frame = traj.read();
+
+    peptides = lemon::select_peptides(frame);
+    CHECK(peptides.size() == 0);
+}
