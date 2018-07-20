@@ -80,20 +80,19 @@ bool find_nucleic_acid_interactions(const chemfiles::Frame& input,
         const auto& ligand_residue = residues[*current];
 
         bool has_interaction = false;
-        for (size_t prot_atom = 0; prot_atom < input.size(); ++prot_atom) {
-            if (ligand_residue.contains(prot_atom)) {
+        for (const auto& residue : residues) {
+            auto comp_type = residue.get("composition_type")->as_string();
+
+            if (comp_type.find("DNA") == std::string::npos &&
+                comp_type.find("RNA") == std::string::npos) {
                 continue;
             }
 
-            for (auto lig_atom : ligand_residue) {
-                if (input.distance(prot_atom, lig_atom) < distance_cutoff) {
-                    auto comp_type = topo.residue_for_atom(prot_atom)
-                                         ->get("composition_type")
-                                         ->as_string();
-                    if (comp_type.find("DNA") != std::string::npos ||
-                        comp_type.find("RNA") != std::string::npos) {
-                            has_interaction = true;
-                            break;
+            for (auto prot_atom : residue) {
+                for (auto lig_atom : ligand_residue) {
+                    if (input.distance(prot_atom, lig_atom) < distance_cutoff) {
+                        has_interaction = true;
+                        break;
                     }
                 }
             }

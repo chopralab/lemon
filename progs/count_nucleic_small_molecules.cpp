@@ -37,11 +37,12 @@ int main(int argc, char* argv[]) {
 
     std::vector<entry_to_small_molecule> resn_counts(ncpu);
     auto worker = [&resn_counts, dist_cutoff](
-        const chemfiles::Frame& complex, const std::string& pdbid, size_t id) {
+        chemfiles::Frame& complex, const std::string& pdbid, size_t id) {
 
         auto result = benchmarker::select_small_molecule(complex);
         benchmarker::remove_identical_residues(complex, result);
         benchmarker::remove_common_cofactors(complex, result);
+        complex.set_cell(chemfiles::UnitCell());
         benchmarker::find_nucleic_acid_interactions(complex, result, dist_cutoff);
 
         if (result.empty()) {
