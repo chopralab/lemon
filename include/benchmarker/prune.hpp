@@ -67,7 +67,7 @@ void remove_common_cofactors(const chemfiles::Frame& file,
     }
 }
 
-bool find_nucleic_acid_interactions(const chemfiles::Frame& input,
+void find_nucleic_acid_interactions(const chemfiles::Frame& input,
                                     std::set<size_t>& residue_ids,
                                     double distance_cutoff = 6.0) {
     const auto& topo = input.topology();
@@ -104,6 +104,43 @@ bool find_nucleic_acid_interactions(const chemfiles::Frame& input,
 
         if (!has_interaction) {
             residue_ids.erase(current);
+        }
+    }
+}
+
+void find_interactions(const chemfiles::Frame& input,
+                       std::set<size_t>& residue_ids_of_interest,
+                       const std::set<size_t>& residue_ids_to_check,
+                       double distance_cutoff = 6.0) {
+    const auto& topo = input.topology();
+    const auto& positions = input.positions();
+    const auto& residues = topo.residues();
+
+    auto it = residue_ids_of_interest.begin();
+    while (it != residue_ids_of_interest.end()) {
+        auto current = it++;
+        const auto& ligand_residue = residues[*current];
+
+        bool has_interaction = false;
+        for (size_t residue_to_check : residue_ids_to_check) {
+            const auto& residue = residues[residue_to_check];
+
+            for (auto prot_atom : residue) {
+                for (auto lig_atom : ligand_residue) {
+                    if (input.distance(prot_atom, lig_atom) < distance_cutoff) {
+                        has_interaction = true;
+                        break;
+                    }
+                }
+            }
+
+            if (has_interaction) {
+                break;
+            }
+        }
+
+        if (!has_interaction) {
+            residue_ids_of_interest.erase(current);
         }
     }
 }

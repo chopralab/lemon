@@ -42,7 +42,10 @@ TEST_CASE("Select CD from 1D7D") {
     CHECK(res.size() == 6);
 
     std::unordered_map<std::string, size_t> metals;
-    for (auto atom_id : res) {
+    const auto& residues = frame.topology().residues();
+
+    for (auto res_id : res) {
+        auto atom_id = *(residues[res_id].begin());
         auto iter = metals.find(frame[atom_id].type());
         if (iter == metals.end()) {
             metals[frame[atom_id].type()] = 1;

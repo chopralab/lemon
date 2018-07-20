@@ -6,13 +6,14 @@
 
 #include "benchmarker/entries.hpp"
 #include "benchmarker/parse.hpp"
+#include "benchmarker/prune.hpp"
 #include "benchmarker/run.hpp"
 #include "benchmarker/select.hpp"
 
 using namespace boost::filesystem;
 
 typedef std::unordered_map<std::string, std::unordered_map<std::string, size_t>>
-    entry_to_metal;
+    entry_to_small_molecule;
 
 int main(int argc, char* argv[]) {
     path entries(argc > 1 ? argv[1] : "entries.idx");
@@ -33,24 +34,27 @@ int main(int argc, char* argv[]) {
     std::vector<std::array<char, 4>> vec;
     benchmarker::read_entry_file(entries.string(), vec);
 
-    std::vector<entry_to_metal> resn_counts(ncpu);
+    std::vector<entry_to_small_molecule> resn_counts(ncpu);
     auto worker = [&resn_counts](const chemfiles::Frame& complex,
                                  const std::string& pdbid, size_t id) {
-        auto result = benchmarker::select_metal_ions(complex);
 
+        auto metals = benchmarker::select_metal_ions(complex);
+        auto smallm = benchmarker::select_small_molecule(complex);
+        benchmarker::remove_identical_residues(complex, smallm);
+        benchmarker::remove_common_cofactors(complex, smallm);
+        benchmarker::find_interactions(complex, smallm, metals);
+
+        std::unordered_map<std::string, size_t> small_molecules;
         const auto& residues = complex.topology().residues();
-
-        std::unordered_map<std::string, size_t> metals;
-        for (auto res_id : result) {
-            auto atom_id = *(residues[res_id].begin());
-            auto iter = metals.find(complex[atom_id].type());
-            if (iter == metals.end()) {
-                metals[complex[atom_id].type()] = 1;
+        for (auto res_id : smallm) {
+            auto iter = small_molecules.find(residues[res_id].name());
+            if (iter == small_molecules.end()) {
+                small_molecules[residues[res_id].name()] = 1;
                 continue;
             }
             ++iter->second;
         }
-        resn_counts[id].emplace(pdbid, metals);
+        resn_counts[id].emplace(pdbid, small_molecules);
     };
 
     current_path(p);

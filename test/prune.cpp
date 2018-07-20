@@ -42,3 +42,21 @@ TEST_CASE("Remove non-nucleic acid interactions") {
     benchmarker::find_nucleic_acid_interactions(frame, res);
     CHECK(res.size() == 1);  // Not removed
 }
+
+TEST_CASE("Remove non-metal interactions") {
+    auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
+    auto frame = traj.read();
+
+    auto res = benchmarker::select_small_molecule(frame);
+    auto metals = benchmarker::select_metal_ions(frame);
+    benchmarker::find_interactions(frame, res, metals);
+    CHECK(res.size() == 0);  // It got removed
+
+    traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
+    frame = traj.read();
+
+    res = benchmarker::select_small_molecule(frame);
+    metals = benchmarker::select_metal_ions(frame);
+    benchmarker::find_interactions(frame, res, metals);
+    CHECK(res.size() == 1);  // Not removed
+}
