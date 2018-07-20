@@ -39,14 +39,14 @@ int main(int argc, char* argv[]) {
         // Selection phase
         auto hemegs = lemon::select_specific_residues(
             complex, {"HEM", "HEA", "HEB", "HEC"});
-        auto smallm = lemon::select_small_molecule(complex);
+        auto smallm = lemon::select_small_molecules(complex);
 
         // Pruning phase
         lemon::remove_identical_residues(complex, smallm);
         lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
         lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
 
-        lemon::find_interactions(complex, smallm, hemegs, dist_cutoff);
+        lemon::keep_interactions(complex, smallm, hemegs, dist_cutoff);
 
         // Output phase
         lemon::print_residue_name_counts(std::cout, pdbid, complex, smallm);

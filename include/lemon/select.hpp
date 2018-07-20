@@ -6,7 +6,7 @@
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
-std::set<size_t> select_small_molecule(const chemfiles::Frame& input,
+std::set<size_t> select_small_molecules(const chemfiles::Frame& input,
                                        size_t min_atoms = 10) {
     const auto& residues = input.topology().residues();
 

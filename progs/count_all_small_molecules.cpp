@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) {
 
         // Selection phase
-        auto smallm = lemon::select_small_molecule(complex);
+        auto smallm = lemon::select_small_molecules(complex);
 
         // Pruning phase
         lemon::remove_identical_residues(complex, smallm);

@@ -77,7 +77,7 @@ void remove_cofactors(const chemfiles::Frame& file,
     }
 }
 
-void find_interactions(const chemfiles::Frame& input,
+void keep_interactions(const chemfiles::Frame& input,
                        std::set<size_t>& residue_ids_of_interest,
                        const std::set<size_t>& residue_ids_to_check,
                        double distance_cutoff = 6.0) {
@@ -103,6 +103,36 @@ void find_interactions(const chemfiles::Frame& input,
         }
 
         residue_ids_of_interest.erase(current);
+    found_interaction:;
+    }
+}
+
+void remove_interactions(const chemfiles::Frame& input,
+                       std::set<size_t>& residue_ids_of_interest,
+                       const std::set<size_t>& residue_ids_to_check,
+                       double distance_cutoff = 6.0) {
+    const auto& topo = input.topology();
+    const auto& positions = input.positions();
+    const auto& residues = topo.residues();
+
+    auto it = residue_ids_of_interest.begin();
+    while (it != residue_ids_of_interest.end()) {
+        auto current = it++;
+        const auto& ligand_residue = residues[*current];
+
+        for (size_t residue_to_check : residue_ids_to_check) {
+            const auto& residue = residues[residue_to_check];
+
+            for (auto prot_atom : residue) {
+                for (auto lig_atom : ligand_residue) {
+                    if (input.distance(prot_atom, lig_atom) < distance_cutoff) {
+                        residue_ids_of_interest.erase(current);
+                        goto found_interaction;
+                    }
+                }
+            }
+        }
+        
     found_interaction:;
     }
 }

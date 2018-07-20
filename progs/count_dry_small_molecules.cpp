@@ -13,9 +13,6 @@
 
 using namespace boost::filesystem;
 
-typedef std::unordered_map<std::string, std::unordered_map<std::string, size_t>>
-    entry_to_small_molecule;
-
 int main(int argc, char* argv[]) {
     path entries(argc > 1 ? argv[1] : "entries.idx");
     path p(argc > 2 ? argv[2] : ".");
@@ -40,15 +37,15 @@ int main(int argc, char* argv[]) {
                                 const std::string& pdbid) {
 
         // Selection phase
-        auto nucleic_acids = lemon::select_nucleic_acids(complex);
+        auto waters = lemon::select_specific_residues(complex, {"HOH"});
         auto smallm = lemon::select_small_molecules(complex);
 
         // Pruning phase
         lemon::remove_identical_residues(complex, smallm);
         lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
         lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
-        lemon::keep_interactions(complex, smallm, nucleic_acids,
-                                       dist_cutoff);
+
+        lemon::remove_interactions(complex, smallm, waters, dist_cutoff);
 
         // Output phase
         lemon::print_residue_name_counts(std::cout, pdbid, complex, smallm);

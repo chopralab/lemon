@@ -8,7 +8,7 @@ TEST_CASE("Select PSI from 1AAQ") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto frame = traj.read();
 
-    const auto& res = lemon::select_small_molecule(frame);
+    const auto& res = lemon::select_small_molecules(frame);
     CHECK(res.size() == 1);
 
     size_t id = *res.begin();
@@ -19,7 +19,7 @@ TEST_CASE("Select P30 from 4XUF") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = lemon::select_small_molecule(frame);
+    const auto& res = lemon::select_small_molecules(frame);
     CHECK(res.size() == 2);
 
     size_t id = *res.begin();
@@ -69,6 +69,6 @@ TEST_CASE("Select nothing from 2WTL") {
     auto traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = lemon::select_small_molecule(frame);
+    auto res = lemon::select_small_molecules(frame);
     CHECK(res.size() == 3); //3 UNLs exist in the structure
 }

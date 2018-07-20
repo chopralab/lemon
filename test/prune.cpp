@@ -9,7 +9,7 @@ TEST_CASE("Select and prune P30 from 4XUF") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = lemon::select_small_molecule(frame);
+    auto res = lemon::select_small_molecules(frame);
     CHECK(res.size() == 2);
 
     lemon::remove_identical_residues(frame, res);
@@ -20,7 +20,7 @@ TEST_CASE("Select and prune 1PG/HEM from 1D7D") {
     auto traj = chemfiles::Trajectory("files/1D7D.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = lemon::select_small_molecule(frame);
+    auto res = lemon::select_small_molecules(frame);
     CHECK(res.size() == 3);  // Two hemes and 1PG
 
     lemon::remove_cofactors(frame, res, lemon::linear_molecules);
@@ -34,17 +34,17 @@ TEST_CASE("Remove non-nucleic acid interactions") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = lemon::select_small_molecule(frame);
+    auto res = lemon::select_small_molecules(frame);
     auto nas = lemon::select_nucleic_acids(frame);
-    lemon::find_interactions(frame, res, nas);
+    lemon::keep_interactions(frame, res, nas);
     CHECK(res.size() == 0);  // It got removed
 
     traj = chemfiles::Trajectory("files/entry_10/1/0/100D.mmtf.gz", 'r');
     frame = traj.read();
 
-    res = lemon::select_small_molecule(frame);
+    res = lemon::select_small_molecules(frame);
     nas = lemon::select_nucleic_acids(frame);
-    lemon::find_interactions(frame, res, nas);
+    lemon::keep_interactions(frame, res, nas);
     CHECK(res.size() == 1);  // Not removed
 }
 
@@ -52,16 +52,34 @@ TEST_CASE("Remove non-metal interactions") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = lemon::select_small_molecule(frame);
+    auto res = lemon::select_small_molecules(frame);
     auto metals = lemon::select_metal_ions(frame);
-    lemon::find_interactions(frame, res, metals);
+    lemon::keep_interactions(frame, res, metals);
     CHECK(res.size() == 0);  // It got removed
 
     traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
     frame = traj.read();
 
-    res = lemon::select_small_molecule(frame);
+    res = lemon::select_small_molecules(frame);
     metals = lemon::select_metal_ions(frame);
-    lemon::find_interactions(frame, res, metals);
+    lemon::keep_interactions(frame, res, metals);
     CHECK(res.size() == 1);  // Not removed
+}
+
+TEST_CASE("Remove ligands that interact with water") {
+    auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
+    auto frame = traj.read();
+
+    auto res = lemon::select_small_molecules(frame);
+    auto hoh = lemon::select_specific_residues(frame, {"HOH"});
+    lemon::remove_interactions(frame, res, hoh);
+    CHECK(res.size() == 0);  // It got removed
+
+    traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
+    frame = traj.read();
+
+    res = lemon::select_small_molecules(frame);
+    hoh = lemon::select_specific_residues(frame, {"HOH"});
+    lemon::remove_interactions(frame, res, hoh);
+    CHECK(res.size() == 2);  // Not removed
 }
