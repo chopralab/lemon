@@ -4,9 +4,9 @@
 
 #include <chemfiles.hpp>
 
-#include "benchmarker/entries.hpp"
-#include "benchmarker/parse.hpp"
-#include "benchmarker/run.hpp"
+#include "lemon/entries.hpp"
+#include "lemon/parse.hpp"
+#include "lemon/run.hpp"
 
 using namespace boost::filesystem;
 
@@ -27,20 +27,20 @@ int main(int argc, char* argv[]) {
     }
 
     std::vector<std::array<char, 4>> vec;
-    benchmarker::read_entry_file(entries.string(), vec);
+    lemon::read_entry_file(entries.string(), vec);
 
-    std::unordered_map<std::thread::id, benchmarker::ResidueNameCount>
+    std::unordered_map<std::thread::id, lemon::ResidueNameCount>
         resn_counts;
     auto worker = [&resn_counts](const chemfiles::Frame& complex,
                                  const std::string& pdbid) {
         auto th = std::this_thread::get_id();
-        benchmarker::retreive_residue_counts(complex, resn_counts[th]);
+        lemon::retreive_residue_counts(complex, resn_counts[th]);
     };
 
     current_path(p);
-    benchmarker::call_multithreaded(worker, vec, ncpu, chun);
+    lemon::call_multithreaded(worker, vec, ncpu, chun);
 
-    benchmarker::ResidueNameCount resn_total;
+    lemon::ResidueNameCount resn_total;
 
     for (const auto& resn_count : resn_counts) {
         resn_total += resn_count.second;

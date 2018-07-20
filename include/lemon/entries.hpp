@@ -7,7 +7,7 @@
 #include <vector>
 #include <fstream>
 
-namespace benchmarker {
+namespace lemon {
 void read_entry_file(std::istream& input,
                      std::vector<std::array<char, 4>>& result) {
     std::string temp;
@@ -30,7 +30,7 @@ void read_entry_file(const std::string& input,
     std::getline(input_file, junk);
 
     result.reserve(number_of_entries);
-    benchmarker::read_entry_file(input_file, result);
+    lemon::read_entry_file(input_file, result);
 }
 }
 

@@ -5,11 +5,11 @@
 
 #include <chemfiles.hpp>
 
-#include "benchmarker/entries.hpp"
-#include "benchmarker/parse.hpp"
-#include "benchmarker/prune.hpp"
-#include "benchmarker/run.hpp"
-#include "benchmarker/select.hpp"
+#include "lemon/entries.hpp"
+#include "lemon/parse.hpp"
+#include "lemon/prune.hpp"
+#include "lemon/run.hpp"
+#include "lemon/select.hpp"
 
 using namespace boost::filesystem;
 
@@ -34,17 +34,17 @@ int main(int argc, char* argv[]) {
     }
 
     std::vector<std::array<char, 4>> vec;
-    benchmarker::read_entry_file(entries.string(), vec);
+    lemon::read_entry_file(entries.string(), vec);
 
     auto worker = [dist_cutoff](chemfiles::Frame& complex,
                                 const std::string& pdbid) {
 
-        auto nucleic_acids = benchmarker::select_nucleic_acids(complex);
-        auto smallm = benchmarker::select_small_molecule(complex);
-        benchmarker::remove_identical_residues(complex, smallm);
-        benchmarker::remove_common_cofactors(complex, smallm);
+        auto nucleic_acids = lemon::select_nucleic_acids(complex);
+        auto smallm = lemon::select_small_molecule(complex);
+        lemon::remove_identical_residues(complex, smallm);
+        lemon::remove_common_cofactors(complex, smallm);
         complex.set_cell(chemfiles::UnitCell());
-        benchmarker::find_interactions(complex, smallm, nucleic_acids,
+        lemon::find_interactions(complex, smallm, nucleic_acids,
                                        dist_cutoff);
 
         if (smallm.empty()) {
@@ -75,5 +75,5 @@ int main(int argc, char* argv[]) {
     };
 
     current_path(p);
-    benchmarker::call_multithreaded(worker, vec, ncpu, chun);
+    lemon::call_multithreaded(worker, vec, ncpu, chun);
 }

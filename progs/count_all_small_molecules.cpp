@@ -5,11 +5,11 @@
 
 #include <chemfiles.hpp>
 
-#include "benchmarker/entries.hpp"
-#include "benchmarker/parse.hpp"
-#include "benchmarker/prune.hpp"
-#include "benchmarker/run.hpp"
-#include "benchmarker/select.hpp"
+#include "lemon/entries.hpp"
+#include "lemon/parse.hpp"
+#include "lemon/prune.hpp"
+#include "lemon/run.hpp"
+#include "lemon/select.hpp"
 
 using namespace boost::filesystem;
 
@@ -30,14 +30,14 @@ int main(int argc, char* argv[]) {
     }
 
     std::vector<std::array<char, 4>> vec;
-    benchmarker::read_entry_file(entries.string(), vec);
+    lemon::read_entry_file(entries.string(), vec);
 
     auto worker = [](const chemfiles::Frame& complex,
                      const std::string& pdbid) {
 
-        auto result = benchmarker::select_small_molecule(complex);
-        benchmarker::remove_identical_residues(complex, result);
-        benchmarker::remove_common_cofactors(complex, result);
+        auto result = lemon::select_small_molecule(complex);
+        lemon::remove_identical_residues(complex, result);
+        lemon::remove_common_cofactors(complex, result);
         std::unordered_map<std::string, size_t> small_molecules;
 
         if (result.empty()) {
@@ -66,5 +66,5 @@ int main(int argc, char* argv[]) {
     };
 
     current_path(p);
-    benchmarker::call_multithreaded(worker, vec, ncpu, chun);
+    lemon::call_multithreaded(worker, vec, ncpu, chun);
 }

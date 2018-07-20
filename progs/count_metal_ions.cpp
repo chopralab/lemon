@@ -5,10 +5,10 @@
 
 #include <chemfiles.hpp>
 
-#include "benchmarker/entries.hpp"
-#include "benchmarker/parse.hpp"
-#include "benchmarker/run.hpp"
-#include "benchmarker/select.hpp"
+#include "lemon/entries.hpp"
+#include "lemon/parse.hpp"
+#include "lemon/run.hpp"
+#include "lemon/select.hpp"
 
 using namespace boost::filesystem;
 
@@ -29,11 +29,11 @@ int main(int argc, char* argv[]) {
     }
 
     std::vector<std::array<char, 4>> vec;
-    benchmarker::read_entry_file(entries.string(), vec);
+    lemon::read_entry_file(entries.string(), vec);
 
     auto worker = [](const chemfiles::Frame& complex,
                      const std::string& pdbid) {
-        auto result = benchmarker::select_metal_ions(complex);
+        auto result = lemon::select_metal_ions(complex);
 
         if (result.empty()) {
             return;
@@ -63,5 +63,5 @@ int main(int argc, char* argv[]) {
     };
 
     current_path(p);
-    benchmarker::call_multithreaded(worker, vec, ncpu, chun);
+    lemon::call_multithreaded(worker, vec, ncpu, chun);
 }

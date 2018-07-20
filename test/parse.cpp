@@ -1,11 +1,11 @@
-#include "benchmarker/parse.hpp"
+#include "lemon/parse.hpp"
 #include <chemfiles.hpp>
 #include <sstream>
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-using namespace benchmarker;
+using namespace lemon;
 
 TEST_CASE("Residue Count") {
     ResidueNameCount counter;

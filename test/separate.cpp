@@ -1,4 +1,4 @@
-#include "benchmarker/separate.hpp"
+#include "lemon/separate.hpp"
 #include <chemfiles.hpp>
 #include <sstream>
 
@@ -20,7 +20,7 @@ TEST_CASE("Separate") {
         }
     }
 
-    benchmarker::separate_protein_and_ligand(frame, residues[i], protein, ligand, 15);
+    lemon::separate_protein_and_ligand(frame, residues[i], protein, ligand, 15);
 
     CHECK(ligand.size() == 41);
     CHECK(protein.size() == 998);

@@ -1,4 +1,4 @@
-#include "benchmarker/entries.hpp"
+#include "lemon/entries.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
@@ -15,7 +15,7 @@ TEST_CASE("Read entry file") {
 
     std::vector<std::array<char, 4>> vec;
     vec.reserve(10);
-    benchmarker::read_entry_file(input_file, vec);
+    lemon::read_entry_file(input_file, vec);
     
     CHECK(vec.size() == 10);
     CHECK(std::string(vec[0].data(), 4) == "100D");

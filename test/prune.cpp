@@ -1,6 +1,6 @@
-#include "benchmarker/prune.hpp"
+#include "lemon/prune.hpp"
 #include <chemfiles.hpp>
-#include "benchmarker/select.hpp"
+#include "lemon/select.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
@@ -9,10 +9,10 @@ TEST_CASE("Select and prune P30 from 4XUF") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = benchmarker::select_small_molecule(frame);
+    auto res = lemon::select_small_molecule(frame);
     CHECK(res.size() == 2);
 
-    benchmarker::remove_identical_residues(frame, res);
+    lemon::remove_identical_residues(frame, res);
     CHECK(res.size() == 1);
 }
 
@@ -20,10 +20,10 @@ TEST_CASE("Select and prune 1PG from 1D7D") {
     auto traj = chemfiles::Trajectory("files/1D7D.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = benchmarker::select_small_molecule(frame);
+    auto res = lemon::select_small_molecule(frame);
     CHECK(res.size() == 3);  // Two hemes and 1PG
 
-    benchmarker::remove_common_cofactors(frame, res);
+    lemon::remove_common_cofactors(frame, res);
     CHECK(res.size() == 1);
 }
 
@@ -31,17 +31,17 @@ TEST_CASE("Remove non-nucleic acid interactions") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = benchmarker::select_small_molecule(frame);
-    auto nas = benchmarker::select_nucleic_acids(frame);
-    benchmarker::find_interactions(frame, res, nas);
+    auto res = lemon::select_small_molecule(frame);
+    auto nas = lemon::select_nucleic_acids(frame);
+    lemon::find_interactions(frame, res, nas);
     CHECK(res.size() == 0);  // It got removed
 
     traj = chemfiles::Trajectory("files/entry_10/1/0/100D.mmtf.gz", 'r');
     frame = traj.read();
 
-    res = benchmarker::select_small_molecule(frame);
-    nas = benchmarker::select_nucleic_acids(frame);
-    benchmarker::find_interactions(frame, res, nas);
+    res = lemon::select_small_molecule(frame);
+    nas = lemon::select_nucleic_acids(frame);
+    lemon::find_interactions(frame, res, nas);
     CHECK(res.size() == 1);  // Not removed
 }
 
@@ -49,16 +49,16 @@ TEST_CASE("Remove non-metal interactions") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = benchmarker::select_small_molecule(frame);
-    auto metals = benchmarker::select_metal_ions(frame);
-    benchmarker::find_interactions(frame, res, metals);
+    auto res = lemon::select_small_molecule(frame);
+    auto metals = lemon::select_metal_ions(frame);
+    lemon::find_interactions(frame, res, metals);
     CHECK(res.size() == 0);  // It got removed
 
     traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
     frame = traj.read();
 
-    res = benchmarker::select_small_molecule(frame);
-    metals = benchmarker::select_metal_ions(frame);
-    benchmarker::find_interactions(frame, res, metals);
+    res = lemon::select_small_molecule(frame);
+    metals = lemon::select_metal_ions(frame);
+    lemon::find_interactions(frame, res, metals);
     CHECK(res.size() == 1);  // Not removed
 }

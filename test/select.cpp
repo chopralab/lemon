@@ -1,4 +1,4 @@
-#include "benchmarker/select.hpp"
+#include "lemon/select.hpp"
 #include <chemfiles.hpp>
 
 #define CATCH_CONFIG_MAIN
@@ -8,7 +8,7 @@ TEST_CASE("Select PSI from 1AAQ") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto frame = traj.read();
 
-    const auto& res = benchmarker::select_small_molecule(frame);
+    const auto& res = lemon::select_small_molecule(frame);
     CHECK(res.size() == 1);
 
     size_t id = *res.begin();
@@ -19,7 +19,7 @@ TEST_CASE("Select P30 from 4XUF") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = benchmarker::select_small_molecule(frame);
+    const auto& res = lemon::select_small_molecule(frame);
     CHECK(res.size() == 2);
 
     size_t id = *res.begin();
@@ -30,7 +30,7 @@ TEST_CASE("Select FE from 2WTL") {
     auto traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = benchmarker::select_metal_ions(frame);
+    const auto& res = lemon::select_metal_ions(frame);
     CHECK(res.size() == 12);
 }
 
@@ -38,7 +38,7 @@ TEST_CASE("Select CD from 1D7D") {
     auto traj = chemfiles::Trajectory("files/1D7D.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = benchmarker::select_metal_ions(frame);
+    const auto& res = lemon::select_metal_ions(frame);
     CHECK(res.size() == 6);
 
     std::unordered_map<std::string, size_t> metals;
@@ -61,7 +61,7 @@ TEST_CASE("Select HOH from 1OQ5") {
     auto traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = benchmarker::select_specific_residues(frame,{"HOH"});
+    const auto& res = lemon::select_specific_residues(frame,{"HOH"});
     CHECK(res.size() == 233);
 }
 
@@ -69,6 +69,6 @@ TEST_CASE("Select nothing from 2WTL") {
     auto traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    auto res = benchmarker::select_small_molecule(frame);
+    auto res = lemon::select_small_molecule(frame);
     CHECK(res.size() == 3); //3 UNLs exist in the structure
 }

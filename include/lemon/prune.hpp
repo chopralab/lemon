@@ -3,9 +3,9 @@
 #define PRUNE_HPP
 
 #include <chemfiles.hpp>
-#include "benchmarker/residue_name.hpp"
+#include "lemon/residue_name.hpp"
 
-namespace benchmarker {
+namespace lemon {
 const ResidueNameSet common_cofactors{
     {"FAD"}, {"FMN"}, {"NAD"}, {"NAP"}, {"CLA"}, {"HEM"}, {"HEA"},
     {"HEB"}, {"HEC"}, {"ADP"}, {"ATP"}, {"GDP"}, {"GTP"}, {"UNL"},

@@ -1,11 +1,11 @@
-#include "benchmarker/residue_name.hpp"
+#include "lemon/residue_name.hpp"
 #include <chemfiles.hpp>
 #include <sstream>
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-using namespace benchmarker;
+using namespace lemon;
 
 TEST_CASE("Residue Name") {
     REQUIRE(sizeof(ResidueName) == sizeof(char) * 3);

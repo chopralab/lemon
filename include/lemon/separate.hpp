@@ -5,7 +5,7 @@
 
 #include "chemfiles/Frame.hpp"
 
-namespace benchmarker
+namespace lemon
 {
 void separate_protein_and_ligand(
     const chemfiles::Frame &input,

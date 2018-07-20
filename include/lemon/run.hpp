@@ -8,7 +8,7 @@
 
 #include <boost/filesystem.hpp>
 
-namespace benchmarker {
+namespace lemon {
 template <class Function, class iter>
 void call_function(Function&& f, iter begin, iter end) {
     for (auto it = begin; it != end; ++it) {

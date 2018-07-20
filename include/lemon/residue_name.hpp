@@ -8,7 +8,7 @@
 #include <set>
 #include <ostream>
 
-namespace benchmarker
+namespace lemon
 {
 
 class ResidueName : private std::array<char, 3>

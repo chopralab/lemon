@@ -5,14 +5,12 @@
 
 #include <chemfiles.hpp>
 
-#include "benchmarker/entries.hpp"
-#include "benchmarker/parse.hpp"
-#include "benchmarker/run.hpp"
-#include "benchmarker/select.hpp"
+#include "lemon/entries.hpp"
+#include "lemon/parse.hpp"
+#include "lemon/run.hpp"
+#include "lemon/select.hpp"
 
 using namespace boost::filesystem;
-
-typedef std::unordered_map<std::string, size_t> entry_to_asmbio;
 
 int main(int argc, char* argv[]) {
     path entries(argc > 1 ? argv[1] : "entries.idx");
@@ -31,11 +29,11 @@ int main(int argc, char* argv[]) {
     }
 
     std::vector<std::array<char, 4>> vec;
-    benchmarker::read_entry_file(entries.string(), vec);
+    lemon::read_entry_file(entries.string(), vec);
 
     auto worker = [](const chemfiles::Frame& complex, const std::string& pdbid) {
 
-        auto result = benchmarker::count_bioassemblies(complex);
+        auto result = lemon::count_bioassemblies(complex);
 
         std::stringstream ss;
         ss << pdbid << " " << result << "\n";
@@ -43,5 +41,5 @@ int main(int argc, char* argv[]) {
     };
 
     current_path(p);
-    benchmarker::call_multithreaded(worker, vec, ncpu, chun);
+    lemon::call_multithreaded(worker, vec, ncpu, chun);
 }
