@@ -39,13 +39,14 @@ int main(int argc, char* argv[]) {
     auto worker = [&resn_counts, dist_cutoff](
         chemfiles::Frame& complex, const std::string& pdbid, size_t id) {
 
-        auto result = benchmarker::select_small_molecule(complex);
-        benchmarker::remove_identical_residues(complex, result);
-        benchmarker::remove_common_cofactors(complex, result);
+        auto nucleic_acids = benchmarker::select_nucleic_acids(complex);
+        auto smallm = benchmarker::select_small_molecule(complex);
+        benchmarker::remove_identical_residues(complex, smallm);
+        benchmarker::remove_common_cofactors(complex, smallm);
         complex.set_cell(chemfiles::UnitCell());
-        benchmarker::find_nucleic_acid_interactions(complex, result, dist_cutoff);
+        benchmarker::find_interactions(complex, smallm, nucleic_acids, dist_cutoff);
 
-        if (result.empty()) {
+        if (smallm.empty()) {
             return;
         }
 
@@ -53,7 +54,7 @@ int main(int argc, char* argv[]) {
 
         const auto& residues = complex.topology().residues();
 
-        for (auto res_id : result) {
+        for (auto res_id : smallm) {
             auto iter = small_molecules.find(residues[res_id].name());
             if (iter == small_molecules.end()) {
                 small_molecules[residues[res_id].name()] = 1;

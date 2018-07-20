@@ -32,14 +32,16 @@ TEST_CASE("Remove non-nucleic acid interactions") {
     auto frame = traj.read();
 
     auto res = benchmarker::select_small_molecule(frame);
-    benchmarker::find_nucleic_acid_interactions(frame, res);
+    auto nas = benchmarker::select_nucleic_acids(frame);
+    benchmarker::find_interactions(frame, res, nas);
     CHECK(res.size() == 0);  // It got removed
 
     traj = chemfiles::Trajectory("files/entry_10/1/0/100D.mmtf.gz", 'r');
     frame = traj.read();
 
     res = benchmarker::select_small_molecule(frame);
-    benchmarker::find_nucleic_acid_interactions(frame, res);
+    nas = benchmarker::select_nucleic_acids(frame);
+    benchmarker::find_interactions(frame, res, nas);
     CHECK(res.size() == 1);  // Not removed
 }
 
