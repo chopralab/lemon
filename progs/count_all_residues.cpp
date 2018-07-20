@@ -29,10 +29,12 @@ int main(int argc, char* argv[]) {
     std::vector<std::array<char, 4>> vec;
     benchmarker::read_entry_file(entries.string(), vec);
 
-    std::vector<benchmarker::ResidueNameCount> resn_counts(ncpu);
+    std::unordered_map<std::thread::id, benchmarker::ResidueNameCount>
+        resn_counts;
     auto worker = [&resn_counts](const chemfiles::Frame& complex,
-                                 const std::string& pdbid, size_t id) {
-        benchmarker::retreive_residue_counts(complex, resn_counts[id]);
+                                 const std::string& pdbid) {
+        auto th = std::this_thread::get_id();
+        benchmarker::retreive_residue_counts(complex, resn_counts[th]);
     };
 
     current_path(p);
@@ -41,7 +43,7 @@ int main(int argc, char* argv[]) {
     benchmarker::ResidueNameCount resn_total;
 
     for (const auto& resn_count : resn_counts) {
-        resn_total += resn_count;
+        resn_total += resn_count.second;
     }
 
     std::cout << resn_total;

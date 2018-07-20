@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include <boost/filesystem.hpp>
 
@@ -32,20 +33,15 @@ int main(int argc, char* argv[]) {
     std::vector<std::array<char, 4>> vec;
     benchmarker::read_entry_file(entries.string(), vec);
 
-    std::vector<entry_to_asmbio> resn_counts(ncpu);
-    auto worker = [&resn_counts](const chemfiles::Frame& complex,
-                                 const std::string& pdbid, size_t id) {
+    auto worker = [](const chemfiles::Frame& complex, const std::string& pdbid) {
 
         auto result = benchmarker::count_bioassemblies(complex);
-        resn_counts[id].emplace(pdbid, result);
+
+        std::stringstream ss;
+        ss << pdbid << " " << result << "\n";
+        std::cout << ss.str();
     };
 
     current_path(p);
     benchmarker::call_multithreaded(worker, vec, ncpu, chun);
-
-    for (const auto& iter : resn_counts) {
-        for (const auto& iter2 : iter) {
-            std::cout << iter2.first << "\t" << iter2.second << std::endl;
-        }
-    }
 }

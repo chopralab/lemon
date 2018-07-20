@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include <boost/filesystem.hpp>
 
@@ -10,9 +11,6 @@
 #include "benchmarker/select.hpp"
 
 using namespace boost::filesystem;
-
-typedef std::unordered_map<std::string, std::unordered_map<std::string, size_t>>
-    entry_to_metal;
 
 int main(int argc, char* argv[]) {
     path entries(argc > 1 ? argv[1] : "entries.idx");
@@ -33,10 +31,13 @@ int main(int argc, char* argv[]) {
     std::vector<std::array<char, 4>> vec;
     benchmarker::read_entry_file(entries.string(), vec);
 
-    std::vector<entry_to_metal> resn_counts(ncpu);
-    auto worker = [&resn_counts](const chemfiles::Frame& complex,
-                                 const std::string& pdbid, size_t id) {
+    auto worker = [](const chemfiles::Frame& complex,
+                     const std::string& pdbid) {
         auto result = benchmarker::select_metal_ions(complex);
+
+        if (result.empty()) {
+            return;
+        }
 
         const auto& residues = complex.topology().residues();
 
@@ -50,25 +51,17 @@ int main(int argc, char* argv[]) {
             }
             ++iter->second;
         }
-        resn_counts[id].emplace(pdbid, metals);
+
+        std::stringstream ss;
+        ss << pdbid;
+        for (const auto iter : metals) {
+            ss << " " << iter.first << " " << iter.second;
+        }
+        ss << "\n";
+
+        std::cout << ss.str();
     };
 
     current_path(p);
     benchmarker::call_multithreaded(worker, vec, ncpu, chun);
-
-    for (const auto& iter : resn_counts) {
-        for (const auto& iter2 : iter) {
-            if (iter2.second.size() == 0) {
-                continue;
-            }
-
-            std::cout << iter2.first;
-
-            for (const auto iter3 : iter2.second) {
-                std::cout << " " << iter3.first << " " << iter3.second;
-            }
-
-            std::cout << std::endl;
-        }
-    }
 }

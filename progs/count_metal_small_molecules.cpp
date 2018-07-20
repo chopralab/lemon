@@ -33,8 +33,8 @@ int main(int argc, char* argv[]) {
     std::vector<std::array<char, 4>> vec;
     benchmarker::read_entry_file(entries.string(), vec);
 
-    auto worker = [dist_cutoff](
-        const chemfiles::Frame& complex, const std::string& pdbid, size_t id) {
+    auto worker = [dist_cutoff](const chemfiles::Frame& complex,
+                                const std::string& pdbid) {
 
         auto metals = benchmarker::select_metal_ions(complex);
         auto smallm = benchmarker::select_small_molecule(complex);
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
         benchmarker::remove_common_cofactors(complex, smallm);
         benchmarker::find_interactions(complex, smallm, metals, dist_cutoff);
 
-        if (!smallm.size()) {
+        if (smallm.empty()) {
             return;
         }
 

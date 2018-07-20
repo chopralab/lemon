@@ -33,8 +33,8 @@ int main(int argc, char* argv[]) {
     std::vector<std::array<char, 4>> vec;
     benchmarker::read_entry_file(entries.string(), vec);
 
-    auto worker = [dist_cutoff](
-        const chemfiles::Frame& complex, const std::string& pdbid, size_t id) {
+    auto worker = [dist_cutoff](const chemfiles::Frame& complex,
+                                const std::string& pdbid) {
 
         auto hemegs = benchmarker::select_specific_residues(
             complex, {"HEM", "HEA", "HEB", "HEC"});
@@ -42,6 +42,10 @@ int main(int argc, char* argv[]) {
         benchmarker::remove_identical_residues(complex, smallm);
         benchmarker::remove_common_cofactors(complex, smallm);
         benchmarker::find_interactions(complex, smallm, hemegs, dist_cutoff);
+
+        if (smallm.empty()) {
+            return;
+        }
 
         std::unordered_map<std::string, size_t> small_molecules;
         const auto& residues = complex.topology().residues();

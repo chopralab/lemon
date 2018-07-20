@@ -10,7 +10,7 @@
 
 namespace benchmarker {
 template <class Function, class iter>
-void call_function(Function&& f, iter begin, iter end, size_t threadid) {
+void call_function(Function&& f, iter begin, iter end) {
     for (auto it = begin; it != end; ++it) {
         const std::string pdbid = std::string(it->data(), 4);
 
@@ -29,7 +29,7 @@ void call_function(Function&& f, iter begin, iter end, size_t threadid) {
             }
 
             auto complex = traj.read();
-            f(complex, pdbid, threadid);
+            f(complex, pdbid);
         } catch (const std::range_error& e) {
             std::cerr << "Odd residue name in " << entry << std::endl;
         } catch (const std::length_error& e) {
@@ -57,15 +57,12 @@ void call_multithreaded(Function&& worker, const container& vec, size_t ncpu, si
     const size_t chunksize = grainsize / chunk;
 
     auto work_iter = std::cbegin(vec);
-    size_t id = 0;
 
     for (size_t chunk_id = 1; chunk_id < chunk; ++chunk_id) {
-        id = 0;
         for (auto it = std::begin(threads); it != std::end(threads); ++it) {
             *it = std::thread([=] {
-                call_function(worker, work_iter, work_iter + chunksize, id);
+                call_function(worker, work_iter, work_iter + chunksize);
             });
-            ++id;
             work_iter += chunksize;
         }
 
@@ -74,16 +71,14 @@ void call_multithreaded(Function&& worker, const container& vec, size_t ncpu, si
         }
     }
 
-    id = 0;
     for (auto it = std::begin(threads); it != std::end(threads) - 1; ++it) {
         *it = std::thread([=] {
-            call_function(worker, work_iter, work_iter + chunksize, id);
+            call_function(worker, work_iter, work_iter + chunksize);
         });
-        ++id;
         work_iter += chunksize;
     }
     threads.back() = std::thread(
-        [&] { call_function(worker, work_iter, std::cend(vec), id); });
+        [&] { call_function(worker, work_iter, std::cend(vec)); });
 
     for (auto&& i : threads) {
         i.join();
