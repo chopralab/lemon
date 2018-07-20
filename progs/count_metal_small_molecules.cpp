@@ -39,7 +39,8 @@ int main(int argc, char* argv[]) {
         auto metals = lemon::select_metal_ions(complex);
         auto smallm = lemon::select_small_molecule(complex);
         lemon::remove_identical_residues(complex, smallm);
-        lemon::remove_common_cofactors(complex, smallm);
+        lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
+        lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
         lemon::find_interactions(complex, smallm, metals, dist_cutoff);
 
         if (smallm.empty()) {

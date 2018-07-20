@@ -42,7 +42,8 @@ int main(int argc, char* argv[]) {
         auto nucleic_acids = lemon::select_nucleic_acids(complex);
         auto smallm = lemon::select_small_molecule(complex);
         lemon::remove_identical_residues(complex, smallm);
-        lemon::remove_common_cofactors(complex, smallm);
+        lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
+        lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
         complex.set_cell(chemfiles::UnitCell());
         lemon::find_interactions(complex, smallm, nucleic_acids,
                                        dist_cutoff);

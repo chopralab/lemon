@@ -35,21 +35,22 @@ int main(int argc, char* argv[]) {
     auto worker = [](const chemfiles::Frame& complex,
                      const std::string& pdbid) {
 
-        auto result = lemon::select_small_molecule(complex);
-        lemon::remove_identical_residues(complex, result);
-        lemon::remove_common_cofactors(complex, result);
+        auto smallm = lemon::select_small_molecule(complex);
+        lemon::remove_identical_residues(complex, smallm);
+        lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
+        lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
         std::unordered_map<std::string, size_t> small_molecules;
 
-        if (result.empty()) {
+        if (smallm.empty()) {
             return;
         }
 
         const auto& residues = complex.topology().residues();
 
-        for (auto atom_id : result) {
-            auto iter = small_molecules.find(residues[atom_id].name());
+        for (auto res_id : smallm) {
+            auto iter = small_molecules.find(residues[res_id].name());
             if (iter == small_molecules.end()) {
-                small_molecules[residues[atom_id].name()] = 1;
+                small_molecules[residues[res_id].name()] = 1;
                 continue;
             }
             ++iter->second;

@@ -9,6 +9,15 @@ namespace lemon {
 const ResidueNameSet common_cofactors{
     {"FAD"}, {"FMN"}, {"NAD"}, {"NAP"}, {"CLA"}, {"HEM"}, {"HEA"},
     {"HEB"}, {"HEC"}, {"ADP"}, {"ATP"}, {"GDP"}, {"GTP"}, {"UNL"},
+    {"CIT"}, {"FCL"}, {"BE7"}, {"MHA"}, {"DHD"}, {"B3P"}, {"BTB"},
+    {"NHE"}, {"GOL"}, {"DTP"}, {"SAM"},
+};
+
+const ResidueNameSet linear_molecules{
+    {"PG6"}, {"PE7"}, {"PG5"}, {"PEU"}, {"PGE"}, {"PIG"}, {"PE8"},
+    {"PE4"}, {"P33"}, {"C8E"}, {"OTE"}, {"XPE"}, {"N8E"}, {"DR6"},
+    {"PEG"}, {"2PE"}, {"P6G"}, {"1PE"}, {"SPM"}, {"SPK"}, {"SPD"},
+    {"1PG"}
 };
 
 void remove_identical_residues(const chemfiles::Frame& file,
@@ -54,14 +63,15 @@ void remove_identical_residues(const chemfiles::Frame& file,
     }
 }
 
-void remove_common_cofactors(const chemfiles::Frame& file,
-                             std::set<size_t>& residue_ids) {
+void remove_cofactors(const chemfiles::Frame& file,
+                             std::set<size_t>& residue_ids,
+                             const ResidueNameSet& rns) {
     auto& residues = file.topology().residues();
 
     auto it = residue_ids.begin();
     while (it != residue_ids.end()) {
         auto current = it++;
-        if (common_cofactors.count(residues[*current].name()) != 0) {
+        if (rns.count(residues[*current].name()) != 0) {
             residue_ids.erase(current);
         }
     }

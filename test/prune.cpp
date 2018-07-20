@@ -16,15 +16,18 @@ TEST_CASE("Select and prune P30 from 4XUF") {
     CHECK(res.size() == 1);
 }
 
-TEST_CASE("Select and prune 1PG from 1D7D") {
+TEST_CASE("Select and prune 1PG/HEM from 1D7D") {
     auto traj = chemfiles::Trajectory("files/1D7D.mmtf.gz", 'r');
     auto frame = traj.read();
 
     auto res = lemon::select_small_molecule(frame);
     CHECK(res.size() == 3);  // Two hemes and 1PG
 
-    lemon::remove_common_cofactors(frame, res);
-    CHECK(res.size() == 1);
+    lemon::remove_cofactors(frame, res, lemon::linear_molecules);
+    CHECK(res.size() == 2);
+
+    lemon::remove_cofactors(frame, res, lemon::common_cofactors);
+    CHECK(res.size() == 0);
 }
 
 TEST_CASE("Remove non-nucleic acid interactions") {
