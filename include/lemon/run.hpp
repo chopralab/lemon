@@ -58,7 +58,7 @@ void call_multithreaded(Function&& worker, const container& vec, size_t ncpu, si
     // Total number of jobs submitted to be run each time a thread is spun
     const size_t chunksize = grainsize / chunk;
 
-    auto work_iter = std::cbegin(vec);
+    auto work_iter = vec.cbegin();
 
     for (size_t chunk_id = 1; chunk_id < chunk; ++chunk_id) {
         for (auto it = std::begin(threads); it != std::end(threads); ++it) {
@@ -80,7 +80,7 @@ void call_multithreaded(Function&& worker, const container& vec, size_t ncpu, si
         work_iter += chunksize;
     }
     threads.back() = std::thread(
-        [&] { call_function(worker, work_iter, std::cend(vec)); });
+        [&] { call_function(worker, work_iter, vec.cend()); });
 
     for (auto&& i : threads) {
         i.join();
