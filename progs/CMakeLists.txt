@@ -4,6 +4,13 @@ function(add_cpp_prog _file_)
     add_executable(${_name_} ${_file_})
     add_dependencies(${_name_} chemfiles)
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
+
+    if(MSVC)
+        target_compile_options(${_name_} PRIVATE /W4 /WX)
+    else(MSVC)
+        target_compile_options(${_name_} PRIVATE -Wall -Wextra -pedantic)
+    endif(MSVC)
+
     target_include_directories(${_name_} SYSTEM PRIVATE
         ${CMAKE_SOURCE_DIR}/include
         ${CHEMFILES_INCLUDE_DIR}
