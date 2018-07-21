@@ -7,9 +7,13 @@ function(add_cpp_prog _file_)
 
     if(MSVC)
         target_compile_options(${_name_} PRIVATE /W4 /WX)
-    else(MSVC)
+    else()
         target_compile_options(${_name_} PRIVATE -Wall -Wextra -pedantic)
-    endif(MSVC)
+        if (${COVERAGE})
+            target_compile_options(${_name_} PRIVATE --coverage)
+            target_link_libraries(${_name_} PRIVATE --coverage)
+        endif()
+    endif()
 
     target_include_directories(${_name_} SYSTEM PRIVATE
         ${CMAKE_SOURCE_DIR}/include
@@ -17,7 +21,7 @@ function(add_cpp_prog _file_)
         ${CMAKE_CURRENT_SOURCE_DIR}/external
     )
 
-    target_link_libraries( ${_name_}
+    target_link_libraries( ${_name_} PUBLIC
         chemfiles
         ${Boost_LIBRARIES}
         pthread
