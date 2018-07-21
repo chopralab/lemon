@@ -47,4 +47,8 @@ script:
   - ctest -j2 --output-on-failure
 
 after_success:
-  - coveralls -e chemfiles -e chemfiles_build -e CHEMFILES-prefix -e CMakeFiles --gcov-options '\-lp'
+  - cd $TRAVIS_BUILD_DIR
+  - |
+    if [[ "${COVERAGE}" == "ON" ]]; then
+        coveralls --gcov gcov-4.8 -e build/chemfiles -e build/chemfiles_build -e build/CHEMFILES-prefix -e build/CMakeFiles -E '.*external.*' --gcov-options '\-lp'
+    fi

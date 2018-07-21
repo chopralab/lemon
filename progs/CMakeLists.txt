@@ -26,6 +26,11 @@ function(add_cpp_prog _file_)
         ${Boost_LIBRARIES}
         pthread
     )
+
+    add_test(NAME ${_name_}
+        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${_name_} entries_10.idx entry_10/
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/files
+    )
 endfunction()
 
 file(GLOB all_test_files
