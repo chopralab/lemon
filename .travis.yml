@@ -47,4 +47,4 @@ script:
   - ctest -j2 --output-on-failure
 
 after_success:
-  - coveralls --exclude usr --exclude chemfiles --exclude test --gcov-options '\-lp'
+  - coveralls -e chemfiles -e chemfiles_build -e CHEMFILES-prefix -e CMakeFiles --gcov-options '\-lp'
