@@ -9,15 +9,18 @@ namespace lemon {
 const ResidueNameSet common_cofactors{
     {"FAD"}, {"FMN"}, {"NAD"}, {"NAP"}, {"CLA"}, {"HEM"}, {"HEA"},
     {"HEB"}, {"HEC"}, {"ADP"}, {"ATP"}, {"GDP"}, {"GTP"}, {"UNL"},
-    {"CIT"}, {"FCL"}, {"BE7"}, {"MHA"}, {"DHD"}, {"B3P"}, {"BTB"},
-    {"NHE"}, {"GOL"}, {"DTP"}, {"SAM"},
+    {"CIT"}, {"FLC"}, {"BE7"}, {"MHA"}, {"DHD"}, {"B3P"}, {"BTB"},
+    {"NHE"}, {"GOL"}, {"DTP"}, {"SAM"}, {"SIA"}, {"ICT"},
+    {"MES"}, {"EPE"}, 
 };
 
 const ResidueNameSet linear_molecules{
     {"PG6"}, {"PE7"}, {"PG5"}, {"PEU"}, {"PGE"}, {"PIG"}, {"PE8"},
     {"PE4"}, {"P33"}, {"C8E"}, {"OTE"}, {"XPE"}, {"N8E"}, {"DR6"},
     {"PEG"}, {"2PE"}, {"P6G"}, {"1PE"}, {"SPM"}, {"SPK"}, {"SPD"},
-    {"1PG"}
+    {"1PG"}, {"PG4"},
+    {"MYR"}, {"OLA"}, {"OLB"}, {"OLC"}, {"PLM"}, {"PAM"},
+    {"PEE"}, {"LHG"}, {"MC3"}
 };
 
 void remove_identical_residues(const chemfiles::Frame& file,
