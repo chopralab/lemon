@@ -1,0 +1,46 @@
+language: cpp
+sudo: false
+
+branches:
+  only:
+    - master
+
+linux64_addons:
+    addons: &linux64
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-4.8
+        - libboost-dev
+        - libboost-filesystem1.54-dev
+
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      compiler: gcc
+      addons: *linux64
+    # Using system libs
+    - os: linux
+      compiler: clang
+      addons: *linux64
+    - os: osx
+      compiler: clang
+      osx_image: xcode7.3
+    - os: osx
+      compiler: gcc
+      osx_image: xcode7.3
+
+before_install:
+  # Setting environement
+  - $CC --version
+  - $CXX --version
+
+script:
+  - cd $TRAVIS_BUILD_DIR
+  - mkdir build && cd build
+  - $CMAKE_CONFIGURE cmake $CMAKE_ARGS $CMAKE_EXTRA ..
+  - make -j2
+  - ctest -j2 --output-on-failure
+  - cd $TRAVIS_BUILD_DIR
