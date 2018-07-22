@@ -22,26 +22,28 @@ matrix:
     - os: linux
       compiler: gcc
       addons: *linux64
-      env:
-        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && COVERAGE=ON"
-    # Using system libs
+      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON
     - os: linux
       compiler: clang
       addons: *linux64
+      env: COMPILER_C=clang COMPILER_CXX=clang++
     - os: osx
       compiler: clang
       osx_image: xcode7.3
+      env: COMPILER_C=clang COMPILER_CXX=clang++
     - os: osx
       compiler: gcc
       osx_image: xcode7.3
+      env: COMPILER_C=gcc COMPILER_CXX=g++
 
 before_install:
-  # Setting environement
-  - $CC --version
-  - $CXX --version
   - pip install --user cpp-coveralls
   
 script:
+  - export CC=${COMPILER_C}
+  - export CXX=${COMPILER_CXX}
+  - ${CC} --version
+  - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
   - $CMAKE_CONFIGURE cmake $CMAKE_ARGS $CMAKE_EXTRA ..
