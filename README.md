@@ -1,21 +1,52 @@
-## CMake C++ Project Structure Template
+## Lemon:  Tool for developing benchmarking sets from the entire PDB in minutes 
 
+[![Build Status](https://travis-ci.org/chopralab/lemon.svg?branch=master)](https://travis-ci.org/chopralab/lemon)
 
-### Project Intention and Structure
+[![Coverage Status](https://coveralls.io/repos/github/chopralab/lemon/badge.svg?branch=master)](https://coveralls.io/github/chopralab/lemon?branch=master)
 
-By "exporting a component" we mean that the component is meant to be consumed by other projects or developers. IE. it's public, not private to the project.
+### What is Lemon's purpose?
 
-### Example Project
+**Lemon** is a tool for developing benchmarking sets for structural biology software dealing with 3D Macromolecules.  It is designed to be fast and flexible, allowing users to quickly query the 3D features of a given collection of 3D structures.  To do so, the user writes a C++11 Lambda function which is applied to all the structures selected by the user.
 
- 
-## Development
+Due to the incredibly fast parsing speed of the MMTF format, Lemon uses this format by default.  This helps **Lemon** query the entire Protein Data Bank under 25 minutes on an 8 core machine.
 
-TBD. 
+### How do I obtain Lemon?
 
-#### Contributing
+**Lemon** is developed to have as few dependencies as possible. You only need a recent C++ compiler which supports C++ and a copy of the Boost Filesystem library. All other dependencies are installed for you by the build system.
 
-Bug reports and pull requests are welcome on GitHub at [https://github.com/kigster/cmake-project-template](https://github.com/kigster/cmake-project-template)
+```bash
+git clone https://gitlab.com/chopralab/lemon.git
 
-### License
+cd lemon
 
-**CMake Project Template** is &copy; 2017 Konstantin Gredeskoul, available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT). 
+mkdir build
+
+cd build
+
+cmake .. -DCMAKE_BUILD_TYPE=Release
+
+make -j 2
+
+```
+
+### How does one use Lemon?
+
+The Protein Data Bank is used to test **Lemon**'s capabilites and is the source of the majority of structural biology benchmarking sets.  Therefore we have included a script to download the entire PDB archive.  To so simply run the script:
+
+```bash
+perl download_mmtf.pl
+```
+
+Currently, the archive takes ~23Gb of space on an EXT4 filesystem.
+
+**Lemon** requires a list of PDBIDs to use for quering.  The file [ftp://ftp.wwpdb.org/pub/pdb/derived_data/index/entries.idx](ftp://ftp.wwpdb.org/pub/pdb/derived_data/index/entries.idx) is updated regularly and lists all the PDBIDs in the current release of the PDB. You can use it run queries on the entire PDB at once.  Alternatively, you can create your own `idx` files using search queries on [RCSB](https://rcsb.org) and downloading the search result.
+
+To run **Lemon**, select a program. For example, if one wants to query all the small molecules which interact with `SAM`, use the following command:
+
+```bash
+/path/to/lemon/build/progs/count_sam_small_molecules entries.idx /path/to/pdb/archive <interaction cutoff> <number of cores>
+```
+
+The results are printed to `stdout`.
+
+**Lemon** is &copy; 2018 Chopra Lab and Purdue University. Developed by Jonathan Fine and is  available as open source under the terms of the [BSD License](http://opensource.org/licenses/BSD). 
