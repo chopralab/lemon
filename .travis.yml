@@ -26,15 +26,15 @@ matrix:
     - os: linux
       compiler: clang
       addons: *linux64
-      env: COMPILER_C=clang COMPILER_CXX=clang++
+      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF
     - os: osx
       compiler: clang
       osx_image: xcode7.3
-      env: COMPILER_C=clang COMPILER_CXX=clang++
+      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF
     - os: osx
       compiler: gcc
       osx_image: xcode7.3
-      env: COMPILER_C=gcc COMPILER_CXX=g++
+      env: COMPILER_C=gcc COMPILER_CXX=g++ COVERAGE=OFF
 
 before_install:
   - pip install --user cpp-coveralls
@@ -46,7 +46,7 @@ script:
   - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - $CMAKE_CONFIGURE cmake $CMAKE_ARGS $CMAKE_EXTRA ..
+  - cmake .. -DCOVERAGE=${COVERAGE}
   - make -j2
   - ctest -j2 --output-on-failure
 
