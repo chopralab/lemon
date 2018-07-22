@@ -8,8 +8,11 @@
 #include <fstream>
 
 namespace lemon {
+
+typedef std::vector<std::array<char, 4>> PDBIDVec;
+
 void read_entry_file(std::istream& input,
-                     std::vector<std::array<char, 4>>& result) {
+                     PDBIDVec& result) {
     std::string temp;
     while (std::getline(input, temp)) {
         std::array<char, 4> a;
@@ -21,7 +24,7 @@ void read_entry_file(std::istream& input,
     }
 }
 void read_entry_file(const std::string& input,
-                     std::vector<std::array<char, 4>>& result,
+                     PDBIDVec& result,
                      size_t number_of_entries = 142000) {
     std::ifstream input_file(input);
     std::string header;

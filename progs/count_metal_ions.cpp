@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
         return 2;
     }
 
-    std::vector<std::array<char, 4>> vec;
+    lemon::PDBIDVec vec;
     lemon::read_entry_file(entries.string(), vec);
 
     auto worker = [](const chemfiles::Frame& complex,

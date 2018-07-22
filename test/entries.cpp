@@ -13,7 +13,7 @@ TEST_CASE("Read entry file") {
     std::getline(input_file, junk);
     std::getline(input_file, junk);
 
-    std::vector<std::array<char, 4>> vec;
+    lemon::PDBIDVec vec;
     vec.reserve(10);
     lemon::read_entry_file(input_file, vec);
     
