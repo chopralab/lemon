@@ -82,5 +82,5 @@ TEST_CASE("Residue to text") {
     lemon::ResidueNameCount rnc;
     rnc[res_name] = 75;
     ss2 << rnc;
-    CHECK(ss2.str() == "ALA\t75\n");
+    CHECK(ss2.str() == "\tALA\t75");
 }

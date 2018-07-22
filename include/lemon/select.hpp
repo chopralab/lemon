@@ -4,6 +4,7 @@
 #include <set>
 
 #include "chemfiles/Frame.hpp"
+#include "lemon/residue_name.hpp"
 
 namespace lemon {
 std::set<size_t> select_small_molecules(const chemfiles::Frame& input,
@@ -105,7 +106,7 @@ std::set<size_t> select_peptides(const chemfiles::Frame& input) {
 }
 
 std::set<size_t> select_specific_residues(
-    const chemfiles::Frame& input, const std::set<std::string>& resnames) {
+    const chemfiles::Frame& input, const ResidueNameSet& resnames) {
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
@@ -114,7 +115,7 @@ std::set<size_t> select_specific_residues(
          ++selected_residue) {
         const auto& residue = residues[selected_residue];
 
-        if (resnames.count(residue.name()) == 0) {
+        if (resnames.count({residue.name()}) == 0) {
             continue;
         }
 

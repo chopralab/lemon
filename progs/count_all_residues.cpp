@@ -48,5 +48,7 @@ int main(int argc, char* argv[]) {
         resn_total += resn_count.second;
     }
 
-    std::cout << resn_total;
+    for (auto i : resn_total) {
+        std::cout << i.first << "\t" << i.second << "\n";
+    }
 }

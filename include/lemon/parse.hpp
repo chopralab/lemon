@@ -26,6 +26,23 @@ void count_residues(const chemfiles::Frame& file,
     }
 }
 
+void count_residues(const chemfiles::Frame& file,
+                    const std::set<size_t>& resids,
+                    ResidueNameCount& resn_count) {
+    auto& residues = file.topology().residues();
+
+    for (auto& resid : resids) {
+        auto resn_count_iterator = resn_count.find(residues[resid].name());
+
+        if (resn_count_iterator == resn_count.end()) {
+            resn_count[residues[resid].name()] = 1;
+            continue;
+        }
+
+        ++resn_count_iterator->second;
+    }
+}
+
 size_t count_bioassemblies(const chemfiles::Frame& file) {
     auto& residues = file.topology().residues();
     std::set<std::string> assembies;
@@ -46,24 +63,11 @@ void print_residue_name_counts(std::ostream& os, const std::string& pdbid,
         return;
     }
 
-    std::unordered_map<std::string, size_t> residue_counts;
-    const auto& residues = complex.topology().residues();
-    for (auto res_id : res_ids) {
-        auto iter = residue_counts.find(residues[res_id].name());
-        if (iter == residue_counts.end()) {
-            residue_counts[residues[res_id].name()] = 1;
-            continue;
-        }
-        ++iter->second;
-    }
+    ResidueNameCount rnc;
+    count_residues(complex, res_ids, rnc);
 
     std::stringstream ss;
-    ss << pdbid;
-    for (const auto iter : residue_counts) {
-        ss << " " << iter.first << " " << iter.second;
-    }
-    ss << "\n";
-
+    ss << pdbid << "\t" << rnc << "\n";
     os << ss.str();
 }
 }

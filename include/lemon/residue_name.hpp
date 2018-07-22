@@ -199,7 +199,7 @@ ResidueNameCount& operator+=(ResidueNameCount& lhs, const ResidueNameCount& rhs)
 
 std::ostream& operator<<(std::ostream& os, const ResidueNameCount& rnc) {
     for (auto i : rnc) {
-        os << i.first << "\t" << i.second << "\n";
+        os << "\t" << i.first << "\t" << i.second;
     }
     return os;
 }
