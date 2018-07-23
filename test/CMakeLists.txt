@@ -24,6 +24,8 @@ function(add_cpp_test _file_)
 
     target_link_libraries( ${_name_} PUBLIC
         chemfiles
+        ${Boost_LIBRARIES}
+        pthread
     )
 
     add_test(NAME ${_name_}

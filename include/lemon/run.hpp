@@ -36,9 +36,6 @@ void call_function(Function&& f, iter begin, iter end) {
             std::cerr << "Odd residue name in " << entry << std::endl;
         } catch (const std::length_error& e) {
             std::cerr << "Long residue name in " << entry << std::endl;
-        } catch (const chemfiles::FormatError& e) {
-            std::cerr << "Unsupported file format for " << entry << ". Skipping"
-                      << std::endl;
         } catch (const std::exception& e) {
             std::cerr << "Unknown error: " << e.what() << " for " << entry
                       << std::endl;
