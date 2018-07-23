@@ -15,16 +15,10 @@
 using namespace boost::filesystem;
 
 TEST_CASE("Ensure threading works") {
-    std::ifstream input_file("files/entries_10.idx");
-
-    // Skip two lines
-    std::string junk;
-    std::getline(input_file, junk);
-    std::getline(input_file, junk);
 
     lemon::PDBIDVec vec;
     vec.reserve(10);
-    lemon::read_entry_file(input_file, vec);
+    lemon::read_entry_file("files/entries_10.idx", vec);
 
     std::map<std::string, size_t> counts;
 

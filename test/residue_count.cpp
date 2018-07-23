@@ -10,11 +10,11 @@ TEST_CASE("Residue Name") {
 
     // String cannot be over 3 digits, or have no digits
     CHECK_THROWS_AS(lemon::ResidueName("ASDF"), std::length_error);
-    CHECK_THROWS_AS(lemon::ResidueName(""), std::length_error);
+    CHECK_THROWS_AS(lemon::ResidueName(std::string("")), std::length_error);
 
     // Must be alpha numeric
     CHECK_THROWS_AS(lemon::ResidueName("+"), std::range_error);
-    CHECK_THROWS_AS(lemon::ResidueName(" "), std::range_error);
+    CHECK_THROWS_AS(lemon::ResidueName(std::string(" ")), std::range_error);
 
     CHECK(lemon::ResidueName("ABC") == std::string("ABC"));
     CHECK(lemon::ResidueName("AB") == std::string("AB"));
@@ -22,6 +22,7 @@ TEST_CASE("Residue Name") {
 
     CHECK(std::string("A") == lemon::ResidueName("A"));
 
+    CHECK(lemon::ResidueName("ABD") != std::string("ABDC"));
     CHECK(lemon::ResidueName("ABD") != std::string("ABC"));
     CHECK(lemon::ResidueName("AB") != std::string("ABC"));
     CHECK(lemon::ResidueName("A") != std::string("AB"));
@@ -55,6 +56,23 @@ TEST_CASE("Residue Name") {
     CHECK(lemon::ResidueName("0").hash() == 0 + 36 * 37 + 36 * 37 * 37);
     CHECK(lemon::ResidueName("1").hash() == 1 + 36 * 37 + 36 * 37 * 37);
     CHECK(lemon::ResidueName("Z").hash() == 35 + 36 * 37 + 36 * 37 * 37);
+}
+
+TEST_CASE("Residue Name Counts") {
+    lemon::ResidueNameCount rnc;
+    rnc["ASP"] = 1;
+    rnc["TRP"] = 2;
+    CHECK(rnc["ASP"] == 1);
+    CHECK(rnc["TRP"] == 2);
+
+    lemon::ResidueNameCount rnc_2;
+    rnc_2["ASP"] = 1;
+    rnc_2["LYS"] = 2;
+    rnc += rnc_2;
+
+    CHECK(rnc["ASP"] == 2);
+    CHECK(rnc["TRP"] == 2);
+    CHECK(rnc["LYS"] == 2);
 }
 
 TEST_CASE("Residue set") {

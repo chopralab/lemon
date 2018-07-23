@@ -61,6 +61,21 @@ TEST_CASE("Residue Count") {
     CHECK(counter2 == counter);
 }
 
+TEST_CASE("Selective residue count") {
+    lemon::ResidueNameCount counter;
+    auto traj = chemfiles::Trajectory("files/5w1d.pdb", 'r');
+    auto test1 = traj.read();
+
+    lemon::count_residues(test1, {1, 2, 3, 4, 5, 6}, counter);
+
+    std::stringstream ss;
+    lemon::print_residue_name_counts(ss, "JUNK", test1, {});
+    CHECK(ss.str() == "");
+
+    lemon::print_residue_name_counts(ss, "5w1d", test1, {2, 5});
+    CHECK(ss.str() == "5w1d\tTYR\t2\n");
+}
+
 TEST_CASE("Assembly count") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test = traj.read();

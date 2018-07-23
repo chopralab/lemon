@@ -67,7 +67,7 @@ void print_residue_name_counts(std::ostream& os, const std::string& pdbid,
     count_residues(complex, res_ids, rnc);
 
     std::stringstream ss;
-    ss << pdbid << "\t" << rnc << "\n";
+    ss << pdbid << rnc << "\n";
     os << ss.str();
 }
 }
