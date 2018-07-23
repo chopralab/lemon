@@ -29,3 +29,18 @@ TEST_CASE("Read entry file") {
     CHECK(std::string(vec[8].data(), 4) == "103M");
     CHECK(std::string(vec[9].data(), 4) == "104D");
 }
+
+TEST_CASE("Read results file") {
+    std::ifstream input_file("files/sam_results.idx");
+
+    lemon::PDBIDVec vec;
+    std::unordered_map<std::string, lemon::ResidueNameSet> rnms;
+    lemon::read_entry_file(input_file, vec, rnms);
+    CHECK(vec.size() == 2);
+    CHECK(rnms.size() == 2);
+    CHECK(rnms["4YND"].size() == 1);
+    CHECK(rnms["5A1I"].size() == 2);
+    CHECK(rnms["4YND"].count("4GQ") == 1);
+    CHECK(rnms["5A1I"].count("ADN") == 1);
+    CHECK(rnms["5A1I"].count("PPK") == 1);
+}
