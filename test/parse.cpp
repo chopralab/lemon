@@ -76,19 +76,34 @@ TEST_CASE("Selective residue count") {
     CHECK(ss.str() == "5w1d\tTYR\t2\n");
 }
 
+TEST_CASE("Alternative Location count") {
+    auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
+    auto test = traj.read();
+    CHECK(lemon::count_altloc(test) == 0);
+
+    traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
+    test = traj.read();
+    CHECK(lemon::count_altloc(test) == 0);
+
+    traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
+    test = traj.read();
+    CHECK(lemon::count_altloc(test) == 2);
+
+    traj = chemfiles::Trajectory("files/entry_10/5/A/5A1I.mmtf.gz", 'r');
+    test = traj.read();
+    CHECK(lemon::count_altloc(test) == 4);
+}
+
 TEST_CASE("Assembly count") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test = traj.read();
-
     CHECK(lemon::count_bioassemblies(test) == 1);
 
     traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     test = traj.read();
-
     CHECK(lemon::count_bioassemblies(test) == 2);
 
     traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     test = traj.read();
-
     CHECK(lemon::count_bioassemblies(test) == 1);
 }
