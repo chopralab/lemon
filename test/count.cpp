@@ -1,4 +1,4 @@
-#include "lemon/parse.hpp"
+#include "lemon/count.hpp"
 #include <chemfiles.hpp>
 #include <sstream>
 

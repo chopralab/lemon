@@ -5,7 +5,7 @@
 #include <chemfiles.hpp>
 
 #include "lemon/entries.hpp"
-#include "lemon/parse.hpp"
+#include "lemon/count.hpp"
 #include "lemon/run.hpp"
 
 using namespace boost::filesystem;
