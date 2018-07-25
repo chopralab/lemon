@@ -28,7 +28,7 @@ void read_entry_file(std::istream& input,
 }
 void read_entry_file(const std::string& input,
                      PDBIDVec& result,
-                     size_t number_of_entries = 142000) {
+                     size_t number_of_entries = 143000) {
     std::ifstream input_file(input);
     std::string header;
     std::string junk;
