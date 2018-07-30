@@ -136,3 +136,34 @@ TEST_CASE("Kabsch") {
     lemon::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 2.0);
     lemon::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 1.0);
 }
+
+TEST_CASE("Kabsch 2") {
+    auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
+    auto frame1 = traj.read();
+
+    traj = chemfiles::Trajectory("files/1YT9.mmtf.gz", 'r');
+    auto frame2 = traj.read();
+
+    std::vector<size_t> a_search;
+    std::vector<size_t> a_native;
+
+    lemon::find_operlapping_residues(frame1, frame2, a_search, a_native);
+
+    const auto& a = frame1.positions();
+    const auto& b = frame2.positions();
+
+    std::vector<chemfiles::Vector3D> r_1(a_search.size());
+    std::vector<chemfiles::Vector3D> r_2(a_search.size());
+
+    for (size_t i = 0; i < a_search.size(); ++i) {
+        r_1[i] = a[a_search[i]];
+        r_2[i] = b[a_native[i]];
+    }
+
+    int ier;
+    std::vector<double> w(a_search.size(), 1.0);
+    chemfiles::Vector3D t;
+    chemfiles::Matrix3D u = chemfiles::Matrix3D::zero();
+    lemon::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 2.0, 2.0);
+}
+

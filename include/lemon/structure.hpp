@@ -2,7 +2,6 @@
 #define STRUCTURE_HPP
 
 #include <algorithm>
-#include <iostream>
 #include <set>
 #include "chemfiles/Frame.hpp"
 
@@ -12,7 +11,7 @@ double kabsch(const std::vector<double>& w,
               const std::vector<chemfiles::Vector3D>& x,
               const std::vector<chemfiles::Vector3D>& y, size_t n,
               chemfiles::Matrix3D& u, chemfiles::Vector3D& t, int& ier,
-              double tol = 1.0e-2) {
+              double tol = 1.0e-2, double tol2 = 1.0e-2) {
     auto r = chemfiles::Matrix3D::zero();
     auto a = chemfiles::Matrix3D::unit();
     auto b = chemfiles::Matrix3D::zero();
@@ -163,7 +162,7 @@ double kabsch(const std::vector<double>& w,
         size_t k = ip2312[j];
         size_t l = ip2312[j + 1];
         p = std::sqrt(a[m][k] * a[m][k] + a[m][l] * a[m][l]);
-        if (p <= tol) goto middle;
+        if (p <= tol2) goto middle;
         a[m1][j] = 0;
         a[m1][k] = -a[m][l] / p;
         a[m1][l] = a[m][k] / p;
@@ -211,7 +210,7 @@ begin:
         size_t k = ip2312[j];
         size_t l = ip2312[j + 1];
         p = std::sqrt(b[0][k] * b[0][k] + b[0][l] * b[0][l]);
-        if (p <= tol) goto middle;
+        if (p <= tol2) goto middle;
         b[1][j] = 0;
         b[1][k] = -b[0][l] / p;
         b[1][l] = b[0][k] / p;
