@@ -48,3 +48,4 @@ TEST_CASE("Ensure threading works") {
     CHECK(counts_1 == counts_2);
     CHECK(counts_2 == counts_3);
 }
+

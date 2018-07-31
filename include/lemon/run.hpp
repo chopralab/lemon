@@ -32,13 +32,6 @@ void call_function(Function&& f, iter begin, iter end) {
 
             auto complex = traj.read();
             f(complex, pdbid);
-        } catch (const std::range_error& e) {
-            std::cerr << "Odd residue name in " << entry << std::endl;
-        } catch (const std::length_error& e) {
-            std::cerr << "Long residue name in " << entry << std::endl;
-        } catch (const std::exception& e) {
-            std::cerr << "Unknown error: " << e.what() << " for " << entry
-                      << std::endl;
         } catch (...) {
             std::cerr << "Unknown error for " << entry << std::endl;
         }
