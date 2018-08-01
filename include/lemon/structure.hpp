@@ -7,6 +7,18 @@
 
 namespace lemon {
 
+// Ported from https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f
+// Original reference:
+// Yang Zhang, Jeffrey Skolnick, Proteins 2004 57:702-10.
+
+// Original License:
+// Permission to use, copy, modify, and distribute this program for 
+// any purpose, with or without fee, is hereby granted, provided that
+// the notices on the head, the reference information, and this
+// copyright notice appear in all copies or substantial portions of 
+// the Software. It is provided "as is" without express or implied 
+// warranty.
+
 double kabsch(const std::vector<double>& w,
               const std::vector<chemfiles::Vector3D>& x,
               const std::vector<chemfiles::Vector3D>& y, size_t n,
