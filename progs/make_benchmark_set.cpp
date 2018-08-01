@@ -11,34 +11,42 @@
 #include "lemon/archive_run.hpp"
 #include "lemon/select.hpp"
 #include "lemon/separate.hpp"
-
-using namespace boost::filesystem;
+#include "lemon/options.hpp"
+#include "lemon/hadoop.hpp"
 
 int main(int argc, char* argv[]) {
-    path entries(argc > 1 ? argv[1] : "entries.idx");
-    path p(argc > 2 ? argv[2] : ".");
-    path o(argc > 3 ? absolute(argv[3]) : absolute("."));
-    double dist_cutoff = argc > 4 ? std::strtod(argv[4], nullptr) : 10.0;
-    size_t ncpu = argc > 5 ? std::strtoul(argv[5], nullptr, 0) : 1;
-    size_t chun = argc > 6 ? std::strtoul(argv[6], nullptr, 0) : 1;
+    lemon::Options o(argc, argv);
 
-    if (!is_regular_file(entries)) {
+    double distance = o.distance();
+    auto entries = o.entries();
+
+    if (!boost::filesystem::is_regular_file(entries)) {
         std::cerr << "You must supply a valid entries file" << std::endl;
         return 1;
     }
 
-    if (!is_directory(p)) {
-        std::cerr << "You must supply a valid directory" << std::endl;
+    auto p = o.work_dir();
+    auto ncpu = o.npu();
+
+    if (!boost::filesystem::is_directory(p)) {
+        std::cerr << "You must supply a valid archive directory" << std::endl;
+        return 2;
+    }
+
+    auto outdir = o.work_dir();
+
+    if (!boost::filesystem::is_directory(outdir)) {
+        std::cerr << "You must supply a valid output directory" << std::endl;
         return 2;
     }
 
     lemon::PDBIDVec vec;
     std::unordered_map<std::string, lemon::ResidueNameSet> rnms;
-    std::ifstream is(entries.string());
+    std::ifstream is(entries);
     lemon::read_entry_file(is, vec, rnms);
 
-    auto worker = [dist_cutoff, &rnms, &o](const chemfiles::Frame& complex,
-                                           const std::string& pdbid) {
+    auto worker = [distance, &rnms, &outdir](const chemfiles::Frame& complex,
+                                             const std::string& pdbid) {
 
         // Selection phase
         auto smallm = lemon::select_specific_residues(complex, rnms[pdbid]);
@@ -51,11 +59,11 @@ int main(int argc, char* argv[]) {
             chemfiles::Frame prot;
             chemfiles::Frame lig;
             lemon::separate_protein_and_ligand(complex, resid, prot, lig,
-                                               dist_cutoff);
+                                               distance);
 
-            path protfile = o;
+            auto protfile = boost::filesystem::path(outdir);
             protfile /= pdbid + "_" + lig.get("name")->as_string() + ".pdb";
-            path ligfile  = o;
+            auto ligfile  = boost::filesystem::path(outdir);
             ligfile /= pdbid + "_" + lig.get("name")->as_string() + ".sdf";
 
             chemfiles::Trajectory prot_traj(protfile.string(),'w');
@@ -67,6 +75,6 @@ int main(int argc, char* argv[]) {
         }
     };
 
-    current_path(p);
-    lemon::run_archive(worker, vec, ncpu, chun);
+    boost::filesystem::current_path(p);
+    lemon::run_archive(worker, vec, ncpu, 1);
 }

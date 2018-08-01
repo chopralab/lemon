@@ -11,36 +11,16 @@
 #include "lemon/archive_run.hpp"
 #include "lemon/select.hpp"
 #include "lemon/structure.hpp"
-
-using namespace boost::filesystem;
+#include "lemon/options.hpp"
+#include "lemon/hadoop.hpp"
 
 int main(int argc, char* argv[]) {
-    path entries(argc > 1 ? argv[1] : "entries.idx");
-    path p(argc > 2 ? argv[2] : ".");
-    path reference(argc > 3 ? argv[3] : "reference.mmtf.gz");
-    size_t ncpu = argc > 4 ? std::strtoul(argv[4], nullptr, 0) : 1;
-    size_t chun = argc > 5 ? std::strtoul(argv[5], nullptr, 0) : 1;
+    lemon::Options o(argc, argv);
 
-    if (!is_regular_file(entries)) {
-        std::cerr << "You must supply a valid entries file" << std::endl;
-        return 1;
-    }
+    auto reference = o.reference();
 
-    if (!is_directory(p)) {
-        std::cerr << "You must supply a valid directory" << std::endl;
-        return 2;
-    }
-
-    if (!is_regular_file(reference)) {
-        std::cerr << "You must supply a valid reference file" << std::endl;
-        return 3;
-    }
-
-    chemfiles::Trajectory traj(reference.string());
+    chemfiles::Trajectory traj(reference);
     chemfiles::Frame native = traj.read();
-
-    lemon::PDBIDVec vec;
-    lemon::read_entry_file(entries.string(), vec);
 
     auto worker = [&native](const chemfiles::Frame& complex,
                             const std::string& pdbid) {
@@ -56,6 +36,27 @@ int main(int argc, char* argv[]) {
         std::cout << ss.str();
     };
 
-    current_path(p);
-    lemon::run_archive(worker, vec, ncpu, chun);
+    auto p = o.work_dir();
+    auto ncpu = o.npu();
+    auto entries = o.entries();
+
+    if (!boost::filesystem::is_directory(p)) {
+        std::cerr << "You must supply a valid directory" << std::endl;
+        return 2;
+    }
+
+    if (!entries.empty()) {
+
+        if (!boost::filesystem::is_regular_file(entries)) {
+            std::cerr << "You must supply a valid entries file" << std::endl;
+            return 1;
+        }
+
+        lemon::PDBIDVec vec;
+        lemon::read_entry_file(entries, vec);
+        boost::filesystem::current_path(p);
+        lemon::run_archive(worker, vec, ncpu, 1);
+    } else {
+        lemon::run_hadoop(worker, p);
+    }
 }
