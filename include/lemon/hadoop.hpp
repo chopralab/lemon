@@ -2,25 +2,31 @@
 #define HADOOP_HPP
 
 #include <arpa/inet.h>
+#include <cassert>
 #include <cstdint>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <cassert>
+
+#include <boost/filesystem.hpp>
+#include <boost/range/iterator_range.hpp>
+#include <thread>
+
+#include <chemfiles/Frame.hpp>
+#include <chemfiles/Trajectory.hpp>
 
 namespace lemon {
 
 class Hadoop {
    public:
-    Hadoop(std::istream &stream) : stream_(stream) { initialize_(); }
+    Hadoop(std::istream& stream) : stream_(stream) { initialize_(); }
 
     bool has_next() { return stream_.peek() != std::char_traits<char>::eof(); }
 
     std::pair<std::vector<char>, std::vector<char>> next() { return read(); }
 
    private:
-    std::istream &stream_;
+    std::istream& stream_;
     std::string marker_ = "";
     std::vector<char> key_;
 
@@ -116,12 +122,11 @@ class Hadoop {
         stream_.exceptions(std::ifstream::badbit | std::ifstream::failbit);
         char buffer[86];
         stream_.read(buffer, 87);
-        std::cout << std::string(buffer, 87) << std::endl;
     }
 
     int read_int() {
         int ret;
-        stream_.read(reinterpret_cast<char *>(&ret), 4);
+        stream_.read(reinterpret_cast<char*>(&ret), 4);
         return ntohl(ret);
     }
 
@@ -131,8 +136,8 @@ class Hadoop {
         if (sync_check == -1) {
             std::vector<char> marker(16);
             stream_.read(marker.data(), 16);
-            //Only valid if using the full version
-            //assert(std::string(marker.data(), 16) == marker_);
+            // Only valid if using the full version
+            // assert(std::string(marker.data(), 16) == marker_);
             return this->read();
         }
 
@@ -157,6 +162,60 @@ class Hadoop {
         return {key, value};
     }
 };
+
+template <class Function, class iter>
+void call_function_hadoop(Function&& f, iter begin, iter end) {
+    for (auto it = begin; it != end; ++it) {
+        std::fstream data(it->string());
+        Hadoop sequence(data);
+
+        while (sequence.has_next()) {
+            auto pair = sequence.next();
+            const auto entry = std::string(pair.first.data() + 1, 4);
+            try {
+                auto traj =
+                    chemfiles::Trajectory(std::move(pair.second), "MMTF/GZ");
+                auto complex = traj.read();
+                f(complex, entry);
+            } catch (...) {
+            }
+        }
+    }
+}
+
+template <class Function>
+void run_hadoop(Function&& worker, const boost::filesystem::path& p,
+                size_t ncpu = 1) {
+    std::vector<std::thread> threads(ncpu);
+
+    std::vector<boost::filesystem::path> pathvec;
+    pathvec.reserve(600);
+
+    // There's only ~550 files to read here!
+    auto begin = boost::filesystem::directory_iterator(p);
+    boost::filesystem::directory_iterator end;
+    std::transform(
+        begin, end, std::back_inserter(pathvec),
+        [](boost::filesystem::directory_entry& entry) { return entry.path(); });
+
+    // Total number of jobs for each thread
+    const size_t grainsize = pathvec.size() / ncpu;
+
+    auto work_iter = pathvec.begin();
+
+    for (auto it = std::begin(threads); it != std::end(threads) - 1; ++it) {
+        *it = std::thread([&] {
+            call_function_hadoop(worker, work_iter, work_iter + grainsize);
+        });
+        work_iter += grainsize;
+    }
+    threads.back() = std::thread(
+        [&] { call_function_hadoop(worker, work_iter, pathvec.end()); });
+
+    for (auto&& i : threads) {
+        i.join();
+    }
+}
 }
 
 #endif

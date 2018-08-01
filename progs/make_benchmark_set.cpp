@@ -8,7 +8,7 @@
 #include "lemon/entries.hpp"
 #include "lemon/count.hpp"
 #include "lemon/prune.hpp"
-#include "lemon/run.hpp"
+#include "lemon/archive_run.hpp"
 #include "lemon/select.hpp"
 #include "lemon/separate.hpp"
 
@@ -68,5 +68,5 @@ int main(int argc, char* argv[]) {
     };
 
     current_path(p);
-    lemon::call_multithreaded(worker, vec, ncpu, chun);
+    lemon::run_archive(worker, vec, ncpu, chun);
 }

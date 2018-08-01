@@ -1,5 +1,5 @@
-#ifndef RUN_HPP
-#define RUN_HPP
+#ifndef ARCHIVE_RUN_HPP
+#define ARCHIVE_RUN_HPP
 
 #include <iterator>
 #include <string>
@@ -39,7 +39,7 @@ void call_function(Function&& f, iter begin, iter end) {
 }
 
 template <class Function, class container>
-void call_multithreaded(Function&& worker, const container& vec, size_t ncpu, size_t chunk = 1) {
+void run_archive(Function&& worker, const container& vec, size_t ncpu, size_t chunk = 1) {
     std::vector<std::thread> threads(ncpu);
 
     // Total number of jobs for each thread
