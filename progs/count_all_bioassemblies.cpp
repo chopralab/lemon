@@ -47,6 +47,6 @@ int main(int argc, char* argv[]) {
         boost::filesystem::current_path(p);
         lemon::run_archive(worker, vec, ncpu, 1);
     } else {
-        lemon::run_hadoop(worker, p);
+        lemon::run_hadoop(worker, p, ncpu);
     }
 }
