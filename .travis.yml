@@ -15,6 +15,7 @@ linux64_addons:
         - gcc-5
         - libboost-dev
         - libboost-filesystem1.54-dev
+        - libboost-program-options1.54-dev
 
 matrix:
   fast_finish: true
