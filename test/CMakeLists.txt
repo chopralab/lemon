@@ -33,7 +33,8 @@ function(add_cpp_test _file_)
     else()
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
-            ${Boost_LIBRARIES}
+            Boost::filesystem
+            Boost::program_options
             pthread
         )    
     endif()
