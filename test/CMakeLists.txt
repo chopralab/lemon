@@ -12,7 +12,7 @@ function(add_cpp_test _file_)
     )
 
     if(MSVC)
-        target_compile_options(${_name_} PRIVATE /W4 /WX)
+        target_compile_options(${_name_} PRIVATE /W4)
     else()
         target_compile_options(${_name_} PRIVATE -Wall -Wextra -pedantic)
 
@@ -22,16 +22,36 @@ function(add_cpp_test _file_)
         endif()
     endif()
 
-    target_link_libraries( ${_name_} PUBLIC
-        chemfiles
-        ${Boost_LIBRARIES}
-        pthread
-    )
+    if (MSVC)
+        target_link_libraries( ${_name_} PUBLIC
+            ${CHEMFILES_LIBRARY}
+            ws2_32
+            Boost::filesystem
+            Boost::program_options
+            Boost::dynamic_linking
+        )
+    else()
+        target_link_libraries( ${_name_} PUBLIC
+            ${CHEMFILES_LIBRARY}
+            ${Boost_LIBRARIES}
+            pthread
+        )    
+    endif()
 
     add_test(NAME ${_name_}
         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${_name_}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
+
+    if (MSVC)
+        set_tests_properties(${_name_}
+            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}\\chemfiles\\bin"
+        )
+    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        set_tests_properties(${_name_}
+            PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
+        )
+    endif()
 endfunction()
 
 file(GLOB all_test_files

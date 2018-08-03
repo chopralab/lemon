@@ -119,9 +119,6 @@ inline bool operator==(const ResidueName& lhs, const std::string& rhs)
     case 1:
         return (lhs[0] == rhs[0]) && (lhs[1] == 0) && (lhs[2] == 0);
         break;
-    default:
-        return false;
-        break;
     }
 
     return false;

@@ -1,7 +1,15 @@
 #ifndef HADOOP_HPP
 #define HADOOP_HPP
 
+#include <chemfiles/Frame.hpp>
+#include <chemfiles/Trajectory.hpp>
+
+#ifndef _MSVC_LANG
 #include <arpa/inet.h>
+#else
+#include <WinSock2.h>
+#endif
+
 #include <cassert>
 #include <cstdint>
 #include <fstream>
@@ -9,11 +17,7 @@
 #include <vector>
 
 #include <boost/filesystem.hpp>
-#include <boost/range/iterator_range.hpp>
 #include <thread>
-
-#include <chemfiles/Frame.hpp>
-#include <chemfiles/Trajectory.hpp>
 
 namespace lemon {
 
@@ -166,7 +170,7 @@ class Hadoop {
 template <class Function, class iter>
 void call_function_hadoop(Function&& f, iter begin, iter end) {
     for (auto it = begin; it != end; ++it) {
-        std::fstream data(it->string());
+        std::ifstream data(it->string(), std::istream::binary);
         Hadoop sequence(data);
 
         while (sequence.has_next()) {

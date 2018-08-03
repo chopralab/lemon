@@ -13,8 +13,10 @@ TEST_CASE("Residue Name") {
     CHECK_THROWS_AS(lemon::ResidueName(std::string("")), std::length_error);
 
     // Must be alpha numeric
+#ifndef NDEBUG
     CHECK_THROWS_AS(lemon::ResidueName("+"), std::range_error);
     CHECK_THROWS_AS(lemon::ResidueName(std::string(" ")), std::range_error);
+#endif
 
     CHECK(lemon::ResidueName("ABC") == std::string("ABC"));
     CHECK(lemon::ResidueName("AB") == std::string("AB"));
