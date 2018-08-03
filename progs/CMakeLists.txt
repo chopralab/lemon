@@ -6,7 +6,7 @@ function(add_cpp_prog _file_)
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
 
     if(MSVC)
-        target_compile_options(${_name_} PRIVATE /W4 /WX)
+        target_compile_options(${_name_} PRIVATE /W4)
     else()
         target_compile_options(${_name_} PRIVATE -Wall -Wextra -pedantic)
         if (${COVERAGE})
@@ -21,11 +21,22 @@ function(add_cpp_prog _file_)
         ${CMAKE_CURRENT_SOURCE_DIR}/external
     )
 
-    target_link_libraries( ${_name_} PUBLIC
-        chemfiles
-        ${Boost_LIBRARIES}
-        pthread
-    )
+    if (MSVC)
+    message(STATUS ${BOOST_LIBRARY_DIR})
+        target_link_libraries( ${_name_} PUBLIC
+            ${CHEMFILES_LIBRARY}
+            ws2_32
+            Boost::filesystem
+            Boost::program_options
+            Boost::dynamic_linking
+        )
+    else()
+        target_link_libraries( ${_name_} PUBLIC
+            ${CHEMFILES_LIBRARY}
+            ${Boost_LIBRARIES}
+            pthread
+        )    
+    endif()
 endfunction()
 
 file(GLOB all_test_files

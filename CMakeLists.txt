@@ -8,7 +8,12 @@ include(InstallChemfiles)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-find_package(Boost REQUIRED system filesystem program_options)
+
+set(CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER} CACHE FILEPATH "Compiler")
+set(CMAKE_C_COMPILER ${CMAKE_C_COMPILER} CACHE FILEPATH "Compiler")
+
+find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
+
 include_directories(${Boost_INCLUDE_DIRS})
 
 if (${COVERAGE})

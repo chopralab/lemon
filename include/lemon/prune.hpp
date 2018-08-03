@@ -85,7 +85,6 @@ void keep_interactions(const chemfiles::Frame& input,
                        const std::set<size_t>& residue_ids_to_check,
                        double distance_cutoff = 6.0) {
     const auto& topo = input.topology();
-    const auto& positions = input.positions();
     const auto& residues = topo.residues();
 
     auto it = residue_ids_of_interest.begin();
@@ -115,7 +114,6 @@ void remove_interactions(const chemfiles::Frame& input,
                        const std::set<size_t>& residue_ids_to_check,
                        double distance_cutoff = 6.0) {
     const auto& topo = input.topology();
-    const auto& positions = input.positions();
     const auto& residues = topo.residues();
 
     auto it = residue_ids_of_interest.begin();
