@@ -40,7 +40,6 @@ TEST_CASE("Scoring") {
     for (auto i : small_molecule) {
         xs_types[count] =
             lemon::xscore::get_xs_type(frame1, i, bond_map);
-        std::cout << i << " " << xs_types[count] << std::endl;
         ++count;
     }
 
@@ -53,6 +52,4 @@ TEST_CASE("Scoring") {
     proteins.erase(*ade.begin());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
-    std::cout << vscore.g1 << " " << vscore.g2 << " " << vscore.rep << " "
-              << vscore.hydrophobic << " " << vscore.hydrogen << std::endl;
 }
