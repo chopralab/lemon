@@ -88,16 +88,16 @@ struct VinaScore {
 };
 
 // Easy case, just check if carbon is bound to a heteroatom
-XS_TYPE get_c_xs_type(const chemfiles::Frame& frame, size_t j,
+XS_TYPE get_c_xs_type(const chemfiles::Topology& topo, size_t j,
                       const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
-    auto& bond_order = frame.topology().bond_orders();
-    auto& bonds = frame.topology().bonds();
+    auto& bond_order = topo.bond_orders();
+    auto& bonds = topo.bonds();
 
     for (auto k = range.first; k != range.second; ++k) {
         auto bond = bonds[k->second];
         auto neighbor = (j == bond[0]) ? bond[1] : bond[0];
-        auto type = *(frame[neighbor].atomic_number());
+        auto type = *(topo[neighbor].atomic_number());
         if (!(type == 6 || type == 1)) {
             return XS_TYPE_C_P;
         }
@@ -107,16 +107,16 @@ XS_TYPE get_c_xs_type(const chemfiles::Frame& frame, size_t j,
 }
 
 bool is_in_strong_resonance(
-    const chemfiles::Frame& frame, size_t j,
+    const chemfiles::Topology& topo, size_t j,
     const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
-    auto& bond_order = frame.topology().bond_orders();
-    auto& bonds = frame.topology().bonds();
+    auto& bond_order = topo.bond_orders();
+    auto& bonds = topo.bonds();
 
     for (auto k = range.first; k != range.second; ++k) {
         auto bond = bonds[k->second];
         auto neighbor = (j == bond[0]) ? bond[1] : bond[0];
-        auto type = *(frame[neighbor].atomic_number());
+        auto type = *(topo[neighbor].atomic_number());
         if ((type == 8 || type == 7) && bond_order[k->second] == 2) {
             return true;
         }
@@ -126,20 +126,20 @@ bool is_in_strong_resonance(
 }
 
 // Hard case, there's three bond counts to get, which in turn involve checks
-XS_TYPE get_n_xs_type(const chemfiles::Frame& frame, size_t j,
+XS_TYPE get_n_xs_type(const chemfiles::Topology& topo, size_t j,
                       const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
-    auto& bond_order = frame.topology().bond_orders();
-    auto& bonds = frame.topology().bonds();
+    auto& bond_order = topo.bond_orders();
+    auto& bonds = topo.bonds();
 
-    if (bond_map.count(j) == 0) {  // Typically Ammonia
+    if (bond_map.count(j) == 0) {  // Typically Ammonia, assume protonated
         return XS_TYPE_N_D;
     } else if (bond_map.count(j) == 1) {  // Nitrile, monoamine, etc
         auto bond = bond_map.find(j);
         if (bond_order[bond->second] == 3) {
             return XS_TYPE_N_A;  // It can only accept - Nitrile
         } else if (bond_order[bond->second] == 2) {
-            return XS_TYPE_N_DA;  // Imine!
+            return XS_TYPE_N_D;  // Imine, or guanidine
         } else {
             return XS_TYPE_N_D;  // AutoDOCK labels amines as Donor only
         }
@@ -150,10 +150,10 @@ XS_TYPE get_n_xs_type(const chemfiles::Frame& frame, size_t j,
         for (auto k = range.first; k != range.second; ++k) {
             auto bond = bonds[k->second];
             auto neighbor = (j == bond[0]) ? bond[1] : bond[0];
-            auto type = *(frame[neighbor].atomic_number());
+            auto type = *(topo[neighbor].atomic_number());
             sum_of_hydrogens += (type == 1);  // Sum explicit hydrogens
             sum_of_orders += bond_order[k->second];
-            is_withdraw += is_in_strong_resonance(frame, neighbor, bond_map);
+            is_withdraw += is_in_strong_resonance(topo, neighbor, bond_map);
         }
 
         if (sum_of_hydrogens >= 2) {
@@ -174,11 +174,11 @@ XS_TYPE get_n_xs_type(const chemfiles::Frame& frame, size_t j,
 }
 
 // Medium case, two bond cases - but no additional checks.
-XS_TYPE get_o_xs_type(const chemfiles::Frame& frame, size_t j,
+XS_TYPE get_o_xs_type(const chemfiles::Topology& topo, size_t j,
                       const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
-    auto& bond_order = frame.topology().bond_orders();
-    auto& bonds = frame.topology().bonds();
+    auto& bond_order = topo.bond_orders();
+    auto& bonds = topo.bonds();
 
     if (bond_map.count(j) == 0) {  // Typically water
         return XS_TYPE_O_DA;
@@ -189,7 +189,7 @@ XS_TYPE get_o_xs_type(const chemfiles::Frame& frame, size_t j,
 
         if (bond_order[bond->second] == 2) {
             return XS_TYPE_O_A;  // Carbonyl
-        } else if (is_in_strong_resonance(frame, neighbor, bond_map)) {
+        } else if (is_in_strong_resonance(topo, neighbor, bond_map)) {
             return XS_TYPE_O_A;  // Carboxylic acid, phosphate, sulfate
         } else {
             return XS_TYPE_O_DA;  // Alcohol
@@ -198,7 +198,7 @@ XS_TYPE get_o_xs_type(const chemfiles::Frame& frame, size_t j,
         for (auto k = range.first; k != range.second; ++k) {
             auto bond = bonds[k->second];
             auto neighbor = (j == bond[0]) ? bond[1] : bond[0];
-            auto type = *(frame[neighbor].atomic_number());
+            auto type = *(topo[neighbor].atomic_number());
             if (type == 1) {
                 return XS_TYPE_O_DA;  // Alcohol with explict H
             }
@@ -209,9 +209,9 @@ XS_TYPE get_o_xs_type(const chemfiles::Frame& frame, size_t j,
     return XS_TYPE_O_P;
 }
 
-XS_TYPE get_xs_type(const chemfiles::Frame& frame, size_t j,
+XS_TYPE get_xs_type(const chemfiles::Topology& topo, size_t j,
                     const std::unordered_multimap<size_t, size_t>& bond_map) {
-    auto atomic_id = *(frame[j].atomic_number());
+    auto atomic_id = *(topo[j].atomic_number());
 
     switch (atomic_id) {
         // Handle 'easy' cases
@@ -234,11 +234,11 @@ XS_TYPE get_xs_type(const chemfiles::Frame& frame, size_t j,
         case 30:  // Zn
             return XS_TYPE_Metal_D;
         case 6:
-            return get_c_xs_type(frame, j, bond_map);
+            return get_c_xs_type(topo, j, bond_map);
         case 7:
-            return get_n_xs_type(frame, j, bond_map);
+            return get_n_xs_type(topo, j, bond_map);
         case 8:
-            return get_o_xs_type(frame, j, bond_map);
+            return get_o_xs_type(topo, j, bond_map);
     }
     return XS_TYPE_SKIP;
 }
@@ -268,31 +268,38 @@ double slope_step(double bad, double good, double r) {
     return (r - bad) / (good - bad);
 }
 
-VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
-                     std::set<size_t> recid) {
-    const auto& residues = frame.topology().residues();
-    auto& small_molecule = residues[ligid];
+// Move to a topology.hpp file?
+std::unordered_multimap<size_t, size_t> create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
     std::unordered_multimap<size_t, size_t> bond_map;
 
     // Map bonds
-    auto& bonds = frame.topology().bonds();
     for (size_t i = 0; i < bonds.size(); ++i) {
         auto& bond = bonds[i];
         bond_map.insert({bond[0], i});
         bond_map.insert({bond[1], i});
     }
 
+    return bond_map;
+}
+
+VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
+                     std::set<size_t> recid, double cutoff = 8.0) {
+    const auto& topo = frame.topology();
+    const auto& residues = topo.residues();
+    auto bond_map = create_bond_map(topo.bonds());
+
     // Not memory efficient, but simple to implement
     std::vector<XS_TYPE> xs_types(frame.size());
     for (auto i : recid) {
         for (auto j : residues[i]) {
-            xs_types[j] = get_xs_type(frame, j, bond_map);
+            xs_types[j] = get_xs_type(topo, j, bond_map);
         }
     }
 
     VinaScore X_Score;
+    auto& small_molecule = residues[ligid];
     for (auto i : small_molecule) {
-        xs_types[i] = get_xs_type(frame, i, bond_map);
+        xs_types[i] = get_xs_type(topo, i, bond_map);
         if (xs_types[i] == XS_TYPE_SKIP) {
             continue;
         }
@@ -304,7 +311,7 @@ VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
                 }
 
                 auto r = frame.distance(i, j);
-                if (r > 8.0) {
+                if (r > cutoff) {
                     continue;
                 }
                 auto r_orig = r;
