@@ -259,10 +259,10 @@ double repulsion(double offset, double r) {
 
 double slope_step(double bad, double good, double r) {
     assert(bad < good);
-    if (r < bad) {
+    if (r <= bad) {
         return 0;
     }
-    if (r > good) {
+    if (r >= good) {
         return 1;
     }
     return (r - bad) / (good - bad);
@@ -314,11 +314,11 @@ VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
                 if (r > cutoff) {
                     continue;
                 }
-                auto r_orig = r;
+
                 r -= optimal_distance(xs_types[i], xs_types[j]);
                 X_Score.g1 += gaussian(0, 0.5, r);
                 X_Score.g2 += gaussian(3, 2.0, r);
-                auto tmp = repulsion(0, r);
+
                 X_Score.rep += repulsion(0, r);
                 if (is_hydrophobic(xs_types[i]) &&
                     is_hydrophobic(xs_types[j])) {

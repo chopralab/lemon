@@ -114,3 +114,54 @@ TEST_CASE("Scoring") {
     CHECK(roughly(vscore.hydrophobic, 0.00000));
     CHECK(roughly(vscore.rep, 2.35422));
 }
+
+TEST_CASE("Scoring with hydrophobics") {
+    auto traj = chemfiles::Trajectory("files/1JD0.mmtf.gz", 'r');
+    auto frame1 = traj.read();
+
+    auto azm = lemon::select_specific_residues(frame1, {"AZM"});
+    auto residues = frame1.topology().residues();
+
+    auto small_molecule = residues[*azm.begin()];
+
+    std::set<size_t> proteins;
+    for (size_t i = 0; i < residues.size(); ++i) {
+        proteins.insert(i);
+    }
+
+    lemon::keep_interactions(frame1, azm, proteins, 8.0);
+    proteins.erase(*azm.begin());
+
+    auto vscore = lemon::xscore::vina_score(frame1, (*azm.begin()), proteins);
+    CHECK(roughly(vscore.g1, 52.6882));
+    CHECK(roughly(vscore.g2, 766.766, 1e-3));
+    CHECK(roughly(vscore.hydrogen, 78.3355));
+    CHECK(roughly(vscore.hydrophobic, 17.1033));
+    CHECK(roughly(vscore.rep, 4.13918));
+}
+
+TEST_CASE("Dry scoring") {
+    auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
+    auto frame1 = traj.read();
+
+    auto ade = lemon::select_specific_residues(frame1, {"P30"});
+    auto residues = frame1.topology().residues();
+
+    auto small_molecule = residues[*ade.begin()];
+
+    std::set<size_t> proteins;
+    for (size_t i = 0; i < residues.size(); ++i) {
+        proteins.insert(i);
+    }
+
+    lemon::remove_identical_residues(frame1, proteins);
+    lemon::keep_interactions(frame1, ade, proteins, 8.0);
+    proteins.erase(*ade.begin());
+
+    auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
+    CHECK(roughly(vscore.g1, 121.94136));
+    CHECK(roughly(vscore.g2, 2103.34799));
+    //CHECK(roughly(vscore.hydrogen, 78.3355));
+    //CHECK(roughly(vscore.hydrophobic, 17.1033));
+    CHECK(roughly(vscore.rep, 14.48645));
+}
