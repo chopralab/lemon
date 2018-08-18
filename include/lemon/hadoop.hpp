@@ -200,7 +200,20 @@ void run_hadoop(Function&& worker, const boost::filesystem::path& p,
     boost::filesystem::directory_iterator end;
     std::transform(
         begin, end, std::back_inserter(pathvec),
-        [](boost::filesystem::directory_entry& entry) { return entry.path(); });
+        [](boost::filesystem::directory_entry& entry) {
+            if (boost::filesystem::is_directory(entry.path())) {
+                throw std::runtime_error(
+                    "Directory provided has subdirectories.\nPlease make sure "
+                    "you are using the tar ball provided by RCSB.");
+            }
+            if (entry.path().has_extension()) {
+                throw std::runtime_error(
+                    "Directory provided has file with extensions.\nPlease "
+                    "remove files with extensions if you are sure the seqeunce "
+                    "files are valid.");
+            }
+            return entry.path();
+        });
 
     // Total number of jobs for each thread
     const size_t grainsize = pathvec.size() / ncpu;

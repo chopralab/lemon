@@ -9,7 +9,7 @@
 #include "lemon/count.hpp"
 
 TEST_CASE("Read single MMTF Sequence File") {
-    std::ifstream hadoop_file("files/rcsb_hadoop/hadoop.seq", std::istream::binary);
+    std::ifstream hadoop_file("files/rcsb_hadoop/hadoop", std::istream::binary);
     lemon::Hadoop sequence(hadoop_file);
     auto result = sequence.next();
 
@@ -23,7 +23,7 @@ TEST_CASE("Read single MMTF Sequence File") {
 }
 
 TEST_CASE("Read multiple MMTF Sequence File") {
-    std::ifstream hadoop_file("files/rcsb_hadoop/hadoop_multiple.seq", std::istream::binary);
+    std::ifstream hadoop_file("files/rcsb_hadoop/hadoop_multiple", std::istream::binary);
     lemon::Hadoop sequence(hadoop_file);
     size_t count = 0;
     while (sequence.has_next()) {
@@ -46,4 +46,13 @@ TEST_CASE("Use Hadoop Run") {
     };
     lemon::run_hadoop(worker, p);
     CHECK(counts.size() == 5);
+}
+
+TEST_CASE("Provide an invalid directory to Hadoop run") {
+    auto worker = [](const chemfiles::Frame&,
+                              const std::string&) {
+    };
+
+    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"."}), std::runtime_error);
+    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"files/entry_10/1/0"}), std::runtime_error);
 }
