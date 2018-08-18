@@ -31,7 +31,7 @@ void call_function(Function&& f, iter begin, iter end) {
 #endif
 
             auto complex = traj.read();
-            f(complex, pdbid);
+            f(std::move(complex), pdbid);
         } catch (...) {
             std::cerr << "Unknown error for " << entry << std::endl;
         }

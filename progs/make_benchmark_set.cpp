@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
     std::ifstream is(entries);
     lemon::read_entry_file(is, vec, rnms);
 
-    auto worker = [distance, &rnms, &outdir](const chemfiles::Frame& complex,
+    auto worker = [distance, &rnms, &outdir](chemfiles::Frame complex,
                                              const std::string& pdbid) {
 
         // Selection phase

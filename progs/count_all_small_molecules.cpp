@@ -16,7 +16,7 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    auto worker = [](const chemfiles::Frame& complex,
+    auto worker = [](chemfiles::Frame complex,
                      const std::string& pdbid) {
 
         // Selection phase

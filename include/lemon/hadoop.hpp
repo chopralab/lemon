@@ -180,7 +180,7 @@ void call_function_hadoop(Function&& f, iter begin, iter end) {
                 auto traj =
                     chemfiles::Trajectory(std::move(pair.second), "MMTF/GZ");
                 auto complex = traj.read();
-                f(complex, entry);
+                f(std::move(complex), entry);
             } catch (...) {
             }
         }

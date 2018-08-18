@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 
     double distance = o.distance();
 
-    auto worker = [distance](const chemfiles::Frame& complex,
+    auto worker = [distance](chemfiles::Frame complex,
                              const std::string& pdbid) {
 
         // Selection phase

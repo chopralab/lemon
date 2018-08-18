@@ -17,7 +17,7 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    auto worker = [](const chemfiles::Frame& complex,
+    auto worker = [](chemfiles::Frame complex,
                      const std::string& pdbid) {
 
         // Selection phase
@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
         lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
 
         // Output phase
-        const auto residues = complex.topology().residues();
+        const auto& residues = complex.topology().residues();
         std::set<size_t> proteins;
         for (size_t i = 0; i < complex.topology().residues().size(); ++i) {
             proteins.insert(i);

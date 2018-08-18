@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     chemfiles::Trajectory traj(reference);
     chemfiles::Frame native = traj.read();
 
-    auto worker = [&native](const chemfiles::Frame& complex,
+    auto worker = [&native](chemfiles::Frame complex,
                             const std::string& pdbid) {
 
         std::vector<chemfiles::Vector3D> junk;

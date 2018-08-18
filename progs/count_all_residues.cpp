@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
 
     std::unordered_map<std::thread::id, lemon::ResidueNameCount>
         resn_counts;
-    auto worker = [&resn_counts](const chemfiles::Frame& complex,
+    auto worker = [&resn_counts](chemfiles::Frame complex,
                                  const std::string& /* unused */) {
 
         // Desired info is calculated directly, no pruning, output is done
