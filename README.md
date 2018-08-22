@@ -31,20 +31,17 @@ make -j 2
 
 ### How does one use Lemon?
 
-The Protein Data Bank is used to test **Lemon**'s capabilites and is the source of the majority of structural biology benchmarking sets.  Therefore we have included a script to download the entire PDB archive.  To so simply run the script:
+The Protein Data Bank is used to test **Lemon**'s capabilites and is the source of the majority of structural biology benchmarking sets.  Therefore we have included a script to download the entire PDB archive.  It is recommended to use the latest Hadoop sequence files located [here](https://mmtf.rcsb.org/v1.0/hadoopfiles/full.tar).
 
-```bash
-perl download_mmtf.pl
-```
+Currently, the archive takes ~9Gb of space.
 
-Currently, the archive takes ~23Gb of space on an EXT4 filesystem.
-
-**Lemon** requires a list of PDBIDs to use for quering.  The file [ftp://ftp.wwpdb.org/pub/pdb/derived_data/index/entries.idx](ftp://ftp.wwpdb.org/pub/pdb/derived_data/index/entries.idx) is updated regularly and lists all the PDBIDs in the current release of the PDB. You can use it run queries on the entire PDB at once.  Alternatively, you can create your own `idx` files using search queries on [RCSB](https://rcsb.org) and downloading the search result.
+**Lemon** can use create your own `idx` files using search queries on [RCSB](https://rcsb.org) and downloading the search result.
 
 To run **Lemon**, select a program. For example, if one wants to query all the small molecules which interact with `SAM`, use the following command:
 
 ```bash
-/path/to/lemon/build/progs/count_sam_small_molecules entries.idx /path/to/pdb/archive <interaction cutoff> <number of cores>
+tar xf full.tar /dev/shm/
+/path/to/lemon/build/progs/count_sam_small_molecules -w /dev/shm/full -n <number of cores>
 ```
 
 The results are printed to `stdout`.
