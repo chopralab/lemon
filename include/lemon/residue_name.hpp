@@ -177,7 +177,7 @@ inline bool operator<(const ResidueName& lhs, const ResidueName& rhs)
 typedef std::unordered_map<ResidueName, std::size_t, ResidueNameHash> ResidueNameCount;
 typedef std::set<ResidueName> ResidueNameSet;
 
-std::ostream& operator<<(std::ostream& os, const ResidueName& res_name) {
+inline std::ostream& operator<<(std::ostream& os, const ResidueName& res_name) {
     auto& resn = *res_name;
     os <<
         (resn[0]? resn[0] : ' ') <<
@@ -187,14 +187,14 @@ std::ostream& operator<<(std::ostream& os, const ResidueName& res_name) {
     return os;
 }
 
-ResidueNameCount& operator+=(ResidueNameCount& lhs, const ResidueNameCount& rhs) {
+inline ResidueNameCount& operator+=(ResidueNameCount& lhs, const ResidueNameCount& rhs) {
     for (auto iter : rhs) {
         lhs[iter.first] += iter.second;
     }
     return lhs;
 }
 
-std::ostream& operator<<(std::ostream& os, const ResidueNameCount& rnc) {
+inline std::ostream& operator<<(std::ostream& os, const ResidueNameCount& rnc) {
     for (auto i : rnc) {
         os << "\t" << i.first << "\t" << i.second;
     }

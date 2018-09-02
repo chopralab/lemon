@@ -14,7 +14,7 @@ namespace lemon {
 
 typedef std::vector<std::array<char, 4>> PDBIDVec;
 
-void read_entry_file(std::istream& input,
+inline void read_entry_file(std::istream& input,
                      PDBIDVec& result) {
     std::string temp;
     while (std::getline(input, temp)) {
@@ -26,7 +26,7 @@ void read_entry_file(std::istream& input,
         result.emplace_back(a);
     }
 }
-void read_entry_file(const std::string& input,
+inline void read_entry_file(const std::string& input,
                      PDBIDVec& result,
                      size_t number_of_entries = 143000) {
     std::ifstream input_file(input);
@@ -39,7 +39,7 @@ void read_entry_file(const std::string& input,
     lemon::read_entry_file(input_file, result);
 }
 
-void read_entry_file(std::istream& input,
+inline void read_entry_file(std::istream& input,
                      PDBIDVec& result,
                      std::unordered_map<std::string, ResidueNameSet>& rnm) {
     std::string temp;

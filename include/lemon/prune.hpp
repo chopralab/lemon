@@ -23,7 +23,7 @@ const ResidueNameSet linear_molecules{
     {"PEE"}, {"LHG"}, {"MC3"}
 };
 
-void remove_identical_residues(const chemfiles::Frame& file,
+inline void remove_identical_residues(const chemfiles::Frame& file,
                                std::set<size_t>& residue_ids) {
     auto& residues = file.topology().residues();
 
@@ -66,7 +66,7 @@ void remove_identical_residues(const chemfiles::Frame& file,
     }
 }
 
-void remove_cofactors(const chemfiles::Frame& file,
+inline void remove_cofactors(const chemfiles::Frame& file,
                              std::set<size_t>& residue_ids,
                              const ResidueNameSet& rns) {
     auto& residues = file.topology().residues();
@@ -80,7 +80,7 @@ void remove_cofactors(const chemfiles::Frame& file,
     }
 }
 
-void keep_interactions(const chemfiles::Frame& input,
+inline void keep_interactions(const chemfiles::Frame& input,
                        std::set<size_t>& residue_ids_of_interest,
                        const std::set<size_t>& residue_ids_to_check,
                        double distance_cutoff = 6.0) {
@@ -109,7 +109,7 @@ void keep_interactions(const chemfiles::Frame& input,
     }
 }
 
-void remove_interactions(const chemfiles::Frame& input,
+inline void remove_interactions(const chemfiles::Frame& input,
                        std::set<size_t>& residue_ids_of_interest,
                        const std::set<size_t>& residue_ids_to_check,
                        double distance_cutoff = 6.0) {

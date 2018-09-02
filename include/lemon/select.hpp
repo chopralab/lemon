@@ -7,7 +7,7 @@
 #include "lemon/residue_name.hpp"
 
 namespace lemon {
-std::set<size_t> select_small_molecules(const chemfiles::Frame& input,
+inline std::set<size_t> select_small_molecules(const chemfiles::Frame& input,
                                        size_t min_atoms = 10) {
     const auto& residues = input.topology().residues();
 
@@ -46,7 +46,7 @@ std::set<size_t> select_small_molecules(const chemfiles::Frame& input,
     return selected_residues;
 }
 
-std::set<size_t> select_metal_ions(const chemfiles::Frame& input) {
+inline std::set<size_t> select_metal_ions(const chemfiles::Frame& input) {
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
@@ -63,7 +63,7 @@ std::set<size_t> select_metal_ions(const chemfiles::Frame& input) {
     return selected_residues;
 }
 
-std::set<size_t> select_nucleic_acids(const chemfiles::Frame& input) {
+inline std::set<size_t> select_nucleic_acids(const chemfiles::Frame& input) {
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
@@ -84,7 +84,7 @@ std::set<size_t> select_nucleic_acids(const chemfiles::Frame& input) {
     return selected_residues;
 }
 
-std::set<size_t> select_peptides(const chemfiles::Frame& input) {
+inline std::set<size_t> select_peptides(const chemfiles::Frame& input) {
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
@@ -105,7 +105,7 @@ std::set<size_t> select_peptides(const chemfiles::Frame& input) {
     return selected_residues;
 }
 
-std::set<size_t> select_specific_residues(
+inline std::set<size_t> select_specific_residues(
     const chemfiles::Frame& input, const ResidueNameSet& resnames) {
     const auto& residues = input.topology().residues();
 

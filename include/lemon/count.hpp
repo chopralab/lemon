@@ -10,7 +10,7 @@
 #include "lemon/residue_name.hpp"
 
 namespace lemon {
-void count_residues(const chemfiles::Frame& file,
+inline void count_residues(const chemfiles::Frame& file,
                     ResidueNameCount& resn_count) {
     auto& residues = file.topology().residues();
 
@@ -26,7 +26,7 @@ void count_residues(const chemfiles::Frame& file,
     }
 }
 
-void count_residues(const chemfiles::Frame& file,
+inline void count_residues(const chemfiles::Frame& file,
                     const std::set<size_t>& resids,
                     ResidueNameCount& resn_count) {
     auto& residues = file.topology().residues();
@@ -43,7 +43,7 @@ void count_residues(const chemfiles::Frame& file,
     }
 }
 
-size_t count_altloc(const chemfiles::Frame& files) {
+inline size_t count_altloc(const chemfiles::Frame& files) {
     std::set<char> alt_locs;
     for (const auto& atom : files) {
         const auto& altloc = atom.get("altloc");
@@ -55,7 +55,7 @@ size_t count_altloc(const chemfiles::Frame& files) {
     return alt_locs.size();
 }
 
-size_t count_bioassemblies(const chemfiles::Frame& file) {
+inline size_t count_bioassemblies(const chemfiles::Frame& file) {
     auto& residues = file.topology().residues();
     std::set<std::string> assembies;
 
@@ -68,7 +68,7 @@ size_t count_bioassemblies(const chemfiles::Frame& file) {
     return assembies.size();
 }
 
-void print_residue_name_counts(std::ostream& os, const std::string& pdbid,
+inline void print_residue_name_counts(std::ostream& os, const std::string& pdbid,
                                const chemfiles::Frame& complex,
                                const std::set<size_t>& res_ids) {
     if (res_ids.empty()) {

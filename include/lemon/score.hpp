@@ -52,30 +52,30 @@ const double vdw_radii[] = {
     0.0,  // Skip
 };
 
-bool is_hydrophobic(XS_TYPE xs) {
+inline bool is_hydrophobic(XS_TYPE xs) {
     return xs == XS_TYPE_C_H || xs == XS_TYPE_F_H || xs == XS_TYPE_Cl_H ||
            xs == XS_TYPE_Br_H || xs == XS_TYPE_I_H;
 }
 
-bool is_acceptor(XS_TYPE xs) {
+inline bool is_acceptor(XS_TYPE xs) {
     return xs == XS_TYPE_N_A || xs == XS_TYPE_N_DA || xs == XS_TYPE_O_A ||
            xs == XS_TYPE_O_DA;
 }
 
-bool is_donor(XS_TYPE xs) {
+inline bool is_donor(XS_TYPE xs) {
     return xs == XS_TYPE_N_D || xs == XS_TYPE_N_DA || xs == XS_TYPE_O_D ||
            xs == XS_TYPE_O_DA || xs == XS_TYPE_Metal_D;
 }
 
-bool donor_acceptor(XS_TYPE t1, XS_TYPE t2) {
+inline bool donor_acceptor(XS_TYPE t1, XS_TYPE t2) {
     return is_donor(t1) && is_acceptor(t2);
 }
 
-bool h_bond_possible(XS_TYPE t1, XS_TYPE t2) {
+inline bool h_bond_possible(XS_TYPE t1, XS_TYPE t2) {
     return donor_acceptor(t1, t2) || donor_acceptor(t2, t1);
 }
 
-double optimal_distance(XS_TYPE xs_t1, XS_TYPE xs_t2) {
+inline double optimal_distance(XS_TYPE xs_t1, XS_TYPE xs_t2) {
     return vdw_radii[xs_t1] + vdw_radii[xs_t2];
 }
 
@@ -88,7 +88,7 @@ struct VinaScore {
 };
 
 // Easy case, just check if carbon is bound to a heteroatom
-XS_TYPE get_c_xs_type(const chemfiles::Topology& topo, size_t j,
+inline XS_TYPE get_c_xs_type(const chemfiles::Topology& topo, size_t j,
                       const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
     auto& bond_order = topo.bond_orders();
@@ -106,7 +106,7 @@ XS_TYPE get_c_xs_type(const chemfiles::Topology& topo, size_t j,
     return XS_TYPE_C_H;
 }
 
-bool is_in_strong_resonance(
+inline bool is_in_strong_resonance(
     const chemfiles::Topology& topo, size_t j,
     const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
@@ -126,7 +126,7 @@ bool is_in_strong_resonance(
 }
 
 // Hard case, there's three bond counts to get, which in turn involve checks
-XS_TYPE get_n_xs_type(const chemfiles::Topology& topo, size_t j,
+inline XS_TYPE get_n_xs_type(const chemfiles::Topology& topo, size_t j,
                       const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
     auto& bond_order = topo.bond_orders();
@@ -174,7 +174,7 @@ XS_TYPE get_n_xs_type(const chemfiles::Topology& topo, size_t j,
 }
 
 // Medium case, two bond cases - but no additional checks.
-XS_TYPE get_o_xs_type(const chemfiles::Topology& topo, size_t j,
+inline XS_TYPE get_o_xs_type(const chemfiles::Topology& topo, size_t j,
                       const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
     auto& bond_order = topo.bond_orders();
@@ -209,7 +209,7 @@ XS_TYPE get_o_xs_type(const chemfiles::Topology& topo, size_t j,
     return XS_TYPE_O_P;
 }
 
-XS_TYPE get_xs_type(const chemfiles::Topology& topo, size_t j,
+inline XS_TYPE get_xs_type(const chemfiles::Topology& topo, size_t j,
                     const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto atomic_id = *(topo[j].atomic_number());
 
@@ -243,12 +243,12 @@ XS_TYPE get_xs_type(const chemfiles::Topology& topo, size_t j,
     return XS_TYPE_SKIP;
 }
 
-double gaussian(double offset, double width, double r) {
+inline double gaussian(double offset, double width, double r) {
     double exponent = (r - offset) / width;
     return std::exp(-exponent * exponent);
 }
 
-double repulsion(double offset, double r) {
+inline double repulsion(double offset, double r) {
     r -= offset;
     if (r > 0.0) {
         return 0.0;
@@ -257,7 +257,7 @@ double repulsion(double offset, double r) {
     return r * r;
 }
 
-double slope_step(double bad, double good, double r) {
+inline double slope_step(double bad, double good, double r) {
     assert(bad < good);
     if (r <= bad) {
         return 0;
@@ -269,7 +269,7 @@ double slope_step(double bad, double good, double r) {
 }
 
 // Move to a topology.hpp file?
-std::unordered_multimap<size_t, size_t> create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
+inline std::unordered_multimap<size_t, size_t> create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
     std::unordered_multimap<size_t, size_t> bond_map;
 
     // Map bonds
@@ -282,7 +282,7 @@ std::unordered_multimap<size_t, size_t> create_bond_map(const std::vector<chemfi
     return bond_map;
 }
 
-VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
+inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
                      std::set<size_t> recid, double cutoff = 8.0) {
     const auto& topo = frame.topology();
     const auto& residues = topo.residues();

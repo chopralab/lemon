@@ -10,7 +10,7 @@
 
 namespace lemon {
 template <class Function, class iter>
-void call_function(Function&& f, iter begin, iter end) {
+inline void call_function(Function&& f, iter begin, iter end) {
     for (auto it = begin; it != end; ++it) {
         const std::string pdbid = std::string(it->data(), 4);
 
@@ -39,7 +39,7 @@ void call_function(Function&& f, iter begin, iter end) {
 }
 
 template <class Function, class container>
-void run_archive(Function&& worker, const container& vec, size_t ncpu, size_t chunk = 1) {
+inline void run_archive(Function&& worker, const container& vec, size_t ncpu, size_t chunk = 1) {
     std::vector<std::thread> threads(ncpu);
 
     // Total number of jobs for each thread

@@ -168,7 +168,7 @@ class Hadoop {
 };
 
 template <class Function, class iter>
-void call_function_hadoop(Function&& f, iter begin, iter end) {
+inline void call_function_hadoop(Function&& f, iter begin, iter end) {
     for (auto it = begin; it != end; ++it) {
         std::ifstream data(it->string(), std::istream::binary);
         Hadoop sequence(data);
@@ -188,7 +188,7 @@ void call_function_hadoop(Function&& f, iter begin, iter end) {
 }
 
 template <class Function>
-void run_hadoop(Function&& worker, const boost::filesystem::path& p,
+inline void run_hadoop(Function&& worker, const boost::filesystem::path& p,
                 size_t ncpu = 1) {
     std::vector<std::thread> threads(ncpu);
 

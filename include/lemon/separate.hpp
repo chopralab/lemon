@@ -7,7 +7,7 @@
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
-void separate_protein_and_ligand(const chemfiles::Frame& input,
+inline void separate_protein_and_ligand(const chemfiles::Frame& input,
                                  size_t ligand_id,
                                  chemfiles::Frame& protein,
                                  chemfiles::Frame& ligand, double pocket_size) {
