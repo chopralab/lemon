@@ -2,7 +2,7 @@
 
 #include "lemon/entries.hpp"
 #include "lemon/count.hpp"
-#include "lemon/archive_run.hpp"
+#include "lemon/deprecated/archive_run.hpp"
 #include "lemon/select.hpp"
 
 #define CATCH_CONFIG_MAIN

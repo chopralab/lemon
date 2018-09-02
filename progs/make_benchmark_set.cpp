@@ -8,7 +8,6 @@
 #include "lemon/entries.hpp"
 #include "lemon/count.hpp"
 #include "lemon/prune.hpp"
-#include "lemon/archive_run.hpp"
 #include "lemon/select.hpp"
 #include "lemon/separate.hpp"
 #include "lemon/options.hpp"
@@ -75,6 +74,5 @@ int main(int argc, char* argv[]) {
         }
     };
 
-    boost::filesystem::current_path(p);
-    lemon::run_archive(worker, vec, ncpu, 1);
+    lemon::run_hadoop(worker, p, ncpu);
 }
