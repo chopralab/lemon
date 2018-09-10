@@ -23,6 +23,14 @@ inline std::string get_bond_name(const chemfiles::Frame& complex,
     const auto& atom1 = complex[bond[0]];
     const auto& atom2 = complex[bond[1]];
 
+    if (atom1.type() == "H") {
+        return atom2.type() + "_H";
+    }
+
+    if (atom2.type() == "H") {
+        return atom1.type() + "_H";
+    }
+
     const std::string latom =
         atom1.name() < atom2.name() ? atom1.name() : atom2.name();
 
