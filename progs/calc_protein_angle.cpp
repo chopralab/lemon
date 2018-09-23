@@ -15,11 +15,11 @@
 #include "lemon/separate.hpp"
 
 // typedefs for binned data
-typedef std::pair<std::string, size_t> BondStretchBin;
-typedef std::map<BondStretchBin, size_t> StretchCounts;
+typedef std::pair<std::string, size_t> BondAngleBin;
+typedef std::map<BondAngleBin, size_t> AngleCounts;
 
 inline std::string get_angle_name(const chemfiles::Frame& complex,
-                                 const chemfiles::Angle&angle) {
+                                  const chemfiles::Angle& angle) {
     const auto& atom1 = complex[angle[0]];
     const auto& atom2 = complex[angle[1]];
     const auto& atom3 = complex[angle[2]];
@@ -38,11 +38,10 @@ inline std::string get_angle_name(const chemfiles::Frame& complex,
     const std::string& hatom =
         atom1.name() > atom3.name() ? atom1.name() : atom3.name();
 
-    const std::string& matom = atom2.name();
+    const std::string& catom = atom2.name();
 
     // The carbonyl angles should all be the same
-    if (matom == "C") {
-
+    if (catom == "C") {
         // Does it involve the carbonyl?
         if (latom == "O" || hatom == "O") {
             if (latom == "CA" || hatom == "CA") {
@@ -57,16 +56,15 @@ inline std::string get_angle_name(const chemfiles::Frame& complex,
             // This should not be possible....
         }
 
-        // It must involve the 
         // Maybe proline logic should be added here?
         return "CA_C_N";
     }
 
-    if ((latom == "C" || hatom == "C") && matom == "CA") {
-        return "C_CA_N"; // Hydrogens???
+    if ((latom == "C" || hatom == "C") && catom == "CA") {
+        return "C_CA_N";
     }
 
-    if ((latom == "C" || hatom == "C") && matom == "N") {
+    if ((latom == "C" || hatom == "C") && catom == "N") {
         if (latom == "CA" || hatom == "CA") {
             return "C_N_CA";
         }
@@ -74,18 +72,25 @@ inline std::string get_angle_name(const chemfiles::Frame& complex,
         if (latom == "CD" || hatom == "CD") {
             return "PRO_C_N_CD";
         }
-        return "C_N_H"; // Hydrogens???
+        return "C_N_H";  // Hydrogens???
     }
 
-    if (matom == "SG" && (latom == "SG" || hatom == "SG")) {
+    // Check for sulfide bridges
+    if (catom == "SG" && (latom == "SG" || hatom == "SG")) {
         return "CB_SG_SG";
     }
 
     const auto& residue1 = complex.topology().residue_for_atom(angle[0]);
-    const auto& residue2 = complex.topology().residue_for_atom(angle[1]);
     const auto& residue3 = complex.topology().residue_for_atom(angle[2]);
 
-    return residue1->name() + "_" + latom + "_" + matom + "_" + hatom;
+    if (residue1 != residue3) {
+        std::cerr << "Unhandled inter-residue angle: " << residue1->name() << " "
+                  << atom1.name() << " " << residue3->name() << " "
+                  << atom3.name() << "\n";
+        return "err";
+    }
+
+    return residue1->name() + "_" + latom + "_" + catom + "_" + hatom;
 }
 
 int main(int argc, char* argv[]) {
@@ -93,7 +98,7 @@ int main(int argc, char* argv[]) {
 
     double bin_size = o.distance();
 
-    std::unordered_map<std::thread::id, StretchCounts> bins;
+    std::unordered_map<std::thread::id, AngleCounts> bins;
 
     auto worker = [bin_size, &bins](chemfiles::Frame complex,
                                     const std::string& /* unused */) {
@@ -117,7 +122,7 @@ int main(int argc, char* argv[]) {
             size_t bin = static_cast<size_t>(std::floor(theta / bin_size));
 
             auto th = std::this_thread::get_id();
-            BondStretchBin sbin = {angle_name, bin};
+            BondAngleBin sbin = {angle_name, bin};
             auto bin_iterator = bins[th].find(sbin);
 
             if (bin_iterator == bins[th].end()) {
@@ -140,7 +145,7 @@ int main(int argc, char* argv[]) {
 
     lemon::run_hadoop(worker, p, ncpu);
 
-    StretchCounts sc_total;
+    AngleCounts sc_total;
 
     for (const auto& bin : bins) {
         for (const auto& sc : bin.second) {
@@ -149,7 +154,7 @@ int main(int argc, char* argv[]) {
     }
 
     for (const auto& i : sc_total) {
-        std::cout << i.first.first << "\t" << i.first.second * bin_size << "\t" << i.second << "\n";
+        std::cout << i.first.first << "\t" << i.first.second * bin_size << "\t"
+                  << i.second << "\n";
     }
-
 }

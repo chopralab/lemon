@@ -101,7 +101,7 @@ inline std::string get_dihedral_name(const chemfiles::Frame& complex,
         return name + "CA_N_C_O";
     }
 
-    // This.... needs to be fixed
+    // No special code for SG-SG
     return cresidue->name() + "_" + llatom + "_" + lcatom + "_" + hcatom + "_" +
            hhatom;
 }

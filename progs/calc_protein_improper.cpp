@@ -52,6 +52,7 @@ inline std::string get_improper_name(const chemfiles::Frame& complex,
     // The carbonyl angles should all be the same
     if (catom == "C") {
         // It must be the peptide bond!
+        // as CA_C_N_H is already handled
         return "CA_C_N_O";
     }
 

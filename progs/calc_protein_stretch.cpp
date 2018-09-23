@@ -46,7 +46,18 @@ inline std::string get_bond_name(const chemfiles::Frame& complex,
     const auto& residue2 = complex.topology().residue_for_atom(bond[1]);
 
     if (residue1 != residue2) {
-        return "peptide_bond";
+        if (latom == "C" && hatom == "N") {
+            return "peptide_bond";
+        }
+
+        if (latom == "SG" && hatom == "SG") {
+            return "SG_SG";
+        }
+
+        std::cerr << "Unhandled inter-residue bond: " << residue1->name() << " "
+                  << atom1.name() << " " << residue2->name() << " "
+                  << atom2.name() << "\n";
+        return "err";
     }
 
     std::string name;
@@ -128,7 +139,7 @@ int main(int argc, char* argv[]) {
     }
 
     for (const auto& i : sc_total) {
-        std::cout << i.first.first << "\t" << i.first.second * bin_size << "\t" << i.second << "\n";
+        std::cout << i.first.first << "\t" << i.first.second * bin_size << "\t"
+                  << i.second << "\n";
     }
-
 }
