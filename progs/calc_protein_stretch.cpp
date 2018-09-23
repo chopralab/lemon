@@ -71,6 +71,11 @@ inline std::string get_bond_name(const chemfiles::Frame& complex,
         name = "HYP_";
     }
 
+    // and pyroglutamic acid
+    if (residue1->name() == "PCA") {
+        name = "PCA_";
+    }
+
     // Let's keep the aminoacid group all the same (except proline)
     if (latom == "CA" || hatom == "CA") {
         return name + latom + "_" + hatom;
@@ -90,7 +95,8 @@ int main(int argc, char* argv[]) {
                                     const std::string& /* unused */) {
         // Selection phase
         chemfiles::Frame protein_only;
-        auto peptides = lemon::select_peptides(complex);
+        auto peptides =
+            lemon::select_specific_residues(complex, lemon::common_peptides);
 
         if (peptides.size() == 0) {
             return;

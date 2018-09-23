@@ -69,6 +69,11 @@ inline std::string get_improper_name(const chemfiles::Frame& complex,
         name = "HYP_";
     }
 
+    // and pyroglutamic acid
+    if (cresidue->name() == "PCA") {
+        name = "PCA_";
+    }
+
     if (catom == "N") {
         return name + latom + "_" + catom + "_" + matom + "_" + hatom;
     }
@@ -88,7 +93,8 @@ int main(int argc, char* argv[]) {
                                     const std::string& /* unused */) {
         // Selection phase
         chemfiles::Frame protein_only;
-        auto peptides = lemon::select_peptides(complex);
+        auto peptides =
+            lemon::select_specific_residues(complex, lemon::common_peptides);
 
         if (peptides.size() == 0) {
             return;

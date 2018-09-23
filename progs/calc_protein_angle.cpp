@@ -84,8 +84,8 @@ inline std::string get_angle_name(const chemfiles::Frame& complex,
     const auto& residue3 = complex.topology().residue_for_atom(angle[2]);
 
     if (residue1 != residue3) {
-        std::cerr << "Unhandled inter-residue angle: " << residue1->name() << " "
-                  << atom1.name() << " " << residue3->name() << " "
+        std::cerr << "Unhandled inter-residue angle: " << residue1->name()
+                  << " " << atom1.name() << " " << residue3->name() << " "
                   << atom3.name() << "\n";
         return "err";
     }
@@ -104,7 +104,8 @@ int main(int argc, char* argv[]) {
                                     const std::string& /* unused */) {
         // Selection phase
         chemfiles::Frame protein_only;
-        auto peptides = lemon::select_peptides(complex);
+        auto peptides =
+            lemon::select_specific_residues(complex, lemon::common_peptides);
 
         if (peptides.size() == 0) {
             return;
