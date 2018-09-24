@@ -7,8 +7,17 @@
 #include "lemon/residue_name.hpp"
 
 namespace lemon {
+
+const ResidueNameSet common_peptides{
+    {"CSD"}, {"PCA"}, {"DLE"}, {"KCX"}, {"CAS"}, {"CSO"}, {"PTR"},
+    {"CME"}, {"SAH"}, {"TPO"}, {"SEP"}, {"MLY"}, {"HYP"}, {"MSE"},
+    {"CYS"}, {"TRP"}, {"MET"}, {"HIS"}, {"TYR"}, {"GLN"}, {"PHE"},
+    {"ASN"}, {"PRO"}, {"ARG"}, {"THR"}, {"ASP"}, {"ILE"}, {"LYS"},
+    {"SER"}, {"GLU"}, {"VAL"}, {"GLY"}, {"ALA"}, {"LEU"},
+};
+
 inline std::set<size_t> select_small_molecules(const chemfiles::Frame& input,
-                                       size_t min_atoms = 10) {
+                                               size_t min_atoms = 10) {
     const auto& residues = input.topology().residues();
 
     std::set<size_t> selected_residues;
@@ -124,6 +133,6 @@ inline std::set<size_t> select_specific_residues(
 
     return selected_residues;
 }
-}
+}  // namespace lemon
 
 #endif

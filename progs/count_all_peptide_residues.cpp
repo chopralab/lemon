@@ -8,6 +8,8 @@
 #include "lemon/entries.hpp"
 #include "lemon/hadoop.hpp"
 #include "lemon/options.hpp"
+#include "lemon/select.hpp"
+#include "lemon/separate.hpp"
 
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
@@ -15,9 +17,21 @@ int main(int argc, char* argv[]) {
     std::unordered_map<std::thread::id, lemon::ResidueNameCount> resn_counts;
     auto worker = [&resn_counts](chemfiles::Frame complex,
                                  const std::string& /* unused */) {
-        // Desired info is calculated directly, no pruning, output is done later
+
+        // Selection phase
+        chemfiles::Frame protein_only;
+        auto peptides = lemon::select_peptides(complex);
+
+        // Pruning phase
+        if (peptides.size() == 0) {
+            return;
+        }
+
+        lemon::separate_residues(complex, peptides, protein_only);
+
+        // Output phase
         auto th = std::this_thread::get_id();
-        lemon::count_residues(complex, resn_counts[th]);
+        lemon::count_residues(protein_only, resn_counts[th]);
     };
 
     auto p = o.work_dir();

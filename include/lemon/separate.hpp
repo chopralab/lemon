@@ -2,11 +2,51 @@
 #define SEPARATE_HPP
 
 #include <set>
+#include <unordered_set>
 
 #include "chemfiles/Topology.hpp"
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
+
+inline void separate_residues(const chemfiles::Frame& input,
+                              const std::set<size_t>& accepted_residues,
+                              chemfiles::Frame& new_frame) {
+
+    const auto& residues  = input.topology().residues();
+    const auto& positions = input.positions();
+    const auto& old_bonds = input.topology().bonds();
+    const auto& bond_ord  = input.topology().bond_orders();
+
+    std::unordered_map<size_t, size_t> old_to_new;
+    std::unordered_set<size_t> accepted_atoms;
+    for (auto res_id : accepted_residues) {
+        const auto& res = residues[res_id];
+
+        auto res_new = chemfiles::Residue(res.name(), *(res.id()));
+
+        for (size_t res_atom : res) {
+            new_frame.add_atom(input[res_atom], positions[res_atom]);
+            res_new.add_atom(new_frame.size() - 1);
+            old_to_new.insert({res_atom, new_frame.size() - 1});
+            accepted_atoms.insert(res_atom);
+        }
+
+        res_new.set("chainid", res.get("chainid")->as_string());
+        new_frame.add_residue(std::move(res_new));
+    }
+
+    for (size_t bond_idx = 0; bond_idx < old_bonds.size(); ++bond_idx) {
+        if (accepted_atoms.count(old_bonds[bond_idx][0]) &&
+            accepted_atoms.count(old_bonds[bond_idx][1])) {
+
+            new_frame.add_bond(old_to_new[old_bonds[bond_idx][0]],
+                    old_to_new[old_bonds[bond_idx][1]],
+                    bond_ord[bond_idx]);
+        }
+    }
+}
+
 inline void separate_protein_and_ligand(const chemfiles::Frame& input,
                                  size_t ligand_id,
                                  chemfiles::Frame& protein,
@@ -34,35 +74,8 @@ inline void separate_protein_and_ligand(const chemfiles::Frame& input,
         found_interaction:;
     }
 
-    for (auto res_id : accepted_residues) {
-        const auto& res = residues[res_id];
-
-        auto res_new = chemfiles::Residue(res.name(), *(res.id()));
-
-        for (size_t res_atom : res) {
-            protein.add_atom(input[res_atom], positions[res_atom]);
-            res_new.add_atom(protein.size() - 1);
-        }
-
-        res_new.set("chainid", res.get("chainid")->as_string());
-        protein.add_residue(res_new);
-    }
-
-    std::unordered_map<size_t, size_t> old_to_new;
-    for (auto lig_atom : ligand_residue) {
-        ligand.add_atom(input[lig_atom], positions[lig_atom]);
-        old_to_new.insert({lig_atom, ligand.size() - 1});
-    }
-
-    const auto& old_bonds = topo.bonds();
-    for (size_t bond_idx = 0; bond_idx < old_bonds.size(); ++bond_idx) {
-        if (ligand_residue.contains(old_bonds[bond_idx][0]) &&
-            ligand_residue.contains(old_bonds[bond_idx][1])) {
-            ligand.add_bond(old_to_new[old_bonds[bond_idx][0]],
-                            old_to_new[old_bonds[bond_idx][1]],
-                            topo.bond_orders()[bond_idx]);
-        }
-    }
+    separate_residues(input, accepted_residues, protein);
+    separate_residues(input, {ligand_id}, ligand);
 
     ligand.set("name", ligand_residue.name());
 }
