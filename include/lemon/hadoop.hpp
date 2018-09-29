@@ -17,7 +17,7 @@
 #include <vector>
 
 #include <boost/filesystem.hpp>
-#include <thread>
+#include <future>
 
 namespace lemon {
 
@@ -167,31 +167,8 @@ class Hadoop {
     }
 };
 
-template <class Function, class iter>
-inline void call_function_hadoop(Function&& f, iter begin, iter end) {
-    for (auto it = begin; it != end; ++it) {
-        std::ifstream data(it->string(), std::istream::binary);
-        Hadoop sequence(data);
-
-        while (sequence.has_next()) {
-            auto pair = sequence.next();
-            const auto entry = std::string(pair.first.data() + 1, 4);
-            try {
-                auto traj =
-                    chemfiles::Trajectory(std::move(pair.second), "MMTF/GZ");
-                auto complex = traj.read();
-                f(std::move(complex), entry);
-            } catch (...) {
-            }
-        }
-    }
-}
-
 template <class Function>
-inline void run_hadoop(Function&& worker, const boost::filesystem::path& p,
-                size_t ncpu = 1) {
-    std::vector<std::thread> threads(ncpu);
-
+inline void run_hadoop(Function&& worker, const boost::filesystem::path& p) {
     std::vector<boost::filesystem::path> pathvec;
     pathvec.reserve(600);
 
@@ -215,24 +192,98 @@ inline void run_hadoop(Function&& worker, const boost::filesystem::path& p,
             return entry.path();
         });
 
-    // Total number of jobs for each thread
-    const size_t grainsize = pathvec.size() / ncpu;
+    auto work_iter = pathvec.begin();
+    // typename ret_type decltype(&worker::operator());
+    std::vector<std::future<void>> tasks;
+
+    for (const auto& path : pathvec) {
+        tasks.emplace_back(std::async(
+            std::launch::async,
+            [&worker](const boost::filesystem::path& thread_p) {
+                std::ifstream data(thread_p.string(), std::istream::binary);
+                Hadoop sequence(data);
+
+                while (sequence.has_next()) {
+                    auto pair = sequence.next();
+                    const auto entry = std::string(pair.first.data() + 1, 4);
+                    try {
+                        auto traj = chemfiles::Trajectory(
+                            std::move(pair.second), "MMTF/GZ");
+                        auto complex = traj.read();
+                        worker(std::move(complex), entry);
+                    } catch (...) {
+                    }
+                }
+            },
+            path));
+    }
+
+    for (auto& i : tasks) {
+        i.get();
+    }
+}
+
+template <class Function, typename ret>
+inline void run_hadoop(Function&& worker, const boost::filesystem::path& p,
+                      ret& collector) {
+    std::vector<boost::filesystem::path> pathvec;
+    pathvec.reserve(600);
+
+    // There's only ~550 files to read here!
+    auto begin = boost::filesystem::directory_iterator(p);
+    boost::filesystem::directory_iterator end;
+    std::transform(
+        begin, end, std::back_inserter(pathvec),
+        [](boost::filesystem::directory_entry& entry) {
+            if (boost::filesystem::is_directory(entry.path())) {
+                throw std::runtime_error(
+                    "Directory provided has subdirectories.\nPlease make sure "
+                    "you are using the tar ball provided by RCSB.");
+            }
+            if (entry.path().has_extension()) {
+                throw std::runtime_error(
+                    "Directory provided has file with extensions.\nPlease "
+                    "remove files with extensions if you are sure the seqeunce "
+                    "files are valid.");
+            }
+            return entry.path();
+        });
 
     auto work_iter = pathvec.begin();
+    // typename ret_type decltype(&worker::operator());
+    std::vector<std::future<ret>> tasks;
 
-    for (auto it = std::begin(threads); it != std::end(threads) - 1; ++it) {
-        *it = std::thread([&] {
-            call_function_hadoop(worker, work_iter, work_iter + grainsize);
-        });
-        work_iter += grainsize;
-    }
-    threads.back() = std::thread(
-        [&] { call_function_hadoop(worker, work_iter, pathvec.end()); });
+    for (const auto& path : pathvec) {
+        tasks.emplace_back(std::async(
+            std::launch::async,
+            [&worker](const boost::filesystem::path& thread_p) {
+                std::ifstream data(thread_p.string(), std::istream::binary);
+                Hadoop sequence(data);
+                ret collector;
 
-    for (auto&& i : threads) {
-        i.join();
+                while (sequence.has_next()) {
+                    auto pair = sequence.next();
+                    const auto entry = std::string(pair.first.data() + 1, 4);
+                    try {
+                        auto traj = chemfiles::Trajectory(
+                            std::move(pair.second), "MMTF/GZ");
+                        auto complex = traj.read();
+                        collector += worker(std::move(complex), entry);
+                    } catch (...) {
+                    }
+                }
+
+                return collector;
+            },
+            path));
     }
+
+    for (auto& i : tasks) {
+        collector += i.get();
+    }
+
+    std::cout << "ASDFASDF" << std::endl;
 }
-}
+}  // namespace lemon
 
 #endif

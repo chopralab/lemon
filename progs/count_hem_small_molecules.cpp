@@ -37,7 +37,6 @@ int main(int argc, char* argv[]) {
     };
 
     auto p = o.work_dir();
-    auto ncpu = o.npu();
     auto entries = o.entries();
 
     if (!boost::filesystem::is_directory(p)) {
@@ -45,5 +44,5 @@ int main(int argc, char* argv[]) {
         return 2;
     }
 
-    lemon::run_hadoop(worker, p, ncpu);
+    lemon::run_hadoop(worker, p);
 }

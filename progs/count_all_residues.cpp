@@ -21,14 +21,13 @@ int main(int argc, char* argv[]) {
     };
 
     auto p = o.work_dir();
-    auto ncpu = o.npu();
 
     if (!boost::filesystem::is_directory(p)) {
         std::cerr << "You must supply a valid directory" << std::endl;
         return 2;
     }
 
-    lemon::run_hadoop(worker, p, ncpu);
+    lemon::run_hadoop(worker, p);
 
     lemon::ResidueNameCount resn_total;
 
