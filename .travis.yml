@@ -30,11 +30,9 @@ matrix:
       env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF
     - os: osx
       compiler: clang
-      osx_image: xcode7.3
       env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF
     - os: osx
       compiler: gcc
-      osx_image: xcode7.3
       env: COMPILER_C=gcc COMPILER_CXX=g++ COVERAGE=OFF
 
 before_install:

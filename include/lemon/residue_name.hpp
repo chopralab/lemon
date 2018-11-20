@@ -153,6 +153,15 @@ typedef std::unordered_map<ResidueName, std::size_t, ResidueNameHash>
     ResidueNameCount;
 typedef std::set<ResidueName> ResidueNameSet;
 
+template<typename Map>
+struct map_combine {
+    void operator()(Map& map1, const Map& map2) const {
+        for (const auto& sc : map2) {
+            map1[sc.first] += sc.second;
+        }
+    }
+};
+
 inline std::ostream& operator<<(std::ostream& os, const ResidueName& res_name) {
     auto& resn = *res_name;
     os << (resn[0] ? resn[0] : ' ') << (resn[1] ? resn[1] : ' ')

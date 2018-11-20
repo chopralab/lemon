@@ -85,8 +85,7 @@ class Hadoop {
 };
 
 inline std::vector<fs::path> read_hadoop_dir(const fs::path& p) {
-
-    if(!fs::is_directory(p)) {
+    if (!fs::is_directory(p)) {
         throw std::runtime_error("Provided directory not valid.");
     }
 
@@ -152,17 +151,17 @@ inline void run_hadoop(Function&& worker, const fs::path& p, size_t ncpu) {
     }
 }
 
-template <class Function,
+template <typename Function, typename Combiner,
           typename ret = std::result_of_t<Function&()>>
-inline void run_hadoop(Function&& worker, const fs::path& p, size_t ncpu, ret& collector) {
+inline void run_hadoop(Function&& worker, Combiner&& combine, const fs::path& p,
+                       ret& collector, size_t ncpu) {
 
     auto pathvec = read_hadoop_dir(p);
-
     thread_pool threads(ncpu);
     threaded_queue<ret> results;
 
     for (const auto& path : pathvec) {
-        threads.queue_task([path, &results, &worker] {
+        threads.queue_task([path, &results, &worker, &combine] {
             std::ifstream data(path.string(), std::istream::binary);
             Hadoop sequence(data);
             ret mini_collector;
@@ -174,7 +173,7 @@ inline void run_hadoop(Function&& worker, const fs::path& p, size_t ncpu, ret& c
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto complex = traj.read();
-                    mini_collector += worker(std::move(complex), entry);
+                    combine(mini_collector, worker(std::move(complex), entry));
                 } catch (...) {
                 }
             }
@@ -185,7 +184,7 @@ inline void run_hadoop(Function&& worker, const fs::path& p, size_t ncpu, ret& c
 
     std::size_t tasks_complete = 0;
     while (auto result = results.pop_front()) {
-        collector += *result;
+        combine(collector, *result);
         ++tasks_complete;
         if (tasks_complete == pathvec.size()) {
             break;

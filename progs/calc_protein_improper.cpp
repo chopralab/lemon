@@ -86,17 +86,16 @@ int main(int argc, char* argv[]) {
 
     double bin_size = o.distance();
 
-    std::unordered_map<std::thread::id, ImproperCounts> bins;
+    auto worker = [bin_size](chemfiles::Frame complex, const std::string&) {
+        ImproperCounts bins;
 
-    auto worker = [bin_size, &bins](chemfiles::Frame complex,
-                                    const std::string& /* unused */) {
         // Selection phase
         chemfiles::Frame protein_only;
         auto peptides =
             lemon::select_specific_residues(complex, lemon::common_peptides);
 
         if (peptides.size() == 0) {
-            return;
+            return bins;
         }
 
         lemon::separate_residues(complex, peptides, protein_only);
@@ -113,36 +112,32 @@ int main(int argc, char* argv[]) {
 
             int bin = static_cast<int>(std::floor(theta / bin_size));
 
-            auto th = std::this_thread::get_id();
             BondImproperBin sbin = {improper_name, bin};
-            auto bin_iterator = bins[th].find(sbin);
+            auto bin_iterator = bins.find(sbin);
 
-            if (bin_iterator == bins[th].end()) {
-                bins[th][sbin] = 1;
+            if (bin_iterator == bins.end()) {
+                bins[sbin] = 1;
                 continue;
             }
 
             ++(bin_iterator->second);
         }
+
+        return bins;
     };
 
     auto p = o.work_dir();
     auto entries = o.entries();
     auto threads = o.ncpu();
 
+    lemon::map_combine<ImproperCounts> combiner;
+    ImproperCounts sc_total;
+
     try {
-        lemon::run_hadoop(worker, p, threads);
+        lemon::run_hadoop(worker, combiner, p, sc_total, threads);
     } catch(std::runtime_error& e){
         std::cerr << e.what() << "\n";
         return 1;
-    }
-
-    ImproperCounts sc_total;
-
-    for (const auto& bin : bins) {
-        for (const auto& sc : bin.second) {
-            sc_total[sc.first] += sc.second;
-        }
     }
 
     for (const auto& i : sc_total) {

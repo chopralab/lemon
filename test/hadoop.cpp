@@ -45,7 +45,9 @@ TEST_CASE("Use Hadoop Run - no collector") {
         auto result = lemon::count_bioassemblies(complex);
         counts[pdbid] = result;
     };
-    lemon::run_hadoop(worker, p, 2);
+
+    // test function not thread safe...
+    lemon::run_hadoop(worker, p, 1);
     CHECK(counts.size() == 5);
 }
 
@@ -60,9 +62,10 @@ TEST_CASE("Use Hadoop Run - with collector") {
         return resn_counts;
     };
 
+    lemon::map_combine<lemon::ResidueNameCount> combiner;
     lemon::ResidueNameCount collector;
 
-    lemon::run_hadoop(worker, p, 2, collector);
+    lemon::run_hadoop(worker, combiner, p, collector, 2);
     CHECK(collector.size() == 36);
 }
 
