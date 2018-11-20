@@ -19,7 +19,11 @@
 #include <boost/filesystem.hpp>
 #include <future>
 
+#include "lemon/thread_pool.hpp"
+
 namespace lemon {
+
+namespace fs = boost::filesystem;
 
 class Hadoop {
    public:
@@ -33,93 +37,6 @@ class Hadoop {
     std::istream& stream_;
     std::string marker_ = "";
     std::vector<char> key_;
-
-    /* Uncomment if a more generic solution is desired....
-    Loosly based on
-    https://github.com/azat-archive/hadoop-io-sequence-reader/blob/master/src/reader.cpp,
-    but entirely rewritten
-    static uint32_t decode(int8_t ch) {
-        if (ch >= -112) {
-            return 1;
-        } else if (ch < -120) {
-            return -119 - ch;
-        }
-        return -111 - ch;
-    }
-
-    static int64_t read(const char *pos, uint32_t &len) {
-        if (*pos >= (char)-112) {
-            len = 1;
-            return *pos;
-        } else {
-            return read_helper(pos, len);
-        }
-    }
-
-    static int64_t read_helper(const char *pos, uint32_t &len) {
-        bool neg = *pos < -120;
-        len = neg ? (-119 - *pos) : (-111 - *pos);
-        const char *end = pos + len;
-        int64_t value = 0;
-        while (++pos < end) {
-            value = (value << 8) | *(uint8_t *)pos;
-        }
-        return neg ? (value ^ -1LL) : value;
-    }
-
-    int64_t read_long() {
-        char buff[10];
-        stream_.read(buff, 1);
-        auto len = decode(*buff);
-        if (len > 1) {
-            !stream_.read(buff + 1, len - 1);
-        }
-        return read(buff, len);
-    }
-
-    void read_string(char *buffer) {
-        auto len = read_long();
-        stream_.read(buffer, len);
-    }
-
-    void initialize() {
-        stream_.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-
-        char buffer[1024];
-
-        // Reads the header
-        stream_.read(buffer, 4);
-
-        // Read the Key class
-        read_string(buffer);
-
-        // Read the Value class
-        read_string(buffer);
-
-        auto valueCompression = stream_.get();
-        auto blockCompression = stream_.get();
-
-        if (valueCompression != 0 || blockCompression != 0) {
-            throw std::runtime_error("Compression not supported");
-        }
-
-        int pairs = read_int();
-
-        if (pairs < 0 || pairs > 1024) {
-            throw std::runtime_error("Invalid pair count");
-        }
-
-        for (size_t i = 0; i < pairs; ++i) {
-            // Ignore the metadata
-            read_string(buffer);
-            read_string(buffer);
-        }
-
-        // Read marker
-        stream_.read(buffer, 16);
-
-        marker_ = std::string(buffer, 16);
-    } */
 
     void initialize_() {
         // Completly skip the header as it is the same in all RCSB Hadoop files
@@ -167,18 +84,22 @@ class Hadoop {
     }
 };
 
-template <class Function>
-inline void run_hadoop(Function&& worker, const boost::filesystem::path& p) {
-    std::vector<boost::filesystem::path> pathvec;
+inline std::vector<fs::path> read_hadoop_dir(const fs::path& p) {
+
+    if(!fs::is_directory(p)) {
+        throw std::runtime_error("Provided directory not valid.");
+    }
+
+    std::vector<fs::path> pathvec;
     pathvec.reserve(600);
 
     // There's only ~550 files to read here!
-    auto begin = boost::filesystem::directory_iterator(p);
-    boost::filesystem::directory_iterator end;
+    auto begin = fs::directory_iterator(p);
+    fs::directory_iterator end;
     std::transform(
         begin, end, std::back_inserter(pathvec),
-        [](boost::filesystem::directory_entry& entry) {
-            if (boost::filesystem::is_directory(entry.path())) {
+        [](fs::directory_entry& entry) {
+            if (fs::is_directory(entry.path())) {
                 throw std::runtime_error(
                     "Directory provided has subdirectories.\nPlease make sure "
                     "you are using the tar ball provided by RCSB.");
@@ -192,97 +113,84 @@ inline void run_hadoop(Function&& worker, const boost::filesystem::path& p) {
             return entry.path();
         });
 
-    auto work_iter = pathvec.begin();
-    // typename ret_type decltype(&worker::operator());
-    std::vector<std::future<void>> tasks;
+    return pathvec;
+}
+
+template <class Function>
+inline void run_hadoop(Function&& worker, const fs::path& p, size_t ncpu) {
+    auto pathvec = read_hadoop_dir(p);
+    thread_pool threads(ncpu);
+    threaded_queue<size_t> results;
 
     for (const auto& path : pathvec) {
-        tasks.emplace_back(std::async(
-            std::launch::async,
-            [&worker](const boost::filesystem::path& thread_p) {
-                std::ifstream data(thread_p.string(), std::istream::binary);
-                Hadoop sequence(data);
+        threads.queue_task([path, &results, &worker] {
+            std::ifstream data(path.string(), std::istream::binary);
+            Hadoop sequence(data);
 
-                while (sequence.has_next()) {
-                    auto pair = sequence.next();
-                    const auto entry = std::string(pair.first.data() + 1, 4);
-                    try {
-                        auto traj = chemfiles::Trajectory(
-                            std::move(pair.second), "MMTF/GZ");
-                        auto complex = traj.read();
-                        worker(std::move(complex), entry);
-                    } catch (...) {
-                    }
+            while (sequence.has_next()) {
+                auto pair = sequence.next();
+                const auto entry = std::string(pair.first.data() + 1, 4);
+                try {
+                    auto traj = chemfiles::Trajectory(std::move(pair.second),
+                                                      "MMTF/GZ");
+                    auto complex = traj.read();
+                    worker(std::move(complex), entry);
+                } catch (...) {
                 }
-            },
-            path));
+            }
+
+            results.push_back(0);
+        });
     }
 
-    for (auto& i : tasks) {
-        i.get();
+    std::size_t tasks_complete = 0;
+    while (auto result = results.pop_front()) {
+        ++tasks_complete;
+        if (tasks_complete == pathvec.size()) {
+            break;
+        }
     }
 }
 
-template <class Function, typename ret>
-inline void run_hadoop(Function&& worker, const boost::filesystem::path& p,
-                      ret& collector) {
-    std::vector<boost::filesystem::path> pathvec;
-    pathvec.reserve(600);
+template <class Function,
+          typename ret = std::result_of_t<Function&()>>
+inline void run_hadoop(Function&& worker, const fs::path& p, size_t ncpu, ret& collector) {
 
-    // There's only ~550 files to read here!
-    auto begin = boost::filesystem::directory_iterator(p);
-    boost::filesystem::directory_iterator end;
-    std::transform(
-        begin, end, std::back_inserter(pathvec),
-        [](boost::filesystem::directory_entry& entry) {
-            if (boost::filesystem::is_directory(entry.path())) {
-                throw std::runtime_error(
-                    "Directory provided has subdirectories.\nPlease make sure "
-                    "you are using the tar ball provided by RCSB.");
-            }
-            if (entry.path().has_extension()) {
-                throw std::runtime_error(
-                    "Directory provided has file with extensions.\nPlease "
-                    "remove files with extensions if you are sure the seqeunce "
-                    "files are valid.");
-            }
-            return entry.path();
-        });
+    auto pathvec = read_hadoop_dir(p);
 
-    auto work_iter = pathvec.begin();
-    // typename ret_type decltype(&worker::operator());
-    std::vector<std::future<ret>> tasks;
+    thread_pool threads(ncpu);
+    threaded_queue<ret> results;
 
     for (const auto& path : pathvec) {
-        tasks.emplace_back(std::async(
-            std::launch::async,
-            [&worker](const boost::filesystem::path& thread_p) {
-                std::ifstream data(thread_p.string(), std::istream::binary);
-                Hadoop sequence(data);
-                ret collector;
+        threads.queue_task([path, &results, &worker] {
+            std::ifstream data(path.string(), std::istream::binary);
+            Hadoop sequence(data);
+            ret mini_collector;
 
-                while (sequence.has_next()) {
-                    auto pair = sequence.next();
-                    const auto entry = std::string(pair.first.data() + 1, 4);
-                    try {
-                        auto traj = chemfiles::Trajectory(
-                            std::move(pair.second), "MMTF/GZ");
-                        auto complex = traj.read();
-                        collector += worker(std::move(complex), entry);
-                    } catch (...) {
-                    }
+            while (sequence.has_next()) {
+                auto pair = sequence.next();
+                const auto entry = std::string(pair.first.data() + 1, 4);
+                try {
+                    auto traj = chemfiles::Trajectory(std::move(pair.second),
+                                                      "MMTF/GZ");
+                    auto complex = traj.read();
+                    mini_collector += worker(std::move(complex), entry);
+                } catch (...) {
                 }
+            }
 
-                return collector;
-            },
-            path));
+            results.push_back(mini_collector);
+        });
     }
 
-    for (auto& i : tasks) {
-        collector += i.get();
+    std::size_t tasks_complete = 0;
+    while (auto result = results.pop_front()) {
+        collector += *result;
+        ++tasks_complete;
+        if (tasks_complete == pathvec.size()) {
+            break;
+        }
     }
-
-    std::cout << "ASDFASDF" << std::endl;
 }
 }  // namespace lemon
 

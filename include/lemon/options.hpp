@@ -49,7 +49,7 @@ class Options {
         return reference_;
     }
 
-    size_t npu() const {
+    size_t ncpu() const {
         return ncpu_;
     }
 

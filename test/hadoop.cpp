@@ -45,7 +45,7 @@ TEST_CASE("Use Hadoop Run - no collector") {
         auto result = lemon::count_bioassemblies(complex);
         counts[pdbid] = result;
     };
-    lemon::run_hadoop(worker, p);
+    lemon::run_hadoop(worker, p, 2);
     CHECK(counts.size() == 5);
 }
 
@@ -62,15 +62,15 @@ TEST_CASE("Use Hadoop Run - with collector") {
 
     lemon::ResidueNameCount collector;
 
-    lemon::run_hadoop(worker, p, collector);
-    std::cout << "DERP{" << std::endl;
+    lemon::run_hadoop(worker, p, 2, collector);
     CHECK(collector.size() == 36);
 }
 
 TEST_CASE("Provide an invalid directory to Hadoop run") {
     auto worker = [](const chemfiles::Frame&, const std::string&) {};
 
-    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"."}), std::runtime_error);
-    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"files/entry_10/1/0"}),
+    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"/nodir/"}, 2), std::runtime_error);
+    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"."}, 2), std::runtime_error);
+    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"files/entry_10/1/0"}, 2),
                     std::runtime_error);
 }

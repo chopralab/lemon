@@ -7,7 +7,6 @@
 #include <chemfiles.hpp>
 
 #include "lemon/count.hpp"
-#include "lemon/entries.hpp"
 #include "lemon/hadoop.hpp"
 #include "lemon/options.hpp"
 #include "lemon/prune.hpp"
@@ -127,13 +126,14 @@ int main(int argc, char* argv[]) {
 
     auto p = o.work_dir();
     auto entries = o.entries();
+    auto threads = o.ncpu();
 
-    if (!boost::filesystem::is_directory(p)) {
-        std::cerr << "You must supply a valid directory" << std::endl;
-        return 2;
+    try {
+        lemon::run_hadoop(worker, p, threads);
+    } catch(std::runtime_error& e){
+        std::cerr << e.what() << "\n";
+        return 1;
     }
-
-    lemon::run_hadoop(worker, p);
 
     StretchCounts sc_total;
 
