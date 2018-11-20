@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-#include "boost/optional.hpp"
+#include "chemfiles/external/optional.hpp"
 
 namespace lemon {
 
@@ -22,10 +22,10 @@ struct threaded_queue {
         cv.notify_one();
     }
 
-    boost::optional<T> pop_front() {
+    chemfiles::optional<T> pop_front() {
         lock l(m);
         cv.wait(l, [this] { return abort || !data.empty(); });
-        if (abort) return {};
+        if (abort) return chemfiles::nullopt;
         auto r = std::move(data.back());
         data.pop_back();
         return std::move(r);
