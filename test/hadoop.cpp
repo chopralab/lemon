@@ -53,10 +53,9 @@ TEST_CASE("Use Hadoop Run - no collector") {
 
 TEST_CASE("Use Hadoop Run - with collector") {
     boost::filesystem::path p("files/rcsb_hadoop");
-    std::map<std::string, size_t> counts;
 
-    auto worker = [&counts](const chemfiles::Frame& complex,
-                            const std::string&) {
+    auto worker = [](const chemfiles::Frame& complex,
+                     const std::string&) {
         lemon::ResidueNameCount resn_counts;
         lemon::count_residues(complex, resn_counts);
         return resn_counts;

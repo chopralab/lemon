@@ -23,17 +23,19 @@ matrix:
     - os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON
+      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Debug
+    - os: linux
+      compiler: gcc
+      addons: *linux64
+      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Release
     - os: linux
       compiler: clang
       addons: *linux64
-      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF
+      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release
     - os: osx
       compiler: clang
-      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF
-    - os: osx
-      compiler: gcc
-      env: COMPILER_C=gcc COMPILER_CXX=g++ COVERAGE=OFF
+      osx_image: xcode10.1
+      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release
 
 before_install:
   - pip install --user cpp-coveralls
@@ -45,7 +47,7 @@ script:
   - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake .. -DCOVERAGE=${COVERAGE}
+  - cmake .. -DCOVERAGE=${COVERAGE} -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
   - make -j2
   - ctest -j2 --output-on-failure
 
