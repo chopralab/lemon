@@ -5,8 +5,8 @@
 
 #include <fstream>
 
-#include "lemon/hadoop.hpp"
 #include "lemon/count.hpp"
+#include "lemon/hadoop.hpp"
 
 TEST_CASE("Read single MMTF Sequence File") {
     std::ifstream hadoop_file("files/rcsb_hadoop/hadoop", std::istream::binary);
@@ -23,7 +23,8 @@ TEST_CASE("Read single MMTF Sequence File") {
 }
 
 TEST_CASE("Read multiple MMTF Sequence File") {
-    std::ifstream hadoop_file("files/rcsb_hadoop/hadoop_multiple", std::istream::binary);
+    std::ifstream hadoop_file("files/rcsb_hadoop/hadoop_multiple",
+                              std::istream::binary);
     lemon::Hadoop sequence(hadoop_file);
     size_t count = 0;
     while (sequence.has_next()) {
@@ -35,24 +36,47 @@ TEST_CASE("Read multiple MMTF Sequence File") {
     CHECK(count == 5);
 }
 
-TEST_CASE("Use Hadoop Run") {
+#ifndef __APPLE__
+
+TEST_CASE("Use Hadoop Run - no collector") {
     boost::filesystem::path p("files/rcsb_hadoop");
     std::map<std::string, size_t> counts;
 
     auto worker = [&counts](const chemfiles::Frame& complex,
-                              const std::string& pdbid) {
+                            const std::string& pdbid) {
         auto result = lemon::count_bioassemblies(complex);
         counts[pdbid] = result;
     };
-    lemon::run_hadoop(worker, p);
+
+    // test function not thread safe...
+    lemon::run_hadoop(worker, p, 1);
     CHECK(counts.size() == 5);
 }
 
-TEST_CASE("Provide an invalid directory to Hadoop run") {
-    auto worker = [](const chemfiles::Frame&,
-                              const std::string&) {
+TEST_CASE("Use Hadoop Run - with collector") {
+    boost::filesystem::path p("files/rcsb_hadoop");
+
+    auto worker = [](const chemfiles::Frame& complex,
+                     const std::string&) {
+        lemon::ResidueNameCount resn_counts;
+        lemon::count_residues(complex, resn_counts);
+        return resn_counts;
     };
 
-    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"."}), std::runtime_error);
-    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"files/entry_10/1/0"}), std::runtime_error);
+    lemon::map_combine<lemon::ResidueNameCount> combiner;
+    lemon::ResidueNameCount collector;
+
+    lemon::run_hadoop(worker, combiner, p, collector, 2);
+    CHECK(collector.size() == 36);
+}
+
+#endif
+
+TEST_CASE("Provide an invalid directory to Hadoop run") {
+    auto worker = [](const chemfiles::Frame&, const std::string&) {};
+
+    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"/nodir/"}, 2), std::runtime_error);
+    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"."}, 2), std::runtime_error);
+    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"files/entry_10/1/0"}, 2),
+                    std::runtime_error);
 }

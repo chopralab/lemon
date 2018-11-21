@@ -7,7 +7,6 @@
 #include <chemfiles.hpp>
 
 #include "lemon/count.hpp"
-#include "lemon/entries.hpp"
 #include "lemon/hadoop.hpp"
 #include "lemon/options.hpp"
 #include "lemon/prune.hpp"
@@ -89,17 +88,16 @@ int main(int argc, char* argv[]) {
 
     double bin_size = o.distance();
 
-    std::unordered_map<std::thread::id, StretchCounts> bins;
+    auto worker = [bin_size](chemfiles::Frame complex, const std::string&) {
+        StretchCounts bins;
 
-    auto worker = [bin_size, &bins](chemfiles::Frame complex,
-                                    const std::string& /* unused */) {
         // Selection phase
         chemfiles::Frame protein_only;
         auto peptides =
             lemon::select_specific_residues(complex, lemon::common_peptides);
 
         if (peptides.size() == 0) {
-            return;
+            return bins;
         }
 
         lemon::separate_residues(complex, peptides, protein_only);
@@ -112,36 +110,32 @@ int main(int argc, char* argv[]) {
             auto distance = protein_only.distance(bond[0], bond[1]);
             size_t bin = static_cast<size_t>(std::floor(distance / bin_size));
 
-            auto th = std::this_thread::get_id();
             BondStretchBin sbin = {bond_name, bin};
-            auto bin_iterator = bins[th].find(sbin);
+            auto bin_iterator = bins.find(sbin);
 
-            if (bin_iterator == bins[th].end()) {
-                bins[th][sbin] = 1;
+            if (bin_iterator == bins.end()) {
+                bins[sbin] = 1;
                 continue;
             }
 
             ++(bin_iterator->second);
         }
+
+        return bins;
     };
 
     auto p = o.work_dir();
-    auto ncpu = o.npu();
     auto entries = o.entries();
+    auto threads = o.ncpu();
 
-    if (!boost::filesystem::is_directory(p)) {
-        std::cerr << "You must supply a valid directory" << std::endl;
-        return 2;
-    }
-
-    lemon::run_hadoop(worker, p, ncpu);
-
+    lemon::map_combine<StretchCounts> combiner;
     StretchCounts sc_total;
 
-    for (const auto& bin : bins) {
-        for (const auto& sc : bin.second) {
-            sc_total[sc.first] += sc.second;
-        }
+    try {
+        lemon::run_hadoop(worker, combiner, p, sc_total, threads);
+    } catch(std::runtime_error& e){
+        std::cerr << e.what() << "\n";
+        return 1;
     }
 
     for (const auto& i : sc_total) {

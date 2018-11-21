@@ -25,7 +25,6 @@ int main(int argc, char* argv[]) {
     }
 
     auto p = o.work_dir();
-    auto ncpu = o.npu();
 
     if (!boost::filesystem::is_directory(p)) {
         std::cerr << "You must supply a valid archive directory" << std::endl;
@@ -33,11 +32,7 @@ int main(int argc, char* argv[]) {
     }
 
     auto outdir = o.work_dir();
-
-    if (!boost::filesystem::is_directory(outdir)) {
-        std::cerr << "You must supply a valid output directory" << std::endl;
-        return 2;
-    }
+    auto threads = o.ncpu();
 
     lemon::PDBIDVec vec;
     std::unordered_map<std::string, lemon::ResidueNameSet> rnms;
@@ -74,5 +69,10 @@ int main(int argc, char* argv[]) {
         }
     };
 
-    lemon::run_hadoop(worker, p, ncpu);
+    try {
+        lemon::run_hadoop(worker, p, threads);
+    } catch(std::runtime_error& e){
+        std::cerr << e.what() << "\n";
+        return 1;
+    }
 }
