@@ -36,6 +36,8 @@ TEST_CASE("Read multiple MMTF Sequence File") {
     CHECK(count == 5);
 }
 
+#ifndef __APPLE__
+
 TEST_CASE("Use Hadoop Run - no collector") {
     boost::filesystem::path p("files/rcsb_hadoop");
     std::map<std::string, size_t> counts;
@@ -67,6 +69,8 @@ TEST_CASE("Use Hadoop Run - with collector") {
     lemon::run_hadoop(worker, combiner, p, collector, 2);
     CHECK(collector.size() == 36);
 }
+
+#endif
 
 TEST_CASE("Provide an invalid directory to Hadoop run") {
     auto worker = [](const chemfiles::Frame&, const std::string&) {};
