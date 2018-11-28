@@ -1,15 +1,12 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/filesystem.hpp>
-
-#include <chemfiles.hpp>
-
 #include "lemon/entries.hpp"
 #include "lemon/count.hpp"
 #include "lemon/select.hpp"
 #include "lemon/options.hpp"
 #include "lemon/hadoop.hpp"
+#include "lemon/parallel.hpp"
 
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
@@ -29,7 +26,7 @@ int main(int argc, char* argv[]) {
     auto threads = o.ncpu();
 
     try {
-        lemon::run_hadoop(worker, p, threads);
+        lemon::run_parallel(worker, p, threads);
     } catch(std::runtime_error& e){
         std::cerr << e.what() << "\n";
         return 1;

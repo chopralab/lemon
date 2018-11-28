@@ -2,16 +2,13 @@
 #include <sstream>
 #include <unordered_map>
 
-#include <boost/filesystem.hpp>
-
-#include <chemfiles.hpp>
-
 #include "lemon/count.hpp"
 #include "lemon/hadoop.hpp"
 #include "lemon/options.hpp"
 #include "lemon/prune.hpp"
 #include "lemon/select.hpp"
 #include "lemon/separate.hpp"
+#include "lemon/parallel.hpp"
 
 // typedefs for binned data
 typedef std::pair<std::string, int> BondImproperBin;
@@ -134,7 +131,7 @@ int main(int argc, char* argv[]) {
     ImproperCounts sc_total;
 
     try {
-        lemon::run_hadoop(worker, combiner, p, sc_total, threads);
+        lemon::run_parallel(worker, combiner, p, sc_total, threads);
     } catch(std::runtime_error& e){
         std::cerr << e.what() << "\n";
         return 1;

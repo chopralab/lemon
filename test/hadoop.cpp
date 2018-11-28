@@ -1,5 +1,3 @@
-#include <chemfiles.hpp>
-
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
@@ -7,6 +5,7 @@
 
 #include "lemon/count.hpp"
 #include "lemon/hadoop.hpp"
+#include "lemon/parallel.hpp"
 
 TEST_CASE("Read single MMTF Sequence File") {
     std::ifstream hadoop_file("files/rcsb_hadoop/hadoop", std::istream::binary);
@@ -36,20 +35,19 @@ TEST_CASE("Read multiple MMTF Sequence File") {
     CHECK(count == 5);
 }
 
-#ifndef __APPLE__
-
 TEST_CASE("Use Hadoop Run - no collector") {
     boost::filesystem::path p("files/rcsb_hadoop");
     std::map<std::string, size_t> counts;
+    std::mutex test_mutex;
 
-    auto worker = [&counts](const chemfiles::Frame& complex,
-                            const std::string& pdbid) {
+    auto worker = [&counts, &test_mutex](const chemfiles::Frame& complex,
+                                         const std::string& pdbid) {
         auto result = lemon::count_bioassemblies(complex);
+        std::lock_guard<std::mutex> guard(test_mutex);
         counts[pdbid] = result;
     };
 
-    // test function not thread safe...
-    lemon::run_hadoop(worker, p, 1);
+    lemon::run_parallel(worker, p, 2);
     CHECK(counts.size() == 5);
 }
 
@@ -66,17 +64,12 @@ TEST_CASE("Use Hadoop Run - with collector") {
     lemon::map_combine<lemon::ResidueNameCount> combiner;
     lemon::ResidueNameCount collector;
 
-    lemon::run_hadoop(worker, combiner, p, collector, 2);
+    lemon::run_parallel(worker, combiner, p, collector, 2);
     CHECK(collector.size() == 36);
 }
 
-#endif
-
 TEST_CASE("Provide an invalid directory to Hadoop run") {
-    auto worker = [](const chemfiles::Frame&, const std::string&) {};
-
-    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"/nodir/"}, 2), std::runtime_error);
-    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"."}, 2), std::runtime_error);
-    CHECK_THROWS_AS(lemon::run_hadoop(worker, {"files/entry_10/1/0"}, 2),
-                    std::runtime_error);
+    CHECK_THROWS_AS(lemon::read_hadoop_dir({"/nodir/"}), std::runtime_error);
+    CHECK_THROWS_AS(lemon::read_hadoop_dir({"."}), std::runtime_error);
+    CHECK_THROWS_AS(lemon::read_hadoop_dir({"files/entry_10/1/0"}), std::runtime_error);
 }
