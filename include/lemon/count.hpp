@@ -1,5 +1,5 @@
-#ifndef PARSE_HPP
-#define PARSE_HPP
+#ifndef LEMON_PARSE_HPP
+#define LEMON_PARSE_HPP
 
 #include <set>
 #include <sstream>

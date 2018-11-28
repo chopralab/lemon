@@ -19,8 +19,6 @@
 #include <boost/filesystem.hpp>
 #include <future>
 
-#include "lemon/thread_pool.hpp"
-
 namespace lemon {
 
 namespace fs = boost::filesystem;

@@ -1,12 +1,6 @@
 #include <iostream>
 
-#include "lemon/count.hpp"
-#include "lemon/entries.hpp"
-#include "lemon/hadoop.hpp"
-#include "lemon/options.hpp"
-#include "lemon/select.hpp"
-#include "lemon/separate.hpp"
-#include "lemon/parallel.hpp"
+#include "lemon/lemon.hpp"
 
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);

@@ -2,14 +2,7 @@
 #include <sstream>
 #include <unordered_map>
 
-#include "lemon/count.hpp"
-#include "lemon/entries.hpp"
-#include "lemon/hadoop.hpp"
-#include "lemon/options.hpp"
-#include "lemon/prune.hpp"
-#include "lemon/select.hpp"
-#include "lemon/separate.hpp"
-#include "lemon/parallel.hpp"
+#include "lemon/lemon.hpp"
 
 // typedefs for binned data
 typedef std::pair<std::string, int> BondDihedralBin;

@@ -1,5 +1,5 @@
-#ifndef STRUCTURE_HPP
-#define STRUCTURE_HPP
+#ifndef LEMON_STRUCTURE_HPP
+#define LEMON_STRUCTURE_HPP
 
 #include <algorithm>
 #include <set>

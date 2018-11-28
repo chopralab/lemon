@@ -1,7 +1,11 @@
-#ifndef PARALLEL_HPP
-#define PARALLEL_HPP
+#ifndef LEMON_PARALLEL_HPP
+#define LEMON_PARALLEL_HPP
 
 #include "lemon/hadoop.hpp"
+
+#ifdef LEMON_USE_ASYNC
+#include "lemon/thread_pool.hpp"
+#endif
 
 namespace lemon {
 

@@ -1,5 +1,5 @@
-#ifndef ENTRIES_HPP
-#define ENTRIES_HPP
+#ifndef LEMON_ENTRIES_HPP
+#define LEMON_ENTRIES_HPP
 
 #include <array>
 #include <istream>

@@ -1,6 +1,6 @@
 
-#ifndef PRUNE_HPP
-#define PRUNE_HPP
+#ifndef LEMON_PRUNE_HPP
+#define LEMON_PRUNE_HPP
 
 #include <chemfiles.hpp>
 #include "lemon/residue_name.hpp"

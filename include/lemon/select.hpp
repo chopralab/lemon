@@ -1,5 +1,5 @@
-#ifndef SELECT_HPP
-#define SELECT_HPP
+#ifndef LEMON_SELECT_HPP
+#define LEMON_SELECT_HPP
 
 #include <set>
 

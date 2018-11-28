@@ -1,5 +1,5 @@
-#ifndef SEPARATE_HPP
-#define SEPARATE_HPP
+#ifndef LEMON_SEPARATE_HPP
+#define LEMON_SEPARATE_HPP
 
 #include <set>
 #include <unordered_set>
