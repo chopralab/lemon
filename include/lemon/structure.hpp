@@ -6,6 +6,7 @@
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
+namespace tmalign {
 
 // Ported from https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f
 // Original reference:
@@ -541,6 +542,7 @@ inline std::tuple<double, double, size_t> TMscore(
 
     return std::tuple<double, double, size_t>(score_max, armsd, n_ali);
 }
-}
+} // namespace tmalign
+} // namespace lemon
 
 #endif

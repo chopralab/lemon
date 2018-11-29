@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) {
 
         // Desired info is obtained directly
-        auto result = lemon::count_bioassemblies(complex);
+        auto result = lemon::count::bioassemblies(complex);
 
         // Custom output phase
         std::stringstream ss;

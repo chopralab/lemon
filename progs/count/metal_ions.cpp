@@ -10,10 +10,10 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) {
 
         // Selection phase
-        auto result = lemon::select_metal_ions(complex);
+        auto result = lemon::select::metal_ions(complex);
 
         // No pruning, straight to out output phase
-        lemon::print_residue_name_counts(std::cout, pdbid, complex, result);
+        lemon::count::print_residue_name_counts(std::cout, pdbid, complex, result);
     };
 
     auto p = o.work_dir();

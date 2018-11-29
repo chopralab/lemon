@@ -12,18 +12,18 @@ int main(int argc, char* argv[]) {
                              const std::string& pdbid) {
 
         // Selection phase
-        auto waters = lemon::select_specific_residues(complex, {"HOH"});
-        auto smallm = lemon::select_small_molecules(complex);
+        auto waters = lemon::select::specific_residues(complex, {"HOH"});
+        auto smallm = lemon::select::small_molecules(complex);
 
         // Pruning phase
-        lemon::remove_identical_residues(complex, smallm);
-        lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
-        lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
+        lemon::prune::identical_residues(complex, smallm);
+        lemon::prune::cofactors(complex, smallm, lemon::common_cofactors);
+        lemon::prune::cofactors(complex, smallm, lemon::linear_molecules);
 
-        lemon::remove_interactions(complex, smallm, waters, distance);
+        lemon::prune::remove_interactions(complex, smallm, waters, distance);
 
         // Output phase
-        lemon::print_residue_name_counts(std::cout, pdbid, complex, smallm);
+        lemon::count::print_residue_name_counts(std::cout, pdbid, complex, smallm);
     };
 
     auto p = o.work_dir();

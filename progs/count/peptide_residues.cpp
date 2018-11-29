@@ -11,18 +11,18 @@ int main(int argc, char* argv[]) {
 
         // Selection phase
         chemfiles::Frame protein_only;
-        auto peptides = lemon::select_peptides(complex);
+        auto peptides = lemon::select::peptides(complex);
 
         // Pruning phase
         if (peptides.size() == 0) {
             return;
         }
 
-        lemon::separate_residues(complex, peptides, protein_only);
+        lemon::separate::residues(complex, peptides, protein_only);
 
         // Output phase
         auto th = std::this_thread::get_id();
-        lemon::count_residues(protein_only, resn_counts[th]);
+        lemon::count::residues(protein_only, resn_counts[th]);
     };
 
     auto p = o.work_dir();

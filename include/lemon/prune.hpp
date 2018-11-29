@@ -6,6 +6,7 @@
 #include "lemon/residue_name.hpp"
 
 namespace lemon {
+
 const ResidueNameSet common_cofactors{
     {"FAD"}, {"FMN"}, {"NAD"}, {"NAP"}, {"CLA"}, {"HEM"}, {"HEA"},
     {"HEB"}, {"HEC"}, {"ADP"}, {"ATP"}, {"GDP"}, {"GTP"}, {"UNL"},
@@ -23,7 +24,9 @@ const ResidueNameSet linear_molecules{
     {"PEE"}, {"LHG"}, {"MC3"}
 };
 
-inline void remove_identical_residues(const chemfiles::Frame& file,
+namespace prune {
+
+inline void identical_residues(const chemfiles::Frame& file,
                                std::set<size_t>& residue_ids) {
     auto& residues = file.topology().residues();
 
@@ -66,9 +69,9 @@ inline void remove_identical_residues(const chemfiles::Frame& file,
     }
 }
 
-inline void remove_cofactors(const chemfiles::Frame& file,
-                             std::set<size_t>& residue_ids,
-                             const ResidueNameSet& rns) {
+inline void cofactors(const chemfiles::Frame& file,
+                      std::set<size_t>& residue_ids,
+                      const ResidueNameSet& rns) {
     auto& residues = file.topology().residues();
 
     auto it = residue_ids.begin();
@@ -137,6 +140,7 @@ inline void remove_interactions(const chemfiles::Frame& input,
     found_interaction:;
     }
 }
-}
+} // namespace prune
+} // namespace lemon
 
 #endif

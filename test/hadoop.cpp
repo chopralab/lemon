@@ -42,7 +42,7 @@ TEST_CASE("Use Hadoop Run - no collector") {
 
     auto worker = [&counts, &test_mutex](const chemfiles::Frame& complex,
                                          const std::string& pdbid) {
-        auto result = lemon::count_bioassemblies(complex);
+        auto result = lemon::count::bioassemblies(complex);
         std::lock_guard<std::mutex> guard(test_mutex);
         counts[pdbid] = result;
     };
@@ -57,7 +57,7 @@ TEST_CASE("Use Hadoop Run - with collector") {
     auto worker = [](const chemfiles::Frame& complex,
                      const std::string&) {
         lemon::ResidueNameCount resn_counts;
-        lemon::count_residues(complex, resn_counts);
+        lemon::count::residues(complex, resn_counts);
         return resn_counts;
     };
 

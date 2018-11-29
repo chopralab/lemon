@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
                                  const std::string& /* unused */) {
         // Desired info is calculated directly, no pruning, output is done later
         auto th = std::this_thread::get_id();
-        lemon::count_residues(complex, resn_counts[th]);
+        lemon::count::residues(complex, resn_counts[th]);
     };
 
     auto p = o.work_dir();

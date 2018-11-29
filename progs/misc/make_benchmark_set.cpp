@@ -33,17 +33,17 @@ int main(int argc, char* argv[]) {
                                              const std::string& pdbid) {
 
         // Selection phase
-        auto smallm = lemon::select_specific_residues(complex, rnms[pdbid]);
+        auto smallm = lemon::select::specific_residues(complex, rnms[pdbid]);
 
         // Pruning phase
-        lemon::remove_identical_residues(complex, smallm);
+        lemon::prune::identical_residues(complex, smallm);
 
         // Output phase
         for (auto resid : smallm) {
             chemfiles::Frame prot;
             chemfiles::Frame lig;
-            lemon::separate_protein_and_ligand(complex, resid, prot, lig,
-                                               distance);
+            lemon::separate::protein_and_ligand(complex, resid, prot, lig,
+                                                distance);
 
             auto protfile = boost::filesystem::path(outdir);
             protfile /= pdbid + "_" + lig.get("name")->as_string() + ".pdb";

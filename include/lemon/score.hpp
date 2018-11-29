@@ -333,7 +333,7 @@ inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
 
     return X_Score;
 }
-}
-}
+} // namespace xscore
+} // namespace lemon
 
 #endif

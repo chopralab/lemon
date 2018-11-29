@@ -9,7 +9,7 @@ static bool roughly(double a, double b, double tol = 1e-4) {
     return std::fabs(a - b) < tol;
 }
 
-TEST_CASE("TMScore for 1OQ5") {
+TEST_CASE("tmalign::TMscore for 1OQ5") {
     auto traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
     auto frame1 = traj.read();
 
@@ -17,15 +17,16 @@ TEST_CASE("TMScore for 1OQ5") {
     auto frame2 = traj.read();
 
     std::vector<chemfiles::Vector3D> rot;
-    double TMscore, rmsd;
+    double tmscore, rmsd;
     size_t aligned_res;
-    std::tie(TMscore, rmsd, aligned_res) = lemon::TMscore(frame1, frame2, rot);
-    CHECK(roughly(TMscore, 1));
+    std::tie(tmscore, rmsd, aligned_res) =
+        lemon::tmalign::TMscore(frame1, frame2, rot);
+    CHECK(roughly(tmscore, 1));
     CHECK(roughly(rmsd, 0));
     CHECK(aligned_res == 256);
 }
 
-TEST_CASE("TMScore for 1AAQ") {
+TEST_CASE("tmalign::TMscore for 1AAQ") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto frame1 = traj.read();
 
@@ -33,15 +34,16 @@ TEST_CASE("TMScore for 1AAQ") {
     auto frame2 = traj.read();
 
     std::vector<chemfiles::Vector3D> rot;
-    double TMscore, rmsd;
+    double tmscore, rmsd;
     size_t aligned_res;
-    std::tie(TMscore, rmsd, aligned_res) = lemon::TMscore(frame1, frame2, rot);
-    CHECK(roughly(TMscore, 1));
+    std::tie(tmscore, rmsd, aligned_res) =
+        lemon::tmalign::TMscore(frame1, frame2, rot);
+    CHECK(roughly(tmscore, 1));
     CHECK(roughly(rmsd, 0));
     CHECK(aligned_res == 199);
 }
 
-TEST_CASE("TMScore for 1OQ5/1AAQ") {
+TEST_CASE("tmalign::TMscore for 1OQ5/1AAQ") {
     auto traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
     auto frame1 = traj.read();
 
@@ -49,15 +51,16 @@ TEST_CASE("TMScore for 1OQ5/1AAQ") {
     auto frame2 = traj.read();
 
     std::vector<chemfiles::Vector3D> rot;
-    double TMscore, rmsd;
+    double tmscore, rmsd;
     size_t aligned_res;
-    std::tie(TMscore, rmsd, aligned_res) = lemon::TMscore(frame1, frame2, rot);
-    CHECK(roughly(TMscore, 0.100864));
+    std::tie(tmscore, rmsd, aligned_res) =
+        lemon::tmalign::TMscore(frame1, frame2, rot);
+    CHECK(roughly(tmscore, 0.100864));
     CHECK(roughly(rmsd, 16.0814691307));
     CHECK(aligned_res == 96);
 }
 
-TEST_CASE("TMScore for 1AAQ/1OQ5") {
+TEST_CASE("tmalign::TMscore for 1AAQ/1OQ5") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto frame1 = traj.read();
 
@@ -65,16 +68,16 @@ TEST_CASE("TMScore for 1AAQ/1OQ5") {
     auto frame2 = traj.read();
 
     std::vector<chemfiles::Vector3D> rot;
-    double TMscore, rmsd;
+    double tmscore, rmsd;
     size_t aligned_res;
-    std::tie(TMscore, rmsd, aligned_res) =
-        lemon::TMscore(frame1, frame2, rot, true);
-    CHECK(roughly(TMscore, 0.0863468016));
+    std::tie(tmscore, rmsd, aligned_res) =
+        lemon::tmalign::TMscore(frame1, frame2, rot, true);
+    CHECK(roughly(tmscore, 0.0863468016));
     CHECK(roughly(rmsd, 16.0814691307));
     CHECK(aligned_res == 96);
 }
 
-TEST_CASE("TMScore for 1AAQ/4XUF") {
+TEST_CASE("tmalign::TMscore for 1AAQ/4XUF") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto frame1 = traj.read();
 
@@ -82,15 +85,16 @@ TEST_CASE("TMScore for 1AAQ/4XUF") {
     auto frame2 = traj.read();
 
     std::vector<chemfiles::Vector3D> rot;
-    double TMscore, rmsd;
+    double tmscore, rmsd;
     size_t aligned_res;
-    std::tie(TMscore, rmsd, aligned_res) = lemon::TMscore(frame1, frame2, rot);
-    CHECK(roughly(TMscore, 0.0));
+    std::tie(tmscore, rmsd, aligned_res) =
+        lemon::tmalign::TMscore(frame1, frame2, rot);
+    CHECK(roughly(tmscore, 0.0));
     CHECK(roughly(rmsd, 0));
     CHECK(aligned_res == 0);
 }
 
-TEST_CASE("TMScore for 1AAQ/1YT9") {
+TEST_CASE("tmalign::TMscore for 1AAQ/1YT9") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto frame1 = traj.read();
 
@@ -98,10 +102,11 @@ TEST_CASE("TMScore for 1AAQ/1YT9") {
     auto frame2 = traj.read();
 
     std::vector<chemfiles::Vector3D> rot;
-    double TMscore, rmsd;
+    double tmscore, rmsd;
     size_t aligned_res;
-    std::tie(TMscore, rmsd, aligned_res) = lemon::TMscore(frame1, frame2, rot);
-    CHECK(roughly(TMscore, 0.9762572135));
+    std::tie(tmscore, rmsd, aligned_res) =
+        lemon::tmalign::TMscore(frame1, frame2, rot);
+    CHECK(roughly(tmscore, 0.9762572135));
     CHECK(roughly(rmsd, 0.8351581378));
     CHECK(aligned_res == 198);
 }
@@ -116,7 +121,7 @@ TEST_CASE("Kabsch") {
     std::vector<size_t> a_search;
     std::vector<size_t> a_native;
 
-    lemon::find_operlapping_residues(frame1, frame2, a_search, a_native);
+    lemon::tmalign::find_operlapping_residues(frame1, frame2, a_search, a_native);
 
     const auto& a = frame1.positions();
     const auto& b = frame2.positions();
@@ -133,8 +138,8 @@ TEST_CASE("Kabsch") {
     std::vector<double> w(a_search.size(), 1.0);
     chemfiles::Vector3D t;
     chemfiles::Matrix3D u = chemfiles::Matrix3D::zero();
-    lemon::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 2.0);
-    lemon::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 1.0);
+    lemon::tmalign::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 2.0);
+    lemon::tmalign::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 1.0);
 }
 
 TEST_CASE("Kabsch 2") {
@@ -147,7 +152,7 @@ TEST_CASE("Kabsch 2") {
     std::vector<size_t> a_search;
     std::vector<size_t> a_native;
 
-    lemon::find_operlapping_residues(frame1, frame2, a_search, a_native);
+    lemon::tmalign::find_operlapping_residues(frame1, frame2, a_search, a_native);
 
     const auto& a = frame1.positions();
     const auto& b = frame2.positions();
@@ -164,6 +169,6 @@ TEST_CASE("Kabsch 2") {
     std::vector<double> w(a_search.size(), 1.0);
     chemfiles::Vector3D t;
     chemfiles::Matrix3D u = chemfiles::Matrix3D::zero();
-    lemon::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 2.0, 2.0);
+    lemon::tmalign::kabsch(w, r_1, r_2, a_search.size(), u, t, ier, 2.0, 2.0);
 }
 

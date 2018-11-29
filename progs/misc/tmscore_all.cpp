@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 
         double score, rmsd;
         size_t aligned;
-        std::tie(score, rmsd, aligned) = lemon::TMscore(complex, native, junk);
+        std::tie(score, rmsd, aligned) = lemon::tmalign::TMscore(complex, native, junk);
 
         std::stringstream ss;
         ss << pdbid << "\t" << score << "\t" << rmsd << "\t" << aligned << "\n";

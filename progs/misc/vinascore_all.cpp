@@ -10,12 +10,12 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) {
 
         // Selection phase
-        auto smallm = lemon::select_small_molecules(complex);
+        auto smallm = lemon::select::small_molecules(complex);
 
         // Pruning phase
-        lemon::remove_identical_residues(complex, smallm);
-        lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
-        lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
+        lemon::prune::identical_residues(complex, smallm);
+        lemon::prune::cofactors(complex, smallm, lemon::common_cofactors);
+        lemon::prune::cofactors(complex, smallm, lemon::linear_molecules);
 
         // Output phase
         const auto& residues = complex.topology().residues();
@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
         for (auto smallm_id : smallm) {
             auto prot_copy = proteins;
 
-            lemon::keep_interactions(complex, smallm, prot_copy, 8.0);
+            lemon::prune::keep_interactions(complex, smallm, prot_copy, 8.0);
             prot_copy.erase(smallm_id);
 
             auto vscore =

@@ -83,13 +83,13 @@ int main(int argc, char* argv[]) {
         // Selection phase
         chemfiles::Frame protein_only;
         auto peptides =
-            lemon::select_specific_residues(complex, lemon::common_peptides);
+            lemon::select::specific_residues(complex, lemon::common_peptides);
 
         if (peptides.size() == 0) {
             return bins;
         }
 
-        lemon::separate_residues(complex, peptides, protein_only);
+        lemon::separate::residues(complex, peptides, protein_only);
         protein_only.set_cell(complex.cell());
 
         const auto& impropers = protein_only.topology().impropers();
