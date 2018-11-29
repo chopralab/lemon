@@ -20,22 +20,26 @@ linux64_addons:
 matrix:
   fast_finish: true
   include:
-    - os: linux
+    - name: coverage
+      os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Debug
-    - os: linux
+      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Debug ASYNC=ON
+    - name: linux release
+      os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Release
-    - os: linux
+      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=OFF BUILD_TYPE=Release ASYNC=ON
+    - name: linux clang
+      os: linux
       compiler: clang
       addons: *linux64
-      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release
-    - os: osx
+      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release ASYNC=ON
+    - name: osx clang
+      os: osx
       compiler: clang
       osx_image: xcode10.1
-      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release
+      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release ASYNC=OFF
 
 before_install:
   - pip install --user cpp-coveralls
@@ -47,7 +51,7 @@ script:
   - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake .. -DCOVERAGE=${COVERAGE} -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+  - cmake .. -DCOVERAGE=${COVERAGE} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DLEMON_TEST_ASYNC=${ASYNC}
   - make -j2
   - ctest -j2 --output-on-failure
 

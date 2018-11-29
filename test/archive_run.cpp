@@ -25,7 +25,7 @@ TEST_CASE("Ensure threading works") {
     auto worker = [&counts](const chemfiles::Frame& complex,
                               const std::string& pdbid) {
 
-        auto result = lemon::count_bioassemblies(complex);
+        auto result = lemon::count::bioassemblies(complex);
         counts[pdbid] = result;
     };
 

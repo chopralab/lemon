@@ -1,3 +1,6 @@
+#ifndef LEMON_THREAD_POOL_HPP
+#define LEMON_THREAD_POOL_HPP
+
 #include <algorithm>
 #include <chrono>
 #include <deque>
@@ -105,3 +108,5 @@ struct thread_pool {
     std::atomic<std::size_t> active;
 };
 }  // namespace lemon
+
+#endif

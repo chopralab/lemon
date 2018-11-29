@@ -1,7 +1,5 @@
 
-function(add_cpp_test _file_)
-    get_filename_component(_name_ ${_file_} NAME_WE)
-    
+function(add_cpp_test _file_ _name_)    
     add_executable(${_name_} ${_file_})
     add_dependencies(${_name_} chemfiles)
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
@@ -60,5 +58,10 @@ file(GLOB all_test_files
 )
 
 foreach(test_file IN LISTS all_test_files)
-    add_cpp_test(${test_file})
+    get_filename_component(test_name ${test_file} NAME_WE)
+    add_cpp_test(${test_file} ${test_name})
 endforeach(test_file)
+
+if(${LEMON_TEST_ASYNC})
+    add_cpp_test(${CMAKE_CURRENT_SOURCE_DIR}/hadoop.cpp async)
+endif()

@@ -1,5 +1,5 @@
-#ifndef RESIDUE_NAME_HPP
-#define RESIDUE_NAME_HPP
+#ifndef LEMON_RESIDUE_NAME_HPP
+#define LEMON_RESIDUE_NAME_HPP
 
 #include <array>
 #include <cstring>

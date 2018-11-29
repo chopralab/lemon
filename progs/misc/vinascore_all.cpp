@@ -1,16 +1,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/filesystem.hpp>
-
-#include <chemfiles.hpp>
-
-#include "lemon/count.hpp"
-#include "lemon/hadoop.hpp"
-#include "lemon/options.hpp"
-#include "lemon/prune.hpp"
-#include "lemon/score.hpp"
-#include "lemon/select.hpp"
+#include "lemon/lemon.hpp"
 
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
@@ -19,12 +10,12 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) {
 
         // Selection phase
-        auto smallm = lemon::select_small_molecules(complex);
+        auto smallm = lemon::select::small_molecules(complex);
 
         // Pruning phase
-        lemon::remove_identical_residues(complex, smallm);
-        lemon::remove_cofactors(complex, smallm, lemon::common_cofactors);
-        lemon::remove_cofactors(complex, smallm, lemon::linear_molecules);
+        lemon::prune::identical_residues(complex, smallm);
+        lemon::prune::cofactors(complex, smallm, lemon::common_cofactors);
+        lemon::prune::cofactors(complex, smallm, lemon::linear_molecules);
 
         // Output phase
         const auto& residues = complex.topology().residues();
@@ -36,7 +27,7 @@ int main(int argc, char* argv[]) {
         for (auto smallm_id : smallm) {
             auto prot_copy = proteins;
 
-            lemon::keep_interactions(complex, smallm, prot_copy, 8.0);
+            lemon::prune::keep_interactions(complex, smallm, prot_copy, 8.0);
             prot_copy.erase(smallm_id);
 
             auto vscore =
@@ -55,7 +46,7 @@ int main(int argc, char* argv[]) {
     auto threads = o.ncpu();
 
     try {
-        lemon::run_hadoop(worker, p, threads);
+        lemon::run_parallel(worker, p, threads);
     } catch(std::runtime_error& e){
         std::cerr << e.what() << "\n";
         return 1;

@@ -19,8 +19,6 @@
 #include <boost/filesystem.hpp>
 #include <future>
 
-#include "lemon/thread_pool.hpp"
-
 namespace lemon {
 
 namespace fs = boost::filesystem;
@@ -113,83 +111,6 @@ inline std::vector<fs::path> read_hadoop_dir(const fs::path& p) {
         });
 
     return pathvec;
-}
-
-template <class Function>
-inline void run_hadoop(Function&& worker, const fs::path& p, size_t ncpu) {
-    auto pathvec = read_hadoop_dir(p);
-    thread_pool threads(ncpu);
-    threaded_queue<size_t> results;
-
-    for (const auto& path : pathvec) {
-        threads.queue_task([path, &results, &worker] {
-            std::ifstream data(path.string(), std::istream::binary);
-            Hadoop sequence(data);
-
-            while (sequence.has_next()) {
-                auto pair = sequence.next();
-                const auto entry = std::string(pair.first.data() + 1, 4);
-                try {
-                    auto traj = chemfiles::Trajectory(std::move(pair.second),
-                                                      "MMTF/GZ");
-                    auto complex = traj.read();
-                    worker(std::move(complex), entry);
-                } catch (...) {
-                }
-            }
-
-            results.push_back(0);
-        });
-    }
-
-    std::size_t tasks_complete = 0;
-    while (auto result = results.pop_front()) {
-        ++tasks_complete;
-        if (tasks_complete == pathvec.size()) {
-            break;
-        }
-    }
-}
-
-template <typename Function, typename Combiner,
-          typename ret = std::result_of_t<Function&()>>
-inline void run_hadoop(Function&& worker, Combiner&& combine, const fs::path& p,
-                       ret& collector, size_t ncpu) {
-
-    auto pathvec = read_hadoop_dir(p);
-    thread_pool threads(ncpu);
-    threaded_queue<ret> results;
-
-    for (const auto& path : pathvec) {
-        threads.queue_task([path, &results, &worker, &combine] {
-            std::ifstream data(path.string(), std::istream::binary);
-            Hadoop sequence(data);
-            ret mini_collector;
-
-            while (sequence.has_next()) {
-                auto pair = sequence.next();
-                const auto entry = std::string(pair.first.data() + 1, 4);
-                try {
-                    auto traj = chemfiles::Trajectory(std::move(pair.second),
-                                                      "MMTF/GZ");
-                    auto complex = traj.read();
-                    combine(mini_collector, worker(std::move(complex), entry));
-                } catch (...) {
-                }
-            }
-
-            results.push_back(mini_collector);
-        });
-    }
-
-    std::size_t tasks_complete = 0;
-    while (auto result = results.pop_front()) {
-        combine(collector, *result);
-        ++tasks_complete;
-        if (tasks_complete == pathvec.size()) {
-            break;
-        }
-    }
 }
 }  // namespace lemon
 

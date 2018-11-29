@@ -1,5 +1,5 @@
-#ifndef OPTIONS_HPP
-#define OPTIONS_HPP
+#ifndef LEMON_OPTIONS_HPP
+#define LEMON_OPTIONS_HPP
 
 #include <boost/program_options.hpp>
 

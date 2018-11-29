@@ -94,7 +94,7 @@ TEST_CASE("Scoring") {
     auto traj = chemfiles::Trajectory("files/1AHA.mmtf.gz", 'r');
     auto frame1 = traj.read();
 
-    auto ade = lemon::select_specific_residues(frame1, {"ADE"});
+    auto ade = lemon::select::specific_residues(frame1, {"ADE"});
     auto residues = frame1.topology().residues();
 
     auto small_molecule = residues[*ade.begin()];
@@ -104,7 +104,7 @@ TEST_CASE("Scoring") {
         proteins.insert(i);
     }
 
-    lemon::keep_interactions(frame1, ade, proteins, 8.0);
+    lemon::prune::keep_interactions(frame1, ade, proteins, 8.0);
     proteins.erase(*ade.begin());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
@@ -119,7 +119,7 @@ TEST_CASE("Scoring with hydrophobics") {
     auto traj = chemfiles::Trajectory("files/1JD0.mmtf.gz", 'r');
     auto frame1 = traj.read();
 
-    auto azm = lemon::select_specific_residues(frame1, {"AZM"});
+    auto azm = lemon::select::specific_residues(frame1, {"AZM"});
     auto residues = frame1.topology().residues();
 
     auto small_molecule = residues[*azm.begin()];
@@ -129,7 +129,7 @@ TEST_CASE("Scoring with hydrophobics") {
         proteins.insert(i);
     }
 
-    lemon::keep_interactions(frame1, azm, proteins, 8.0);
+    lemon::prune::keep_interactions(frame1, azm, proteins, 8.0);
     proteins.erase(*azm.begin());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*azm.begin()), proteins);
@@ -144,7 +144,7 @@ TEST_CASE("Dry scoring") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame1 = traj.read();
 
-    auto ade = lemon::select_specific_residues(frame1, {"P30"});
+    auto ade = lemon::select::specific_residues(frame1, {"P30"});
     auto residues = frame1.topology().residues();
 
     auto small_molecule = residues[*ade.begin()];
@@ -154,8 +154,8 @@ TEST_CASE("Dry scoring") {
         proteins.insert(i);
     }
 
-    lemon::remove_identical_residues(frame1, proteins);
-    lemon::keep_interactions(frame1, ade, proteins, 8.0);
+    lemon::prune::identical_residues(frame1, proteins);
+    lemon::prune::keep_interactions(frame1, ade, proteins, 8.0);
     proteins.erase(*ade.begin());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);

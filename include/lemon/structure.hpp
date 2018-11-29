@@ -1,11 +1,12 @@
-#ifndef STRUCTURE_HPP
-#define STRUCTURE_HPP
+#ifndef LEMON_STRUCTURE_HPP
+#define LEMON_STRUCTURE_HPP
 
 #include <algorithm>
 #include <set>
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
+namespace tmalign {
 
 // Ported from https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f
 // Original reference:
@@ -541,6 +542,7 @@ inline std::tuple<double, double, size_t> TMscore(
 
     return std::tuple<double, double, size_t>(score_max, armsd, n_ali);
 }
-}
+} // namespace tmalign
+} // namespace lemon
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef SEPARATE_HPP
-#define SEPARATE_HPP
+#ifndef LEMON_SEPARATE_HPP
+#define LEMON_SEPARATE_HPP
 
 #include <set>
 #include <unordered_set>
@@ -8,10 +8,11 @@
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
+namespace separate {
 
-inline void separate_residues(const chemfiles::Frame& input,
-                              const std::set<size_t>& accepted_residues,
-                              chemfiles::Frame& new_frame) {
+inline void residues(const chemfiles::Frame& input,
+                     const std::set<size_t>& accepted_residues,
+                     chemfiles::Frame& new_frame) {
 
     const auto& residues  = input.topology().residues();
     const auto& positions = input.positions();
@@ -47,10 +48,10 @@ inline void separate_residues(const chemfiles::Frame& input,
     }
 }
 
-inline void separate_protein_and_ligand(const chemfiles::Frame& input,
-                                 size_t ligand_id,
-                                 chemfiles::Frame& protein,
-                                 chemfiles::Frame& ligand, double pocket_size) {
+inline void protein_and_ligand(const chemfiles::Frame& input,
+                               size_t ligand_id,
+                               chemfiles::Frame& protein,
+                               chemfiles::Frame& ligand, double pocket_size) {
     const auto& topo = input.topology();
     const auto& positions = input.positions();
     const auto& residues = topo.residues();
@@ -74,11 +75,12 @@ inline void separate_protein_and_ligand(const chemfiles::Frame& input,
         found_interaction:;
     }
 
-    separate_residues(input, accepted_residues, protein);
-    separate_residues(input, {ligand_id}, ligand);
+    lemon::separate::residues(input, accepted_residues, protein);
+    lemon::separate::residues(input, {ligand_id}, ligand);
 
     ligand.set("name", ligand_residue.name());
 }
-}
+} // namespace separate
+} // namespace lemon
 
 #endif

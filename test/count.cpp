@@ -10,7 +10,7 @@ TEST_CASE("Residue Count") {
     auto traj = chemfiles::Trajectory("files/5w1d.pdb", 'r');
     auto test1 = traj.read();
 
-    lemon::count_residues(test1, counter);
+    lemon::count::residues(test1, counter);
 
     CHECK(counter.size() == 22);
 
@@ -42,7 +42,7 @@ TEST_CASE("Residue Count") {
     traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test2 = traj.read();
 
-    lemon::count_residues(test2, counter);
+    lemon::count::residues(test2, counter);
     CHECK(counter.size() == 24);
 
     // Check the simple updates
@@ -55,8 +55,8 @@ TEST_CASE("Residue Count") {
     CHECK(counter["K"]   == 1);
 
     lemon::ResidueNameCount counter2;
-    lemon::count_residues(test1, counter2);
-    lemon::count_residues(test2, counter2);
+    lemon::count::residues(test1, counter2);
+    lemon::count::residues(test2, counter2);
 
     CHECK(counter2 == counter);
 }
@@ -66,44 +66,44 @@ TEST_CASE("Selective residue count") {
     auto traj = chemfiles::Trajectory("files/5w1d.pdb", 'r');
     auto test1 = traj.read();
 
-    lemon::count_residues(test1, {1, 2, 3, 4, 5, 6}, counter);
+    lemon::count::residues(test1, {1, 2, 3, 4, 5, 6}, counter);
 
     std::stringstream ss;
-    lemon::print_residue_name_counts(ss, "JUNK", test1, {});
+    lemon::count::print_residue_name_counts(ss, "JUNK", test1, {});
     CHECK(ss.str() == "");
 
-    lemon::print_residue_name_counts(ss, "5w1d", test1, {2, 5});
+    lemon::count::print_residue_name_counts(ss, "5w1d", test1, {2, 5});
     CHECK(ss.str() == "5w1d\tTYR\t2\n");
 }
 
 TEST_CASE("Alternative Location count") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test = traj.read();
-    CHECK(lemon::count_altloc(test) == 0);
+    CHECK(lemon::count::altloc(test) == 0);
 
     traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count_altloc(test) == 0);
+    CHECK(lemon::count::altloc(test) == 0);
 
     traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count_altloc(test) == 2);
+    CHECK(lemon::count::altloc(test) == 2);
 
     traj = chemfiles::Trajectory("files/entry_10/5/A/5A1I.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count_altloc(test) == 4);
+    CHECK(lemon::count::altloc(test) == 4);
 }
 
 TEST_CASE("Assembly count") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test = traj.read();
-    CHECK(lemon::count_bioassemblies(test) == 1);
+    CHECK(lemon::count::bioassemblies(test) == 1);
 
     traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count_bioassemblies(test) == 2);
+    CHECK(lemon::count::bioassemblies(test) == 2);
 
     traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count_bioassemblies(test) == 1);
+    CHECK(lemon::count::bioassemblies(test) == 1);
 }

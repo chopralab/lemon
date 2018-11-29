@@ -1,5 +1,5 @@
-#ifndef SCORE_HPP
-#define SCORE_HPP
+#ifndef LEMON_SCORE_HPP
+#define LEMON_SCORE_HPP
 
 #include <chemfiles/Frame.hpp>
 #include <cmath>
@@ -333,7 +333,7 @@ inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
 
     return X_Score;
 }
-}
-}
+} // namespace xscore
+} // namespace lemon
 
 #endif

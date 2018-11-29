@@ -1,5 +1,5 @@
-#ifndef PARSE_HPP
-#define PARSE_HPP
+#ifndef LEMON_PARSE_HPP
+#define LEMON_PARSE_HPP
 
 #include <set>
 #include <sstream>
@@ -10,7 +10,9 @@
 #include "lemon/residue_name.hpp"
 
 namespace lemon {
-inline void count_residues(const chemfiles::Frame& file,
+namespace count {
+
+inline void residues(const chemfiles::Frame& file,
                     ResidueNameCount& resn_count) {
     auto& residues = file.topology().residues();
 
@@ -26,7 +28,7 @@ inline void count_residues(const chemfiles::Frame& file,
     }
 }
 
-inline void count_residues(const chemfiles::Frame& file,
+inline void residues(const chemfiles::Frame& file,
                     const std::set<size_t>& resids,
                     ResidueNameCount& resn_count) {
     auto& residues = file.topology().residues();
@@ -43,7 +45,7 @@ inline void count_residues(const chemfiles::Frame& file,
     }
 }
 
-inline size_t count_altloc(const chemfiles::Frame& files) {
+inline size_t altloc(const chemfiles::Frame& files) {
     std::set<char> alt_locs;
     for (const auto& atom : files) {
         const auto& altloc = atom.get("altloc");
@@ -55,7 +57,7 @@ inline size_t count_altloc(const chemfiles::Frame& files) {
     return alt_locs.size();
 }
 
-inline size_t count_bioassemblies(const chemfiles::Frame& file) {
+inline size_t bioassemblies(const chemfiles::Frame& file) {
     auto& residues = file.topology().residues();
     std::set<std::string> assembies;
 
@@ -76,12 +78,13 @@ inline void print_residue_name_counts(std::ostream& os, const std::string& pdbid
     }
 
     ResidueNameCount rnc;
-    count_residues(complex, res_ids, rnc);
+    lemon::count::residues(complex, res_ids, rnc);
 
     std::stringstream ss;
     ss << pdbid << rnc << "\n";
     os << ss.str();
 }
-}
+} // namespace count
+} // namespace lemon
 
 #endif

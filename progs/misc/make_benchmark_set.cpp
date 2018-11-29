@@ -1,17 +1,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/filesystem.hpp>
-
-#include <chemfiles.hpp>
-
-#include "lemon/entries.hpp"
-#include "lemon/count.hpp"
-#include "lemon/prune.hpp"
-#include "lemon/select.hpp"
-#include "lemon/separate.hpp"
-#include "lemon/options.hpp"
-#include "lemon/hadoop.hpp"
+#include "lemon/lemon.hpp"
 
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
@@ -43,17 +33,17 @@ int main(int argc, char* argv[]) {
                                              const std::string& pdbid) {
 
         // Selection phase
-        auto smallm = lemon::select_specific_residues(complex, rnms[pdbid]);
+        auto smallm = lemon::select::specific_residues(complex, rnms[pdbid]);
 
         // Pruning phase
-        lemon::remove_identical_residues(complex, smallm);
+        lemon::prune::identical_residues(complex, smallm);
 
         // Output phase
         for (auto resid : smallm) {
             chemfiles::Frame prot;
             chemfiles::Frame lig;
-            lemon::separate_protein_and_ligand(complex, resid, prot, lig,
-                                               distance);
+            lemon::separate::protein_and_ligand(complex, resid, prot, lig,
+                                                distance);
 
             auto protfile = boost::filesystem::path(outdir);
             protfile /= pdbid + "_" + lig.get("name")->as_string() + ".pdb";
@@ -70,7 +60,7 @@ int main(int argc, char* argv[]) {
     };
 
     try {
-        lemon::run_hadoop(worker, p, threads);
+        lemon::run_parallel(worker, p, threads);
     } catch(std::runtime_error& e){
         std::cerr << e.what() << "\n";
         return 1;

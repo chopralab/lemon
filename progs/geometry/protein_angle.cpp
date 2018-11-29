@@ -2,17 +2,7 @@
 #include <sstream>
 #include <unordered_map>
 
-#include <boost/filesystem.hpp>
-
-#include <chemfiles.hpp>
-
-#include "lemon/count.hpp"
-#include "lemon/entries.hpp"
-#include "lemon/hadoop.hpp"
-#include "lemon/options.hpp"
-#include "lemon/prune.hpp"
-#include "lemon/select.hpp"
-#include "lemon/separate.hpp"
+#include "lemon/lemon.hpp"
 
 // typedefs for binned data
 typedef std::pair<std::string, size_t> BondAngleBin;
@@ -104,13 +94,13 @@ int main(int argc, char* argv[]) {
         // Selection phase
         chemfiles::Frame protein_only;
         auto peptides =
-            lemon::select_specific_residues(complex, lemon::common_peptides);
+            lemon::select::specific_residues(complex, lemon::common_peptides);
 
         if (peptides.size() == 0) {
             return bins;
         }
 
-        lemon::separate_residues(complex, peptides, protein_only);
+        lemon::separate::residues(complex, peptides, protein_only);
 
         const auto& angles = protein_only.topology().angles();
 
@@ -143,7 +133,7 @@ int main(int argc, char* argv[]) {
     AngleCounts sc_total;
 
     try {
-        lemon::run_hadoop(worker, combiner, p, sc_total, threads);
+        lemon::run_parallel(worker, combiner, p, sc_total, threads);
     } catch(std::runtime_error& e){
         std::cerr << e.what() << "\n";
         return 1;
