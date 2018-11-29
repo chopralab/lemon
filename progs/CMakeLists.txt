@@ -41,7 +41,9 @@ function(add_cpp_prog _file_)
 endfunction()
 
 file(GLOB all_test_files
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/count/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/geometry/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/misc/*.cpp
 )
 
 foreach(test_file IN LISTS all_test_files)
