@@ -8,6 +8,13 @@
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
+
+/*!
+ *  \addtogroup separate
+ *  @{
+ */
+
+//! \brief Separate complexes into corresponding frames
 namespace separate {
 
 inline void residues(const chemfiles::Frame& input,
@@ -80,7 +87,10 @@ inline void protein_and_ligand(const chemfiles::Frame& input,
 
     ligand.set("name", ligand_residue.name());
 }
+
 } // namespace separate
+/*! @} End of Doxygen Groups*/
+
 } // namespace lemon
 
 #endif

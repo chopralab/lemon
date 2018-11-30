@@ -7,6 +7,9 @@ namespace lemon {
 
 namespace po = boost::program_options;
 
+/*!
+ * The `Options` class is used to read command line arguments.
+*/
 class Options {
    public:
     Options(int argc, const char* const argv[]) {
@@ -19,11 +22,9 @@ class Options {
             "reference,r", po::value<std::string>()->default_value(""),
             "Reference file for structure based searches")(
             "ncpu,n", po::value<int>()->default_value(1),
-            "Number of CPUs used for run independant jobs.")(
+            "Number of CPUs used for run independant jobs")(
             "entries,e", po::value<std::string>()->default_value(""),
-            "Index file returned by RCSB used.")(
-            "output,o", po::value<std::string>()->default_value("."),
-            "Output directoy for programs which generate sets.");
+            "Index file returned by RCSB used");
 
         po::variables_map vm;
         po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -33,7 +34,6 @@ class Options {
         distance_ = vm["distance"].as<double>();
         reference_ = vm["reference"].as<std::string>();
         ncpu_ = vm["ncpu"].as<int>();
-        output_ = vm["output"].as<std::string>();
         entries_ = vm["entries"].as<std::string>();
     }
 
@@ -53,21 +53,25 @@ class Options {
         return ncpu_;
     }
 
-    const std::string& output() const {
-        return output_;
-    }
-
     const std::string& entries() {
         return entries_;
     }
 
    private:
-    
+
+    //! Directory containing the MMTF or Hadoop files
     std::string work_dir_;
+
+    //! Distance cutoff used for distance based searches
     double distance_;
+
+    //! Reference file for structure based searches
     std::string reference_;
+
+    //! Number of CPUs used for run independant jobs
     size_t ncpu_;
-    std::string output_;
+
+    //! Index file returned by RCSB used
     std::string entries_;
 };
 }

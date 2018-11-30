@@ -11,7 +11,7 @@ namespace lemon {
 
 #ifndef LEMON_USE_ASYNC
 
-// Old threading behavior
+//! \brief The `run_parallel` function launches jobs which do not return data
 template <class Function>
 inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
     auto pathvec = read_hadoop_dir(p);
@@ -52,6 +52,7 @@ inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
     }
 }
 
+//! \brief The `run_parallel` function launches jobs which do return data
 template <typename Function, typename Combiner, typename ret>
 inline void run_parallel(Function&& worker, Combiner&& combine,
                          const fs::path& p, ret& collector, size_t ncpu) {

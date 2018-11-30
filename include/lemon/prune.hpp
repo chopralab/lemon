@@ -24,6 +24,12 @@ const ResidueNameSet linear_molecules{
     {"PEE"}, {"LHG"}, {"MC3"}
 };
 
+/*!
+ *  \addtogroup prune
+ *  @{
+ */
+
+//! \brief Prune residues by removing them based on a criterion
 namespace prune {
 
 inline void identical_residues(const chemfiles::Frame& file,
@@ -140,7 +146,10 @@ inline void remove_interactions(const chemfiles::Frame& input,
     found_interaction:;
     }
 }
+
 } // namespace prune
+/*! @} End of Doxygen Groups*/
+
 } // namespace lemon
 
 #endif

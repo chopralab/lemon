@@ -8,6 +8,12 @@
 
 namespace lemon {
 
+/*!
+ *  \addtogroup xscore
+ *  @{
+ */
+
+//! \brief XScore is a 'docking' scoring function used to evaluate compound-protein interactions
 namespace xscore {
 
 enum XS_TYPE {
@@ -333,7 +339,10 @@ inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
 
     return X_Score;
 }
+
 } // namespace xscore
+/*! @} End of Doxygen Groups*/
+
 } // namespace lemon
 
 #endif

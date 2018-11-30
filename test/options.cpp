@@ -12,6 +12,5 @@ TEST_CASE("Options Test") {
     CHECK(opts.distance() == 7.0);
     CHECK(opts.reference().empty());
     CHECK(opts.ncpu() == 2);
-    CHECK(opts.output() == ".");
     CHECK(opts.entries() == "entries");
 }

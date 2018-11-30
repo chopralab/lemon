@@ -10,6 +10,13 @@
 #include "lemon/residue_name.hpp"
 
 namespace lemon {
+
+/*!
+ *  \addtogroup count
+ *  @{
+ */
+
+//! \brief Count various biological features
 namespace count {
 
 inline void residues(const chemfiles::Frame& file,
@@ -84,7 +91,10 @@ inline void print_residue_name_counts(std::ostream& os, const std::string& pdbid
     ss << pdbid << rnc << "\n";
     os << ss.str();
 }
+
 } // namespace count
+/*! @} End of Doxygen Groups*/
+
 } // namespace lemon
 
 #endif

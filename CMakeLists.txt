@@ -24,6 +24,8 @@ if (${COVERAGE})
     message(STATUS "Using coverage")
 endif()
 
+add_subdirectory(doc)
+
 add_subdirectory(progs)
 
 enable_testing()

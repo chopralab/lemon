@@ -16,6 +16,12 @@ const ResidueNameSet common_peptides{
     {"SER"}, {"GLU"}, {"VAL"}, {"GLY"}, {"ALA"}, {"LEU"},
 };
 
+/*!
+ *  \addtogroup select
+ *  @{
+ */
+
+//! \brief Select residues by removing them based on a criterion
 namespace select {
 
 inline std::set<size_t> small_molecules(const chemfiles::Frame& input,
@@ -137,7 +143,10 @@ inline std::set<size_t> specific_residues(
 
     return selected_residues;
 }
+
 } // namespace select
+/*! @} End of Doxygen Groups*/
+
 } // namespace lemon
 
 #endif

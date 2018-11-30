@@ -23,12 +23,19 @@ namespace lemon {
 
 namespace fs = boost::filesystem;
 
+/*!
+ * \brief The `Hadoop` class is used to read input sequence files.
+*/
 class Hadoop {
    public:
+
+    //! \brief Create a `Hadoop` class using a `std::istream`.
     Hadoop(std::istream& stream) : stream_(stream) { initialize_(); }
 
+    //! \brief Returns if a sequence file has anymore MMTF files in it.
     bool has_next() { return stream_.peek() != std::char_traits<char>::eof(); }
 
+    //! \brief Returns the next MMTF file.
     std::pair<std::vector<char>, std::vector<char>> next() { return read(); }
 
    private:
@@ -36,13 +43,15 @@ class Hadoop {
     std::string marker_ = "";
     std::vector<char> key_;
 
+    // \brief Initialize the sequence file.
     void initialize_() {
         // Completly skip the header as it is the same in all RCSB Hadoop files
         stream_.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-        char buffer[86];
+        char buffer[90];
         stream_.read(buffer, 87);
     }
 
+    // \brief Read four bytes and return as an 4 byte integer
     int read_int() {
         int ret;
         stream_.read(reinterpret_cast<char*>(&ret), 4);
@@ -82,6 +91,7 @@ class Hadoop {
     }
 };
 
+//! \brief Read a directory containing hadoop sequence files
 inline std::vector<fs::path> read_hadoop_dir(const fs::path& p) {
     if (!fs::is_directory(p)) {
         throw std::runtime_error("Provided directory not valid.");
