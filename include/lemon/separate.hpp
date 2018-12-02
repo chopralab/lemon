@@ -8,8 +8,24 @@
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
+
+/*!
+ *  \addtogroup separate
+ *  @{
+ */
+
+//! Separate complexes into corresponding sub-frames
 namespace separate {
 
+//! Copy residues from one frame into a second frame
+//!
+//! Once a set of residues has been selected (and pruned), the residues of
+//! interest should be copied into a new `frame` so that they can written to
+//! disk separetly. This function performs this action while taking care to copy
+//! the original connectivity of the residue.
+//! \param [in] input The original Frame from where the residues will be copied.
+//! \param [in] accepted_residues The residue IDs for the residues to be copied.
+//! \param [in,out] new_frame The frame where the residues wil be copied to.
 inline void residues(const chemfiles::Frame& input,
                      const std::set<size_t>& accepted_residues,
                      chemfiles::Frame& new_frame) {
@@ -48,10 +64,20 @@ inline void residues(const chemfiles::Frame& input,
     }
 }
 
+//! Separate a ligand and surrounding protein pocket into individual frames.
+//!
+//! The environment surrounding a ligand in a protein defines the *environment*
+//! of that ligand. This function is meant to separate a ligand and relevent
+//! *environment* into separate *frame*s s that they can written to disk.
+//! \param [in] input The original Frame from where the residues will be copied.
+//! \param [in] ligand_id The residue IDs for the ligand.
+//! \param [in] pocket_size The radius of the ligand environment copied into protein
+//! \param [in,out] protein The frame where the protein residues wil be copied to.
+//! \param [in,out] ligand The frame where the ligand residue will be copied to.
 inline void protein_and_ligand(const chemfiles::Frame& input,
-                               size_t ligand_id,
+                               size_t ligand_id, double pocket_size,
                                chemfiles::Frame& protein,
-                               chemfiles::Frame& ligand, double pocket_size) {
+                               chemfiles::Frame& ligand) {
     const auto& topo = input.topology();
     const auto& positions = input.positions();
     const auto& residues = topo.residues();
@@ -80,7 +106,10 @@ inline void protein_and_ligand(const chemfiles::Frame& input,
 
     ligand.set("name", ligand_residue.name());
 }
+
 } // namespace separate
+/*! @} End of Doxygen Groups*/
+
 } // namespace lemon
 
 #endif

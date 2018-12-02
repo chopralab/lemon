@@ -5,13 +5,24 @@
 
 #ifdef LEMON_USE_ASYNC
 #include "lemon/thread_pool.hpp"
+#else
+#include <thread>
 #endif
 
 namespace lemon {
 
 #ifndef LEMON_USE_ASYNC
 
-// Old threading behavior
+//! The `run_parallel` function launches jobs which do not return data
+//!
+//! Use this function to run the `worker` function on `ncpu` threads. If the
+//! `worker` object returns a value, it will be ignored. This function object
+//! should accept two arguments, a `chemfiles::Frame` and a `std::string`. See
+//! the `Lemon Workflow` documention for more details.
+//! \param worker A function object (C++11 lambda, struct the with operator()
+//!  overloaded, or std::function object).
+//! \param [in] p A path to the Hadoop sequence file directory.
+//! \param [in] ncpu The number of threads to use.
 template <class Function>
 inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
     auto pathvec = read_hadoop_dir(p);
@@ -52,6 +63,21 @@ inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
     }
 }
 
+//! The `run_parallel` function launches jobs which do return data.
+//!
+//! Use this function to run the `worker` function on `ncpu` threads. The `worker`
+//! should accept two arguments, a `chemfiles::Frame` and a `std::string`. It
+//! must return a value as this value will be appended, using the `combine`
+//! function object, the the `collector`.
+//! See the `Lemon Workflow` documention for more details.
+//! \param worker A function object (C++11 lambda, struct the with operator()
+//!  overloaded, or std::function object) that the user wishes to apply.
+//! \param combine A function object that combines the return value of `worker`
+//!  to the `collector` object.
+//! \param [in] p A path to the Hadoop sequence file directory.
+//! \param [out] collector An object to hold the collection of values returned
+//!  by the worker object which are appended with `combine`.
+//! \param [in] ncpu The number of threads to use.
 template <typename Function, typename Combiner, typename ret>
 inline void run_parallel(Function&& worker, Combiner&& combine,
                          const fs::path& p, ret& collector, size_t ncpu) {

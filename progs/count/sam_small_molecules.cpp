@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
         lemon::prune::keep_interactions(complex, smallm, sam, distance);
 
         // Output phase
-        lemon::count::print_residue_name_counts(std::cout, pdbid, complex, smallm);
+        std::cout << lemon::count::print_residue_name_counts(pdbid, complex, smallm);
     };
 
     auto p = o.work_dir();

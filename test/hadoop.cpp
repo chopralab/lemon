@@ -2,6 +2,7 @@
 #include "catch.hpp"
 
 #include <fstream>
+#include <mutex>
 
 #include "lemon/count.hpp"
 #include "lemon/hadoop.hpp"

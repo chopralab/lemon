@@ -6,25 +6,14 @@
 #include "chemfiles/Frame.hpp"
 
 namespace lemon {
+
 namespace tmalign {
-
-// Ported from https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f
-// Original reference:
-// Yang Zhang, Jeffrey Skolnick, Proteins 2004 57:702-10.
-
-// Original License:
-// Permission to use, copy, modify, and distribute this program for 
-// any purpose, with or without fee, is hereby granted, provided that
-// the notices on the head, the reference information, and this
-// copyright notice appear in all copies or substantial portions of 
-// the Software. It is provided "as is" without express or implied 
-// warranty.
 
 inline double kabsch(const std::vector<double>& w,
               const std::vector<chemfiles::Vector3D>& x,
               const std::vector<chemfiles::Vector3D>& y, size_t n,
               chemfiles::Matrix3D& u, chemfiles::Vector3D& t, int& ier,
-              double tol = 1.0e-2, double tol2 = 1.0e-2) {
+              double tol = 0.010, double tol2 = 0.010) {
     auto r = chemfiles::Matrix3D::zero();
     auto a = chemfiles::Matrix3D::unit();
     auto b = chemfiles::Matrix3D::zero();
@@ -328,6 +317,24 @@ inline size_t count_number_of_atom_names(const chemfiles::Frame& frame,
                          });
 }
 
+//! TMalign is an algorithm used to align protein chains in 3D space.
+//!
+//! Ported from https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f
+//! Original reference:
+//! Yang Zhang, Jeffrey Skolnick, Proteins 2004 57:702-10.
+//!
+//! Original License:
+//! Permission to use, copy, modify, and distribute this program for 
+//! any purpose, with or without fee, is hereby granted, provided that
+//! the notices on the head, the reference information, and this
+//! copyright notice appear in all copies or substantial portions of 
+//! the Software. It is provided "as is" without express or implied 
+//! warranty.
+//! \param [in] search The frame that is being aligned to native.
+//! \param [in] native The 'native' chain that the search chain is aligned to.
+//! \param [out] rot The aligned version of the search frame.
+//! \param [in] align Should the search frame to aligned to native.
+//! \return A tuple of the TMScore, RMSD after alignment, and number of aligned residues
 inline std::tuple<double, double, size_t> TMscore(
     const chemfiles::Frame& search, const chemfiles::Frame& native,
     std::vector<chemfiles::Vector3D>& rot, bool align = false) {
@@ -542,7 +549,9 @@ inline std::tuple<double, double, size_t> TMscore(
 
     return std::tuple<double, double, size_t>(score_max, armsd, n_ali);
 }
+
 } // namespace tmalign
+
 } // namespace lemon
 
 #endif

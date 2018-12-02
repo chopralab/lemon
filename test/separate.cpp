@@ -20,7 +20,7 @@ TEST_CASE("Separate") {
         }
     }
 
-    lemon::separate::protein_and_ligand(frame, i, protein, ligand, 15);
+    lemon::separate::protein_and_ligand(frame, i, 15, protein, ligand);
 
     CHECK(ligand.size() == 41);
     CHECK(protein.size() == 998);

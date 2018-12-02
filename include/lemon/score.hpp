@@ -79,12 +79,17 @@ inline double optimal_distance(XS_TYPE xs_t1, XS_TYPE xs_t2) {
     return vdw_radii[xs_t1] + vdw_radii[xs_t2];
 }
 
+//! An object which represents the components of XScore/Vina's scoring function
+//!
+//! The XScore/Vina scoring function is divided into five components:
+//! two guassian functions, hydrophobic interactions, repulsive forces, and
+//! hydrogen bonding.
 struct VinaScore {
-    double g1 = 0;
-    double g2 = 0;
-    double rep = 0;
-    double hydrophobic = 0;
-    double hydrogen = 0;
+    double g1 = 0; //!< The small gaussian term
+    double g2 = 0; //!< The large gaussian term
+    double rep = 0; //!< The repulsive term
+    double hydrophobic = 0; //!< The hydrophobic term
+    double hydrogen = 0; //!< The hydrogen bonding term
 };
 
 // Easy case, just check if carbon is bound to a heteroatom
@@ -282,6 +287,17 @@ inline std::unordered_multimap<size_t, size_t> create_bond_map(const std::vector
     return bond_map;
 }
 
+//! XScore is a 'docking' scoring function used to evaluate compound-protein interactions
+//!
+//! The docking program AutoDOCK Vina utilizes a modified version of the XScore scoring
+//! function to evaulte the fit of a compound-protein interaction. Since the original
+//! XScore program is not open source, we've included a copy of the Vina version of
+//! this scoring function.
+//! \param [in] frame The frame for which the ligand-protein score will be calculated.
+//! \param [in] ligid The residue ID for the ligand in the complex
+//! \param [in] recid The residue IDs for the protein in the complex
+//! \param [in] cutoff The interaction distance cutoff between ligand and protein
+//! \return The five components of Vina/XScore's scoring function.
 inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
                      std::set<size_t> recid, double cutoff = 8.0) {
     const auto& topo = frame.topology();
@@ -333,7 +349,9 @@ inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
 
     return X_Score;
 }
+
 } // namespace xscore
+
 } // namespace lemon
 
 #endif
