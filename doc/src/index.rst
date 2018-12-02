@@ -12,6 +12,7 @@ Invoking a lemon program
 
     options
     hadoop
+    parallel
 
 Developing a lemon workflow
 ---------------------------

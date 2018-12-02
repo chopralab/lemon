@@ -17,25 +17,41 @@
 #include <vector>
 
 #include <boost/filesystem.hpp>
-#include <future>
 
 namespace lemon {
 
 namespace fs = boost::filesystem;
 
-/*!
- * \brief The `Hadoop` class is used to read input sequence files.
-*/
+
+//! The `Hadoop` class is used to read input sequence files.
+
+//! This class reads an Apache Hadoop Sequence file and interates through the
+//! key/value pairs.  It has been modified so that it can only read files
+//! supplied by RCSB at this location:
+//! [Full](https://mmtf.rcsb.org/v1.0/hadoopfiles/full.tar)
 class Hadoop {
    public:
 
-    //! \brief Create a `Hadoop` class using a `std::istream`.
+    //! Create a `Hadoop` class using a `std::istream`.
+    //!
+    //! This Hadoop constructor takes a binary stream as input.  This stream
+    //! must be open and contain data from a sequence file obtained from RCSB.
     Hadoop(std::istream& stream) : stream_(stream) { initialize_(); }
 
-    //! \brief Returns if a sequence file has anymore MMTF files in it.
+    //! Returns if a sequence file has remaining MMTF records in it.
+    //!
+    //! Use this function to check if the sequence file has any remaining MMTF
+    //! records stored in it.
+    //! \return True if another MMTF record is present. False otherwise.
     bool has_next() { return stream_.peek() != std::char_traits<char>::eof(); }
 
-    //! \brief Returns the next MMTF file.
+    //! Returns the next MMTF file.
+    //!
+    //! This function reads the next MMTF record from the underlying stream.
+    //! Bewarned that this function does minimal error checking and should only
+    //! be used if has_next() has returned `true`.
+    //! \return A pair of `std::vector<char>`s. The first member contains the
+    //! PDB ID and the second contains the GZ compressed MMTF file.
     std::pair<std::vector<char>, std::vector<char>> next() { return read(); }
 
    private:
@@ -43,7 +59,7 @@ class Hadoop {
     std::string marker_ = "";
     std::vector<char> key_;
 
-    // \brief Initialize the sequence file.
+    // Initialize the sequence file.
     void initialize_() {
         // Completly skip the header as it is the same in all RCSB Hadoop files
         stream_.exceptions(std::ifstream::badbit | std::ifstream::failbit);
@@ -51,7 +67,7 @@ class Hadoop {
         stream_.read(buffer, 87);
     }
 
-    // \brief Read four bytes and return as an 4 byte integer
+    // Read four bytes and return as an 4 byte integer
     int read_int() {
         int ret;
         stream_.read(reinterpret_cast<char*>(&ret), 4);

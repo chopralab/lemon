@@ -19,9 +19,17 @@ namespace lemon {
 //! \brief Count various biological features
 namespace count {
 
-inline void residues(const chemfiles::Frame& file,
-                    ResidueNameCount& resn_count) {
-    auto& residues = file.topology().residues();
+//! \brief Append all residue counts in a `Frame` to a `ResidueNameCount`
+
+//! Use this function to count the all residues in `frame` using the residue
+//! name.  If the residue is previously stored in the supplied `resn_count`
+//! then the count of the residue is increased.
+//!
+//! \param [in] frame The frame containing residues of interest
+//! \param [in,out] resn_count A map of residue names to their respective count
+inline void residues(const chemfiles::Frame& frame,
+                     ResidueNameCount& resn_count) {
+    auto& residues = frame.topology().residues();
 
     for (auto& residue : residues) {
         auto resn_count_iterator = resn_count.find(residue.name());
@@ -35,10 +43,19 @@ inline void residues(const chemfiles::Frame& file,
     }
 }
 
-inline void residues(const chemfiles::Frame& file,
-                    const std::set<size_t>& resids,
-                    ResidueNameCount& resn_count) {
-    auto& residues = file.topology().residues();
+//! \brief Append selected residue counts in a `Frame` to a `ResidueNameCount`
+
+//! Use this function to count the residues in `frame` using the residue
+//! name with the residue ids in `resids`. If the residue is previously stored
+//! in the supplied `resn_count` then the count of the residue is increased.
+//!
+//! \param [in] frame The frame containing residues of interest
+//! \param [in] resids Set of residue ids to consider
+//! \param [in,out] resn_count A map of residue names to their respective count
+inline void residues(const chemfiles::Frame& frame,
+                     const std::set<size_t>& resids,
+                     ResidueNameCount& resn_count) {
+    auto& residues = frame.topology().residues();
 
     for (auto& resid : resids) {
         auto resn_count_iterator = resn_count.find(residues[resid].name());
@@ -52,9 +69,13 @@ inline void residues(const chemfiles::Frame& file,
     }
 }
 
-inline size_t altloc(const chemfiles::Frame& files) {
+//! Obtain the number of alternative location types in a `Frame`.
+//!
+//! \param [in] frame The frame containing atoms of interest.
+//! \return the number of unique alternative location names
+inline size_t altloc(const chemfiles::Frame& frame) {
     std::set<char> alt_locs;
-    for (const auto& atom : files) {
+    for (const auto& atom : frame) {
         const auto& altloc = atom.get("altloc");
         if (altloc) {
             alt_locs.insert(altloc->as_string()[0]);
@@ -64,8 +85,12 @@ inline size_t altloc(const chemfiles::Frame& files) {
     return alt_locs.size();
 }
 
-inline size_t bioassemblies(const chemfiles::Frame& file) {
-    auto& residues = file.topology().residues();
+//! Obtain the number of bioassemblies in a `Frame`.
+//!
+//! \param [in] frame The frame containing assemblies of interest.
+//! \return the number of unique bioassemblies location names
+inline size_t bioassemblies(const chemfiles::Frame& frame) {
+    auto& residues = frame.topology().residues();
     std::set<std::string> assembies;
 
     for (auto& residue : residues) {
@@ -77,11 +102,17 @@ inline size_t bioassemblies(const chemfiles::Frame& file) {
     return assembies.size();
 }
 
-inline void print_residue_name_counts(std::ostream& os, const std::string& pdbid,
-                               const chemfiles::Frame& complex,
-                               const std::set<size_t>& res_ids) {
+//! Print select residue names and their respective counts
+//!
+//! \param [in] pdbid The current PDB id of the complex to be printed
+//! \param [in] complex The complex containing the residues of interest
+//! \param [in] res_ids The set of residue ids for printing
+//! \return a string containing the formatted output.
+inline std::string print_residue_name_counts(const std::string& pdbid,
+                                             const chemfiles::Frame& complex,
+                                             const std::set<size_t>& res_ids) {
     if (res_ids.empty()) {
-        return;
+        return "";
     }
 
     ResidueNameCount rnc;
@@ -89,7 +120,7 @@ inline void print_residue_name_counts(std::ostream& os, const std::string& pdbid
 
     std::stringstream ss;
     ss << pdbid << rnc << "\n";
-    os << ss.str();
+    return ss.str();
 }
 
 } // namespace count

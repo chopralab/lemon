@@ -68,12 +68,11 @@ TEST_CASE("Selective residue count") {
 
     lemon::count::residues(test1, {1, 2, 3, 4, 5, 6}, counter);
 
-    std::stringstream ss;
-    lemon::count::print_residue_name_counts(ss, "JUNK", test1, {});
-    CHECK(ss.str() == "");
+    auto s1 = lemon::count::print_residue_name_counts("JUNK", test1, {});
+    CHECK(s1 == "");
 
-    lemon::count::print_residue_name_counts(ss, "5w1d", test1, {2, 5});
-    CHECK(ss.str() == "5w1d\tTYR\t2\n");
+    auto s2 = lemon::count::print_residue_name_counts("5w1d", test1, {2, 5});
+    CHECK(s2== "5w1d\tTYR\t2\n");
 }
 
 TEST_CASE("Alternative Location count") {

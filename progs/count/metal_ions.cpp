@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
         auto result = lemon::select::metal_ions(complex);
 
         // No pruning, straight to out output phase
-        lemon::count::print_residue_name_counts(std::cout, pdbid, complex, result);
+        std::cout << lemon::count::print_residue_name_counts(pdbid, complex, result);
     };
 
     auto p = o.work_dir();
