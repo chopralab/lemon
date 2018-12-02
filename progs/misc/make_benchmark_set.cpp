@@ -42,8 +42,8 @@ int main(int argc, char* argv[]) {
         for (auto resid : smallm) {
             chemfiles::Frame prot;
             chemfiles::Frame lig;
-            lemon::separate::protein_and_ligand(complex, resid, prot, lig,
-                                                distance);
+            lemon::separate::protein_and_ligand(complex, resid, distance,
+                                                prot, lig);
 
             auto protfile = boost::filesystem::path(outdir);
             protfile /= pdbid + "_" + lig.get("name")->as_string() + ".pdb";

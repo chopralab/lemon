@@ -24,7 +24,7 @@ namespace fs = boost::filesystem;
 
 
 //! The `Hadoop` class is used to read input sequence files.
-
+//!
 //! This class reads an Apache Hadoop Sequence file and interates through the
 //! key/value pairs.  It has been modified so that it can only read files
 //! supplied by RCSB at this location:

@@ -19,12 +19,11 @@ namespace lemon {
 //! \brief Count various biological features
 namespace count {
 
-//! \brief Append all residue counts in a `Frame` to a `ResidueNameCount`
-
+//! Append all residue counts in a `Frame` to a `ResidueNameCount`
+//!
 //! Use this function to count the all residues in `frame` using the residue
 //! name.  If the residue is previously stored in the supplied `resn_count`
 //! then the count of the residue is increased.
-//!
 //! \param [in] frame The frame containing residues of interest
 //! \param [in,out] resn_count A map of residue names to their respective count
 inline void residues(const chemfiles::Frame& frame,
@@ -43,12 +42,11 @@ inline void residues(const chemfiles::Frame& frame,
     }
 }
 
-//! \brief Append selected residue counts in a `Frame` to a `ResidueNameCount`
-
+//! Append selected residue counts in a `Frame` to a `ResidueNameCount`
+//!
 //! Use this function to count the residues in `frame` using the residue
 //! name with the residue ids in `resids`. If the residue is previously stored
 //! in the supplied `resn_count` then the count of the residue is increased.
-//!
 //! \param [in] frame The frame containing residues of interest
 //! \param [in] resids Set of residue ids to consider
 //! \param [in,out] resn_count A map of residue names to their respective count

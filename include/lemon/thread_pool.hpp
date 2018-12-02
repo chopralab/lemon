@@ -9,6 +9,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <mutex>
 
 #include "chemfiles/external/optional.hpp"
 

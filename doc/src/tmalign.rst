@@ -3,4 +3,4 @@
 TMalign
 =======
 
-.. doxygennamespace:: lemon::tmalign
+.. doxygenfunction:: lemon::tmalign::TMscore

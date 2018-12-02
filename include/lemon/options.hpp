@@ -37,41 +37,41 @@ class Options {
         entries_ = vm["entries"].as<std::string>();
     }
 
+    //! Directory containing the MMTF or Hadoop files
     const std::string& work_dir() {
         return work_dir_;
     }
 
+    //! Distance cutoff used for distance based searches
     double distance() const {
         return distance_;
     }
 
+    //! Reference file for structure based searches
     const std::string& reference() const {
         return reference_;
     }
 
+    //! Number of CPUs used for run independant jobs
     size_t ncpu() const {
         return ncpu_;
     }
 
+    //! Index file returned by RCSB
     const std::string& entries() {
         return entries_;
     }
 
    private:
 
-    //! Directory containing the MMTF or Hadoop files
     std::string work_dir_;
 
-    //! Distance cutoff used for distance based searches
     double distance_;
 
-    //! Reference file for structure based searches
     std::string reference_;
 
-    //! Number of CPUs used for run independant jobs
     size_t ncpu_;
 
-    //! Index file returned by RCSB used
     std::string entries_;
 };
 }

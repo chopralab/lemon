@@ -5,6 +5,8 @@
 
 #ifdef LEMON_USE_ASYNC
 #include "lemon/thread_pool.hpp"
+#else
+#include <thread>
 #endif
 
 namespace lemon {
@@ -70,7 +72,7 @@ inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
 //! See the `Lemon Workflow` documention for more details.
 //! \param worker A function object (C++11 lambda, struct the with operator()
 //!  overloaded, or std::function object) that the user wishes to apply.
-//! \param combiner A function object that combines the return value of `worker`
+//! \param combine A function object that combines the return value of `worker`
 //!  to the `collector` object.
 //! \param [in] p A path to the Hadoop sequence file directory.
 //! \param [out] collector An object to hold the collection of values returned

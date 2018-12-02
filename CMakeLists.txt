@@ -6,6 +6,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 include(InstallChemfiles)
 
 option(LEMON_TEST_ASYNC "Build an additional test for async parallelism" OFF)
+option(LEMON_BUILD_DOCS "Build documentation" OFF)
 
 if (${LEMON_TEST_ASYNC})
     set(CMAKE_CXX_STANDARD 14)
@@ -24,7 +25,9 @@ if (${COVERAGE})
     message(STATUS "Using coverage")
 endif()
 
-add_subdirectory(doc)
+if (${LEMON_BUILD_DOCS})
+    add_subdirectory(doc)
+endif()
 
 add_subdirectory(progs)
 

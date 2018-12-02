@@ -1,6 +1,8 @@
 .. xscore:
 
-XScore
-=======
+XScore/Vina
+===========
 
-.. doxygennamespace:: lemon::xscore
+.. doxygenstruct:: lemon::xscore::VinaScore
+
+.. doxygenfunction:: lemon::xscore::vina_score
