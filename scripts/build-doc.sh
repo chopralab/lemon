@@ -9,8 +9,6 @@ DOXYGEN_URL="https://linuxbrew.bintray.com/bottles/doxygen-${DOXYGEN_VER}.x86_64
 wget -O - "${DOXYGEN_URL}" | tar xz -C /tmp doxygen/${DOXYGEN_VER}/bin/doxygen
 export PATH="/tmp/doxygen/${DOXYGEN_VER}/bin:$PATH"
 
-doxygen --version
-
 cd build
 
 # Get previous documentation
@@ -22,9 +20,6 @@ rm -rf gh-pages/deployed*
 cmake -DLEMON_BUILD_DOCS=ON .
 cmake --build . --target doc_html
 rm -rf doc/html/.doctrees/ doc/html/.buildinfo
-rm -rf doc/html/_static/bootswatch-2.3.2/ doc/html/_static/bootstrap-2.3.2/
-shopt -s extglob
-cd doc/html/_static/bootswatch-* && rm -rf !(flatly) && cd -
 
 # Copy documentation to the right place
 if [[ "$TRAVIS_TAG" != "" ]]; then
