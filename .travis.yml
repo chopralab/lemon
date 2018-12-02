@@ -20,11 +20,11 @@ linux64_addons:
 matrix:
   fast_finish: true
   include:
-    - name: coverage
+    - name: coverage and documentation
       os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Debug ASYNC=ON
+      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Debug ASYNC=ON BUILD_DOC=ON
     - name: linux release
       os: linux
       compiler: gcc
@@ -59,5 +59,30 @@ after_success:
   - cd $TRAVIS_BUILD_DIR
   - |
     if [[ "${COVERAGE}" == "ON" ]]; then
-        coveralls --gcov gcov-5 -e build/chemfiles -e build/chemfiles_build -e build/CHEMFILES-prefix -e build/CMakeFiles -e progs -E '.*external.*' --gcov-options '\-lp'
+        coveralls --gcov gcov-5 \
+          -e build/chemfiles \
+          -e build/chemfiles_build \
+          -e build/CHEMFILES-prefix \
+          -e build/CMakeFiles \
+          -e progs -E '.*external.*' --gcov-options '\-lp' > /dev/null 2> /dev/null
     fi
+  - |
+    if [[ "$BUILD_DOC" == "ON" ]]; then
+        ./scripts/build-doc.sh
+    fi
+
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GH_TOKEN
+    local_dir: build/gh-pages
+    on:
+        branch: master
+        condition: $BUILD_DOC == ON
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GH_TOKEN
+    local_dir: build/gh-pages
+    on:
+        tags: true
+        condition: $BUILD_DOC == ON
