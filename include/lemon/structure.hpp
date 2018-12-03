@@ -203,7 +203,7 @@ begin:
 
     if (p <= tol) {
         p = 1.0;
-        size_t j;
+        size_t j = 0;
         for (size_t i = 0; i < 3; ++i) {
             if (p < std::abs(b[0][i])) continue;
             p = std::abs(b[0][i]);

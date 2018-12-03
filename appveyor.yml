@@ -33,7 +33,7 @@ build_script:
   - mkdir build
   - cd build
   - cmake .. -DLEMON_TEST_ASYNC=ON
-  - cmake --build . --config %BUILD_TYPE%
+  - cmake --build . --config %BUILD_TYPE% -- /v:m
 
 test_script:
   - ctest --build-config %BUILD_TYPE% --timeout 300 --output-on-failure

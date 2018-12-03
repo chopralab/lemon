@@ -17,6 +17,8 @@ else()
     set(CMAKE_CXX_STANDARD 11)
 endif()
 
+include(CompilerFlags)
+
 set(CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER} CACHE FILEPATH "Compiler")
 set(CMAKE_C_COMPILER ${CMAKE_C_COMPILER} CACHE FILEPATH "Compiler")
 
