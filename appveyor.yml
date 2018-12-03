@@ -30,11 +30,10 @@ clone_folder: c:\lemon
 
 build_script:
   - cd C:\lemon
-  - ps: echo $env:BUILD_TYPE
   - mkdir build
   - cd build
   - cmake .. -DLEMON_TEST_ASYNC=ON
-  - cmake --build . --config $env:BUILD_TYPE
+  - cmake --build . --config %BUILD_TYPE%
 
 test_script:
-  - ctest --build-config $env:BUILD_TYPE --timeout 300 --output-on-failure
+  - ctest --build-config %BUILD_TYPE% --timeout 300 --output-on-failure
