@@ -154,7 +154,7 @@ inline double kabsch(const std::vector<double>& w,
 
     if (p <= tol) {
         p = 1.0;
-        size_t j;
+        size_t j = 0;
         for (size_t i = 0; i < 3; ++i) {
             if (p < std::abs(a[m][i])) continue;
             p = std::abs(a[m][i]);
@@ -238,7 +238,7 @@ middle:
     for (size_t i = 0; i < 3; ++i) {
         t[i] = ((yc[i] - u[0][i] * xc[0]) - u[1][i] * xc[1]) - u[2][i] * xc[2];
     }
-end:
+//end:
     for (size_t i = 0; i < 3; ++i) {
         if (e[i] < 0) e[i] = 0;
         e[i] = std::sqrt(e[i]);
@@ -364,7 +364,6 @@ inline std::tuple<double, double, size_t> TMscore(
 
     // iterative parameters ----->
     size_t n_it = 20;       // maximum number of iterations
-    size_t d_output = 5;    // for output alignment
     size_t n_init_max = 6;  // maximum number of L_init
     size_t L_ini_min = 4;
     std::vector<size_t> L_ini(n_init_max);
@@ -377,7 +376,7 @@ inline std::tuple<double, double, size_t> TMscore(
             break;
         }
 
-        L_ini[n_init] = n_ali / std::pow(2, n_init);
+        L_ini[n_init] = static_cast<size_t>(n_ali / std::pow(2, n_init));
         if (L_ini[n_init] <= L_ini_min) {
             L_ini[n_init] = L_ini_min;
             break;
@@ -425,7 +424,7 @@ inline std::tuple<double, double, size_t> TMscore(
 
     double score_max = -1;
     double armsd;
-    size_t ka0;
+    size_t ka0 = 0;
 
     for (size_t i_init = 0; i_init < n_init; ++i_init) {
         auto L_init = L_ini[i_init];
@@ -538,7 +537,7 @@ inline std::tuple<double, double, size_t> TMscore(
     }
 
     int ier;
-    double rms = kabsch(w, r_1, r_2, LL, u, t, ier);
+    kabsch(w, r_1, r_2, LL, u, t, ier);
     rot.resize(a.size());
     for (size_t j = 1; j < a.size(); ++j) {
         rot[j][0] = u[0][0] * a[j][0] + u[1][0] * a[j][1] + u[2][0] * a[j][2];

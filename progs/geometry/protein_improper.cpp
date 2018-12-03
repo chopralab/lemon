@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include <unordered_map>
 
 #include "lemon/lemon.hpp"
@@ -7,6 +8,14 @@
 // typedefs for binned data
 typedef std::pair<std::string, int> BondImproperBin;
 typedef std::map<BondImproperBin, size_t> ImproperCounts;
+
+inline const std::string& min_str(const std::string& s1, const std::string& s2) {
+    return (s1 < s2)? s1 : s2;
+}
+
+inline const std::string& max_str(const std::string& s1, const std::string& s2) {
+    return (s1 > s2)? s1 : s2;
+}
 
 inline std::string get_improper_name(const chemfiles::Frame& complex,
                                      const chemfiles::Improper& improper) {
@@ -16,14 +25,14 @@ inline std::string get_improper_name(const chemfiles::Frame& complex,
     const auto& atom4 = complex[improper[3]];
 
     const std::string& latom =
-        std::min(atom1.name(), std::min(atom3.name(), atom4.name()));
+        min_str(atom1.name(), min_str(atom3.name(), atom4.name()));
 
     const std::string& matom =
-        std::max(std::min(atom1.name(), atom3.name()),
-                 std::min(std::max(atom1.name(), atom3.name()), atom4.name()));
+        max_str(min_str(atom1.name(), atom3.name()),
+                min_str(max_str(atom1.name(), atom3.name()), atom4.name()));
 
     const std::string& hatom =
-        std::max(atom1.name(), std::max(atom3.name(), atom4.name()));
+        max_str(atom1.name(), max_str(atom3.name(), atom4.name()));
 
     const std::string& catom = atom2.name();
 

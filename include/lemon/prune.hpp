@@ -1,4 +1,3 @@
-
 #ifndef LEMON_PRUNE_HPP
 #define LEMON_PRUNE_HPP
 

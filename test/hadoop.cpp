@@ -1,11 +1,14 @@
+#include <chemfiles.hpp>
+
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include <catch.hpp>
+
+#include "lemon/hadoop.hpp"
 
 #include <fstream>
 #include <mutex>
 
 #include "lemon/count.hpp"
-#include "lemon/hadoop.hpp"
 #include "lemon/parallel.hpp"
 
 TEST_CASE("Read single MMTF Sequence File") {

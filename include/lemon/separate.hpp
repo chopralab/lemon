@@ -79,7 +79,6 @@ inline void protein_and_ligand(const chemfiles::Frame& input,
                                chemfiles::Frame& protein,
                                chemfiles::Frame& ligand) {
     const auto& topo = input.topology();
-    const auto& positions = input.positions();
     const auto& residues = topo.residues();
     const auto& ligand_residue = residues[ligand_id];
 
