@@ -5,6 +5,7 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 include(InstallChemfiles)
 
+option(LEMON_LINK_SHARED "Link lemon programs statically" ON)
 option(LEMON_TEST_ASYNC "Build an additional test for async parallelism" OFF)
 option(LEMON_BUILD_DOCS "Build documentation" OFF)
 

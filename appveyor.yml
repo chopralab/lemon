@@ -1,22 +1,29 @@
 version: "{build}"
 os: Visual Studio 2017
 
+branches:
+  only:
+    - master
+
 environment:
   BOOST_ROOT: C:\Libraries\boost_1_67_0
   matrix:
     - generator: Visual Studio 14 2017 Win64
       ARCH: x64
       BUILD_TYPE: Debug
+      SHARED: ON
     - generator: Visual Studio 14 2017
       ARCH: x86
       BUILD_TYPE: Debug
+      SHARED: OFF
     - generator: Visual Studio 14 2017 Win64
       ARCH: x64
       BUILD_TYPE: Release
+      SHARED: OFF
     - generator: Visual Studio 14 2017
       ARCH: x86
       BUILD_TYPE: Release
-
+      SHARED: ON
 
 clone_depth: 10
 clone_folder: c:\lemon
@@ -32,7 +39,7 @@ build_script:
   - cd C:\lemon
   - mkdir build
   - cd build
-  - cmake .. -DLEMON_TEST_ASYNC=ON
+  - cmake .. -DLEMON_TEST_ASYNC=ON -DLEMON_LINK_SHARED=%SHARED%
   - cmake --build . --config %BUILD_TYPE% -- /v:m
 
 test_script:
