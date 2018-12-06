@@ -96,7 +96,6 @@ struct VinaScore {
 inline XS_TYPE get_c_xs_type(const chemfiles::Topology& topo, size_t j,
                       const std::unordered_multimap<size_t, size_t>& bond_map) {
     auto range = bond_map.equal_range(j);
-    auto& bond_order = topo.bond_orders();
     auto& bonds = topo.bonds();
 
     for (auto k = range.first; k != range.second; ++k) {

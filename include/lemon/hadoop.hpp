@@ -1,5 +1,5 @@
-#ifndef HADOOP_HPP
-#define HADOOP_HPP
+#ifndef LEMON_HADOOP_HPP
+#define LEMON_HADOOP_HPP
 
 #include <chemfiles/Frame.hpp>
 #include <chemfiles/Trajectory.hpp>
@@ -21,7 +21,6 @@
 namespace lemon {
 
 namespace fs = boost::filesystem;
-
 
 //! The `Hadoop` class is used to read input sequence files.
 //!

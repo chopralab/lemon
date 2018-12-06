@@ -130,7 +130,8 @@ int main(int argc, char* argv[]) {
     }
 
     for (const auto& i : sc_total) {
-        std::cout << i.first.first << "\t" << i.first.second * bin_size << "\t"
+        std::cout << i.first.first << "\t"
+                  << static_cast<double>(i.first.second) * bin_size << "\t"
                   << i.second << "\n";
     }
 }

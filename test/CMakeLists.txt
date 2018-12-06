@@ -26,7 +26,6 @@ function(add_cpp_test _file_ _name_)
             ws2_32
             Boost::filesystem
             Boost::program_options
-            Boost::dynamic_linking
         )
     else()
         target_link_libraries( ${_name_} PUBLIC
@@ -42,11 +41,11 @@ function(add_cpp_test _file_ _name_)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-    if (MSVC)
+    if (MSVC AND ${LEMON_LINK_SHARED})
         set_tests_properties(${_name_}
             PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}\\chemfiles\\bin"
         )
-    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
         set_tests_properties(${_name_}
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )
