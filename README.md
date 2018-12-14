@@ -1,7 +1,7 @@
 ## Lemon:  Tool for developing benchmarking sets from the entire PDB in minutes 
 
-[![Build Status](https://travis-ci.org/chopralab/lemon.svg?branch=master)](https://travis-ci.org/chopralab/lemon)
-
+[![Build Status -- Linux and Mac OSX](https://travis-ci.org/chopralab/lemon.svg?branch=master)](https://travis-ci.org/chopralab/lemon)
+[![Build status -- Windows](https://ci.appveyor.com/api/projects/status/gsbuqupcn2598l4d/branch/master?svg=true)](https://ci.appveyor.com/project/frodofine/lemon/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/chopralab/lemon/badge.svg?branch=master)](https://coveralls.io/github/chopralab/lemon?branch=master)
 
 ### What is Lemon's purpose?

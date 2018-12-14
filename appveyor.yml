@@ -1,6 +1,10 @@
 version: "{build}"
 os: Visual Studio 2017
 
+branches:
+  only:
+    - master
+
 environment:
   BOOST_ROOT: C:\Libraries\boost_1_67_0
   matrix:
@@ -16,7 +20,6 @@ environment:
     - generator: Visual Studio 14 2017
       ARCH: x86
       BUILD_TYPE: Release
-
 
 clone_depth: 10
 clone_folder: c:\lemon
