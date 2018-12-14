@@ -4,9 +4,10 @@
 #include "lemon/lemon.hpp"
 
 int main(int argc, char* argv[]) {
-    lemon::Options o(argc, argv);
-
-    auto reference = o.reference();
+    lemon::Options o;
+    auto reference = std::string("reference.pdb");
+    o.add_option("reference,r", reference, "Protein or DNA to align to.");
+    o.parse_command_line(argc, argv);
 
     chemfiles::Trajectory traj(reference);
     chemfiles::Frame native = traj.read();

@@ -4,9 +4,11 @@
 #include "lemon/lemon.hpp"
 
 int main(int argc, char* argv[]) {
-    lemon::Options o(argc, argv);
-
-    double distance = o.distance();
+    lemon::Options o;
+    auto distance = 6.0;
+    o.add_option("distance,d", distance,
+                 "Largest distance between protein and a small molecule.");
+    o.parse_command_line(argc, argv);
     auto entries = o.entries();
 
     if (!boost::filesystem::is_regular_file(entries)) {
