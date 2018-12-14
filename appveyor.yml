@@ -11,15 +11,19 @@ environment:
     - generator: Visual Studio 14 2017 Win64
       ARCH: x64
       BUILD_TYPE: Debug
+      SHARED: ON
     - generator: Visual Studio 14 2017
       ARCH: x86
       BUILD_TYPE: Debug
+      SHARED: OFF
     - generator: Visual Studio 14 2017 Win64
       ARCH: x64
       BUILD_TYPE: Release
+      SHARED: OFF
     - generator: Visual Studio 14 2017
       ARCH: x86
       BUILD_TYPE: Release
+      SHARED: ON
 
 clone_depth: 10
 clone_folder: c:\lemon
@@ -33,11 +37,10 @@ clone_folder: c:\lemon
 
 build_script:
   - cd C:\lemon
-  - ps: echo $env:BUILD_TYPE
   - mkdir build
   - cd build
-  - cmake .. -DLEMON_TEST_ASYNC=ON
-  - cmake --build . --config $env:BUILD_TYPE
+  - cmake .. -DLEMON_TEST_ASYNC=ON -DLEMON_LINK_SHARED=%SHARED%
+  - cmake --build . --config %BUILD_TYPE% -- /v:m
 
 test_script:
-  - ctest --build-config $env:BUILD_TYPE --timeout 300 --output-on-failure
+  - ctest --build-config %BUILD_TYPE% --timeout 300 --output-on-failure
