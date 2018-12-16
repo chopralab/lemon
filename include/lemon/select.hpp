@@ -6,28 +6,12 @@
 
 #include "chemfiles/Frame.hpp"
 #include "lemon/residue_name.hpp"
+#include "lemon/constants.hpp"
 
 namespace lemon {
 
-const ResidueNameSet common_peptides{
-    {"CSD"}, {"PCA"}, {"DLE"}, {"KCX"}, {"CAS"}, {"CSO"}, {"PTR"},
-    {"CME"}, {"SAH"}, {"TPO"}, {"SEP"}, {"MLY"}, {"HYP"}, {"MSE"},
-    {"CYS"}, {"TRP"}, {"MET"}, {"HIS"}, {"TYR"}, {"GLN"}, {"PHE"},
-    {"ASN"}, {"PRO"}, {"ARG"}, {"THR"}, {"ASP"}, {"ILE"}, {"LYS"},
-    {"SER"}, {"GLU"}, {"VAL"}, {"GLY"}, {"ALA"}, {"LEU"},
-};
-
-/*!
- *  \addtogroup select
- *  @{
- */
-
 //! Functions to select various residue based on a given criterion
 namespace select {
-
-const std::unordered_set<std::string> small_molecule_types{
-    {"NON-POLYMER"}, {"OTHER"}, {"PEPTIDE-LIKE"}
-};
 
 //! Select small molecules in a given frame
 //!
@@ -189,7 +173,6 @@ inline std::set<size_t> specific_residues(
 }
 
 } // namespace select
-/*! @} End of Doxygen Groups*/
 
 } // namespace lemon
 

@@ -8,6 +8,7 @@
 #include "lemon/parallel.hpp"
 #include "lemon/prune.hpp"
 #include "lemon/residue_name.hpp"
+#include "lemon/constants.hpp"
 #include "lemon/score.hpp"
 #include "lemon/select.hpp"
 #include "lemon/separate.hpp"

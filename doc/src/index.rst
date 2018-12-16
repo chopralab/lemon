@@ -20,6 +20,7 @@ Developing a lemon workflow
 .. toctree::
     :maxdepth: 2
 
+    constants
     select
     prune
     count
