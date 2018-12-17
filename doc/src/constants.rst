@@ -1,7 +1,7 @@
 .. _constants:
 
-Constants
-=========
+Useful Constants
+================
 
 .. doxygenvariable:: lemon::common_peptides
 
