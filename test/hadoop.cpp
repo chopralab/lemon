@@ -19,7 +19,7 @@ TEST_CASE("Read single MMTF Sequence File") {
     // We've only got the one MMTF file
     CHECK(!sequence.has_next());
 
-    CHECK(std::string(result.first.data() + 1, 4) == "1DZE");
+    CHECK(result.first == "1DZE");
 
     chemfiles::Trajectory traj(std::move(result.second), "MMTF/GZ");
     auto frame = traj.read();

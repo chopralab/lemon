@@ -23,8 +23,10 @@ namespace lemon {
 //!  overloaded, or std::function object).
 //! \param [in] p A path to the Hadoop sequence file directory.
 //! \param [in] ncpu The number of threads to use.
+//! \param [in] entries Which entries to use. Not used if blank.
 template <class Function>
-inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
+inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu = 1,
+                         const Entries& entries = Entries()) {
     auto pathvec = read_hadoop_dir(p);
     std::vector<std::thread> threads(ncpu);
 
@@ -33,19 +35,21 @@ inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
     auto work_iter = pathvec.begin();
     using iter = std::vector<fs::path>::iterator;
 
-    auto call_function = [&worker](iter first, iter last) {
+    auto call_function = [&worker, &entries](iter first, iter last) {
         for (auto it = first; it != last; ++it) {
             std::ifstream data(it->string(), std::istream::binary);
             Hadoop sequence(data);
 
             while (sequence.has_next()) {
                 auto pair = sequence.next();
-                const auto entry = std::string(pair.first.data() + 1, 4);
+                if (entries.size() && entries.count(pair.first) == 0) {
+                    continue;
+                }
                 try {
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto complex = traj.read();
-                    worker(std::move(complex), entry);
+                    worker(std::move(complex), pair.first);
                 } catch (...) {
                 }
             }
@@ -78,9 +82,11 @@ inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
 //! \param [out] collector An object to hold the collection of values returned
 //!  by the worker object which are appended with `combine`.
 //! \param [in] ncpu The number of threads to use.
+//! \param [in] entries Which entries to use. Not used if blank.
 template <typename Function, typename Combiner, typename ret>
 inline void run_parallel(Function&& worker, Combiner&& combine,
-                         const fs::path& p, ret& collector, size_t ncpu) {
+                         const fs::path& p, ret& collector, size_t ncpu = 1,
+                         const Entries& entries = Entries()) {
     auto pathvec = read_hadoop_dir(p);
     std::vector<std::thread> threads(ncpu);
 
@@ -90,7 +96,7 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
     using iter = std::vector<fs::path>::iterator;
     std::unordered_map<std::thread::id, ret> results;
 
-    auto call_function = [&worker, &results, &combine](iter first, iter last) {
+    auto call_function = [&worker, &results, &combine, &entries](iter first, iter last) {
         auto th = std::this_thread::get_id();
         for (auto it = first; it != last; ++it) {
             std::ifstream data(it->string(), std::istream::binary);
@@ -98,12 +104,14 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
 
             while (sequence.has_next()) {
                 auto pair = sequence.next();
-                const auto entry = std::string(pair.first.data() + 1, 4);
+                if (entries.size() && entries.count(pair.first) == 0) {
+                    continue;
+                }
                 try {
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto complex = traj.read();
-                    combine(results[th], worker(std::move(complex), entry));
+                    combine(results[th], worker(std::move(complex), pair.first));
                 } catch (...) {
                 }
             }
@@ -127,24 +135,27 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
 #else
 
 template <class Function>
-inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
+inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu = 1,
+                         const Entries& entries = Entries()) {
     auto pathvec = read_hadoop_dir(p);
     thread_pool threads(ncpu);
     threaded_queue<size_t> results;
 
     for (const auto& path : pathvec) {
-        threads.queue_task([path, &results, &worker] {
+        threads.queue_task([path, &results, &worker, &entries] {
             std::ifstream data(path.string(), std::istream::binary);
             Hadoop sequence(data);
 
             while (sequence.has_next()) {
                 auto pair = sequence.next();
-                const auto entry = std::string(pair.first.data() + 1, 4);
+                if (entries.size() && entries.count(pair.first) == 0) {
+                    continue;
+                }
                 try {
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto complex = traj.read();
-                    worker(std::move(complex), entry);
+                    worker(std::move(complex), pair.first);
                 } catch (...) {
                 }
             }
@@ -165,25 +176,28 @@ inline void run_parallel(Function&& worker, const fs::path& p, size_t ncpu) {
 template <typename Function, typename Combiner,
           typename ret = std::result_of_t<Function&()> >
 inline void run_parallel(Function&& worker, Combiner&& combine,
-                         const fs::path& p, ret& collector, size_t ncpu) {
+                         const fs::path& p, ret& collector, size_t ncpu = 1,
+                         const Entries& entries = Entries()) {
     auto pathvec = read_hadoop_dir(p);
     thread_pool threads(ncpu);
     threaded_queue<ret> results;
 
     for (const auto& path : pathvec) {
-        threads.queue_task([path, &results, &worker, &combine] {
+        threads.queue_task([path, &results, &worker, &combine, &entries] {
             std::ifstream data(path.string(), std::istream::binary);
             Hadoop sequence(data);
             ret mini_collector;
 
             while (sequence.has_next()) {
                 auto pair = sequence.next();
-                const auto entry = std::string(pair.first.data() + 1, 4);
+                if (entries.size() && entries.count(pair.first) == 0) {
+                    continue;
+                }
                 try {
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto complex = traj.read();
-                    combine(mini_collector, worker(std::move(complex), entry));
+                    combine(mini_collector, worker(std::move(complex), pair.first));
                 } catch (...) {
                 }
             }

@@ -9,9 +9,9 @@ int main(int argc, char* argv[]) {
     o.add_option("distance,d", distance,
                  "Largest distance between protein and a small molecule.");
     o.parse_command_line(argc, argv);
-    auto entries = o.entries();
+    auto entries_fn = o.entries();
 
-    if (!boost::filesystem::is_regular_file(entries)) {
+    if (!boost::filesystem::is_regular_file(entries_fn)) {
         std::cerr << "You must supply a valid entries file" << std::endl;
         return 1;
     }
@@ -26,10 +26,10 @@ int main(int argc, char* argv[]) {
     auto outdir = o.work_dir();
     auto threads = o.ncpu();
 
-    lemon::PDBIDVec vec;
+    lemon::Entries entries;
     std::unordered_map<std::string, lemon::ResidueNameSet> rnms;
-    std::ifstream is(entries);
-    lemon::read_entry_file(is, vec, rnms);
+    std::ifstream is(entries_fn);
+    lemon::read_entry_file(is, entries, rnms);
 
     auto worker = [distance, &rnms, &outdir](chemfiles::Frame complex,
                                              const std::string& pdbid) {

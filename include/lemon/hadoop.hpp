@@ -51,7 +51,7 @@ class Hadoop {
     //! be used if has_next() has returned `true`.
     //! \return A pair of `std::vector<char>`s. The first member contains the
     //! PDB ID and the second contains the GZ compressed MMTF file.
-    std::pair<std::vector<char>, std::vector<char>> next() { return read(); }
+    std::pair<std::string, std::vector<char>> next() { return read(); }
 
    private:
     std::istream& stream_;
@@ -73,7 +73,7 @@ class Hadoop {
         return ntohl(ret);
     }
 
-    std::pair<std::vector<char>, std::vector<char>> read() {
+    std::pair<std::string, std::vector<char>> read() {
         auto sync_check = read_int();
 
         if (sync_check == -1) {
@@ -91,6 +91,7 @@ class Hadoop {
 
         std::vector<char> key(key_length);
         stream_.read(key.data(), key_length);
+        const auto entry = std::string(key.data() + 1, 4);
 
         assert(sync_check >= 8);
 
@@ -102,7 +103,7 @@ class Hadoop {
         std::vector<char> value(value_length - 4);
         stream_.read(value.data(), value_length - 4);
 
-        return {key, value};
+        return {entry, value};
     }
 };
 
