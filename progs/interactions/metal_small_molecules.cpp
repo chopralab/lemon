@@ -4,9 +4,11 @@
 #include "lemon/lemon.hpp"
 
 int main(int argc, char* argv[]) {
-    lemon::Options o(argc, argv);
-
-    double distance = o.distance();
+    lemon::Options o;
+    auto distance = 6.0;
+    o.add_option("distance,d", distance,
+                 "Largest distance between a metal and a small molecule.");
+    o.parse_command_line(argc, argv);
 
     auto worker = [distance](chemfiles::Frame complex,
                              const std::string& pdbid) {
@@ -18,7 +20,7 @@ int main(int argc, char* argv[]) {
         // Pruning phase
         lemon::prune::identical_residues(complex, smallm);
         lemon::prune::cofactors(complex, smallm, lemon::common_cofactors);
-        lemon::prune::cofactors(complex, smallm, lemon::linear_molecules);
+        lemon::prune::cofactors(complex, smallm, lemon::common_fatty_acids);
         lemon::prune::keep_interactions(complex, smallm, metals, distance);
 
         // Output phase

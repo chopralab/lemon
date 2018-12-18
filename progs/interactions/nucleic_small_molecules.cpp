@@ -4,23 +4,24 @@
 #include "lemon/lemon.hpp"
 
 int main(int argc, char* argv[]) {
-    lemon::Options o(argc, argv);
-
-    double distance = o.distance();
+    lemon::Options o;
+    auto distance = 6.0;
+    o.add_option("distance,d", distance,
+                 "Largest distance between a nucleic-acid and a small molecule.");
+    o.parse_command_line(argc, argv);
 
     auto worker = [distance](chemfiles::Frame complex,
                              const std::string& pdbid) {
 
         // Selection phase
-        auto sam = lemon::select::specific_residues(complex, {"SAM"});
+        auto nucleic_acids = lemon::select::nucleic_acids(complex);
         auto smallm = lemon::select::small_molecules(complex);
 
         // Pruning phase
         lemon::prune::identical_residues(complex, smallm);
         lemon::prune::cofactors(complex, smallm, lemon::common_cofactors);
-        lemon::prune::cofactors(complex, smallm, lemon::linear_molecules);
-
-        lemon::prune::keep_interactions(complex, smallm, sam, distance);
+        lemon::prune::cofactors(complex, smallm, lemon::common_fatty_acids);
+        lemon::prune::keep_interactions(complex, smallm, nucleic_acids, distance);
 
         // Output phase
         std::cout << lemon::count::print_residue_name_counts(pdbid, complex, smallm);

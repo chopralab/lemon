@@ -11,11 +11,6 @@
 
 namespace lemon {
 
-/*!
- *  \addtogroup count
- *  @{
- */
-
 //! \brief Count various biological features
 namespace count {
 
@@ -122,7 +117,6 @@ inline std::string print_residue_name_counts(const std::string& pdbid,
 }
 
 } // namespace count
-/*! @} End of Doxygen Groups*/
 
 } // namespace lemon
 

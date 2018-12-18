@@ -1,11 +1,23 @@
-Lemon, a modern C++ library for mining structural information from the PDB
-==========================================================================
+**Lemon**: a modern C++ library for mining structural information from the PDB
+==============================================================================
 
 MMTF Introduction
 -----------------
 
-Invoking a lemon program
-------------------------
+Developing a **Lemon** workflow
+-------------------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    constants
+    select
+    prune
+    count
+    separate
+
+Invoking a **Lemon** program
+----------------------------
 
 .. toctree::
     :maxdepth: 2
@@ -13,17 +25,6 @@ Invoking a lemon program
     options
     hadoop
     parallel
-
-Developing a lemon workflow
----------------------------
-
-.. toctree::
-    :maxdepth: 2
-
-    select
-    prune
-    count
-    separate
 
 Miscellaneous Functionality
 ---------------------------
@@ -33,3 +34,12 @@ Miscellaneous Functionality
 
     xscore
     tmalign
+
+Example workflows
+-----------------
+
+.. toctree::
+    :maxdepth: 1
+
+    count_residues
+    small_molecules

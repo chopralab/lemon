@@ -9,11 +9,6 @@
 
 namespace lemon {
 
-/*!
- *  \addtogroup separate
- *  @{
- */
-
 //! Separate complexes into corresponding sub-frames
 namespace separate {
 
@@ -107,7 +102,6 @@ inline void protein_and_ligand(const chemfiles::Frame& input,
 }
 
 } // namespace separate
-/*! @} End of Doxygen Groups*/
 
 } // namespace lemon
 

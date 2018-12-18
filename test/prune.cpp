@@ -23,7 +23,7 @@ TEST_CASE("Select and prune 1PG/HEM from 1D7D") {
     auto res = lemon::select::small_molecules(frame);
     CHECK(res.size() == 3);  // Two hemes and 1PG
 
-    lemon::prune::cofactors(frame, res, lemon::linear_molecules);
+    lemon::prune::cofactors(frame, res, lemon::common_fatty_acids);
     CHECK(res.size() == 2);
 
     lemon::prune::cofactors(frame, res, lemon::common_cofactors);

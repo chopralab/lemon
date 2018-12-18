@@ -75,9 +75,10 @@ inline std::string get_bond_name(const chemfiles::Frame& complex,
 }
 
 int main(int argc, char* argv[]) {
-    lemon::Options o(argc, argv);
-
-    double bin_size = o.distance();
+    lemon::Options o;
+    auto bin_size = 0.01;
+    o.add_option("bin_size,b", bin_size, "Size of the length(stretch) bin.");
+    o.parse_command_line(argc, argv);
 
     auto worker = [bin_size](chemfiles::Frame complex, const std::string&) {
         StretchCounts bins;

@@ -6,7 +6,7 @@
 #  SPHINX_FOUND
 
 find_program(SPHINX_EXECUTABLE
-  NAMES sphinx-build
+  NAMES sphinx-build sphinx-build-3
   PATHS
     /usr/bin
     /usr/local/bin

@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
         // Pruning phase
         lemon::prune::identical_residues(complex, smallm);
         lemon::prune::cofactors(complex, smallm, lemon::common_cofactors);
-        lemon::prune::cofactors(complex, smallm, lemon::linear_molecules);
+        lemon::prune::cofactors(complex, smallm, lemon::common_fatty_acids);
 
         // Output phase
         std::cout << lemon::count::print_residue_name_counts(pdbid, complex, smallm);

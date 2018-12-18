@@ -4,3 +4,4 @@ Read command-line options
 =========================
 
 .. doxygenclass:: lemon::Options
+    :members:
