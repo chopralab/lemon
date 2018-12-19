@@ -126,23 +126,14 @@ int main(int argc, char* argv[]) {
         return bins;
     };
 
-    auto p = o.work_dir();
-    auto entries = o.entries();
-    auto threads = o.ncpu();
-
-    lemon::map_combine<AngleCounts> combiner;
     AngleCounts sc_total;
-
-    try {
-        lemon::run_parallel(worker, combiner, p, sc_total, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
+    lemon::launch<lemon::map_combine>(o, worker, sc_total);
 
     for (const auto& i : sc_total) {
         std::cout << i.first.first << "\t"
                   << static_cast<double>(i.first.second) * bin_size << "\t"
                   << i.second << "\n";
     }
+
+    return 0;
 }

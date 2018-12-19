@@ -21,8 +21,11 @@ function(add_cpp_prog _file_)
         ${CMAKE_CURRENT_SOURCE_DIR}/external
     )
 
+    if(${LEMON_TEST_ASYNC})
+        target_compile_definitions(${_name_} PRIVATE LEMON_USE_ASYNC=1)
+    endif()
+
     if (MSVC)
-    message(STATUS ${BOOST_LIBRARY_DIR})
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
             ws2_32

@@ -10,6 +10,7 @@
 
 #include "lemon/count.hpp"
 #include "lemon/parallel.hpp"
+#include "lemon/launch.hpp"
 
 TEST_CASE("Read single MMTF Sequence File") {
     std::ifstream hadoop_file("files/rcsb_hadoop/hadoop", std::istream::binary);
@@ -39,22 +40,6 @@ TEST_CASE("Read multiple MMTF Sequence File") {
     CHECK(count == 5);
 }
 
-TEST_CASE("Use Hadoop Run - no collector") {
-    boost::filesystem::path p("files/rcsb_hadoop");
-    std::map<std::string, size_t> counts;
-    std::mutex test_mutex;
-
-    auto worker = [&counts, &test_mutex](const chemfiles::Frame& complex,
-                                         const std::string& pdbid) {
-        auto result = lemon::count::bioassemblies(complex);
-        std::lock_guard<std::mutex> guard(test_mutex);
-        counts[pdbid] = result;
-    };
-
-    lemon::run_parallel(worker, p, 2);
-    CHECK(counts.size() == 5);
-}
-
 TEST_CASE("Use Hadoop Run - with collector") {
     boost::filesystem::path p("files/rcsb_hadoop");
 
@@ -65,7 +50,7 @@ TEST_CASE("Use Hadoop Run - with collector") {
         return resn_counts;
     };
 
-    lemon::map_combine<lemon::ResidueNameCount> combiner;
+    lemon::map_combine<lemon::ResidueNameCount, lemon::ResidueNameCount> combiner;
     lemon::ResidueNameCount collector;
 
     lemon::run_parallel(worker, combiner, p, collector, 2);

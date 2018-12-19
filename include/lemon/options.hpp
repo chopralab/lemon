@@ -87,13 +87,13 @@ class Options {
     }
 
     //! Directory containing the MMTF or Hadoop files
-    const std::string& work_dir() { return work_dir_; }
+    const std::string& work_dir() const { return work_dir_; }
 
     //! Number of CPUs used for run independant jobs
     size_t ncpu() const { return ncpu_; }
 
     //! Index to preselect entries. Eg a search on RCSB
-    const std::string& entries() { return entries_; }
+    const std::string& entries() const { return entries_; }
 
    private:
     po::options_description desc_;

@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
             proteins.insert(i);
         }
 
+        std::string result;
         for (auto smallm_id : smallm) {
             auto prot_copy = proteins;
 
@@ -33,22 +34,17 @@ int main(int argc, char* argv[]) {
             auto vscore =
                 lemon::xscore::vina_score(complex, smallm_id, prot_copy);
 
-            std::stringstream ss;
-            ss << pdbid << "\t" << residues[smallm_id].name() << "\t"
-               << vscore.g1 << "\t" << vscore.g2 << "\t" << vscore.hydrogen
-               << "\t" << vscore.hydrophobic << "\t" << vscore.rep << "\n";
-            std::cout << ss.str();
+            result += pdbid + "\t" +
+                residues[smallm_id].name() + "\t" +
+                std::to_string(vscore.g1) + "\t" +
+                std::to_string(vscore.g2) + "\t" +
+                std::to_string(vscore.hydrogen) + "\t" +
+                std::to_string(vscore.hydrophobic) + "\t" +
+                std::to_string(vscore.rep) + "\n";
         }
+
+        return result;
     };
 
-    auto p = o.work_dir();
-    auto entries = o.entries();
-    auto threads = o.ncpu();
-
-    try {
-        lemon::run_parallel(worker, p, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
+    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
 }

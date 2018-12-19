@@ -5,30 +5,16 @@
 
 int main(int argc, char* argv[]) {
     lemon::Options o;
+    std::string outdir;
     auto distance = 6.0;
     o.add_option("distance,d", distance,
                  "Largest distance between protein and a small molecule.");
+    o.add_option("outdir,o", outdir, "output directory");
     o.parse_command_line(argc, argv);
-    auto entries_fn = o.entries();
-
-    if (!boost::filesystem::is_regular_file(entries_fn)) {
-        std::cerr << "You must supply a valid entries file" << std::endl;
-        return 1;
-    }
-
-    auto p = o.work_dir();
-
-    if (!boost::filesystem::is_directory(p)) {
-        std::cerr << "You must supply a valid archive directory" << std::endl;
-        return 2;
-    }
-
-    auto outdir = o.work_dir();
-    auto threads = o.ncpu();
 
     lemon::Entries entries;
     std::unordered_map<std::string, lemon::ResidueNameSet> rnms;
-    std::ifstream is(entries_fn);
+    std::ifstream is(o.entries());
     lemon::read_entry_file(is, entries, rnms);
 
     auto worker = [distance, &rnms, &outdir](chemfiles::Frame complex,
@@ -59,12 +45,9 @@ int main(int argc, char* argv[]) {
             prot_traj.close();
             lig_traj.close();
         }
+
+        return pdbid + std::to_string(smallm.size());
     };
 
-    try {
-        lemon::run_parallel(worker, p, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
+    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
 }

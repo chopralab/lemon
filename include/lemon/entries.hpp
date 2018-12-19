@@ -25,6 +25,11 @@ inline Entries read_entry_file(std::istream& input) {
     return result;
 }
 inline Entries read_entry_file(const std::string& input) {
+
+    if(input == "") {
+        return Entries();
+    }
+
     std::ifstream input_file(input);
     std::string header;
     std::string junk;

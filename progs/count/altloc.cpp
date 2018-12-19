@@ -11,19 +11,9 @@ int main(int argc, char* argv[]) {
         // Desired info is obtained directly 
         auto result = lemon::count::altloc(complex);
 
-        // Custom output phase
-        std::stringstream ss;
-        ss << pdbid << " " << result << "\n";
-        std::cout << ss.str();
+        // Output phase
+        return pdbid + " " + std::to_string(result) + "\n";
     };
 
-    auto p = o.work_dir();
-    auto threads = o.ncpu();
-
-    try {
-        lemon::run_parallel(worker, p, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
+    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
 }

@@ -13,5 +13,6 @@
 #include "lemon/select.hpp"
 #include "lemon/separate.hpp"
 #include "lemon/structure.hpp"
+#include "lemon/launch.hpp"
 
 #endif
