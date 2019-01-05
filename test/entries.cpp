@@ -6,14 +6,7 @@
 #include <fstream>
 
 TEST_CASE("Read entry file") {
-    std::ifstream input_file("files/entries_10.idx");
-
-    // Skip two lines
-    std::string junk;
-    std::getline(input_file, junk);
-    std::getline(input_file, junk);
-
-    auto vec = lemon::read_entry_file(input_file);
+    auto vec = lemon::read_entry_file("files/entries_10.idx");
     
     CHECK(vec.size() == 10);
     CHECK(vec.count("100D") != 0);

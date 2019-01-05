@@ -63,4 +63,5 @@ endforeach(test_file)
 
 if(${LEMON_TEST_ASYNC})
     add_cpp_test(${CMAKE_CURRENT_SOURCE_DIR}/hadoop.cpp async)
+    target_compile_definitions(async PRIVATE LEMON_USE_ASYNC=1)
 endif()
