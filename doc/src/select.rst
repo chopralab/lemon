@@ -16,5 +16,5 @@ Example
 
 .. literalinclude:: ../../progs/count/metal_ions.cpp
    :language: cpp
-   :lines: 9-17
+   :lines: 9-18
    :dedent: 4

@@ -10,7 +10,10 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) {
 
         // Selection phase
-        auto smallm = lemon::select::small_molecules(complex);
+        std::list<size_t> smallm;
+        if (lemon::select::small_molecules(complex, smallm) == 0) {
+            return std::string("");
+        }
 
         // Pruning phase
         lemon::prune::identical_residues(complex, smallm);

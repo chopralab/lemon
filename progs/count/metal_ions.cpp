@@ -10,10 +10,11 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) {
 
         // Selection phase
-        auto result = lemon::select::metal_ions(complex);
+        std::list<size_t> metal_ids;
+        lemon::select::metal_ions(complex, metal_ids);
 
         // No pruning, straight to out output phase
-        return lemon::count::print_residue_name_counts(pdbid, complex, result);
+        return lemon::count::print_residue_name_counts(pdbid, complex, metal_ids);
     };
 
     return lemon::launch<lemon::print_combine>(o, worker, std::cout);

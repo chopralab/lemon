@@ -150,9 +150,10 @@ inline void keep_interactions(const chemfiles::Frame& frame,
 //!  residue_ids to **not** interact with.
 //! \param [in] distance_cutoff The distance that the residue_ids
 //!  must be within a checked residue to be removed.
+template<typename Container1, typename Container2>
 inline void remove_interactions(const chemfiles::Frame& frame,
-                       std::list<size_t>& residue_ids,
-                       const std::list<size_t>& interaction_ids,
+                       Container1& residue_ids,
+                       const Container2& interaction_ids,
                        double distance_cutoff = 6.0) {
     interactions(frame, residue_ids, interaction_ids, distance_cutoff, false);
 }

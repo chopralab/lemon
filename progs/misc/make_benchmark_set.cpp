@@ -21,7 +21,11 @@ int main(int argc, char* argv[]) {
                                              const std::string& pdbid) {
 
         // Selection phase
-        auto smallm = lemon::select::specific_residues(complex, rnms[pdbid]);
+        std::list<size_t> smallm;
+        if (lemon::select::specific_residues(complex, smallm,
+                                             rnms[pdbid]) == 0) {
+            return "Skipping " + pdbid;
+        }
 
         // Pruning phase
         lemon::prune::identical_residues(complex, smallm);

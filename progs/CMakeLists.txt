@@ -45,6 +45,7 @@ endfunction()
 file(GLOB all_test_files
     ${CMAKE_CURRENT_SOURCE_DIR}/count/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/geometry/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/interactions/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/misc/*.cpp
 )
 

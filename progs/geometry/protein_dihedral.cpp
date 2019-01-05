@@ -112,10 +112,10 @@ int main(int argc, char* argv[]) {
         
         // Selection phase
         chemfiles::Frame protein_only;
-        auto peptides =
-            lemon::select::specific_residues(complex, lemon::common_peptides);
+        std::list<size_t> peptides;
 
-        if (peptides.size() == 0) {
+        if (lemon::select::specific_residues(complex, peptides,
+                                             lemon::common_peptides) == 0) {
             return bins;
         }
 

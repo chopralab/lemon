@@ -16,5 +16,5 @@ Example
 
 .. literalinclude:: ../../progs/count/small_molecules.cpp
    :language: cpp
-   :lines: 9-22
+   :lines: 9-25
    :dedent: 4
