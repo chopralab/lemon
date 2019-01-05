@@ -99,13 +99,13 @@ TEST_CASE("Scoring") {
 
     auto small_molecule = residues[*ade.begin()];
 
-    std::set<size_t> proteins;
+    std::list<size_t> proteins;
     for (size_t i = 0; i < residues.size(); ++i) {
-        proteins.insert(i);
+        proteins.push_back(i);
     }
 
     lemon::prune::keep_interactions(frame1, ade, proteins, 8.0);
-    proteins.erase(*ade.begin());
+    proteins.erase(std::remove(proteins.begin(), proteins.end(), *ade.begin()));
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
     CHECK(roughly(vscore.g1, 79.23012));
@@ -129,7 +129,6 @@ TEST_CASE("Scoring with hydrophobics") {
         proteins.insert(i);
     }
 
-    lemon::prune::keep_interactions(frame1, azm, proteins, 8.0);
     proteins.erase(*azm.begin());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*azm.begin()), proteins);
@@ -155,7 +154,6 @@ TEST_CASE("Dry scoring") {
     }
 
     lemon::prune::identical_residues(frame1, proteins);
-    lemon::prune::keep_interactions(frame1, ade, proteins, 8.0);
     proteins.erase(*ade.begin());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);

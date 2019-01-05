@@ -19,9 +19,9 @@ int main(int argc, char* argv[]) {
 
         // Output phase
         const auto& residues = complex.topology().residues();
-        std::set<size_t> proteins;
+        std::list<size_t> proteins;
         for (size_t i = 0; i < complex.topology().residues().size(); ++i) {
-            proteins.insert(i);
+            proteins.push_back(i);
         }
 
         std::string result;
@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
             auto prot_copy = proteins;
 
             lemon::prune::keep_interactions(complex, smallm, prot_copy, 8.0);
-            prot_copy.erase(smallm_id);
+            prot_copy.erase(std::remove(prot_copy.begin(), prot_copy.end(), smallm_id));
 
             auto vscore =
                 lemon::xscore::vina_score(complex, smallm_id, prot_copy);

@@ -2,6 +2,7 @@
 #define LEMON_SELECT_HPP
 
 #include <set>
+#include <list>
 #include <unordered_set>
 
 #include "chemfiles/Frame.hpp"
@@ -26,12 +27,12 @@ namespace select {
 //! \param [in] min_heavy_atoms The minimum number of non-hydrogen atoms for a
 //!  residue to be classed as a small molecule.
 //! \return A set of residue IDs which match the supplied criterion.
-inline std::set<size_t> small_molecules(const chemfiles::Frame& frame,
+inline std::list<size_t> small_molecules(const chemfiles::Frame& frame,
                                         const std::unordered_set<std::string>& types = small_molecule_types,
                                         size_t min_heavy_atoms = 10) {
 
     const auto& residues = frame.topology().residues();
-    std::set<size_t> selected_residues;
+    std::list<size_t> selected_residues;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -59,7 +60,7 @@ inline std::set<size_t> small_molecules(const chemfiles::Frame& frame,
             continue;
         }
 
-        selected_residues.insert(selected_residue);
+        selected_residues.push_back(selected_residue);
     }
 
     return selected_residues;
@@ -71,18 +72,18 @@ inline std::set<size_t> small_molecules(const chemfiles::Frame& frame,
 //! as a residue with a single, positively charged ion.
 //! \param [in] frame The complex containing metal ions of interest.
 //! \return A set of residue IDs which match the supplied criterion.
-inline std::set<size_t> metal_ions(const chemfiles::Frame& frame) {
+inline std::list<size_t> metal_ions(const chemfiles::Frame& frame) {
 
     const auto& residues = frame.topology().residues();
 
-    std::set<size_t> selected_residues;
+    std::list<size_t> selected_residues;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
         const auto& residue = residues[selected_residue];
 
         if (residue.size() == 1 && frame[*residue.begin()].charge() > 0.0) {
-            selected_residues.insert(selected_residue);
+            selected_residues.push_back(selected_residue);
         }
     }
 
@@ -96,11 +97,11 @@ inline std::set<size_t> metal_ions(const chemfiles::Frame& frame) {
 //! containing the *RNA* or *DNA* substring.
 //! \param [in] frame The complex containing nucleic acid residues.
 //! \return A set of residue IDs which match the supplied criterion.
-inline std::set<size_t> nucleic_acids(const chemfiles::Frame& frame) {
+inline std::list<size_t> nucleic_acids(const chemfiles::Frame& frame) {
 
     const auto& residues = frame.topology().residues();
 
-    std::set<size_t> selected_residues;
+    std::list<size_t> selected_residues;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -112,7 +113,7 @@ inline std::set<size_t> nucleic_acids(const chemfiles::Frame& frame) {
             continue;
         }
 
-        selected_residues.insert(selected_residue);
+        selected_residues.push_back(selected_residue);
     }
 
     return selected_residues;
@@ -125,10 +126,10 @@ inline std::set<size_t> nucleic_acids(const chemfiles::Frame& frame) {
 //! containing the *PEPTIDE* substring which is not *PEPTIDE-LIKE*.
 //! \param [in] frame The complex containing peptide residues.
 //! \return A set of residue IDs which match the supplied criterion.
-inline std::set<size_t> peptides(const chemfiles::Frame& frame) {
+inline std::list<size_t> peptides(const chemfiles::Frame& frame) {
     const auto& residues = frame.topology().residues();
 
-    std::set<size_t> selected_residues;
+    std::list<size_t> selected_residues;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -140,7 +141,7 @@ inline std::set<size_t> peptides(const chemfiles::Frame& frame) {
             continue;
         }
 
-        selected_residues.insert(selected_residue);
+        selected_residues.push_back(selected_residue);
     }
 
     return selected_residues;
@@ -152,11 +153,11 @@ inline std::set<size_t> peptides(const chemfiles::Frame& frame) {
 //! \param [in] frame The complex containing residues of interest.
 //! \param [in] resnames The set of residue names of interest.
 //! \return A set of residue IDs which match the supplied criterion.
-inline std::set<size_t> specific_residues(
+inline std::list<size_t> specific_residues(
     const chemfiles::Frame& frame, const ResidueNameSet& resnames) {
 
     const auto& residues = frame.topology().residues();
-    std::set<size_t> selected_residues;
+    std::list<size_t> selected_residues;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -166,7 +167,7 @@ inline std::set<size_t> specific_residues(
             continue;
         }
 
-        selected_residues.insert(selected_residue);
+        selected_residues.push_back(selected_residue);
     }
 
     return selected_residues;

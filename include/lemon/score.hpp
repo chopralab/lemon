@@ -297,8 +297,9 @@ inline std::unordered_multimap<size_t, size_t> create_bond_map(const std::vector
 //! \param [in] recid The residue IDs for the protein in the complex
 //! \param [in] cutoff The interaction distance cutoff between ligand and protein
 //! \return The five components of Vina/XScore's scoring function.
+template<typename Container>
 inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
-                     std::set<size_t> recid, double cutoff = 8.0) {
+                     Container recid, double cutoff = 8.0) {
     const auto& topo = frame.topology();
     const auto& residues = topo.residues();
     auto bond_map = create_bond_map(topo.bonds());

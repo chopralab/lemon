@@ -2,6 +2,7 @@
 #define LEMON_PARSE_HPP
 
 #include <set>
+#include <list>
 #include <sstream>
 
 #include <chemfiles.hpp>
@@ -43,10 +44,11 @@ inline void residues(const chemfiles::Frame& frame,
 //! name with the residue ids in `resids`. If the residue is previously stored
 //! in the supplied `resn_count` then the count of the residue is increased.
 //! \param [in] frame The frame containing residues of interest
-//! \param [in] resids Set of residue ids to consider
+//! \param [in] resids Residue ids to consider
 //! \param [in,out] resn_count A map of residue names to their respective count
+template<typename Container>
 inline void residues(const chemfiles::Frame& frame,
-                     const std::set<size_t>& resids,
+                     const Container& resids,
                      ResidueNameCount& resn_count) {
     auto& residues = frame.topology().residues();
 
@@ -101,9 +103,10 @@ inline size_t bioassemblies(const chemfiles::Frame& frame) {
 //! \param [in] complex The complex containing the residues of interest
 //! \param [in] res_ids The set of residue ids for printing
 //! \return a string containing the formatted output.
+template<typename Container>
 inline std::string print_residue_name_counts(const std::string& pdbid,
                                              const chemfiles::Frame& complex,
-                                             const std::set<size_t>& res_ids) {
+                                             const Container& res_ids) {
     if (res_ids.empty()) {
         return "";
     }

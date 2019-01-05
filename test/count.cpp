@@ -66,12 +66,13 @@ TEST_CASE("Selective residue count") {
     auto traj = chemfiles::Trajectory("files/5w1d.pdb", 'r');
     auto test1 = traj.read();
 
-    lemon::count::residues(test1, {1, 2, 3, 4, 5, 6}, counter);
+    std::set<size_t> first6({1, 2, 3, 4, 5, 6});
+    lemon::count::residues(test1, first6, counter);
 
-    auto s1 = lemon::count::print_residue_name_counts("JUNK", test1, {});
+    auto s1 = lemon::count::print_residue_name_counts("JUNK", test1, std::set<size_t>());
     CHECK(s1 == "");
 
-    auto s2 = lemon::count::print_residue_name_counts("5w1d", test1, {2, 5});
+    auto s2 = lemon::count::print_residue_name_counts("5w1d", test1, std::set<size_t>({2, 5}));
     CHECK(s2== "5w1d\tTYR\t2\n");
 }
 
