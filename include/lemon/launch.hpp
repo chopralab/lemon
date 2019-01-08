@@ -3,6 +3,7 @@
 
 #include "lemon/options.hpp"
 #include "lemon/parallel.hpp"
+#include "lemon/constants.hpp"
 
 namespace lemon {
 
@@ -28,13 +29,21 @@ int launch(const Options& o, Function&& worker, Collector& collect) {
     auto p = o.work_dir();
     auto threads = o.ncpu();
     auto entries = read_entry_file(o.entries());
+    auto se = o.skip_entries();
+
+    std::unordered_set<std::string> skip_entries;
+    if (se.empty()) {
+        skip_entries = large_entries;
+    } else if (se != "*none*") {
+        skip_entries = read_entry_file(se);
+    }
 
     using ret = typename std::result_of<Function&(chemfiles::Frame,
                                                   const std::string&)>::type;
     Combiner<Collector, ret> combiner;
 
     try {
-        lemon::run_parallel(worker, combiner, p, collect, threads, entries);
+        lemon::run_parallel(worker, combiner, p, collect, threads, entries, skip_entries);
     } catch(std::runtime_error& e){
         std::cerr << e.what() << "\n";
         return 1;

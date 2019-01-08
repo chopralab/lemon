@@ -114,9 +114,9 @@ inline std::vector<fs::path> read_hadoop_dir(const fs::path& p) {
     }
 
     std::vector<fs::path> pathvec;
-    pathvec.reserve(600);
+    pathvec.reserve(700);
 
-    // There's only ~550 files to read here!
+    // There's only ~600 files to read here!
     auto begin = fs::directory_iterator(p);
     fs::directory_iterator end;
     std::transform(

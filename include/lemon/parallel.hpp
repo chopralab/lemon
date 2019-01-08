@@ -29,10 +29,12 @@ namespace lemon {
 //!  by the worker object which are appended with `combine`.
 //! \param [in] ncpu The number of threads to use.
 //! \param [in] entries Which entries to use. Not used if blank.
+//! \param [in] skip_entries Which entries to skip. Not used if blank.
 template <typename Function, typename Combiner, typename Collector>
 inline void run_parallel(Function&& worker, Combiner&& combine,
                          const fs::path& p, Collector& collector, size_t ncpu = 1,
-                         const Entries& entries = Entries()) {
+                         const Entries& entries = Entries(),
+                         const Entries& skip_entries = Entries()) {
     auto pathvec = read_hadoop_dir(p);
     std::vector<std::thread> threads(ncpu);
     using ret = typename std::result_of<Function&(chemfiles::Frame, const std::string&)>::type;
@@ -43,7 +45,7 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
     using iter = std::vector<fs::path>::iterator;
     std::unordered_map<std::thread::id, std::list<ret>> results;
 
-    auto call_function = [&worker, &results, &combine, &entries](iter first, iter last) {
+    auto call_function = [&worker, &results, &combine, &entries, &skip_entries](iter first, iter last) {
         auto th = std::this_thread::get_id();
         for (auto it = first; it != last; ++it) {
             std::ifstream data(it->string(), std::istream::binary);
@@ -52,6 +54,9 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
             while (sequence.has_next()) {
                 auto pair = sequence.next();
                 if (entries.size() && entries.count(pair.first) == 0) {
+                    continue;
+                }
+                if (skip_entries.size() && skip_entries.count(pair.first) != 0) {
                     continue;
                 }
                 try {
@@ -86,14 +91,15 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
 template <typename Function, typename Combiner, typename Collector>
 inline void run_parallel(Function&& worker, Combiner&& combine,
                          const fs::path& p, Collector& collector, size_t ncpu = 1,
-                         const Entries& entries = Entries()) {
+                         const Entries& entries = Entries(),
+                         const Entries& skip_entries = Entries()) {
     using ret = typename std::result_of<Function&(chemfiles::Frame, const std::string&)>::type;
     auto pathvec = read_hadoop_dir(p);
     thread_pool threads(ncpu);
     threaded_queue<std::list<ret>> results;
 
     for (const auto& path : pathvec) {
-        threads.queue_task([path, &results, &worker, &combine, &entries] {
+        threads.queue_task([path, &results, &worker, &combine, &entries, &skip_entries] {
             std::ifstream data(path.string(), std::istream::binary);
             Hadoop sequence(data);
             std::list<ret> mini_collector;
@@ -101,6 +107,9 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
             while (sequence.has_next()) {
                 auto pair = sequence.next();
                 if (entries.size() && entries.count(pair.first) == 0) {
+                    continue;
+                }
+                if (skip_entries.size() && skip_entries.count(pair.first) != 0) {
                     continue;
                 }
                 try {
