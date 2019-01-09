@@ -5,9 +5,9 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    std::unordered_map<std::thread::id, lemon::ResidueNameCount> resn_counts;
-    auto worker = [&resn_counts](chemfiles::Frame complex,
-                                 const std::string& /* unused */) {
+    auto worker = [](chemfiles::Frame complex, const std::string&) {
+
+        lemon::ResidueNameCount rnc;
 
         // Selection phase
         chemfiles::Frame protein_only;
@@ -15,36 +15,18 @@ int main(int argc, char* argv[]) {
 
         // Pruning phase
         if (peptides.size() == 0) {
-            return;
+            return rnc;
         }
 
         lemon::separate::residues(complex, peptides, protein_only);
 
         // Output phase
-        auto th = std::this_thread::get_id();
-        lemon::count::residues(protein_only, resn_counts[th]);
+        lemon::count::residues(protein_only, rnc);
+        return rnc;
     };
 
-    auto p = o.work_dir();
-    auto threads = o.ncpu();
-
-    if (!boost::filesystem::is_directory(p)) {
-        std::cerr << "You must supply a valid directory" << std::endl;
-        return 2;
-    }
-
-    try {
-        lemon::run_parallel(worker, p, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
-
     lemon::ResidueNameCount resn_total;
-
-    for (const auto& resn_count : resn_counts) {
-        resn_total += resn_count.second;
-    }
+    lemon::launch<lemon::map_combine>(o, worker, resn_total);
 
     for (auto i : resn_total) {
         std::cout << i.first << "\t" << i.second << "\n";

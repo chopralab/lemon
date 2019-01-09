@@ -32,6 +32,7 @@ TEST_CASE("Custom Options") {
     CHECK(reference.empty());
     CHECK(opts.ncpu() == 2);
     CHECK(opts.entries() == "entries");
+    CHECK(opts.skip_entries() == "");
 
 	CHECK_THROWS(opts.add_option("junk", reference));
     CHECK_THROWS(opts.parse_command_line(argc, argv));

@@ -16,5 +16,5 @@ Example
 
 .. literalinclude:: ../../progs/misc/vinascore_all.cpp
    :language: cpp
-   :lines: 9-42
+   :lines: 9-49
    :dedent: 4

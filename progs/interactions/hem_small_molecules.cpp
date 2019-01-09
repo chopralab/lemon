@@ -26,17 +26,8 @@ int main(int argc, char* argv[]) {
         lemon::prune::keep_interactions(complex, smallm, hemegs, distance);
 
         // Output phase
-        std::cout << lemon::count::print_residue_name_counts(pdbid, complex, smallm);
+        return lemon::count::print_residue_name_counts(pdbid, complex, smallm);
     };
 
-    auto p = o.work_dir();
-    auto entries = o.entries();
-    auto threads = o.ncpu();
-
-    try {
-        lemon::run_parallel(worker, p, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
+    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
 }

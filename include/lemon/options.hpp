@@ -32,6 +32,11 @@ class Options {
 
         add_option("entries,e", entries_,
                    "Preselected index file returned by RCSB");
+
+        add_option("skip_entries,s", skip_entries_,
+                   "Index file containing PDB ids to skip. By default, the entries "
+                   "listed in the large_entries constant are used. Set to *none* to"
+                   "use all entries.");
     }
 
     //! Constructor for an `Options` class which does not use custom options
@@ -87,13 +92,16 @@ class Options {
     }
 
     //! Directory containing the MMTF or Hadoop files
-    const std::string& work_dir() { return work_dir_; }
+    const std::string& work_dir() const { return work_dir_; }
 
     //! Number of CPUs used for run independant jobs
     size_t ncpu() const { return ncpu_; }
 
     //! Index to preselect entries. Eg a search on RCSB
-    const std::string& entries() { return entries_; }
+    const std::string& entries() const { return entries_; }
+
+    //! Index to skip entries.
+    const std::string& skip_entries() const {return skip_entries_;}
 
    private:
     po::options_description desc_;
@@ -103,6 +111,7 @@ class Options {
     std::string work_dir_;
     size_t ncpu_;
     std::string entries_;
+    std::string skip_entries_;
 };
 }  // namespace lemon
 

@@ -21,19 +21,8 @@ int main(int argc, char* argv[]) {
         size_t aligned;
         std::tie(score, rmsd, aligned) = lemon::tmalign::TMscore(complex, native, junk);
 
-        std::stringstream ss;
-        ss << pdbid << "\t" << score << "\t" << rmsd << "\t" << aligned << "\n";
-        std::cout << ss.str();
+        return pdbid + "\t" + std::to_string(score) + "\t" + std::to_string(rmsd) + "\t" + std::to_string(aligned) + "\n";
     };
 
-    auto p = o.work_dir();
-    auto entries = o.entries();
-    auto threads = o.ncpu();
-
-    try {
-        lemon::run_parallel(worker, p, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
+    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
 }

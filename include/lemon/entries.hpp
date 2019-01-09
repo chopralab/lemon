@@ -6,49 +6,45 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <unordered_set>
 
 #include "lemon/residue_name.hpp"
 #include "chemfiles/utils.hpp"
 
 namespace lemon {
 
-typedef std::vector<std::array<char, 4>> PDBIDVec;
+typedef std::unordered_set<std::string> Entries;
 
-inline void read_entry_file(std::istream& input,
-                     PDBIDVec& result) {
+inline Entries read_entry_file(std::istream& input) {
+    Entries result;
     std::string temp;
     while (std::getline(input, temp)) {
-        std::array<char, 4> a;
-        a[0] = temp[0];
-        a[1] = temp[1];
-        a[2] = temp[2];
-        a[3] = temp[3];
-        result.emplace_back(a);
+        std::string a = temp.substr(0, 4);
+        result.insert(a);
     }
+    return result;
 }
-inline void read_entry_file(const std::string& input,
-                     PDBIDVec& result,
-                     size_t number_of_entries = 143000) {
+inline Entries read_entry_file(const std::string& input) {
+
+    if(input == "") {
+        return Entries();
+    }
+
     std::ifstream input_file(input);
     std::string header;
     std::string junk;
     std::getline(input_file, header);
     std::getline(input_file, junk);
 
-    result.reserve(number_of_entries);
-    lemon::read_entry_file(input_file, result);
+    return lemon::read_entry_file(input_file);
 }
 
 inline void read_entry_file(std::istream& input,
-                     PDBIDVec& result,
+                     Entries& result,
                      std::unordered_map<std::string, ResidueNameSet>& rnm) {
     std::string temp;
     while (std::getline(input, temp)) {
-        std::array<char, 4> a;
-        a[0] = temp[0];
-        a[1] = temp[1];
-        a[2] = temp[2];
-        a[3] = temp[3];
+        std::string a = temp.substr(0, 4);
 
         const std::string pdbid = std::string(a.data(), 4);
         auto residue_names = chemfiles::split(temp, '\t');
@@ -56,7 +52,7 @@ inline void read_entry_file(std::istream& input,
             rnm[pdbid].insert(residue_names[i]);
         }
 
-        result.emplace_back(a);
+        result.insert(a);
     }
 }
 }

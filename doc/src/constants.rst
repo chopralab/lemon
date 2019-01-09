@@ -10,3 +10,5 @@ Useful Constants
 .. doxygenvariable:: lemon::common_fatty_acids
 
 .. doxygenvariable:: lemon::small_molecule_types
+
+.. doxygenvariable:: lemon::large_entries

@@ -2,6 +2,7 @@
 #define LEMON_SEPARATE_HPP
 
 #include <set>
+#include <list>
 #include <unordered_set>
 
 #include "chemfiles/Topology.hpp"
@@ -21,8 +22,9 @@ namespace separate {
 //! \param [in] input The original Frame from where the residues will be copied.
 //! \param [in] accepted_residues The residue IDs for the residues to be copied.
 //! \param [in,out] new_frame The frame where the residues wil be copied to.
+template<typename Container>
 inline void residues(const chemfiles::Frame& input,
-                     const std::set<size_t>& accepted_residues,
+                     const Container& accepted_residues,
                      chemfiles::Frame& new_frame) {
 
     const auto& residues  = input.topology().residues();
@@ -77,7 +79,7 @@ inline void protein_and_ligand(const chemfiles::Frame& input,
     const auto& residues = topo.residues();
     const auto& ligand_residue = residues[ligand_id];
 
-    std::set<size_t> accepted_residues;
+    std::list<size_t> accepted_residues;
     for (size_t res_id = 0; res_id < residues.size(); ++res_id) {
         if (res_id == ligand_id) {
             continue;
@@ -87,7 +89,7 @@ inline void protein_and_ligand(const chemfiles::Frame& input,
         for (auto prot_atom : res) {
             for (auto lig_atom : ligand_residue) {
                 if (input.distance(prot_atom, lig_atom) < pocket_size) {
-                    accepted_residues.insert(res_id);
+                    accepted_residues.push_back(res_id);
                     goto found_interaction;
                 }
             }
@@ -96,7 +98,7 @@ inline void protein_and_ligand(const chemfiles::Frame& input,
     }
 
     lemon::separate::residues(input, accepted_residues, protein);
-    lemon::separate::residues(input, {ligand_id}, ligand);
+    lemon::separate::residues(input, std::list<size_t>({ligand_id}), ligand);
 
     ligand.set("name", ligand_residue.name());
 }

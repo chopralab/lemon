@@ -10,7 +10,10 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) {
 
         // Selection phase
-        auto smallm = lemon::select::small_molecules(complex);
+        std::list<size_t> smallm;
+        if (lemon::select::small_molecules(complex, smallm) == 0) {
+            return std::string("");
+        }
 
         // Pruning phase
         lemon::prune::identical_residues(complex, smallm);
@@ -18,16 +21,8 @@ int main(int argc, char* argv[]) {
         lemon::prune::cofactors(complex, smallm, lemon::common_fatty_acids);
 
         // Output phase
-        std::cout << lemon::count::print_residue_name_counts(pdbid, complex, smallm);
+        return lemon::count::print_residue_name_counts(pdbid, complex, smallm);
     };
 
-    auto p = o.work_dir();
-    auto threads = o.ncpu();
-
-    try {
-        lemon::run_parallel(worker, p, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
+    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
 }

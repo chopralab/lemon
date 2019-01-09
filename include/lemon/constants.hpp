@@ -73,6 +73,17 @@ const std::unordered_set<std::string> small_molecule_types{
     {"NON-POLYMER"}, {"OTHER"}, {"PEPTIDE-LIKE"}
 };
 
+//! PDB entries that should be skipped as they are time consuming to calculate.
+//!
+//! These PDB entries are of virus capsids and therefore are time consuming to
+//! perform operations on.  The typical user may wish to skip these complexes
+//! as to reduce the total amount of time required for a **Lemon** workflow.
+//! These entries are indentified as they take an order of magnitude longer to
+//! perform an operation than other entries.
+const std::unordered_set<std::string> large_entries{
+    {"3J3Q"}, {"3J3Y"}, {"5Y6P"}
+};
+
 }
 
 #endif

@@ -85,10 +85,10 @@ int main(int argc, char* argv[]) {
 
         // Selection phase
         chemfiles::Frame protein_only;
-        auto peptides =
-            lemon::select::specific_residues(complex, lemon::common_peptides);
+        std::list<size_t> peptides;
 
-        if (peptides.size() == 0) {
+        if (lemon::select::specific_residues(complex, peptides,
+                                             lemon::common_peptides) == 0) {
             return bins;
         }
 
@@ -116,23 +116,15 @@ int main(int argc, char* argv[]) {
         return bins;
     };
 
-    auto p = o.work_dir();
-    auto entries = o.entries();
-    auto threads = o.ncpu();
-
-    lemon::map_combine<StretchCounts> combiner;
     StretchCounts sc_total;
+    lemon::launch<lemon::map_combine>(o, worker, sc_total);
 
-    try {
-        lemon::run_parallel(worker, combiner, p, sc_total, threads);
-    } catch(std::runtime_error& e){
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
 
     for (const auto& i : sc_total) {
         std::cout << i.first.first << "\t"
                   << static_cast<double>(i.first.second) * bin_size << "\t"
                   << i.second << "\n";
     }
+
+    return 0;
 }
