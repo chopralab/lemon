@@ -48,8 +48,10 @@ int launch(const Options& o, Function&& worker, Collector& collect) {
         std::cerr << e.what() << "\n";
         return 1;
     }
+
+    return 0;
 }
 
-}; // namespace lemon
+} // namespace lemon
 
 #endif

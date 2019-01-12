@@ -40,7 +40,7 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
     using ret = typename std::result_of<Function&(chemfiles::Frame, const std::string&)>::type;
 
     // Total number of jobs for each thread
-    const size_t grainsize = pathvec.size() / ncpu;
+    const int grainsize = static_cast<int>(pathvec.size() / ncpu);
     auto work_iter = pathvec.begin();
     using iter = std::vector<fs::path>::iterator;
     std::unordered_map<std::thread::id, std::list<ret>> results;

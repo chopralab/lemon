@@ -23,7 +23,7 @@ class Options {
     //! automatically and additional options can be added with the `add_option`
     //! function.
     Options()
-        : desc_("Options"), ncpu_(1), work_dir_("."), options_compiled_(false) {
+        : desc_("Options"), options_compiled_(false), work_dir_("."), ncpu_(1) {
         add_option("work_dir,w", work_dir_,
                    "Directory containing the MMTF or Hadoop files");
 
