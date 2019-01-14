@@ -8,7 +8,7 @@ namespace python = boost::python;
 
 class LemonPythonBase : public boost::noncopyable {
 public:
-    virtual ~LemonPythonBase() {};
+    virtual ~LemonPythonBase() {}
     virtual std::string worker(chemfiles::Frame& frame) = 0;
 };
 
@@ -218,10 +218,17 @@ int main(int argc, char *argv[]) {
     Py_Initialize();
 
     // Register the module with the interpreter
+    #if PY_MAJOR_VERSION >= 3
+    if (PyImport_AppendInittab("lemon", PyInit_lemon) == -1) {
+        std::cerr << "Failed to embed lemon in to builtin modules" << std::endl;
+        return 1;
+    }
+    #else
     if (PyImport_AppendInittab("lemon", initlemon) == -1) {
         std::cerr << "Failed to embed lemon in to builtin modules" << std::endl;
         return 1;
     }
+    #endif
 
     // Retrieve the main module
     python::object main = python::import("__main__");
@@ -246,7 +253,12 @@ int main(int argc, char *argv[]) {
         } catch (...) {
             PyObject *ptype, *pvalue, *ptraceback;
             PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+            #if PY_MAJOR_VERSION >= 3
+            PyObject* pyStr = PyUnicode_AsEncodedString(pvalue, "utf-8", "Error ~");
+            return pdbid + " " + PyBytes_AS_STRING(pyStr) + "\n";
+            #else
             return pdbid + " " + PyString_AsString(pvalue) + "\n";
+            #endif
         }
     };
 
