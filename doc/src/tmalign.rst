@@ -11,6 +11,7 @@ address this, we've included the *TMalign* algorithm within **Lemon**.
 The TMscore function for alignment
 ----------------------------------
 
+.. doxygenstruct:: lemon::tmalign::TMResult
 .. doxygenfunction:: lemon::tmalign::TMscore
 
 Example
@@ -18,5 +19,5 @@ Example
 
 .. literalinclude:: ../../progs/misc/tmscore_all.cpp
    :language: cpp
-   :lines: 7-27
+   :lines: 7-26
    :dedent: 4

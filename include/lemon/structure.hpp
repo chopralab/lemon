@@ -318,6 +318,20 @@ inline size_t count_number_of_atom_names(const chemfiles::Frame& frame,
     return static_cast<size_t>(c);
 }
 
+//! Structure representing the TMScore
+//!
+//! 
+struct TMResult {
+    //! The TMscore
+    double score;
+
+    //! The RMSD of the aligned proteins
+    double rmsd;
+
+    //! Number of aligned residues
+    size_t aligned;
+};
+
 //! TMalign is an algorithm used to align protein chains in 3D space.
 //!
 //! Ported from https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f
@@ -335,8 +349,8 @@ inline size_t count_number_of_atom_names(const chemfiles::Frame& frame,
 //! \param [in] native The 'native' chain that the search chain is aligned to.
 //! \param [out] rot The aligned version of the search frame.
 //! \param [in] align Should the search frame to aligned to native.
-//! \return A tuple of the TMScore, RMSD after alignment, and number of aligned residues
-inline std::tuple<double, double, size_t> TMscore(
+//! \return A strucure with theTMScore, RMSD after alignment, and number of aligned residues
+inline TMResult TMscore(
     const chemfiles::Frame& search, const chemfiles::Frame& native,
     std::vector<chemfiles::Vector3D>& rot, bool align = false) {
     std::vector<size_t> a_search;
@@ -350,7 +364,7 @@ inline std::tuple<double, double, size_t> TMscore(
     auto n_ali = find_operlapping_residues(search, native, a_search, a_native);
 
     if (n_ali == 0) {
-        return std::tuple<double, double, size_t>(0.0, 0.0, 0);
+        return {0.0, 0.0, 0};
     }
 
     // parameters:
@@ -526,7 +540,7 @@ inline std::tuple<double, double, size_t> TMscore(
     }      //! for initial length, L_ali/M
 
     if (!align) {
-        return std::tuple<double, double, size_t>(score_max, armsd, n_ali);
+        return {score_max, armsd, n_ali};
     }
 
     std::vector<chemfiles::Vector3D> r_1(n_ali);
@@ -549,7 +563,7 @@ inline std::tuple<double, double, size_t> TMscore(
         rot[j] += t;
     }
 
-    return std::tuple<double, double, size_t>(score_max, armsd, n_ali);
+    return {score_max, armsd, n_ali};
 }
 
 } // namespace tmalign

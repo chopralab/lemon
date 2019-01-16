@@ -17,11 +17,12 @@ int main(int argc, char* argv[]) {
 
         std::vector<chemfiles::Vector3D> junk;
 
-        double score, rmsd;
-        size_t aligned;
-        std::tie(score, rmsd, aligned) = lemon::tmalign::TMscore(complex, native, junk);
+        auto tm = lemon::tmalign::TMscore(complex, native, junk);
 
-        return pdbid + "\t" + std::to_string(score) + "\t" + std::to_string(rmsd) + "\t" + std::to_string(aligned) + "\n";
+        return pdbid + "\t" +
+               std::to_string(tm.score) + "\t" +
+               std::to_string(tm.rmsd) + "\t" +
+               std::to_string(tm.aligned) + "\n";
     };
 
     return lemon::launch<lemon::print_combine>(o, worker, std::cout);
