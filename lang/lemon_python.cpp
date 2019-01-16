@@ -12,11 +12,24 @@ class LemonPythonBase : public boost::noncopyable {
 public:
     virtual ~LemonPythonBase() {}
     virtual std::string worker(chemfiles::Frame& frame) = 0;
+    virtual void finalize() = 0;
 };
 
 struct LemonPythonWrap : LemonPythonBase, python::wrapper<LemonPythonBase> {
     virtual std::string worker(chemfiles::Frame& frame) override {
-        return this->get_override("worker")(boost::ref(frame));
+        auto res = get_override("worker")(boost::ref(frame));
+
+        // Silently handle errors
+        try {
+            return res.as<std::string>();
+        } catch (python::error_already_set const &) {
+            PyErr_Clear();
+        }
+        return "";
+    }
+
+    virtual void finalize() override {
+        get_override("finalize")();
     }
 };
 
@@ -404,7 +417,19 @@ int main(int argc, char *argv[]) {
     std::ifstream t(py_script);
     std::string str((std::istreambuf_iterator<char>(t)),
                      std::istreambuf_iterator<char>());
-    python::object result = python::exec(str.c_str(), global, global);
+    try {
+        python::exec(str.c_str(), global, global);
+    } catch (python::error_already_set const &) {
+        PyObject *ptype, *pvalue, *ptraceback;
+        PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+        #if PY_MAJOR_VERSION >= 3
+        PyObject* pyStr = PyUnicode_AsEncodedString(pvalue, "utf-8", "Error ~");
+        std::cerr << "Error in " << py_script << ": " << PyBytes_AS_STRING(pyStr) << "\n";
+        #else
+        std::cerr << "Error in " << py_script << ": " << PyString_AsString(pvalue) << "\n";
+        #endif
+        return 1;
+    }
 
     // Obtained derived class from python
     python::object PythonDerived = global[py_derive.c_str()];
@@ -418,7 +443,7 @@ int main(int argc, char *argv[]) {
             PyObject *ptype, *pvalue, *ptraceback;
             PyErr_Fetch(&ptype, &pvalue, &ptraceback);
             #if PY_MAJOR_VERSION >= 3
-            PyObject* pyStr = PyUnicode_AsEncodedString(pvalue, "utf-8", "Error ~");
+            auto pyStr = PyUnicode_AsEncodedString(pvalue, "utf-8", "Error ~");
             return pdbid + " " + PyBytes_AS_STRING(pyStr) + "\n";
             #else
             return pdbid + " " + PyString_AsString(pvalue) + "\n";
@@ -427,6 +452,12 @@ int main(int argc, char *argv[]) {
     };
 
     lemon::launch<lemon::print_combine>(o, worker, std::cout);
+
+    try {
+        py.finalize();
+    } catch(...) {
+        // Ignore, the user probably didn't define the finalize function.
+    }
 
     return 0;
 }
