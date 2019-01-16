@@ -175,6 +175,13 @@ inline std::ostream& operator<<(std::ostream& os, const ResidueNameCount& rnc) {
     }
     return os;
 }
+
+inline std::ostream& operator<<(std::ostream& os, const ResidueNameSet& rnc) {
+    for (auto i : rnc) {
+        os << i << "\t";
+    }
+    return os;
+}
 }
 
 #endif

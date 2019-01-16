@@ -34,6 +34,22 @@ ret get_index(const T& v, int i) {
     return v[static_cast<size_t>(maxval + i)];
 }
 
+template<typename T, typename ret>
+ret get_index(const T& v, int i) {
+    if (i >= 0) {
+        if (i >= static_cast<int>(v.size())) {
+            PyErr_SetString(PyExc_IndexError, "index is too large");
+            python::throw_error_already_set();
+        }
+        return v[static_cast<size_t>(i)];
+    }
+    if (-i > static_cast<int>(v.size())) {
+        PyErr_SetString(PyExc_IndexError, "index is too small");
+        python::throw_error_already_set();
+    }
+    return v[static_cast<size_t>(static_cast<int>(v.size()) + i)];
+}
+
 template<typename T>
 bool check(const chemfiles::optional<T>& o) {
     return o != chemfiles::nullopt;
@@ -59,6 +75,7 @@ chemfiles::optional<const chemfiles::Property&> getp(const T& container,
 // Pack the Base class wrapper into a module
 BOOST_PYTHON_MODULE(lemon) {
     using namespace chemfiles;
+    using namespace lemon;
     using boost::noncopyable;
 
     python::class_<LemonPythonWrap, noncopyable>("Workflow");
@@ -81,12 +98,12 @@ BOOST_PYTHON_MODULE(lemon) {
     python::class_<optional<const Property&>> ("OptionalProperty", python::no_init)
         .def("check", check<const Property&>)
         .def("get", get<const Property&>,
-            python::return_value_policy<python::reference_existing_object>());
+            python::return_internal_reference<>());
 
     python::class_<optional<const Residue&>> ("OptionalResidue", python::no_init)
         .def("check", check<const Residue&>)
         .def("get", get<const Residue&>,
-            python::return_value_policy<python::reference_existing_object>());
+            python::return_internal_reference<>());
 
     /**************************************************************************
      * Property
@@ -164,16 +181,17 @@ BOOST_PYTHON_MODULE(lemon) {
      **************************************************************************/
     python::class_<Topology, noncopyable>("Topology")
         .def("residue", &Topology::residue,
-            python::return_value_policy<python::reference_existing_object>())
+            python::return_internal_reference<>())
+        .def("residue_for_atom", &Topology::residue_for_atom)
         .def("are_linked", &Topology::are_linked)
         .def("bonds", &Topology::bonds,
-            python::return_value_policy<python::reference_existing_object>())
+            python::return_internal_reference<>())
         .def("angles", &Topology::angles,
-            python::return_value_policy<python::reference_existing_object>())
+            python::return_internal_reference<>())
         .def("dihedrals", &Topology::dihedrals,
-            python::return_value_policy<python::reference_existing_object>())
+            python::return_internal_reference<>())
         .def("impropers", &Topology::impropers,
-            python::return_value_policy<python::reference_existing_object>());
+            python::return_internal_reference<>());
 
     /**************************************************************************
      * Frame
@@ -182,8 +200,10 @@ BOOST_PYTHON_MODULE(lemon) {
         .def("size", &Frame::size)
         .def("atoms", python::range(&Frame::cbegin,
                                     &Frame::cend))
+        .def("__get_item__", get_index<Frame,const Atom&>,
+            python::return_internal_reference<>())
         .def("topology", &Frame::topology,
-            python::return_value_policy<python::reference_existing_object>())
+            python::return_internal_reference<>())
         .def("distance", &Frame::distance)
         .def("angle", &Frame::angle)
         .def("dihedral", &Frame::dihedral)
@@ -205,6 +225,56 @@ BOOST_PYTHON_MODULE(lemon) {
         .def("covalent_radius", &Atom::covalent_radius)
         .def("atomic_number", &Atom::atomic_number);
     python::def("get", getp<Atom>);
+
+    /**************************************************************************
+     * Residue Name
+     **************************************************************************/
+    python::class_<ResidueName>("ResidueName", python::init<const std::string&>())
+        .def(python::self_ns::str(python::self));
+
+    python::class_<ResidueNameSet>("ResidueNameSet")
+        .def(python::self_ns::str(python::self));
+
+    python::class_<ResidueNameCount>("ResidueNameCount")
+        .def(python::self_ns::str(python::self))
+        .def(python::self += python::self);
+
+    using defualt_id_list = std::list<size_t>;
+    python::class_<defualt_id_list>("ResidueIDs")
+        .def("__iter__", python::range(&defualt_id_list::cbegin,
+                                       &defualt_id_list::cend));
+
+    python::scope().attr("common_peptides") = common_peptides;
+    python::scope().attr("common_cofactors") = common_cofactors;
+    python::scope().attr("common_fatty_acids") = common_fatty_acids;
+
+    /**************************************************************************
+     * Count
+     **************************************************************************/
+    python::def("count_altloc", count::altloc);
+    python::def("count_bioassemblies", count::bioassemblies);
+    python::def("print_residue_name_counts",
+        count::print_residue_name_counts<defualt_id_list>);
+
+    void (*residues1)(const Frame& frame, ResidueNameCount& resn_count) =
+        &count::residues;
+    python::def("count_residues", residues1);
+
+    void (*residues2)(const Frame& frame, const defualt_id_list&, ResidueNameCount& resn_count) =
+        &count::residues;
+    python::def("count_residues", residues2);
+
+    /**************************************************************************
+     * Vina Score
+     **************************************************************************/
+    python::class_<xscore::VinaScore>("VinaScore", python::no_init)
+        .def_readonly("g1", &xscore::VinaScore::g1)
+        .def_readonly("g2", &xscore::VinaScore::g2)
+        .def_readonly("rep", &xscore::VinaScore::rep)
+        .def_readonly("hydrophobic", &xscore::VinaScore::hydrophobic)
+        .def_readonly("hydrogen", &xscore::VinaScore::hydrogen);
+
+    python::def("vina_score", xscore::vina_score<defualt_id_list>);
 }
 
 int main(int argc, char *argv[]) {
