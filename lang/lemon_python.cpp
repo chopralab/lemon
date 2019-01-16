@@ -6,6 +6,8 @@
 
 namespace python = boost::python;
 
+namespace lemon {
+
 class LemonPythonBase : public boost::noncopyable {
 public:
     virtual ~LemonPythonBase() {}
@@ -70,6 +72,17 @@ template<typename T>
 chemfiles::optional<const chemfiles::Property&> getp(const T& container,
                                                      std::string name) {
     return container.get(name);
+}
+
+using default_id_list = std::list<size_t>;
+inline std::ostream& operator<<(std::ostream& os, const default_id_list& idlist) {
+    os << '[';
+    for (auto i : idlist) {
+        os << i << ' ';
+    }
+    os << ']';
+    return os;
+}
 }
 
 // Pack the Base class wrapper into a module
@@ -239,14 +252,71 @@ BOOST_PYTHON_MODULE(lemon) {
         .def(python::self_ns::str(python::self))
         .def(python::self += python::self);
 
-    using defualt_id_list = std::list<size_t>;
-    python::class_<defualt_id_list>("ResidueIDs")
-        .def("__iter__", python::range(&defualt_id_list::cbegin,
-                                       &defualt_id_list::cend));
+    python::class_<default_id_list>("ResidueIDs")
+        //.def(python::self_ns::str(python::self))
+        .def("__iter__", python::range(&default_id_list::cbegin,
+                                       &default_id_list::cend))
+        .def("size", &default_id_list::size);
+
+    /**************************************************************************
+     * Constants
+     **************************************************************************/
+    python::class_<std::unordered_set<std::string>>("StringSet");
+    python::scope().attr("small_molecule_types") = small_molecule_types;
 
     python::scope().attr("common_peptides") = common_peptides;
     python::scope().attr("common_cofactors") = common_cofactors;
     python::scope().attr("common_fatty_acids") = common_fatty_acids;
+
+    /**************************************************************************
+     * Select
+     **************************************************************************/
+
+    // Returns a new object    
+    default_id_list (*small_molecules)(const Frame&,
+                                       const std::unordered_set<std::string>&,
+                                       size_t) =
+        &select::small_molecules;
+
+    python::def("select_molecules", small_molecules);
+
+    default_id_list (*metal_ions)(const Frame&) = &select::metal_ions;
+    python::def("select_metal_ions", metal_ions);
+
+    default_id_list (*nucleic_acids)(const Frame&) = &select::nucleic_acids;
+    python::def("select_nucleic_acids", nucleic_acids);
+
+    default_id_list (*peptides)(const Frame&) = &select::peptides;
+    python::def("select_peptides", peptides);
+
+    default_id_list (*specific_residues)(const Frame&, const ResidueNameSet&) =
+        &select::specific_residues;
+    python::def("select_specific_residues", specific_residues);
+
+    // Inplace
+    size_t (*small_molecules_i)(const Frame&, default_id_list&,
+                                const std::unordered_set<std::string>&,
+                                size_t) =
+        &select::small_molecules;
+
+    python::def("select_molecules", small_molecules_i);
+
+    size_t (*metal_ions_i)(const Frame&, default_id_list&) =
+         &select::metal_ions;
+    python::def("select_metal_ions", metal_ions_i);
+
+    size_t (*nucleic_acids_i)(const Frame&, default_id_list&) =
+        &select::nucleic_acids;
+    python::def("select_nucleic_acids", nucleic_acids_i);
+
+    size_t (*peptides_i)(const Frame&, default_id_list&) =
+        &select::peptides;
+    python::def("select_peptides", peptides_i);
+
+    size_t (*specific_residues_i)(const Frame&, default_id_list&,
+                                  const ResidueNameSet&) =
+        &select::specific_residues;
+    python::def("select_specific_residues", specific_residues_i);
 
     /**************************************************************************
      * Count
@@ -254,15 +324,29 @@ BOOST_PYTHON_MODULE(lemon) {
     python::def("count_altloc", count::altloc);
     python::def("count_bioassemblies", count::bioassemblies);
     python::def("print_residue_name_counts",
-        count::print_residue_name_counts<defualt_id_list>);
+        count::print_residue_name_counts<default_id_list>);
 
-    void (*residues1)(const Frame& frame, ResidueNameCount& resn_count) =
-        &count::residues;
+    void (*residues1)(const Frame&, ResidueNameCount&) = &count::residues;
     python::def("count_residues", residues1);
 
-    void (*residues2)(const Frame& frame, const defualt_id_list&, ResidueNameCount& resn_count) =
+    void (*residues2)(const Frame&, const default_id_list&, ResidueNameCount&) =
         &count::residues;
     python::def("count_residues", residues2);
+
+    /**************************************************************************
+     * Prune
+     **************************************************************************/
+    python::def("prune_identical_residues",
+        prune::identical_residues<default_id_list>);
+    python::def("prune_cofactors", prune::cofactors<default_id_list>);
+    python::def("keep_interactions", prune::keep_interactions<default_id_list>);
+    python::def("remove_interactions", prune::remove_interactions<default_id_list>);
+
+    /**************************************************************************
+     * Separate
+     **************************************************************************/
+    python::def("separate_residues", separate::residues<default_id_list>);
+    python::def("separate_protein_and_ligand", separate::protein_and_ligand);
 
     /**************************************************************************
      * Vina Score
@@ -274,7 +358,17 @@ BOOST_PYTHON_MODULE(lemon) {
         .def_readonly("hydrophobic", &xscore::VinaScore::hydrophobic)
         .def_readonly("hydrogen", &xscore::VinaScore::hydrogen);
 
-    python::def("vina_score", xscore::vina_score<defualt_id_list>);
+    python::def("vina_score", xscore::vina_score<default_id_list>);
+
+    /**************************************************************************
+     * TMAlign
+     **************************************************************************/
+    python::class_<tmalign::TMResult>("TMResult", python::no_init)
+        .def_readonly("score", &tmalign::TMResult::score)
+        .def_readonly("rmsd", &tmalign::TMResult::rmsd)
+        .def_readonly("aligned", &tmalign::TMResult::aligned);
+
+    python::def("TMscore", tmalign::TMscore);
 }
 
 int main(int argc, char *argv[]) {
@@ -315,7 +409,7 @@ int main(int argc, char *argv[]) {
     // Obtained derived class from python
     python::object PythonDerived = global[py_derive.c_str()];
     python::object py_base = PythonDerived();
-    LemonPythonBase& py = python::extract<LemonPythonBase&>(py_base);
+    lemon::LemonPythonBase& py = python::extract<lemon::LemonPythonBase&>(py_base);
 
     auto worker = [&py](chemfiles::Frame complex, const std::string& pdbid) {
         try {
