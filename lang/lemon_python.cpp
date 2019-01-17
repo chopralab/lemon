@@ -1,8 +1,11 @@
 #include <string>
 #include <iostream>
+
+// Mac OSX problems with a tolower macro
+#include "lemon/lemon.hpp"
+
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include "lemon/lemon.hpp"
 
 namespace python = boost::python;
 

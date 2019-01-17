@@ -14,13 +14,9 @@ option(LEMON_BUILD_PYTHON "Build Python support" OFF)
 include(InstallChemfiles)
 include(CompilerFlags)
 
-set(Boost_USE_STATIC_LIBS        ON)
-set(Boost_USE_MULTITHREADED      ON)
-if (${LEMON_BUILD_PYTHON})
-    find_package(Boost COMPONENTS system filesystem program_options python REQUIRED)
-else()
-    find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
-endif()
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
+find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -31,5 +27,6 @@ endif()
 enable_testing()
 
 add_subdirectory(progs)
-add_subdirectory(lang)
 add_subdirectory(test)
+
+add_subdirectory(lang)

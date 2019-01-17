@@ -40,7 +40,16 @@ matrix:
       os: osx
       compiler: clang
       osx_image: xcode10.1
-      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release ASYNC=OFF
+      env:
+        - COMPILER_C: clang
+        - COMPILER_CXX: clang++
+        - COVERAGE: OFF
+        - BUILD_TYPE: Release
+        - ASYNC: OFF
+        - PYTHON_EXECUTABLE: /usr/local/bin/python
+      before_install:
+        - brew update && brew bundle
+        - brew unlink python && brew upgrade python@2
 
 before_install:
   - pip install --user cpp-coveralls
@@ -52,7 +61,8 @@ script:
   - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake .. -DCOVERAGE=${COVERAGE} \
+  - |
+    cmake .. -DCOVERAGE=${COVERAGE} \
              -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
              -DLEMON_TEST_ASYNC=${ASYNC} \
              -DLEMON_BUILD_PYTHON=ON
