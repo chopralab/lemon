@@ -57,7 +57,7 @@ if (${LEMON_BUILD_PYTHON})
             ${PYTHON_LIBRARIES}
             pthread
         )
-endif()
+    endif()
 
     add_test(NAME py_simple
         COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p simple.py
@@ -71,6 +71,11 @@ endif()
 
     add_test(NAME py_invalid
         COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p invalid.py
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
+    )
+
+    add_test(NAME py_small_heme
+        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p small_heme.py
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
     )
 

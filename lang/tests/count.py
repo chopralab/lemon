@@ -3,7 +3,7 @@ from lemon import *
 grr = []
 
 class MyWorkflow(Workflow):
-    def worker(self, frame):
+    def worker(self, frame, pdbid):
         smallm = select_molecules(frame, small_molecule_types, 10)
         select_metal_ions(frame, smallm)
         grr.append(smallm.size())

@@ -14,13 +14,15 @@ namespace lemon {
 class LemonPythonBase : public boost::noncopyable {
 public:
     virtual ~LemonPythonBase() {}
-    virtual std::string worker(chemfiles::Frame& frame) = 0;
+    virtual std::string worker(chemfiles::Frame&, const std::string&) = 0;
     virtual void finalize() = 0;
 };
 
 struct LemonPythonWrap : LemonPythonBase, python::wrapper<LemonPythonBase> {
-    virtual std::string worker(chemfiles::Frame& frame) override {
-        auto res = get_override("worker")(boost::ref(frame));
+    virtual std::string worker(chemfiles::Frame& frame,
+                               const std::string& pdbid) override {
+        std::string test(pdbid); 
+        auto res = get_override("worker")(boost::ref(frame), test);
 
         // Silently handle errors
         try {
@@ -294,7 +296,7 @@ BOOST_PYTHON_MODULE(lemon) {
                                        size_t) =
         &select::small_molecules;
 
-    python::def("select_molecules", small_molecules);
+    python::def("select_small_molecules", small_molecules);
 
     default_id_list (*metal_ions)(const Frame&) = &select::metal_ions;
     python::def("select_metal_ions", metal_ions);
@@ -315,7 +317,7 @@ BOOST_PYTHON_MODULE(lemon) {
                                 size_t) =
         &select::small_molecules;
 
-    python::def("select_molecules", small_molecules_i);
+    python::def("select_small_molecules", small_molecules_i);
 
     size_t (*metal_ions_i)(const Frame&, default_id_list&) =
          &select::metal_ions;
@@ -441,7 +443,7 @@ int main(int argc, char *argv[]) {
 
     auto worker = [&py](chemfiles::Frame complex, const std::string& pdbid) {
         try {
-            return py.worker(complex);
+            return py.worker(complex, pdbid);
         } catch (...) {
             PyObject *ptype, *pvalue, *ptraceback;
             PyErr_Fetch(&ptype, &pvalue, &ptraceback);
