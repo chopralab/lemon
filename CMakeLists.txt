@@ -28,27 +28,8 @@ if (${LEMON_BUILD_DOCS})
     add_subdirectory(doc)
 endif()
 
-add_subdirectory(progs)
-
-if (${LEMON_BUILD_PYTHON})
-    find_package(PythonLibs)
-    add_executable(lemon_python lang/lemon_python.cpp)
-
-    target_include_directories(lemon_python PRIVATE
-        ${PYTHON_INCLUDE_DIRS}
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
-    )
-
-    target_link_libraries(lemon_python 
-        ${CHEMFILES_LIBRARY}
-        Boost::filesystem
-        Boost::program_options
-        Boost::python
-        ${PYTHON_LIBRARIES}
-        pthread
-    )
-endif()
-
 enable_testing()
+
+add_subdirectory(progs)
+add_subdirectory(lang)
 add_subdirectory(test)

@@ -440,7 +440,7 @@ inline TMResult TMscore(
     };
 
     double score_max = -1;
-    double armsd;
+    double armsd = 0;
     size_t ka0 = 0;
 
     for (size_t i_init = 0; i_init < n_init; ++i_init) {

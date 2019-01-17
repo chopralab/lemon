@@ -52,7 +52,10 @@ script:
   - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake .. -DCOVERAGE=${COVERAGE} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DLEMON_TEST_ASYNC=${ASYNC}
+  - cmake .. -DCOVERAGE=${COVERAGE} \
+             -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+             -DLEMON_TEST_ASYNC=${ASYNC} \
+             -DLEMON_BUILD_PYTHON=ON
   - make -j2
   - ctest -j2 --output-on-failure
 
