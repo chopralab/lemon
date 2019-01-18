@@ -12,6 +12,7 @@ The TMscore function for alignment
 ----------------------------------
 
 .. doxygenstruct:: lemon::tmalign::TMResult
+
 .. doxygenfunction:: lemon::tmalign::TMscore
 
 Example
