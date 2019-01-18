@@ -23,7 +23,15 @@ if (${LEMON_BUILD_PYTHON})
         message("Python not found")
     endif()
 
-    add_executable(lemon_python ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp)
+    python_add_module(lemon py_wrapper.cpp)
+    target_include_directories(lemon PRIVATE
+        ${PYTHON_INCLUDE_DIRS}
+        ${CMAKE_SOURCE_DIR}/include
+        ${CHEMFILES_INCLUDE_DIR}
+    )
+
+    add_executable(lemon_python ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp
+                                ${CMAKE_CURRENT_SOURCE_DIR}/py_wrapper.cpp)
 
     target_include_directories(lemon_python PRIVATE
         ${PYTHON_INCLUDE_DIRS}
@@ -32,7 +40,16 @@ if (${LEMON_BUILD_PYTHON})
     )
 
     if (UNIX AND NOT APPLE)
-        target_link_libraries(lemon_python 
+        target_link_libraries(lemon
+            ${CHEMFILES_LIBRARY}
+            Boost::filesystem
+            Boost::program_options
+            Boost::python
+            ${PYTHON_LIBRARIES}
+            pthread
+        )
+
+        target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
             Boost::program_options
@@ -41,15 +58,32 @@ if (${LEMON_BUILD_PYTHON})
             pthread
         )
     elseif(WIN32)
-        target_link_libraries(lemon_python 
+        target_link_libraries(lemon
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
             Boost::program_options
             Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
             ${PYTHON_LIBRARIES}
         )
-    else() 
-        target_link_libraries(lemon_python 
+
+        target_link_libraries(lemon_python
+            ${CHEMFILES_LIBRARY}
+            Boost::filesystem
+            Boost::program_options
+            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
+            ${PYTHON_LIBRARIES}
+        )
+    else()
+        target_link_libraries(lemon
+            ${CHEMFILES_LIBRARY}
+            Boost::filesystem
+            Boost::program_options
+            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
+            ${PYTHON_LIBRARIES}
+            pthread
+        )
+
+        target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
             Boost::program_options

@@ -14,7 +14,10 @@ option(LEMON_BUILD_PYTHON "Build Python support" OFF)
 include(InstallChemfiles)
 include(CompilerFlags)
 
-set(Boost_USE_STATIC_LIBS ON)
+if (NOT ${LEMON_LINK_SHARED})
+    set(Boost_USE_STATIC_LIBS ON)
+endif()
+
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
 
