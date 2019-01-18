@@ -25,17 +25,33 @@ matrix:
       os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Debug ASYNC=ON BUILD_DOC=ON
+      env:
+        - COMPILER_C: gcc-5
+        - COMPILER_CXX: g++-5
+        - COVERAGE: ON
+        - BUILD_TYPE: Debug
+        - ASYNC: ON
+        - BUILD_DOC: ON
     - name: linux release
       os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=OFF BUILD_TYPE=Release ASYNC=ON
+      env:
+        - COMPILER_C: gcc-5
+        - COMPILER_CXX: g++-5
+        - COVERAGE: OFF
+        - BUILD_TYPE: Release
+        - ASYNC: ON
     - name: linux clang
       os: linux
       compiler: clang
       addons: *linux64
-      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release ASYNC=ON
+      env:
+        - COMPILER_C: clang
+        - COMPILER_CXX: clang++
+        - COVERAGE: OFF
+        - BUILD_TYPE: Release
+        - ASYNC: ON
     - name: osx clang
       os: osx
       compiler: clang

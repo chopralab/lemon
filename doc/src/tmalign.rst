@@ -18,7 +18,15 @@ The TMscore function for alignment
 Example
 -------
 
+In **C++**:
+
 .. literalinclude:: ../../progs/misc/tmscore_all.cpp
    :language: cpp
    :lines: 7-26
    :dedent: 4
+
+In **Python**:
+
+.. literalinclude:: ../../lang/tests/tmscore.py
+   :language: python
+   :lines: 1-13

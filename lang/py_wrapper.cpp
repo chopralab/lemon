@@ -3,6 +3,7 @@
 
 // Mac OSX problems with a tolower macro
 #include "lemon/lemon.hpp"
+#include "chemfiles/File.hpp"
 
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -93,6 +94,26 @@ inline std::ostream& operator<<(std::ostream& os, const default_id_list& idlist)
     }
     os << ']';
     return os;
+}
+
+chemfiles::Frame open_model_in_file(const std::string& filename, size_t index) {
+    chemfiles::Trajectory traj(filename);
+    return traj.read_step(index);
+}
+
+chemfiles::Frame* open_file(const std::string& filename) {
+    chemfiles::Trajectory traj(filename);
+    return new chemfiles::Frame(std::move(traj.read()));
+}
+
+void write_file(const chemfiles::Frame& frame, const std::string& filename) {
+    chemfiles::Trajectory traj(filename, chemfiles::File::Mode::WRITE);
+    traj.write(frame);
+}
+
+void append_file(const chemfiles::Frame& frame, const std::string& filename) {
+    chemfiles::Trajectory traj(filename, chemfiles::File::Mode::APPEND);
+    traj.write(frame);
 }
 }
 
@@ -380,4 +401,13 @@ BOOST_PYTHON_MODULE(lemon) {
         .def_readonly("aligned", &tmalign::TMResult::aligned);
 
     python::def("TMscore", tmalign::TMscore);
+
+    /**************************************************************************
+    * File IO
+    ***************************************************************************/
+    python::def("open_model_in_file", open_model_in_file);
+    python::def("open_file", open_file,
+        python::return_value_policy<python::manage_new_object>());
+    python::def("write_file", write_file);
+    python::def("append_file", append_file);
 }

@@ -113,12 +113,17 @@ if (${LEMON_BUILD_PYTHON})
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
     )
 
+    add_test(NAME py_tmscore
+        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p tmscore.py
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
+    )
+
     if (MSVC AND ${LEMON_LINK_SHARED})
-        set_tests_properties( py_simple py_count py_invalid
+        set_tests_properties( py_simple py_count py_invalid py_small_heme py_tmscore
             PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}\\chemfiles\\bin"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
-        set_tests_properties( py_simple py_count py_invalid
+        set_tests_properties( py_simple py_count py_invalid py_small_heme py_tmscore
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )
     endif()
