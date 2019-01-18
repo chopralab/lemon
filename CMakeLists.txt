@@ -14,7 +14,7 @@ option(LEMON_BUILD_PYTHON "Build Python support" OFF)
 include(InstallChemfiles)
 include(CompilerFlags)
 
-if (NOT ${LEMON_LINK_SHARED})
+if (NOT ${LEMON_LINK_SHARED} OR MSVC)
     set(Boost_USE_STATIC_LIBS ON)
 endif()
 
