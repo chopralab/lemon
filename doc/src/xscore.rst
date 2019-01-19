@@ -14,7 +14,17 @@ AutoDOCK vina software package to help users select desirable interactions.
 Example
 -------
 
+C++
+~~~
+
 .. literalinclude:: ../../progs/misc/vinascore_all.cpp
    :language: cpp
    :lines: 9-49
    :dedent: 4
+
+Python
+~~~~~~
+
+.. literalinclude:: ../../lang/tests/vina.py
+    :language: python
+    :lines: 1-42

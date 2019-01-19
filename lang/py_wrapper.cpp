@@ -225,11 +225,17 @@ BOOST_PYTHON_MODULE(lemon) {
         .def("id", &Residue::id);
     python::def("get", getp<Residue>);
 
+    python::class_<std::vector<Residue>>("ResidueVec")
+        .def(python::vector_indexing_suite<std::vector<Residue> >())
+        .def("size", &std::vector<Residue>::size);
+
     /**************************************************************************
      * Topology
      **************************************************************************/
     python::class_<Topology, noncopyable>("Topology")
         .def("residue", &Topology::residue,
+            python::return_internal_reference<>())
+        .def("residues", &Topology::residues,
             python::return_internal_reference<>())
         .def("residue_for_atom", &Topology::residue_for_atom)
         .def("are_linked", &Topology::are_linked)
@@ -293,11 +299,16 @@ BOOST_PYTHON_MODULE(lemon) {
         .def(python::self += python::self)
         .def("size", &ResidueNameCount::size);
 
+    void (default_id_list::*push_back)(const default_id_list::value_type&) =
+        &default_id_list::push_back;
+
     python::class_<default_id_list>("ResidueIDs")
         //.def(python::self_ns::str(python::self))
+        .def(python::init<const default_id_list&>())
         .def("__iter__", python::range(&default_id_list::cbegin,
                                        &default_id_list::cend))
-        .def("size", &default_id_list::size);
+        .def("size", &default_id_list::size)
+        .def("append", push_back);
 
     /**************************************************************************
      * Constants
