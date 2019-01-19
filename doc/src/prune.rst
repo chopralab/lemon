@@ -18,6 +18,9 @@ resolution.
 Example
 -------
 
+C++
+~~~
+
 The following example demonstrates how to remove cofactors and other 'common'
 residues from a selection.
 
@@ -33,6 +36,9 @@ molecules interacting with a **Heme** group.
     :language: cpp
     :lines: 13-30
     :dedent: 4
+
+Python
+~~~~~~
 
 These examples are availible in python as:
 

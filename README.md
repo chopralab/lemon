@@ -17,7 +17,7 @@ Due to the incredibly fast parsing speed of the MMTF format, Lemon uses this for
 **Lemon** is developed to have as few dependencies as possible. You only need a recent C++ compiler which supports C++ and a copy of the Boost Filesystem library. All other dependencies are installed for you by the build system.
 
 ```bash
-git clone https://gitlab.com/chopralab/lemon.git
+git clone https://github.com/chopralab/lemon.git
 
 cd lemon
 

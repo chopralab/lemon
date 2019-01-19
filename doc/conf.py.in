@@ -28,7 +28,7 @@ source_encoding = 'utf-8'
 # The master toctree document.
 master_doc = 'index'
 # General information about the project.
-project = 'lemon'
+project = 'Lemon'
 # Get release and version numbers
 release =  "master"
 # icons
