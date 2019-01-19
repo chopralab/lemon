@@ -6,12 +6,12 @@ Prune
 After residues have been selected, one may wish to remove some residues if they
 do not fit a given criterion. The functions below allow one allow to do so.
 
-Provided functions
-------------------
-
 All functions are availible in both **C++** and **Python**. In **Python**, the
 function names should be prefixed with `prune_` instead of the namespace
 resolution.
+
+Provided functions
+------------------
 
 .. doxygennamespace:: lemon::prune
 
@@ -42,6 +42,10 @@ Python
 
 These examples are availible in python as:
 
-.. literalinclude:: ../../lang/tests/small_heme.py
+.. literalinclude:: ../../lang/tests/small_molecule.py
     :language: python
     :lines: 1-15
+
+.. literalinclude:: ../../lang/tests/small_heme.py
+    :language: python
+    :lines: 1-25

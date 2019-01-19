@@ -43,14 +43,14 @@ command-line.
 
 .. code-block:: bash
 
-	git clone https://github.com/chopralab/lemon.git
-	cd lemon
-	mkdir build
-	cd build
-	# The LEMON_BUILD_PYTHON and LEMON_TEST_ASYNC variables are optional and
-	# OFF by default
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DLEMON_BUILD_PYTHON=ON -DLEMON_TEST_ASYNC=ON
-	make -j 2
+    git clone https://github.com/chopralab/lemon.git
+    cd lemon
+    mkdir build
+    cd build
+    # The LEMON_BUILD_PYTHON and LEMON_TEST_ASYNC variables are optional and
+    # OFF by default
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DLEMON_BUILD_PYTHON=ON -DLEMON_TEST_ASYNC=ON
+    make -j 2
 
 Developing a **Lemon** workflow
 -------------------------------

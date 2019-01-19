@@ -80,6 +80,10 @@ T get(const chemfiles::optional<T>& o) {
     chemfiles::unreachable();
 }
 
+void append_rns(ResidueNameSet& rns, const ResidueName& rn) {
+    rns.insert(rn);
+}
+
 template<typename T>
 chemfiles::optional<const chemfiles::Property&> getp(const T& container,
                                                      std::string name) {
@@ -278,11 +282,16 @@ BOOST_PYTHON_MODULE(lemon) {
         .def(python::self_ns::str(python::self));
 
     python::class_<ResidueNameSet>("ResidueNameSet")
-        .def(python::self_ns::str(python::self));
+        .def(python::self_ns::str(python::self))
+        .def("size", &ResidueNameSet::size)
+        .def("__iter__", python::range(&ResidueNameSet::cbegin,
+                                       &ResidueNameSet::cend));
+    python::def("append", append_rns);
 
     python::class_<ResidueNameCount>("ResidueNameCount")
         .def(python::self_ns::str(python::self))
-        .def(python::self += python::self);
+        .def(python::self += python::self)
+        .def("size", &ResidueNameCount::size);
 
     python::class_<default_id_list>("ResidueIDs")
         //.def(python::self_ns::str(python::self))
