@@ -48,4 +48,4 @@ These examples are availible in python as:
 
 .. literalinclude:: ../../lang/tests/small_heme.py
     :language: python
-    :lines: 1-25
+    :lines: 1-27

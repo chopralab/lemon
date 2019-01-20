@@ -80,16 +80,6 @@ T get(const chemfiles::optional<T>& o) {
     chemfiles::unreachable();
 }
 
-void append_rns(ResidueNameSet& rns, const ResidueName& rn) {
-    rns.insert(rn);
-}
-
-template<typename T>
-chemfiles::optional<const chemfiles::Property&> getp(const T& container,
-                                                     std::string name) {
-    return container.get(name);
-}
-
 using default_id_list = std::list<size_t>;
 inline std::ostream& operator<<(std::ostream& os, const default_id_list& idlist) {
     os << '[';
@@ -214,6 +204,9 @@ BOOST_PYTHON_MODULE(lemon) {
     /**************************************************************************
      * Residue
      **************************************************************************/
+    chemfiles::optional<const chemfiles::Property&> (Residue::*residue_get)
+        (const std::string&) const = &Residue::get;
+
     python::class_<Residue, noncopyable>("Residue", python::init<std::string>())
         .def(python::init<std::string, int>())
         .def("size", &Residue::size)
@@ -222,8 +215,8 @@ BOOST_PYTHON_MODULE(lemon) {
         .def("atoms", python::range(&Residue::cbegin,
                                     &Residue::cend))
         .def("contains", &Residue::contains)
-        .def("id", &Residue::id);
-    python::def("get", getp<Residue>);
+        .def("id", &Residue::id)
+        .def("get", residue_get);
 
     python::class_<std::vector<Residue>>("ResidueVec")
         .def(python::vector_indexing_suite<std::vector<Residue> >())
@@ -251,6 +244,9 @@ BOOST_PYTHON_MODULE(lemon) {
     /**************************************************************************
      * Frame
      **************************************************************************/
+    chemfiles::optional<const chemfiles::Property&> (Frame::*frame_get)
+        (const std::string&) const = &Frame::get;
+
     python::class_<Frame, noncopyable>("Frame")
         .def("size", &Frame::size)
         .def("atoms", python::range(&Frame::cbegin,
@@ -262,12 +258,15 @@ BOOST_PYTHON_MODULE(lemon) {
         .def("distance", &Frame::distance)
         .def("angle", &Frame::angle)
         .def("dihedral", &Frame::dihedral)
-        .def("out_of_plane", &Frame::out_of_plane);
-    python::def("get", getp<Frame>);
+        .def("out_of_plane", &Frame::out_of_plane)
+        .def("get", frame_get);
 
     /**************************************************************************
      * Atom
      **************************************************************************/
+    chemfiles::optional<const chemfiles::Property&> (Atom::*atom_get)
+        (const std::string&) const = &Atom::get;
+
     python::class_<Atom>("Atom", python::no_init)
         .def("name", &Atom::name,
             python::return_value_policy<python::copy_const_reference>())
@@ -278,8 +277,8 @@ BOOST_PYTHON_MODULE(lemon) {
         .def("full_name", &Atom::full_name)
         .def("vdw_radius", &Atom::vdw_radius)
         .def("covalent_radius", &Atom::covalent_radius)
-        .def("atomic_number", &Atom::atomic_number);
-    python::def("get", getp<Atom>);
+        .def("atomic_number", &Atom::atomic_number)
+        .def("get", atom_get);
 
     /**************************************************************************
      * Residue Name
@@ -287,17 +286,34 @@ BOOST_PYTHON_MODULE(lemon) {
     python::class_<ResidueName>("ResidueName", python::init<const std::string&>())
         .def(python::self_ns::str(python::self));
 
+    typedef std::pair<ResidueNameSet::iterator, bool> rns_insert_ret;
+    python::class_<rns_insert_ret>("ResidueNameRet", python::no_init);
+
+    rns_insert_ret (ResidueNameSet::*rns_insert)
+        (const ResidueNameSet::value_type&) = &ResidueNameSet::insert;
     python::class_<ResidueNameSet>("ResidueNameSet")
         .def(python::self_ns::str(python::self))
         .def("size", &ResidueNameSet::size)
         .def("__iter__", python::range(&ResidueNameSet::cbegin,
-                                       &ResidueNameSet::cend));
-    python::def("append", append_rns);
+                                       &ResidueNameSet::cend))
+        .def("append", rns_insert);
+
+    ResidueNameCount::const_iterator (ResidueNameCount::*rnc_begin)(void) const =
+        &ResidueNameCount::begin;
+    ResidueNameCount::const_iterator (ResidueNameCount::*rnc_end)(void) const =
+        &ResidueNameCount::end;
 
     python::class_<ResidueNameCount>("ResidueNameCount")
         .def(python::self_ns::str(python::self))
         .def(python::self += python::self)
-        .def("size", &ResidueNameCount::size);
+        .def("size", &ResidueNameCount::size)
+        .def("__iter__", python::range(rnc_begin,
+                                       rnc_end));
+
+    python::class_<std::pair<ResidueName const, size_t>>("ResidueCount",
+                                                         python::no_init)
+        .def_readonly("first", &std::pair<ResidueName const, size_t>::first)
+        .def_readonly("second", &std::pair<ResidueName const, size_t>::second);
 
     void (default_id_list::*push_back)(const default_id_list::value_type&) =
         &default_id_list::push_back;
