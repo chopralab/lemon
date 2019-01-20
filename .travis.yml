@@ -1,5 +1,6 @@
 language: cpp
 sudo: false
+dist: xenial
 
 branches:
   only:
@@ -8,15 +9,11 @@ branches:
 linux64_addons:
     addons: &linux64
       apt:
-        sources:
-        - ubuntu-toolchain-r-test
         packages:
-        - g++-5
-        - gcc-5
         - libboost-dev
-        - libboost-filesystem1.54-dev
-        - libboost-program-options1.54-dev
-        - libboost-python1.54-dev
+        - libboost-filesystem1.58-dev
+        - libboost-program-options1.58-dev
+        - libboost-python1.58-dev
 
 matrix:
   fast_finish: true
@@ -26,8 +23,6 @@ matrix:
       compiler: gcc
       addons: *linux64
       env:
-        - COMPILER_C: gcc-5
-        - COMPILER_CXX: g++-5
         - COVERAGE: ON
         - BUILD_TYPE: Debug
         - ASYNC: ON
@@ -37,8 +32,6 @@ matrix:
       compiler: gcc
       addons: *linux64
       env:
-        - COMPILER_C: gcc-5
-        - COMPILER_CXX: g++-5
         - COVERAGE: OFF
         - BUILD_TYPE: Release
         - ASYNC: ON
@@ -47,8 +40,6 @@ matrix:
       compiler: clang
       addons: *linux64
       env:
-        - COMPILER_C: clang
-        - COMPILER_CXX: clang++
         - COVERAGE: OFF
         - BUILD_TYPE: Release
         - ASYNC: ON
@@ -57,8 +48,6 @@ matrix:
       compiler: clang
       osx_image: xcode10.1
       env:
-        - COMPILER_C: clang
-        - COMPILER_CXX: clang++
         - COVERAGE: OFF
         - BUILD_TYPE: Release
         - ASYNC: OFF
@@ -71,8 +60,6 @@ before_install:
   - pip install --user cpp-coveralls
   
 script:
-  - export CC=${COMPILER_C}
-  - export CXX=${COMPILER_CXX}
   - ${CC} --version
   - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
@@ -88,8 +75,8 @@ script:
 after_success:
   - cd $TRAVIS_BUILD_DIR
   - |
-    if [[ "${COVERAGE}" == "ON" ]]; then
-        coveralls --gcov gcov-5 \
+    if [[ "${COVERAGE}" == "true" ]]; then
+        coveralls --gcov gcov \
           -e build/chemfiles \
           -e build/chemfiles_build \
           -e build/CHEMFILES-prefix \
@@ -97,7 +84,7 @@ after_success:
           -e progs -E '.*external.*' --gcov-options '\-lp' > /dev/null 2> /dev/null
     fi
   - |
-    if [[ "$BUILD_DOC" == "ON" ]]; then
+    if [[ "$BUILD_DOC" == "true" ]]; then
         ./scripts/build-doc.sh
     fi
 
@@ -108,11 +95,4 @@ deploy:
     local_dir: build/gh-pages
     on:
         branch: master
-        condition: $BUILD_DOC == ON
-  - provider: pages
-    skip_cleanup: true
-    github_token: $GH_TOKEN
-    local_dir: build/gh-pages
-    on:
-        tags: true
-        condition: $BUILD_DOC == ON
+        condition: $BUILD_DOC == true
