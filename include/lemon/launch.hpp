@@ -7,6 +7,13 @@
 
 namespace lemon {
 
+class LemonPythonBase : public boost::noncopyable {
+public:
+    virtual ~LemonPythonBase() {}
+    virtual std::string worker(chemfiles::Frame&, const std::string&) = 0;
+    virtual void finalize() = 0;
+};
+
 template<typename Map1, typename Map2>
 struct map_combine {
     void operator()(Map1& map1, const Map2& map2) const {
@@ -48,8 +55,10 @@ int launch(const Options& o, Function&& worker, Collector& collect) {
         std::cerr << e.what() << "\n";
         return 1;
     }
+
+    return 0;
 }
 
-}; // namespace lemon
+} // namespace lemon
 
 #endif

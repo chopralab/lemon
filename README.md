@@ -1,5 +1,7 @@
 ## Lemon:  Tool for developing benchmarking sets from the entire PDB in minutes 
 
+![Logo](doc/icon.svg)
+
 [![Build Status -- Linux and Mac OSX](https://travis-ci.org/chopralab/lemon.svg?branch=master)](https://travis-ci.org/chopralab/lemon)
 [![Build status -- Windows](https://ci.appveyor.com/api/projects/status/gsbuqupcn2598l4d/branch/master?svg=true)](https://ci.appveyor.com/project/frodofine/lemon/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/chopralab/lemon/badge.svg?branch=master)](https://coveralls.io/github/chopralab/lemon?branch=master)
@@ -15,7 +17,7 @@ Due to the incredibly fast parsing speed of the MMTF format, Lemon uses this for
 **Lemon** is developed to have as few dependencies as possible. You only need a recent C++ compiler which supports C++ and a copy of the Boost Filesystem library. All other dependencies are installed for you by the build system.
 
 ```bash
-git clone https://gitlab.com/chopralab/lemon.git
+git clone https://github.com/chopralab/lemon.git
 
 cd lemon
 

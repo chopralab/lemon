@@ -70,7 +70,7 @@ class Hadoop {
     int read_int() {
         int ret;
         stream_.read(reinterpret_cast<char*>(&ret), 4);
-        return ntohl(ret);
+        return static_cast<int>(ntohl(static_cast<uint32_t>(ret)));
     }
 
     std::pair<std::string, std::vector<char>> read() {
@@ -89,7 +89,7 @@ class Hadoop {
         // Do not check this during runtime as it should all be the same
         assert(key_length >= 4);
 
-        std::vector<char> key(key_length);
+        std::vector<char> key(static_cast<size_t>(key_length));
         stream_.read(key.data(), key_length);
         const auto entry = std::string(key.data() + 1, 4);
 
@@ -100,7 +100,7 @@ class Hadoop {
         stream_.read(junk, 4);
 
         int value_length = sync_check - key_length;
-        std::vector<char> value(value_length - 4);
+        std::vector<char> value(static_cast<size_t>(value_length - 4));
         stream_.read(value.data(), value_length - 4);
 
         return {entry, value};

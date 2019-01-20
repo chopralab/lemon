@@ -37,10 +37,10 @@ class ResidueName : private std::array<char, 3> {
         }
 
         if (c >= '0' && c <= '9') {
-            return c - '0';
+            return static_cast<char>(c - '0');
         }
 
-        return 10 + c - 'A';
+        return static_cast<char>(10 + c - 'A');
     }
 
    public:
@@ -76,8 +76,9 @@ class ResidueName : private std::array<char, 3> {
     }
 
     unsigned short hash() const {
-        return clamp_((*this)[0]) + clamp_((*this)[1]) * 37 +
-               clamp_((*this)[2]) * (37 * 37);
+        return static_cast<unsigned short>(
+               clamp_((*this)[0]) + clamp_((*this)[1]) * 37 +
+               clamp_((*this)[2]) * (37 * 37));
     }
     const std::array<char, 3>& operator*() const { return *this; }
 };
@@ -171,6 +172,13 @@ inline ResidueNameCount& operator+=(ResidueNameCount& lhs,
 inline std::ostream& operator<<(std::ostream& os, const ResidueNameCount& rnc) {
     for (auto i : rnc) {
         os << "\t" << i.first << "\t" << i.second;
+    }
+    return os;
+}
+
+inline std::ostream& operator<<(std::ostream& os, const ResidueNameSet& rnc) {
+    for (auto i : rnc) {
+        os << i << "\t";
     }
     return os;
 }

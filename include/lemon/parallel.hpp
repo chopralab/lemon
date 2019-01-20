@@ -40,12 +40,12 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
     using ret = typename std::result_of<Function&(chemfiles::Frame, const std::string&)>::type;
 
     // Total number of jobs for each thread
-    const size_t grainsize = pathvec.size() / ncpu;
+    const int grainsize = static_cast<int>(pathvec.size() / ncpu);
     auto work_iter = pathvec.begin();
     using iter = std::vector<fs::path>::iterator;
     std::unordered_map<std::thread::id, std::list<ret>> results;
 
-    auto call_function = [&worker, &results, &combine, &entries, &skip_entries](iter first, iter last) {
+    auto call_function = [&worker, &results, &entries, &skip_entries](iter first, iter last) {
         auto th = std::this_thread::get_id();
         for (auto it = first; it != last; ++it) {
             std::ifstream data(it->string(), std::istream::binary);
@@ -99,7 +99,7 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
     threaded_queue<std::list<ret>> results;
 
     for (const auto& path : pathvec) {
-        threads.queue_task([path, &results, &worker, &combine, &entries, &skip_entries] {
+        threads.queue_task([path, &results, &worker, &entries, &skip_entries] {
             std::ifstream data(path.string(), std::istream::binary);
             Hadoop sequence(data);
             std::list<ret> mini_collector;

@@ -54,12 +54,12 @@ inline size_t small_molecules(const chemfiles::Frame& frame,
             continue;
         }
 
-        size_t num_heavy_atoms = std::count_if(
+        auto num_heavy_atoms = std::count_if(
             std::begin(residue), std::end(residue), [&frame](size_t index) {
                 return *(frame[index].atomic_number()) != 1;
             });
 
-        if (num_heavy_atoms < min_heavy_atoms) {
+        if (static_cast<size_t>(num_heavy_atoms) < min_heavy_atoms) {
             continue;
         }
 

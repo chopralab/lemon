@@ -101,7 +101,7 @@ inline double kabsch(const std::vector<double>& w,
     e[1] = (spur - cth) + sth;
     e[2] = (spur - cth) - sth;
 
-    for (auto l : {0, 2}) {
+    for (auto l : {0ul, 2ul}) {
         d = e[l];
         ss[0] = (d - rr[2]) * (d - rr[5]) - rr[4] * rr[4];
         ss[1] = (d - rr[5]) * rr[1] + rr[3] * rr[4];
@@ -126,7 +126,7 @@ inline double kabsch(const std::vector<double>& w,
 
         for (size_t i = 0; i < 3; ++i) {
             size_t k = ip[i + j];
-            a[l][i] = ss[k];
+            a[l][i] = static_cast<double>(ss[k]);
             d += ss[k] * ss[k];
         }
         if (d > 0) d = 1.0 / std::sqrt(d);
@@ -308,14 +308,29 @@ inline size_t find_operlapping_residues(const chemfiles::Frame& search,
 }
 
 inline size_t count_number_of_atom_names(const chemfiles::Frame& frame,
-                                  const std::string& elem) {
+                                         const std::string& elem) {
     const auto& residues = frame.topology().residues();
-    return std::count_if(residues.begin(), residues.end(),
-                         [&frame, &elem](const chemfiles::Residue& nres) {
-                             return find_element_by_name(frame, nres, elem) !=
-                                    frame.size();
+    auto c = std::count_if(residues.begin(), residues.end(),
+                          [&frame, &elem](const chemfiles::Residue& nres) {
+                              return find_element_by_name(frame, nres, elem) !=
+                                     frame.size();
                          });
+    return static_cast<size_t>(c);
 }
+
+//! Structure representing the TMScore
+//!
+//! 
+struct TMResult {
+    //! The TMscore
+    double score;
+
+    //! The RMSD of the aligned proteins
+    double rmsd;
+
+    //! Number of aligned residues
+    size_t aligned;
+};
 
 //! TMalign is an algorithm used to align protein chains in 3D space.
 //!
@@ -334,8 +349,8 @@ inline size_t count_number_of_atom_names(const chemfiles::Frame& frame,
 //! \param [in] native The 'native' chain that the search chain is aligned to.
 //! \param [out] rot The aligned version of the search frame.
 //! \param [in] align Should the search frame to aligned to native.
-//! \return A tuple of the TMScore, RMSD after alignment, and number of aligned residues
-inline std::tuple<double, double, size_t> TMscore(
+//! \return A strucure with theTMScore, RMSD after alignment, and number of aligned residues
+inline TMResult TMscore(
     const chemfiles::Frame& search, const chemfiles::Frame& native,
     std::vector<chemfiles::Vector3D>& rot, bool align = false) {
     std::vector<size_t> a_search;
@@ -349,7 +364,7 @@ inline std::tuple<double, double, size_t> TMscore(
     auto n_ali = find_operlapping_residues(search, native, a_search, a_native);
 
     if (n_ali == 0) {
-        return std::tuple<double, double, size_t>(0.0, 0.0, 0);
+        return {0.0, 0.0, 0};
     }
 
     // parameters:
@@ -376,7 +391,9 @@ inline std::tuple<double, double, size_t> TMscore(
             break;
         }
 
-        L_ini[n_init] = static_cast<size_t>(n_ali / std::pow(2, n_init));
+        auto temp = std::pow(2.0, -1.0 * static_cast<double>(n_init));
+        temp *= static_cast<double>(n_ali);
+        L_ini[n_init] = static_cast<size_t>(temp);
         if (L_ini[n_init] <= L_ini_min) {
             L_ini[n_init] = L_ini_min;
             break;
@@ -403,7 +420,7 @@ inline std::tuple<double, double, size_t> TMscore(
         double score_sum;
         do {
             n_cut = 0;  // number of residue-pairs dis<d, for iteration
-            score_sum = 0;
+            score_sum = 0.0;
             for (size_t k = 0; k < n_ali; ++k) {
                 auto i = a_search[k];  // [1,nseqA] reoder number of structureA
                 auto j = a_native[k];  // [1,nseqB]
@@ -419,11 +436,11 @@ inline std::tuple<double, double, size_t> TMscore(
             }
             d += 0.5;
         } while (n_cut < 3 && n_ali > 3);
-        return score_sum / nseqB;
+        return score_sum / static_cast<double>(nseqB);
     };
 
     double score_max = -1;
-    double armsd;
+    double armsd = 0;
     size_t ka0 = 0;
 
     for (size_t i_init = 0; i_init < n_init; ++i_init) {
@@ -449,7 +466,7 @@ inline std::tuple<double, double, size_t> TMscore(
             // u rotate r_1 to r_2
             double rms = kabsch(w, r_1, r_2, L_init, u, t, ier);
             if (i_init == 0) {  // global superposition
-                armsd = std::sqrt(rms / L_init);
+                armsd = std::sqrt(rms / static_cast<double>(L_init));
             }
 
             for (size_t k = 0; k < n_ali; ++k) {
@@ -523,7 +540,7 @@ inline std::tuple<double, double, size_t> TMscore(
     }      //! for initial length, L_ali/M
 
     if (!align) {
-        return std::tuple<double, double, size_t>(score_max, armsd, n_ali);
+        return {score_max, armsd, n_ali};
     }
 
     std::vector<chemfiles::Vector3D> r_1(n_ali);
@@ -546,7 +563,7 @@ inline std::tuple<double, double, size_t> TMscore(
         rot[j] += t;
     }
 
-    return std::tuple<double, double, size_t>(score_max, armsd, n_ali);
+    return {score_max, armsd, n_ali};
 }
 
 } // namespace tmalign

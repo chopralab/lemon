@@ -16,6 +16,7 @@ linux64_addons:
         - libboost-dev
         - libboost-filesystem1.54-dev
         - libboost-program-options1.54-dev
+        - libboost-python1.54-dev
 
 matrix:
   fast_finish: true
@@ -24,22 +25,47 @@ matrix:
       os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=ON BUILD_TYPE=Debug ASYNC=ON BUILD_DOC=ON
+      env:
+        - COMPILER_C: gcc-5
+        - COMPILER_CXX: g++-5
+        - COVERAGE: ON
+        - BUILD_TYPE: Debug
+        - ASYNC: ON
+        - BUILD_DOC: ON
     - name: linux release
       os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5 COVERAGE=OFF BUILD_TYPE=Release ASYNC=ON
+      env:
+        - COMPILER_C: gcc-5
+        - COMPILER_CXX: g++-5
+        - COVERAGE: OFF
+        - BUILD_TYPE: Release
+        - ASYNC: ON
     - name: linux clang
       os: linux
       compiler: clang
       addons: *linux64
-      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release ASYNC=ON
+      env:
+        - COMPILER_C: clang
+        - COMPILER_CXX: clang++
+        - COVERAGE: OFF
+        - BUILD_TYPE: Release
+        - ASYNC: ON
     - name: osx clang
       os: osx
       compiler: clang
       osx_image: xcode10.1
-      env: COMPILER_C=clang COMPILER_CXX=clang++ COVERAGE=OFF BUILD_TYPE=Release ASYNC=OFF
+      env:
+        - COMPILER_C: clang
+        - COMPILER_CXX: clang++
+        - COVERAGE: OFF
+        - BUILD_TYPE: Release
+        - ASYNC: OFF
+        - PYTHON_EXECUTABLE: /usr/local/bin/python
+      before_install:
+        - brew update && brew bundle
+        - brew unlink python && brew upgrade python@2
 
 before_install:
   - pip install --user cpp-coveralls
@@ -51,7 +77,11 @@ script:
   - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake .. -DCOVERAGE=${COVERAGE} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DLEMON_TEST_ASYNC=${ASYNC}
+  - |
+    cmake .. -DCOVERAGE=${COVERAGE} \
+             -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+             -DLEMON_TEST_ASYNC=${ASYNC} \
+             -DLEMON_BUILD_PYTHON=ON
   - make -j2
   - ctest -j2 --output-on-failure
 

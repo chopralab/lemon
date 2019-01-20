@@ -89,7 +89,7 @@ inline void cofactors(const chemfiles::Frame& frame,
     }), residue_ids.end());
 }
 
-template<typename Container1, typename Container2>
+template<typename Container1, typename Container2 = Container1>
 inline void interactions(const chemfiles::Frame& frame,
                          Container1& residue_ids,
                          const Container2& interaction_ids,
@@ -130,7 +130,7 @@ inline void interactions(const chemfiles::Frame& frame,
 //!  residue_ids to interact with.
 //! \param [in] distance_cutoff The distance that the residue_ids
 //!  must be within a checked residue to be included.
-template<typename Container1, typename Container2>
+template<typename Container1, typename Container2 = Container1>
 inline void keep_interactions(const chemfiles::Frame& frame,
                               Container1& residue_ids,
                               const Container2& interaction_ids,
@@ -150,7 +150,7 @@ inline void keep_interactions(const chemfiles::Frame& frame,
 //!  residue_ids to **not** interact with.
 //! \param [in] distance_cutoff The distance that the residue_ids
 //!  must be within a checked residue to be removed.
-template<typename Container1, typename Container2>
+template<typename Container1, typename Container2 = Container1>
 inline void remove_interactions(const chemfiles::Frame& frame,
                        Container1& residue_ids,
                        const Container2& interaction_ids,

@@ -8,14 +8,14 @@ branches:
 environment:
   BOOST_ROOT: C:\Libraries\boost_1_67_0
   matrix:
-    - generator: Visual Studio 14 2017 Win64
-      ARCH: x64
-      BUILD_TYPE: Debug
-      SHARED: ON
     - generator: Visual Studio 14 2017
       ARCH: x86
-      BUILD_TYPE: Debug
+      BUILD_TYPE: Release
       SHARED: OFF
+    - generator: Visual Studio 14 2017 Win64
+      ARCH: x64
+      BUILD_TYPE: Release
+      SHARED: ON
     - generator: Visual Studio 14 2017 Win64
       ARCH: x64
       BUILD_TYPE: Release
@@ -39,8 +39,8 @@ build_script:
   - cd C:\lemon
   - mkdir build
   - cd build
-  - cmake .. -DLEMON_TEST_ASYNC=ON -DLEMON_LINK_SHARED=%SHARED%
-  - cmake --build . --config %BUILD_TYPE% -- /v:m
+  - cmake .. -DLEMON_TEST_ASYNC=ON -DLEMON_LINK_SHARED=%SHARED% -DLEMON_BUILD_PYTHON=OFF
+  - cmake --build . --config %BUILD_TYPE% -- /v:q /m
 
 test_script:
   - ctest --build-config %BUILD_TYPE% --timeout 300 --output-on-failure

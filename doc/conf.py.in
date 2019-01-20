@@ -28,10 +28,13 @@ source_encoding = 'utf-8'
 # The master toctree document.
 master_doc = 'index'
 # General information about the project.
-project = 'lemon'
+project = 'Lemon'
 # Get release and version numbers
-version = "1"
 release =  "master"
+# icons
+html_favicon = os.path.join("@CMAKE_CURRENT_SOURCE_DIR@", "icon.ico")
+latex_logo = os.path.join("@CMAKE_CURRENT_SOURCE_DIR@", "icon.svg")
+html_logo = os.path.join("@CMAKE_CURRENT_SOURCE_DIR@", "icon.svg")
 
 # Breathe projects
 breathe_projects = {

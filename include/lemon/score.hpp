@@ -156,7 +156,7 @@ inline XS_TYPE get_n_xs_type(const chemfiles::Topology& topo, size_t j,
             auto neighbor = (j == bond[0]) ? bond[1] : bond[0];
             auto type = *(topo[neighbor].atomic_number());
             sum_of_hydrogens += (type == 1);  // Sum explicit hydrogens
-            sum_of_orders += bond_order[k->second];
+            sum_of_orders += static_cast<size_t>(bond_order[k->second]);
             is_withdraw += is_in_strong_resonance(topo, neighbor, bond_map);
         }
 
