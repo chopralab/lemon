@@ -71,6 +71,7 @@ initializes and passes to the operations of interest.
     select
     prune
     count
+    geometry
     separate
 
 Miscellaneous Functionality
