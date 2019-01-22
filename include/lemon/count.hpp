@@ -6,7 +6,6 @@
 #include <sstream>
 
 #include <chemfiles.hpp>
-#include <chemfiles/utils.hpp>
 #include "lemon/entries.hpp"
 #include "lemon/residue_name.hpp"
 

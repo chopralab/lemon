@@ -4,12 +4,12 @@
 #include <array>
 #include <istream>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <fstream>
 #include <unordered_set>
 
 #include "lemon/residue_name.hpp"
-#include "chemfiles/utils.hpp"
 
 namespace lemon {
 
@@ -42,14 +42,17 @@ inline Entries read_entry_file(const std::string& input) {
 inline void read_entry_file(std::istream& input,
                      Entries& result,
                      std::unordered_map<std::string, ResidueNameSet>& rnm) {
-    std::string temp;
+    std::string temp, item;
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
 
-        const std::string pdbid = std::string(a.data(), 4);
-        auto residue_names = chemfiles::split(temp, '\t');
-        for (size_t i = 1; i < residue_names.size(); i += 2) {
-            rnm[pdbid].insert(residue_names[i]);
+        std::stringstream ss(temp);
+        std::vector<std::string> residue_names;
+        size_t count = 0;
+        while (std::getline(ss, item, '\t')) {
+            if (++count % 2 == 0) { // check if even
+                rnm[a].insert(item);
+            }
         }
 
         result.insert(a);
