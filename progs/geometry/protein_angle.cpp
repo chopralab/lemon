@@ -16,7 +16,8 @@ int main(int argc, char* argv[]) {
     o.add_option("bin_size,b", bin_size, "Size of the angle bin.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [bin_size](chemfiles::Frame complex, const std::string&) {
+    auto worker = [bin_size](chemfiles::Frame complex,
+                             const std::string& pdbid) {
         AngleCounts bins;
 
         // Selection phase
@@ -33,7 +34,13 @@ int main(int argc, char* argv[]) {
         const auto& angles = protein_only.topology().angles();
 
         for (const auto& angle : angles) {
-            auto anglenm = angle_name(protein_only, angle);
+            std::string anglenm;
+            try {
+                anglenm = angle_name(protein_only, angle);
+            } catch (const lemon::geometry::geometry_error& e) {
+                auto msg = pdbid + ": " + e.what() + '\n';
+                std::cerr << msg;
+            }
 
             auto theta = protein_only.angle(angle[0], angle[1], angle[2]);
             size_t bin = static_cast<size_t>(std::floor(theta / bin_size));

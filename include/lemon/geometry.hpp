@@ -10,7 +10,7 @@ namespace lemon {
 namespace geometry {
 
 //! Error to handle odd geometries
-class geometry_error : std::logic_error {
+class geometry_error : public std::logic_error {
 public:
     explicit geometry_error( const std::string& what_arg ) :
         std::logic_error(what_arg) {}

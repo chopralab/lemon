@@ -16,7 +16,8 @@ int main(int argc, char* argv[]) {
     o.add_option("bin_size,b", bin_size, "Size of the dihedral bin.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [bin_size](chemfiles::Frame complex, const std::string&) {
+    auto worker = [bin_size](chemfiles::Frame complex,
+                             const std::string& pdbid) {
         DihedralCounts bins;
         
         // Selection phase
@@ -34,7 +35,13 @@ int main(int argc, char* argv[]) {
         const auto& dihedrals = protein_only.topology().dihedrals();
 
         for (const auto& dihedral : dihedrals) {
-            auto dihedralnm = dihedral_name(protein_only, dihedral);
+            std::string dihedralnm;
+            try {
+                dihedralnm = dihedral_name(protein_only, dihedral);
+            } catch (const lemon::geometry::geometry_error& e) {
+                auto msg = pdbid + ": " + e.what() + '\n';
+                std::cerr << msg;
+            }
 
             auto theta = protein_only.dihedral(dihedral[0], dihedral[1],
                                                dihedral[2], dihedral[3]);

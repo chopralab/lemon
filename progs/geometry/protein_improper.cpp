@@ -17,7 +17,8 @@ int main(int argc, char* argv[]) {
     o.add_option("bin_size,b", bin_size, "Size of the improper-dihedral bin.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [bin_size](chemfiles::Frame complex, const std::string&) {
+    auto worker = [bin_size](chemfiles::Frame complex,
+                             const std::string& pdbid) {
         ImproperCounts bins;
 
         // Selection phase
@@ -35,7 +36,13 @@ int main(int argc, char* argv[]) {
         const auto& impropers = protein_only.topology().impropers();
 
         for (const auto& improper : impropers) {
-            auto impropernm = improper_name(protein_only, improper);
+            std::string impropernm;
+            try {
+                impropernm = improper_name(protein_only, improper);
+            } catch (const lemon::geometry::geometry_error& e) {
+                auto msg = pdbid + ": " + e.what() + '\n';
+                std::cerr << msg;
+            }
 
             auto theta = protein_only.out_of_plane(improper[0], improper[1],
                                                    improper[2], improper[3]);

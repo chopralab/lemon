@@ -16,7 +16,8 @@ int main(int argc, char* argv[]) {
     o.add_option("bin_size,b", bin_size, "Size of the length(stretch) bin.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [bin_size](chemfiles::Frame complex, const std::string&) {
+    auto worker = [bin_size](chemfiles::Frame complex,
+                             const std::string& pdbid) {
         StretchCounts bins;
 
         // Selection phase
@@ -33,8 +34,13 @@ int main(int argc, char* argv[]) {
         const auto& bonds = protein_only.topology().bonds();
 
         for (const auto& bond : bonds) {
-            auto bondnm = bond_name(protein_only, bond);
-
+            std::string bondnm;
+            try {
+                bondnm = bond_name(protein_only, bond);
+            } catch (const lemon::geometry::geometry_error& e) {
+                auto msg = pdbid + ": " + e.what() + '\n';
+                std::cerr << msg;
+            }
             auto distance = protein_only.distance(bond[0], bond[1]);
             size_t bin = static_cast<size_t>(std::floor(distance / bin_size));
 
