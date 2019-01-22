@@ -38,7 +38,7 @@ function(add_cpp_prog _file_)
             Boost::filesystem
             Boost::program_options
             pthread
-        )    
+        ) 
     endif()
 endfunction()
 

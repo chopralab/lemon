@@ -9,6 +9,7 @@ namespace lemon {
 //! Functions to retreive names of various bonds, angles, and dihedrals
 namespace geometry {
 
+//! Error to handle odd geometries
 class geometry_error : std::logic_error {
 public:
     explicit geometry_error( const std::string& what_arg ) :
@@ -17,24 +18,36 @@ public:
         std::logic_error(what_arg) {}
 };
 
+//! Is special residue
+inline std::string is_special_residue(const std::string& resn,
+                                      const ResidueNameSet& resn_names) {
+    if (resn_names.count(resn) != 0) {
+        return resn + '_';
+    }
+
+    return "";
+}
+
 //! For obtaining information about peptide geometry.
 namespace protein {
 
-//! Obtain the name of a bond present in a peptide residue
+//! Obtain the name of a `bond` present in a peptide residue
 //!
-//! This function returns the 'name' of a given bond in the form
+//! This function returns the 'name' of a given `bond` in the form
 //! {residue}_{atom1}_{atom2} for bonds within a single residue not part of the
 //! amino acid linker. For bonds within the amino acid linker, only the atom
-//! names are returned, ('CA_C', 'CA_N', 'C_O'). Proline and its derivates have
-//! the corrisponding name prepended as these residues are cyclic.
+//! names are returned, ('CA_C', 'CA_N', 'C_O'), unless the residue name is in
+//! `special`. The default special residues are proline derivatives.
 //! For peptide bonds and disulphide bridges, 'peptide_bond' and 'SG_SG'
 //! are returned.
 //! Other types of inter-residue bonds result in a geometry error being thrown.
 //! \param [in] complex Structure containing the peptide residues of interest
 //! \param [in] bond Bond which name is going to be obtained
+//! \param [in] special Residue names that should be handled differently
 //! \return The name of the bond.
 inline std::string bond_name(const chemfiles::Frame& complex,
-                             const chemfiles::Bond& bond) {
+                             const chemfiles::Bond& bond,
+                             const ResidueNameSet& special = proline_res) {
     const auto& atom1 = complex[bond[0]];
     const auto& atom2 = complex[bond[1]];
 
@@ -74,23 +87,9 @@ inline std::string bond_name(const chemfiles::Frame& complex,
                               residue2->name() + "_" + atom2.name());
     }
 
-    std::string name;
-    // Proline is ... special
-    if (residue1->name() == "PRO") {
-        name = "PRO_";
-    }
-
-    // Same goes for hydroxyproline
-    if (residue1->name() == "HYP") {
-        name = "HYP_";
-    }
-
-    // and pyroglutamic acid
-    if (residue1->name() == "PCA") {
-        name = "PCA_";
-    }
-
     // Let's keep the aminoacid group all the same (except proline)
+    std::string name = is_special_residue(residue1->name(), special);
+
     if (latom == "CA" || hatom == "CA") {
         return name + latom + "_" + hatom;
     }
@@ -202,9 +201,11 @@ inline std::string angle_name(const chemfiles::Frame& complex,
 //! if the residue is a proline derivative.
 //! \param [in] complex Structure containing the peptide residues of interest
 //! \param [in] dihedral Dihedral which name is going to be obtained
+//! \param [in] special Residue names that should be handled differently
 //! \return The name of the dihedral.
 inline std::string dihedral_name(const chemfiles::Frame& complex,
-                                 const chemfiles::Dihedral& dihedral) {
+                                 const chemfiles::Dihedral& dihedral,
+                                 const ResidueNameSet& special = proline_res) {
     const auto& atom1 = complex[dihedral[0]];
     const auto& atom2 = complex[dihedral[1]];
     const auto& atom3 = complex[dihedral[2]];
@@ -243,21 +244,7 @@ inline std::string dihedral_name(const chemfiles::Frame& complex,
 
     const auto& cresidue = complex.topology().residue_for_atom(dihedral[1]);
 
-    std::string name;
-    // Proline is ... special
-    if (cresidue->name() == "PRO") {
-        name = "PRO_";
-    }
-
-    // Same goes for hydroxyproline
-    if (cresidue->name() == "HYP") {
-        name = "HYP_";
-    }
-
-    // and pyroglutamic acid
-    if (cresidue->name() == "PCA") {
-        name = "PCA_";
-    }
+    std::string name = is_special_residue(cresidue->name(), special);
 
     // Peptide-bond, alpha-carbon to alpha carbon
     if (llatom == "CA" && hhatom == "CA") {
@@ -303,9 +290,11 @@ inline std::string dihedral_name(const chemfiles::Frame& complex,
 //! residue not part of the amino acid linker (CA_C_N_O). 
 //! \param [in] complex Structure containing the peptide residues of interest
 //! \param [in] improper Improper dihedral which name is going to be obtained
+//! \param [in] special Residue names that should be handled differently
 //! \return The name of the improper.
 inline std::string improper_name(const chemfiles::Frame& complex,
-                                 const chemfiles::Improper& improper) {
+                                 const chemfiles::Improper& improper,
+                                 const ResidueNameSet& special = proline_res) {
     const auto& atom1 = complex[improper[0]];
     const auto& atom2 = complex[improper[1]];
     const auto& atom3 = complex[improper[2]];
@@ -352,21 +341,7 @@ inline std::string improper_name(const chemfiles::Frame& complex,
 
     const auto& cresidue = complex.topology().residue_for_atom(improper[1]);
 
-    std::string name;
-    // Proline is ... special
-    if (cresidue->name() == "PRO") {
-        name = "PRO_";
-    }
-
-    // Same goes for hydroxyproline
-    if (cresidue->name() == "HYP") {
-        name = "HYP_";
-    }
-
-    // and pyroglutamic acid
-    if (cresidue->name() == "PCA") {
-        name = "PCA_";
-    }
+    std::string name = is_special_residue(cresidue->name(), special);
 
     if (catom == "N") {
         return name + latom + "_" + catom + "_" + matom + "_" + hatom;
