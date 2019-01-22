@@ -3,6 +3,8 @@
 
 #include <string>
 #include "chemfiles/Frame.hpp"
+#include "lemon/residue_name.hpp"
+#include "lemon/constants.hpp"
 
 namespace lemon {
 
@@ -37,7 +39,7 @@ namespace protein {
 //! {residue}_{atom1}_{atom2} for bonds within a single residue not part of the
 //! amino acid linker. For bonds within the amino acid linker, only the atom
 //! names are returned, ('CA_C', 'CA_N', 'C_O'), unless the residue name is in
-//! `special`. The default special residues are proline derivatives.
+//! `special` (C_O not included)). The default special residues are proline derivatives.
 //! For peptide bonds and disulphide bridges, 'peptide_bond' and 'SG_SG'
 //! are returned.
 //! Other types of inter-residue bonds result in a geometry error being thrown.
@@ -90,7 +92,7 @@ inline std::string bond_name(const chemfiles::Frame& complex,
     // Let's keep the aminoacid group all the same (except proline)
     std::string name = is_special_residue(residue1->name(), special);
 
-    if (latom == "CA" || hatom == "CA") {
+    if ((latom == "CA" || hatom == "CA") && !(latom == "CB" || hatom == "CB")) {
         return name + latom + "_" + hatom;
     }
 
@@ -102,7 +104,7 @@ inline std::string bond_name(const chemfiles::Frame& complex,
 //! This function returns the 'name' of a given angle in the form
 //! {residue}_{atom1}_{atom2}_{atom3} for angles within a single residue not
 //! part of the amino acid linker, namely: CA_C_O, N_C_O, and O_C_OXT.
-//! Inter-residue angles not part of the linker are handled similarly, with the
+//! Inter-residue angles not part of the linker are handled similarly, both with the
 //! exception of proline derivates.
 //! Other types of inter-residue angles result in a geometry error being thrown.
 //! \param [in] complex Structure containing the peptide residues of interest
@@ -149,7 +151,12 @@ inline std::string angle_name(const chemfiles::Frame& complex,
 
         // Maybe proline logic should be added here?
         // Potentially inter-residue (CA_C_N) or intra(CA_C_OXT)
-        return latom + "_" + catom + "_" + hatom;
+        if (hatom == "N" || hatom == "OXT") {
+            return latom + "_" + catom + "_" + hatom;
+        }
+        throw geometry_error("Odd angle centered on 'C' atom " + latom +
+                             "_" + hatom);
+
     }
 
     if ((latom == "C" || hatom == "C") && catom == "CA") {
@@ -278,7 +285,15 @@ inline std::string dihedral_name(const chemfiles::Frame& complex,
         return name + "CA_N_C_O";
     }
 
-    // No special code for SG-SG
+    // Disulphide
+    if (lcatom == "SG" && hcatom == "SG") {
+        return "CB_SG_SG_CB";
+    }
+
+    if (hhatom == "SG" && hcatom == "SG") {
+        return "CA_CB_SG_SG";
+    }
+
     return cresidue->name() + "_" + llatom + "_" + lcatom + "_" + hcatom + "_" +
            hhatom;
 }

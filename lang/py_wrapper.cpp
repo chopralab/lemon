@@ -80,6 +80,13 @@ T get(const chemfiles::optional<T>& o) {
     chemfiles::unreachable();
 }
 
+void translate(lemon::geometry::geometry_error const& e)
+{
+    // Use the Python 'C' API to set up an exception object
+    auto msg = std::string("Geometry Error: ") + e.what();
+    PyErr_SetString(PyExc_RuntimeError, msg.c_str());
+}
+
 using default_id_list = std::list<size_t>;
 inline std::ostream& operator<<(std::ostream& os, const default_id_list& idlist) {
     os << '[';
@@ -335,6 +342,7 @@ BOOST_PYTHON_MODULE(lemon) {
     python::scope().attr("common_peptides") = common_peptides;
     python::scope().attr("common_cofactors") = common_cofactors;
     python::scope().attr("common_fatty_acids") = common_fatty_acids;
+    python::scope().attr("proline_res") = proline_res;
 
     /**************************************************************************
      * Select
@@ -415,6 +423,15 @@ BOOST_PYTHON_MODULE(lemon) {
      **************************************************************************/
     python::def("separate_residues", separate::residues<default_id_list>);
     python::def("separate_protein_and_ligand", separate::protein_and_ligand);
+
+    /**************************************************************************
+     * geometry
+     **************************************************************************/
+    python::def("protein_bond_name", geometry::protein::bond_name);
+    python::def("protein_angle_name", geometry::protein::angle_name);
+    python::def("protein_dihedral_name", geometry::protein::dihedral_name);
+    python::def("protein_improper_name", geometry::protein::improper_name);
+    python::register_exception_translator<geometry::geometry_error>(&translate);
 
     /**************************************************************************
      * Vina Score
