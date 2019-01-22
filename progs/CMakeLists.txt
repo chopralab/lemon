@@ -25,6 +25,10 @@ function(add_cpp_prog _file_)
         target_compile_definitions(${_name_} PRIVATE LEMON_USE_ASYNC=1)
     endif()
 
+    if (${LEMON_BENCHMARK})
+        target_compile_definitions(${_name_} PRIVATE LEMON_BENCHMARK=1)
+    endif()
+
     if (MSVC)
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}

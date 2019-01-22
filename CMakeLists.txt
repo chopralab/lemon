@@ -8,6 +8,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 option(LEMON_LINK_SHARED "Link lemon programs dynamically" ON)
 option(LEMON_TEST_ASYNC "Build an additional test for async parallelism" OFF)
 option(LEMON_BUILD_DOCS "Build documentation" OFF)
+option(LEMON_BENCHMARK "Should the programs be benchmarked?" OFF)
 
 option(LEMON_BUILD_PYTHON "Build Python support" OFF)
 
