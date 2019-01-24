@@ -1,6 +1,15 @@
 #include <string>
 #include <iostream>
 
+#pragma clang diagnostic ignored "-Wmissing-prototypes"
+#pragma clang diagnostic ignored "-Wold-style-cast"
+#pragma clang diagnostic ignored "-Wmissing-braces"
+#pragma clang diagnostic ignored "-Wdocumentation"
+#pragma clang diagnostic ignored "-Wdeprecated"
+#pragma clang diagnostic ignored "-Wsign-conversion"
+
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+
 // Mac OSX problems with a tolower macro
 #include "lemon/lemon.hpp"
 #include <pybind11/embed.h>
@@ -23,13 +32,13 @@ int main(int argc, char *argv[]) {
     o.add_option("py_class,c", py_derive, "Class deriving from Workflow");
     o.parse_command_line(argc, argv);
 
-    python::scoped_interpreter guard{};
-
     // Register the module with the interpreter
     if (PyImport_AppendInittab("lemon", INIT_MODULE) == -1) {
         std::cerr << "Failed to embed lemon in to builtin modules" << std::endl;
         return 1;
     }
+
+    python::scoped_interpreter guard{};
 
     auto locals = python::dict();
     try {
@@ -52,9 +61,15 @@ int main(int argc, char *argv[]) {
 
     auto worker = [&py](chemfiles::Frame complex, const std::string& pdbid) {
         try {
-            return py.worker(complex, pdbid);
+            return py.worker(&complex, pdbid);
         } catch (python::error_already_set& err) {
             return pdbid + " " + err.what() + "\n";
+        } catch (python::cast_error& err) {
+            return pdbid + " Problem with type: " + err.what() + "\n";
+        } catch (std::exception& err) {
+            return pdbid + " " + err.what() + "\n";
+        } catch (...) {
+            return pdbid + " unknown error." + "\n";
         }
     };
 

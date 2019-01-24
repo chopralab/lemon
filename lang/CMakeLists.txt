@@ -24,24 +24,16 @@ if (${LEMON_BUILD_PYTHON})
     target_include_directories(lemon_python PRIVATE
         ${CMAKE_SOURCE_DIR}/include
         ${CHEMFILES_INCLUDE_DIR}
+        ${PYTHON_INCLUDE_DIRS}
     )
 
-    #target_link_libraries(_lemon
-    #    ${CHEMFILES_LIBRARY}
-    #    Boost::filesystem
-    #    Boost::program_options
-    #    Boost::python
-    #    ${PYTHON_LIBRARIES}
-    #    pthread
-    #)
-
-        target_link_libraries(lemon_python
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            pybind11::embed
-            pthread
-        )
+    target_link_libraries(lemon_python
+        ${CHEMFILES_LIBRARY}
+        Boost::filesystem
+        Boost::program_options
+        pybind11::embed
+        pthread
+    )
 
     add_test(NAME py_simple
         COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p simple.py

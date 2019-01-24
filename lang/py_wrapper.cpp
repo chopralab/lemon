@@ -1,6 +1,9 @@
 #include <string>
 #include <iostream>
 
+#include "lemon/lemon.hpp"
+#include "chemfiles/File.hpp"
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #pragma clang diagnostic ignored "-Wold-style-cast"
@@ -9,8 +12,7 @@
 #pragma clang diagnostic ignored "-Wdeprecated"
 #pragma clang diagnostic ignored "-Wsign-conversion"
 
-#include "lemon/lemon.hpp"
-#include "chemfiles/File.hpp"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
@@ -20,7 +22,7 @@ namespace py = pybind11;
 namespace lemon {
 
 struct LemonPythonWrap : LemonPythonBase {
-    virtual std::string worker(chemfiles::Frame& frame,
+    virtual std::string worker(const chemfiles::Frame* frame,
                                const std::string& pdbid) override {
         py::gil_scoped_release release;
         {
@@ -226,7 +228,7 @@ PYBIND11_MODULE(lemon, m) {
 
     py::class_<Residue>(m, "Residue")
         .def(py::init<std::string>())
-        .def(py::init<std::string, int>())
+        .def(py::init<std::string, size_t>())
         .def("__len__", &Residue::size)
         .def("__iter__", [](const Residue& v) {
             return py::make_iterator(v.begin(), v.end());
@@ -331,17 +333,7 @@ PYBIND11_MODULE(lemon, m) {
             return "ResidueNameSet {" + to_string(v) + "}";
         });
 
-    py::class_<ResidueNameCount>(m, "ResidueNameCount")
-        .def(py::self += py::self)
-        .def("__get_item__", get_index<Topology,const Atom&>,
-            py::return_value_policy::reference_internal)
-        .def("__iter__", [](const ResidueNameCount& v) {
-            return py::make_iterator(v.begin(), v.end());
-        }, py::keep_alive<0, 1>());
-
-    py::class_<std::pair<ResidueName const, size_t>>(m, "ResidueCount")
-        .def_readonly("first", &std::pair<ResidueName const, size_t>::first)
-        .def_readonly("second", &std::pair<ResidueName const, size_t>::second);
+    py::bind_map<ResidueNameCount>(m, "ResidueNameCount");
 
     void (default_id_list::*push_back)(const default_id_list::value_type&) =
         &default_id_list::push_back;

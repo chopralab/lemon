@@ -1,3 +1,4 @@
+from __future__ import print_function
 from lemon import *
 
 count = []
@@ -8,4 +9,4 @@ class MyWorkflow(Workflow):
         select_metal_ions(frame, smallm)
         count.append(smallm.size())
     def finalize(self):
-        print str(count)
+        print(str(count))
