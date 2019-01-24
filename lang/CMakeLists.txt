@@ -1,4 +1,4 @@
-if (${LEMON_BUILD_PYTHON})
+if (${LEMON_BUILD_PYTHON} OR SKBUILD)
 
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E tar xf ${CMAKE_CURRENT_SOURCE_DIR}/pybind11_v2.2.4.tar.gz
@@ -10,14 +10,9 @@ if (${LEMON_BUILD_PYTHON})
         ${CMAKE_CURRENT_BINARY_DIR}/pybind11-2.2.4/
         EXCLUDE_FROM_ALL
     )
+endif()
 
-    #python_add_module(_lemon py_wrapper.cpp)
-    #target_include_directories(_lemon PRIVATE
-    #    ${PYTHON_INCLUDE_DIRS}
-    #    ${CMAKE_SOURCE_DIR}/include
-    #    ${CHEMFILES_INCLUDE_DIR}
-    #)
-
+if (${LEMON_BUILD_PYTHON})
     add_executable(lemon_python ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp
                                 ${CMAKE_CURRENT_SOURCE_DIR}/py_wrapper.cpp)
 
@@ -69,9 +64,21 @@ if (${LEMON_BUILD_PYTHON})
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )
     endif()
+endif()
 
-    if(SKBUILD)
-        message(${CMAKE_INSTALL_PREFIX})
-        install(TARGETS _lemon LIBRARY DESTINATION lemon RENAME lemon)
-    endif()
+if(SKBUILD)
+    pybind11_add_module(lemon py_wrapper.cpp)
+
+    target_include_directories(lemon PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+        ${CHEMFILES_INCLUDE_DIR}
+    )
+
+    target_link_libraries(lemon PRIVATE
+        ${CHEMFILES_LIBRARY}
+        Boost::filesystem
+        pthread
+    )
+
+    install(TARGETS lemon LIBRARY DESTINATION lemon)
 endif()

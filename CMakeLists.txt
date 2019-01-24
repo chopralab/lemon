@@ -8,13 +8,14 @@ option(LEMON_LINK_SHARED "Link lemon programs dynamically" ON)
 option(LEMON_TEST_ASYNC "Build an additional test for async parallelism" OFF)
 option(LEMON_BUILD_DOCS "Build documentation" OFF)
 option(LEMON_BENCHMARK "Should the programs be benchmarked?" OFF)
+option(LEMON_BUILD_PROGS "Should the tests and other programs be build" ON)
 
 option(LEMON_BUILD_PYTHON "Build Python support" OFF)
 
 include(InstallChemfiles)
 include(CompilerFlags)
 
-if (NOT ${LEMON_LINK_SHARED} OR MSVC)
+if ((NOT ${LEMON_LINK_SHARED} OR MSVC) OR SKBUILD)
     set(Boost_USE_STATIC_LIBS ON)
 endif()
 
@@ -27,9 +28,11 @@ if (${LEMON_BUILD_DOCS})
     add_subdirectory(doc)
 endif()
 
-enable_testing()
+if (${LEMON_BUILD_PROGS})
+    enable_testing()
 
-add_subdirectory(progs)
-add_subdirectory(test)
+    add_subdirectory(progs)
+    add_subdirectory(test)
+endif()
 
 add_subdirectory(lang)
