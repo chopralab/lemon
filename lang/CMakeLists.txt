@@ -1,97 +1,47 @@
 if (${LEMON_BUILD_PYTHON})
-    find_package(PythonInterp)
 
-    if (${PYTHONINTERP_FOUND})
-        if (UNIX AND NOT APPLE)
-            if (${PYTHON_VERSION_MAJOR} EQUAL 3)
-                find_package(Boost COMPONENTS python${PYTHON_VERSION_SUFFIX})
-                find_package(PythonLibs 3 REQUIRED)
-            else()
-                find_package(Boost COMPONENTS python)
-                find_package(PythonLibs REQUIRED)
-            endif()
-        else()
-            if (${PYTHON_VERSION_MAJOR} EQUAL 3)
-                find_package(Boost COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-                find_package(PythonLibs 3 REQUIRED)
-            else()
-                find_package(Boost COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-                find_package(PythonLibs REQUIRED)
-            endif()
-        endif()
-    else()
-        message("Python not found")
-    endif()
-
-    python_add_module(lemon py_wrapper.cpp)
-    target_include_directories(lemon PRIVATE
-        ${PYTHON_INCLUDE_DIRS}
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xf ${CMAKE_CURRENT_SOURCE_DIR}/pybind11_v2.2.4.tar.gz
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
+
+    add_subdirectory(
+        ${CMAKE_CURRENT_BINARY_DIR}/pybind11-2.2.4/
+        ${CMAKE_CURRENT_BINARY_DIR}/pybind11-2.2.4/
+        EXCLUDE_FROM_ALL
+    )
+
+    #python_add_module(_lemon py_wrapper.cpp)
+    #target_include_directories(_lemon PRIVATE
+    #    ${PYTHON_INCLUDE_DIRS}
+    #    ${CMAKE_SOURCE_DIR}/include
+    #    ${CHEMFILES_INCLUDE_DIR}
+    #)
 
     add_executable(lemon_python ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp
                                 ${CMAKE_CURRENT_SOURCE_DIR}/py_wrapper.cpp)
 
     target_include_directories(lemon_python PRIVATE
-        ${PYTHON_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/include
         ${CHEMFILES_INCLUDE_DIR}
     )
 
-    if (UNIX AND NOT APPLE)
-        target_link_libraries(lemon
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python
-            ${PYTHON_LIBRARIES}
-            pthread
-        )
+    #target_link_libraries(_lemon
+    #    ${CHEMFILES_LIBRARY}
+    #    Boost::filesystem
+    #    Boost::program_options
+    #    Boost::python
+    #    ${PYTHON_LIBRARIES}
+    #    pthread
+    #)
 
         target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
             Boost::program_options
-            Boost::python
-            ${PYTHON_LIBRARIES}
+            pybind11::embed
             pthread
         )
-    elseif(WIN32)
-        target_link_libraries(lemon
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-            ${PYTHON_LIBRARIES}
-        )
-
-        target_link_libraries(lemon_python
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-            ${PYTHON_LIBRARIES}
-        )
-    else()
-        target_link_libraries(lemon
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-            ${PYTHON_LIBRARIES}
-            pthread
-        )
-
-        target_link_libraries(lemon_python
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-            ${PYTHON_LIBRARIES}
-            pthread
-        )
-    endif()
 
     add_test(NAME py_simple
         COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p simple.py
@@ -126,5 +76,10 @@ if (${LEMON_BUILD_PYTHON})
         set_tests_properties( py_simple py_count py_invalid py_small_heme py_tmscore
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )
+    endif()
+
+    if(SKBUILD)
+        message(${CMAKE_INSTALL_PREFIX})
+        install(TARGETS _lemon LIBRARY DESTINATION lemon RENAME lemon)
     endif()
 endif()

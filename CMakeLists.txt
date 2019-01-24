@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.2)
 
 project(lemon C CXX)
 
-set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
 option(LEMON_LINK_SHARED "Link lemon programs dynamically" ON)

@@ -1,34 +1,46 @@
 #include <string>
 #include <iostream>
 
-// Mac OSX problems with a tolower macro
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-prototypes"
+#pragma clang diagnostic ignored "-Wold-style-cast"
+#pragma clang diagnostic ignored "-Wmissing-braces"
+#pragma clang diagnostic ignored "-Wdocumentation"
+#pragma clang diagnostic ignored "-Wdeprecated"
+#pragma clang diagnostic ignored "-Wsign-conversion"
+
 #include "lemon/lemon.hpp"
 #include "chemfiles/File.hpp"
 
-#include <boost/python.hpp>
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl_bind.h>
 
-namespace python = boost::python;
+namespace py = pybind11;
 
 namespace lemon {
 
-struct LemonPythonWrap : LemonPythonBase, python::wrapper<LemonPythonBase> {
+struct LemonPythonWrap : LemonPythonBase {
     virtual std::string worker(chemfiles::Frame& frame,
                                const std::string& pdbid) override {
-        std::string test(pdbid); 
-        auto res = get_override("worker")(boost::ref(frame), test);
-
-        // Silently handle errors
-        try {
-            return res.as<std::string>();
-        } catch (python::error_already_set const &) {
-            PyErr_Clear();
+        py::gil_scoped_release release;
+        {
+            py::gil_scoped_acquire acquire;
+            PYBIND11_OVERLOAD_PURE(
+                std::string,
+                LemonPythonBase,
+                worker,
+                frame,
+                pdbid
+            );
         }
-        return "";
     }
 
     virtual void finalize() override {
-        get_override("finalize")();
+        PYBIND11_OVERLOAD(
+            void,
+            LemonPythonBase,
+            finalize,
+        );
     }
 };
 
@@ -36,14 +48,12 @@ template<typename T, typename ret, int maxval>
 ret get_index(const T& v, int i) {
     if (i >= 0) {
         if (i >= maxval) {
-            PyErr_SetString(PyExc_IndexError, "index is too large");
-            python::throw_error_already_set();
+            throw pybind11::index_error("index is too large");
         }
         return v[static_cast<size_t>(i)];
     }
     if (-i > maxval) {
-        PyErr_SetString(PyExc_IndexError, "index is too small");
-        python::throw_error_already_set();
+        throw pybind11::index_error("index is too small");
     }
     return v[static_cast<size_t>(maxval + i)];
 }
@@ -52,14 +62,12 @@ template<typename T, typename ret>
 ret get_index(const T& v, int i) {
     if (i >= 0) {
         if (i >= static_cast<int>(v.size())) {
-            PyErr_SetString(PyExc_IndexError, "index is too large");
-            python::throw_error_already_set();
+            throw pybind11::index_error("index is too large");
         }
         return v[static_cast<size_t>(i)];
     }
     if (-i > static_cast<int>(v.size())) {
-        PyErr_SetString(PyExc_IndexError, "index is too small");
-        python::throw_error_already_set();
+        throw pybind11::index_error("index is too small");
     }
     return v[static_cast<size_t>(static_cast<int>(v.size()) + i)];
 }
@@ -74,8 +82,7 @@ T get(const chemfiles::optional<T>& o) {
     if (o) {
         return *o;
     } else {
-        PyErr_SetString(PyExc_IndexError, "Cannot dereference nullopt");
-        python::throw_error_already_set();
+        throw pybind11::index_error("Cannot dereference nullopt");
     }
     chemfiles::unreachable();
 }
@@ -97,6 +104,13 @@ inline std::ostream& operator<<(std::ostream& os, const default_id_list& idlist)
     return os;
 }
 
+template<typename T>
+std::string to_string(const T& v) {
+    std::stringstream ss;
+    ss << v;
+    return ss.str();
+}
+
 chemfiles::Frame open_model_in_file(const std::string& filename, size_t index) {
     chemfiles::Trajectory traj(filename);
     return traj.read_step(index);
@@ -104,7 +118,7 @@ chemfiles::Frame open_model_in_file(const std::string& filename, size_t index) {
 
 chemfiles::Frame* open_file(const std::string& filename) {
     chemfiles::Trajectory traj(filename);
-    return new chemfiles::Frame(std::move(traj.read()));
+    return new chemfiles::Frame(traj.read());
 }
 
 void write_file(const chemfiles::Frame& frame, const std::string& filename) {
@@ -119,55 +133,56 @@ void append_file(const chemfiles::Frame& frame, const std::string& filename) {
 }
 
 // Pack the Base class wrapper into a module
-BOOST_PYTHON_MODULE(lemon) {
+PYBIND11_MODULE(lemon, m) {
     using namespace chemfiles;
     using namespace lemon;
-    using boost::noncopyable;
 
-    python::class_<LemonPythonWrap, noncopyable>("Workflow");
+    py::class_<LemonPythonBase, LemonPythonWrap>(m, "Workflow")
+        .def(py::init<>())
+        .def("worker", &LemonPythonBase::worker)
+        .def("finalize", &LemonPythonBase::finalize);
 
     /**************************************************************************
      * Optional
      **************************************************************************/
-    python::class_<optional<uint64_t>> ("OptionalUInt64", python::no_init)
+    py::class_<optional<uint64_t>> (m, "OptionalUInt64")
         .def("check", check<uint64_t>)
         .def("get", get<uint64_t>);
 
-    python::class_<optional<std::string>> ("OptionalString", python::no_init)
+    py::class_<optional<std::string>> (m, "OptionalString")
         .def("check", check<std::string>)
         .def("get", get<std::string>);
 
-    python::class_<optional<double>> ("OptionalDouble", python::no_init)
+    py::class_<optional<double>> (m, "OptionalDouble")
         .def("check", check<double>)
         .def("get", get<double>);
 
-    python::class_<optional<const Property&>> ("OptionalProperty", python::no_init)
+    py::class_<optional<const Property&>> (m, "OptionalProperty")
         .def("check", check<const Property&>)
         .def("get", get<const Property&>,
-            python::return_internal_reference<>());
+            py::return_value_policy::reference_internal);
 
-    python::class_<optional<const Residue&>> ("OptionalResidue", python::no_init)
+    py::class_<optional<const Residue&>> (m, "OptionalResidue")
         .def("check", check<const Residue&>)
         .def("get", get<const Residue&>,
-            python::return_internal_reference<>());
+            py::return_value_policy::reference_internal);
 
     /**************************************************************************
      * Property
      **************************************************************************/
-    python::class_<Property> ("Property", python::no_init)
-        .def(python::init<bool>())
-        .def(python::init<std::string>())
-        .def(python::init<Vector3D>())
-        .def(python::init<int>())
-        .def(python::init<double>())
+    py::class_<Property> (m, "Property")
+        .def(py::init<bool>())
+        .def(py::init<std::string>())
+        .def(py::init<Vector3D>())
+        .def(py::init<int>())
+        .def(py::init<double>())
         .def("kind", &Property::kind)
         .def("as_bool", &Property::as_bool)
         .def("as_double", &Property::as_double)
         .def("as_vector3d", &Property::as_vector3d)
-        .def("as_string", &Property::as_string,
-            python::return_value_policy<python::copy_const_reference>());
+        .def("as_string", &Property::as_string);
 
-    python::enum_<Property::Kind>("Kind")
+    py::enum_<Property::Kind>(m, "Kind")
         .value("BOOL", Property::BOOL)
         .value("DOUBLE", Property::DOUBLE)
         .value("STRING", Property::STRING)
@@ -176,37 +191,32 @@ BOOST_PYTHON_MODULE(lemon) {
     /**************************************************************************
      * Vector-likes
      **************************************************************************/
-    python::class_<Bond, noncopyable>("Bond", python::no_init)
+    py::class_<Bond>(m, "Bond")
         .def("__getitem__", &get_index<Bond,size_t,2>);
 
-    python::class_<std::vector<Bond>>("BondVec")
-        .def(python::vector_indexing_suite<std::vector<Bond> >());
+    py::bind_vector<std::vector<Bond>>(m, "BondVec");
 
-    python::class_<Angle, noncopyable>("Angle", python::no_init)
+    py::class_<Angle>(m, "Angle")
         .def("__getitem__", &get_index<Angle,size_t,3>);
 
-    python::class_<std::vector<Angle>>("AngleVec")
-        .def(python::vector_indexing_suite<std::vector<Angle> >());
+    py::bind_vector<std::vector<Angle>>(m, "AngleVec");
 
-    python::class_<Dihedral, noncopyable>("Dihedral", python::no_init)
+    py::class_<Dihedral>(m, "Dihedral")
         .def("__getitem__", &get_index<Dihedral,size_t,4>);
 
-    python::class_<std::vector<Dihedral>>("DihedralVec")
-        .def(python::vector_indexing_suite<std::vector<Dihedral> >());
+    py::bind_vector<std::vector<Dihedral>>(m, "DihedralVec");
 
-    python::class_<Improper, noncopyable>("Improper", python::no_init)
+    py::class_<Improper>(m, "Improper")
         .def("__getitem__", &get_index<Improper,size_t,4>);
 
-    python::class_<std::vector<Improper>>("ImproperVec")
-        .def(python::vector_indexing_suite<std::vector<Improper> >());
+    py::bind_vector<std::vector<Improper>>(m, "ImproperVec");
 
-    python::class_<Vector3D>("Vector3D")
-        .def(python::init<double,double,double>())
+    py::class_<Vector3D>(m, "Vector3D")
+        .def(py::init<double,double,double>())
         .def("__getitem__", &get_index<Vector3D,double,3>)
         .def("norm", &Vector3D::norm);
 
-    python::class_<std::vector<Vector3D>>("PositionVec")
-        .def(python::vector_indexing_suite<std::vector<Vector3D> >());
+    py::bind_vector<std::vector<Vector3D>>(m, "PositionVec");
 
     /**************************************************************************
      * Residue
@@ -214,39 +224,44 @@ BOOST_PYTHON_MODULE(lemon) {
     chemfiles::optional<const chemfiles::Property&> (Residue::*residue_get)
         (const std::string&) const = &Residue::get;
 
-    python::class_<Residue, noncopyable>("Residue", python::init<std::string>())
-        .def(python::init<std::string, int>())
-        .def("size", &Residue::size)
-        .def("name", &Residue::name,
-            python::return_value_policy<python::copy_const_reference>())
-        .def("atoms", python::range(&Residue::cbegin,
-                                    &Residue::cend))
+    py::class_<Residue>(m, "Residue")
+        .def(py::init<std::string>())
+        .def(py::init<std::string, int>())
+        .def("__len__", &Residue::size)
+        .def("__iter__", [](const Residue& v) {
+            return py::make_iterator(v.begin(), v.end());
+        }, py::keep_alive<0, 1>())
+        .def("name", &Residue::name)
         .def("contains", &Residue::contains)
         .def("id", &Residue::id)
         .def("get", residue_get);
 
-    python::class_<std::vector<Residue>>("ResidueVec")
-        .def(python::vector_indexing_suite<std::vector<Residue> >())
-        .def("size", &std::vector<Residue>::size);
+    py::class_<std::vector<Residue>>(m, "ResidueVec");
 
     /**************************************************************************
      * Topology
      **************************************************************************/
-    python::class_<Topology, noncopyable>("Topology")
+    py::class_<Topology>(m, "Topology")
+        .def("__len__", &Topology::size)
+        .def("__get_item__", get_index<Topology,const Atom&>,
+            py::return_value_policy::reference_internal)
+        .def("__iter__", [](const Topology& v) {
+            return py::make_iterator(v.begin(), v.end());
+        }, py::keep_alive<0, 1>())
         .def("residue", &Topology::residue,
-            python::return_internal_reference<>())
+            py::return_value_policy::reference_internal)
         .def("residues", &Topology::residues,
-            python::return_internal_reference<>())
+            py::return_value_policy::reference_internal)
         .def("residue_for_atom", &Topology::residue_for_atom)
         .def("are_linked", &Topology::are_linked)
         .def("bonds", &Topology::bonds,
-            python::return_internal_reference<>())
+            py::return_value_policy::reference_internal)
         .def("angles", &Topology::angles,
-            python::return_internal_reference<>())
+            py::return_value_policy::reference_internal)
         .def("dihedrals", &Topology::dihedrals,
-            python::return_internal_reference<>())
+            py::return_value_policy::reference_internal)
         .def("impropers", &Topology::impropers,
-            python::return_internal_reference<>());
+            py::return_value_policy::reference_internal);
 
     /**************************************************************************
      * Frame
@@ -254,14 +269,15 @@ BOOST_PYTHON_MODULE(lemon) {
     chemfiles::optional<const chemfiles::Property&> (Frame::*frame_get)
         (const std::string&) const = &Frame::get;
 
-    python::class_<Frame, noncopyable>("Frame")
-        .def("size", &Frame::size)
-        .def("atoms", python::range(&Frame::cbegin,
-                                    &Frame::cend))
+    py::class_<Frame>(m, "Frame")
+        .def("__len__", &Frame::size)
         .def("__get_item__", get_index<Frame,const Atom&>,
-            python::return_internal_reference<>())
+            py::return_value_policy::reference_internal)
+        .def("__iter__", [](const Frame& v) {
+            return py::make_iterator(v.begin(), v.end());
+        }, py::keep_alive<0, 1>())
         .def("topology", &Frame::topology,
-            python::return_internal_reference<>())
+            py::return_value_policy::reference_internal)
         .def("distance", &Frame::distance)
         .def("angle", &Frame::angle)
         .def("dihedral", &Frame::dihedral)
@@ -274,11 +290,9 @@ BOOST_PYTHON_MODULE(lemon) {
     chemfiles::optional<const chemfiles::Property&> (Atom::*atom_get)
         (const std::string&) const = &Atom::get;
 
-    python::class_<Atom>("Atom", python::no_init)
-        .def("name", &Atom::name,
-            python::return_value_policy<python::copy_const_reference>())
-        .def("type", &Atom::type,
-            python::return_value_policy<python::copy_const_reference>())
+    py::class_<Atom>(m, "Atom")
+        .def("name", &Atom::name)
+        .def("type", &Atom::type)
         .def("mass", &Atom::mass)
         .def("charge", &Atom::charge)
         .def("full_name", &Atom::full_name)
@@ -290,59 +304,70 @@ BOOST_PYTHON_MODULE(lemon) {
     /**************************************************************************
      * Residue Name
      **************************************************************************/
-    python::class_<ResidueName>("ResidueName", python::init<const std::string&>())
-        .def(python::self_ns::str(python::self));
+    py::class_<ResidueName>(m, "ResidueName")
+        .def(py::init<const std::string&>())
+        .def("__str__",[](const ResidueName& v){
+            return to_string(v);
+        })
+        .def("__repl__",[](const ResidueName& v){
+            return "<ResidueName {" + to_string(v) + "}";
+        });
 
     typedef std::pair<ResidueNameSet::iterator, bool> rns_insert_ret;
-    python::class_<rns_insert_ret>("ResidueNameRet", python::no_init);
+    py::class_<rns_insert_ret>(m, "ResidueNameRet");
 
     rns_insert_ret (ResidueNameSet::*rns_insert)
         (const ResidueNameSet::value_type&) = &ResidueNameSet::insert;
-    python::class_<ResidueNameSet>("ResidueNameSet")
-        .def(python::self_ns::str(python::self))
-        .def("size", &ResidueNameSet::size)
-        .def("__iter__", python::range(&ResidueNameSet::cbegin,
-                                       &ResidueNameSet::cend))
-        .def("append", rns_insert);
+    py::class_<ResidueNameSet>(m, "ResidueNameSet")
+        .def("__len__", &ResidueNameSet::size)
+        .def("__iter__", [](const ResidueNameSet& v) {
+            return py::make_iterator(v.begin(), v.end());
+        }, py::keep_alive<0, 1>())
+        .def("append", rns_insert)
+        .def("__str__",[](const ResidueNameSet& v){
+            return to_string(v);
+        })
+        .def("__repl__",[](const ResidueNameSet& v){
+            return "ResidueNameSet {" + to_string(v) + "}";
+        });
 
-    ResidueNameCount::const_iterator (ResidueNameCount::*rnc_begin)(void) const =
-        &ResidueNameCount::begin;
-    ResidueNameCount::const_iterator (ResidueNameCount::*rnc_end)(void) const =
-        &ResidueNameCount::end;
+    py::class_<ResidueNameCount>(m, "ResidueNameCount")
+        .def(py::self += py::self)
+        .def("__get_item__", get_index<Topology,const Atom&>,
+            py::return_value_policy::reference_internal)
+        .def("__iter__", [](const ResidueNameCount& v) {
+            return py::make_iterator(v.begin(), v.end());
+        }, py::keep_alive<0, 1>());
 
-    python::class_<ResidueNameCount>("ResidueNameCount")
-        .def(python::self_ns::str(python::self))
-        .def(python::self += python::self)
-        .def("size", &ResidueNameCount::size)
-        .def("__iter__", python::range(rnc_begin,
-                                       rnc_end));
-
-    python::class_<std::pair<ResidueName const, size_t>>("ResidueCount",
-                                                         python::no_init)
+    py::class_<std::pair<ResidueName const, size_t>>(m, "ResidueCount")
         .def_readonly("first", &std::pair<ResidueName const, size_t>::first)
         .def_readonly("second", &std::pair<ResidueName const, size_t>::second);
 
     void (default_id_list::*push_back)(const default_id_list::value_type&) =
         &default_id_list::push_back;
 
-    python::class_<default_id_list>("ResidueIDs")
-        //.def(python::self_ns::str(python::self))
-        .def(python::init<const default_id_list&>())
-        .def("__iter__", python::range(&default_id_list::cbegin,
-                                       &default_id_list::cend))
-        .def("size", &default_id_list::size)
-        .def("append", push_back);
+    py::class_<default_id_list>(m, "ResidueIDs")
+        .def("__iter__", [](const default_id_list& v) {
+            return py::make_iterator(v.begin(), v.end());
+        }, py::keep_alive<0, 1>())
+        .def("append", push_back)
+        .def("__str__",[](const default_id_list& v){
+            return to_string(v);
+        })
+        .def("__repl__",[](const default_id_list& v){
+            return "ResidueIDs {" + to_string(v) + "}";
+        });
 
     /**************************************************************************
      * Constants
      **************************************************************************/
-    python::class_<std::unordered_set<std::string>>("StringSet");
-    python::scope().attr("small_molecule_types") = small_molecule_types;
+    py::class_<std::unordered_set<std::string>>(m, "StringSet");
+    m.attr("small_molecule_types") = small_molecule_types;
 
-    python::scope().attr("common_peptides") = common_peptides;
-    python::scope().attr("common_cofactors") = common_cofactors;
-    python::scope().attr("common_fatty_acids") = common_fatty_acids;
-    python::scope().attr("proline_res") = proline_res;
+    m.attr("common_peptides") = common_peptides;
+    m.attr("common_cofactors") = common_cofactors;
+    m.attr("common_fatty_acids") = common_fatty_acids;
+    m.attr("proline_res") = proline_res;
 
     /**************************************************************************
      * Select
@@ -354,20 +379,20 @@ BOOST_PYTHON_MODULE(lemon) {
                                        size_t) =
         &select::small_molecules;
 
-    python::def("select_small_molecules", small_molecules);
+    m.def("select_small_molecules", small_molecules);
 
     default_id_list (*metal_ions)(const Frame&) = &select::metal_ions;
-    python::def("select_metal_ions", metal_ions);
+    m.def("select_metal_ions", metal_ions);
 
     default_id_list (*nucleic_acids)(const Frame&) = &select::nucleic_acids;
-    python::def("select_nucleic_acids", nucleic_acids);
+    m.def("select_nucleic_acids", nucleic_acids);
 
     default_id_list (*peptides)(const Frame&) = &select::peptides;
-    python::def("select_peptides", peptides);
+    m.def("select_peptides", peptides);
 
     default_id_list (*specific_residues)(const Frame&, const ResidueNameSet&) =
         &select::specific_residues;
-    python::def("select_specific_residues", specific_residues);
+    m.def("select_specific_residues", specific_residues);
 
     // Inplace
     size_t (*small_molecules_i)(const Frame&, default_id_list&,
@@ -375,92 +400,93 @@ BOOST_PYTHON_MODULE(lemon) {
                                 size_t) =
         &select::small_molecules;
 
-    python::def("select_small_molecules", small_molecules_i);
+    m.def("select_small_molecules", small_molecules_i);
 
     size_t (*metal_ions_i)(const Frame&, default_id_list&) =
          &select::metal_ions;
-    python::def("select_metal_ions", metal_ions_i);
+    m.def("select_metal_ions", metal_ions_i);
 
     size_t (*nucleic_acids_i)(const Frame&, default_id_list&) =
         &select::nucleic_acids;
-    python::def("select_nucleic_acids", nucleic_acids_i);
+    m.def("select_nucleic_acids", nucleic_acids_i);
 
     size_t (*peptides_i)(const Frame&, default_id_list&) =
         &select::peptides;
-    python::def("select_peptides", peptides_i);
+    m.def("select_peptides", peptides_i);
 
     size_t (*specific_residues_i)(const Frame&, default_id_list&,
                                   const ResidueNameSet&) =
         &select::specific_residues;
-    python::def("select_specific_residues", specific_residues_i);
+    m.def("select_specific_residues", specific_residues_i);
 
     /**************************************************************************
      * Count
      **************************************************************************/
-    python::def("count_altloc", count::altloc);
-    python::def("count_bioassemblies", count::bioassemblies);
-    python::def("print_residue_name_counts",
+    m.def("count_altloc", count::altloc);
+    m.def("count_bioassemblies", count::bioassemblies);
+    m.def("print_residue_name_counts",
         count::print_residue_name_counts<default_id_list>);
 
     void (*residues1)(const Frame&, ResidueNameCount&) = &count::residues;
-    python::def("count_residues", residues1);
+    m.def("count_residues", residues1);
 
     void (*residues2)(const Frame&, const default_id_list&, ResidueNameCount&) =
         &count::residues;
-    python::def("count_residues", residues2);
+    m.def("count_residues", residues2);
 
     /**************************************************************************
      * Prune
      **************************************************************************/
-    python::def("prune_identical_residues",
+    m.def("prune_identical_residues",
         prune::identical_residues<default_id_list>);
-    python::def("prune_cofactors", prune::cofactors<default_id_list>);
-    python::def("keep_interactions", prune::keep_interactions<default_id_list>);
-    python::def("remove_interactions", prune::remove_interactions<default_id_list>);
+    m.def("prune_cofactors", prune::cofactors<default_id_list>);
+    m.def("keep_interactions", prune::keep_interactions<default_id_list>);
+    m.def("remove_interactions", prune::remove_interactions<default_id_list>);
 
     /**************************************************************************
      * Separate
      **************************************************************************/
-    python::def("separate_residues", separate::residues<default_id_list>);
-    python::def("separate_protein_and_ligand", separate::protein_and_ligand);
+    m.def("separate_residues", separate::residues<default_id_list>);
+    m.def("separate_protein_and_ligand", separate::protein_and_ligand);
 
     /**************************************************************************
      * geometry
      **************************************************************************/
-    python::def("protein_bond_name", geometry::protein::bond_name);
-    python::def("protein_angle_name", geometry::protein::angle_name);
-    python::def("protein_dihedral_name", geometry::protein::dihedral_name);
-    python::def("protein_improper_name", geometry::protein::improper_name);
-    python::register_exception_translator<geometry::geometry_error>(&translate);
+    m.def("protein_bond_name", geometry::protein::bond_name);
+    m.def("protein_angle_name", geometry::protein::angle_name);
+    m.def("protein_dihedral_name", geometry::protein::dihedral_name);
+    m.def("protein_improper_name", geometry::protein::improper_name);
+    py::register_exception<geometry::geometry_error>(m,"GeometryError");
 
     /**************************************************************************
      * Vina Score
      **************************************************************************/
-    python::class_<xscore::VinaScore>("VinaScore", python::no_init)
+    py::class_<xscore::VinaScore>(m,"VinaScore")
         .def_readonly("g1", &xscore::VinaScore::g1)
         .def_readonly("g2", &xscore::VinaScore::g2)
         .def_readonly("rep", &xscore::VinaScore::rep)
         .def_readonly("hydrophobic", &xscore::VinaScore::hydrophobic)
         .def_readonly("hydrogen", &xscore::VinaScore::hydrogen);
 
-    python::def("vina_score", xscore::vina_score<default_id_list>);
+    m.def("vina_score", xscore::vina_score<default_id_list>);
 
     /**************************************************************************
      * TMAlign
      **************************************************************************/
-    python::class_<tmalign::TMResult>("TMResult", python::no_init)
+    py::class_<tmalign::TMResult>(m,"TMResult")
         .def_readonly("score", &tmalign::TMResult::score)
         .def_readonly("rmsd", &tmalign::TMResult::rmsd)
         .def_readonly("aligned", &tmalign::TMResult::aligned);
 
-    python::def("TMscore", tmalign::TMscore);
+    m.def("TMscore", tmalign::TMscore);
 
     /**************************************************************************
     * File IO
     ***************************************************************************/
-    python::def("open_model_in_file", open_model_in_file);
-    python::def("open_file", open_file,
-        python::return_value_policy<python::manage_new_object>());
-    python::def("write_file", write_file);
-    python::def("append_file", append_file);
+    m.def("open_model_in_file", open_model_in_file);
+    m.def("open_file", open_file);
+    m.def("write_file", write_file);
+    m.def("append_file", append_file);
 }
+
+#pragma clang diagnostic pop
