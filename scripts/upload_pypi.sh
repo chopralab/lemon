@@ -1,7 +1,12 @@
 #!/bin/bash
-pip install twine
-SCRIPT_DIR=$(cd $(dirname $0) || exit 1; pwd)
-echo -e "[pypi]" >> ~/.pypirc
+echo -e "[distutils]" >> ~/.pypirc
+echo -e "index-servers =" >> ~/.pypirc
+echo -e "    test" >> ~/.pypirc
+echo -e "" >> ~/.pypirc
+echo -e "[test]" >> ~/.pypirc
+echo -e "repository = https://test.pypi.org/legacy/" >> ~/.pypirc
 echo -e "username = frodofine" >> ~/.pypirc
 echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
-twine upload --repository-url https://test.pypi.org/ dist/*
+
+pip install twine
+twine upload --repository test dist/*

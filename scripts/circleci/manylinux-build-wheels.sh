@@ -79,13 +79,13 @@ for PYBIN in "${PYBINARIES[@]}"; do
       -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR} \
       -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY} \
     || exit 1
-    #${PYBIN}/python setup.py clean
+    ${PYBIN}/python setup.py clean
 done
 
 # Update wheel to switching from 'linux' to 'manylinux1' tag
 # We need to install click
-/opt/_internal/cpython-3.6.6/bin/pip install click
+/opt/python/*cp36*/bin/pip install click
 for whl in dist/*linux_$(uname -p).whl; do
-    /opt/_internal/cpython-3.6.6/bin/python /work/scripts/tag_manylinux.py ${whl}
+    /opt/python/*cp36*/bin/python /work/scripts/tag_manylinux.py ${whl}
     rm ${whl}
 done

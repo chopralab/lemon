@@ -10,13 +10,13 @@ jobs:
           name: Build Python packages
           no_output_timeout: 1.0h
           command: |
-            ./lemon/scripts/circleci/dockcross-manylinux-build-wheels.sh cp27 cp34 cp35 cp36 cp37
+            ./lemon/scripts/circleci/dockcross-manylinux-build-wheels.sh cp35
       - store_artifacts:
           path: dist
           destination: dist
       - run:
-         name: Upload to PyPi
-         command: |
+          name: Upload to PyPi
+          command: |
             ./lemon/scripts/upload_pypi.sh
 
 workflows:

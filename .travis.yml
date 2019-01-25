@@ -55,23 +55,17 @@ matrix:
         - BUILD_TYPE: Release
         - ASYNC: OFF
         - PYTHON_EXECUTABLE: /usr/local/bin/python
+    - name: osx deploy
+      os: osx
+      env:
+        - DEPLOY_MACOSX_WHEEL: ON
+        - 
 
 before_install:
   - pip install --user cpp-coveralls
   
 script:
-  - ${CC} --version
-  - ${CXX} --version
-  - cd $TRAVIS_BUILD_DIR
-  - mkdir build && cd build
-  - |
-    cmake .. -DCOVERAGE=${COVERAGE} \
-             -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-             -DLEMON_TEST_ASYNC=${ASYNC} \
-             -DLEMON_BUILD_PYTHON=ON \
-             -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
-  - make -j2
-  - ctest -j2 --output-on-failure
+  - ./scripts/travis/build.sh
 
 after_success:
   - cd $TRAVIS_BUILD_DIR
@@ -89,6 +83,12 @@ after_success:
         ./scripts/build-doc.sh
     fi
 
+before_deploy:
+  - |
+    if [[${DEPLOY_MACOSX_WHEEL} == "true"]]; then
+        ./scripts/travis/macpython-build-wheels.sh 3.5 3.6 3.7
+    fi
+
 deploy:
   - provider: pages
     skip_cleanup: true
@@ -97,3 +97,8 @@ deploy:
     on:
         branch: master
         condition: $BUILD_DOC == true
+  - provider: script
+    script: ./scripts/upload_pypi.sh
+    skip_cleanup: true
+    on:
+        condition: $DEPLOY_MACOSX_WHEEL == true
