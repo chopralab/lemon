@@ -1,7 +1,9 @@
 
 function(add_cpp_test _file_ _name_)    
     add_executable(${_name_} ${_file_})
-    add_dependencies(${_name_} chemfiles)
+    if (NOT ${LEMON_EXTERNAL_CHEMFILES})
+        add_dependencies(${_name_} chemfiles)
+    endif()
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
     target_include_directories(${_name_} SYSTEM PRIVATE
         ${CMAKE_SOURCE_DIR}/include

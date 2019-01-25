@@ -2,7 +2,9 @@ function(add_cpp_prog _file_)
     get_filename_component(_name_ ${_file_} NAME_WE)
     
     add_executable(${_name_} ${_file_})
-    add_dependencies(${_name_} chemfiles)
+    if (NOT ${LEMON_EXTERNAL_CHEMFILES})
+        add_dependencies(${_name_} chemfiles)
+    endif()
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
 
     if(MSVC)

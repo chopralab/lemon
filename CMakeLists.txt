@@ -11,8 +11,14 @@ option(LEMON_BENCHMARK "Should the programs be benchmarked?" OFF)
 option(LEMON_BUILD_PROGS "Should the tests and other programs be build" ON)
 
 option(LEMON_BUILD_PYTHON "Build Python support" OFF)
+option(LEMON_EXTERNAL_CHEMFILES "Should we use an external chemfiles?" OFF)
 
-include(InstallChemfiles)
+if (${LEMON_EXTERNAL_CHEMFILES})
+    find_package(Chemfiles)
+else()
+    include(InstallChemfiles)
+endif()
+
 include(CompilerFlags)
 
 if ((NOT ${LEMON_LINK_SHARED} OR MSVC) OR SKBUILD)

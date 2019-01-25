@@ -75,6 +75,8 @@ for PYBIN in "${PYBINARIES[@]}"; do
     fi
     ${PYBIN}/python setup.py bdist_wheel --build-type MinSizeRel -G 'Unix Makefiles' -- \
       -DBOOST_ROOT:PATH=/deps/boost_1_58_0/ \
+      -DCHEMFILES_ROOT_DIR=/deps/chfl \
+      -DLEMON_EXTERNAL_CHEMFILES=ON \
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE} \
       -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR} \
       -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY} \
