@@ -132,6 +132,25 @@ void append_file(const chemfiles::Frame& frame, const std::string& filename) {
     chemfiles::Trajectory traj(filename, chemfiles::File::Mode::APPEND);
     traj.write(frame);
 }
+
+void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t threads) {
+    auto worker = [&py](chemfiles::Frame complex, const std::string& pdbid) {
+        try {
+            return py.worker(&complex, pdbid);
+        } catch (py::error_already_set& err) {
+            return pdbid + " " + err.what() + "\n";
+        } catch (py::cast_error& err) {
+            return pdbid + " Problem with type: " + err.what() + "\n";
+        } catch (std::exception& err) {
+            return pdbid + " " + err.what() + "\n";
+        } catch (...) {
+            return pdbid + " unknown error." + "\n";
+        }
+    };
+
+    print_combine<std::ostream, std::string> combiner;
+    lemon::run_parallel(worker, combiner, p, std::cout, threads);
+}
 }
 
 // Pack the Base class wrapper into a module
@@ -143,6 +162,8 @@ PYBIND11_MODULE(lemon, m) {
         .def(py::init<>())
         .def("worker", &LemonPythonBase::worker)
         .def("finalize", &LemonPythonBase::finalize);
+
+    m.def("launch", run_lemon_workflow);
 
     /**************************************************************************
      * Optional
