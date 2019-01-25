@@ -7,7 +7,7 @@ building any C++ executable. See the documentation at
 http://chopralab.github.io/lemon"""
 
 setup(
-    name= "lemon",
+    name= "lemon_proteins",
     version="0.0.1",
     long_description=LONG_DESCRIPTION,
     description="Mine data from the PDB in minutes",
@@ -22,8 +22,8 @@ setup(
         '-DLEMON_LINK_SHARED:BOOL=OFF',
         '-DLEMON_BUILD_PROGS:BOOL=OFF',
     ],
-    cmake_install_dir="lemon",
-        classifiers=[
+    packages=['lemon_proteins'],
+    classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
