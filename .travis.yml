@@ -21,6 +21,7 @@ matrix:
     - name: coverage and documentation
       os: linux
       compiler: gcc
+      python: 2.7
       addons: *linux64
       env:
         - COVERAGE: ON
@@ -30,6 +31,7 @@ matrix:
     - name: linux release
       os: linux
       compiler: gcc
+      python: 2.7
       addons: *linux64
       env:
         - COVERAGE: OFF
@@ -38,6 +40,7 @@ matrix:
     - name: linux clang
       os: linux
       compiler: clang
+      python: 2.7
       addons: *linux64
       env:
         - COVERAGE: OFF
@@ -52,9 +55,6 @@ matrix:
         - BUILD_TYPE: Release
         - ASYNC: OFF
         - PYTHON_EXECUTABLE: /usr/local/bin/python
-      before_install:
-        - brew update && brew bundle
-        - brew unlink python && brew upgrade python@2
 
 before_install:
   - pip install --user cpp-coveralls
