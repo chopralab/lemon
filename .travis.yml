@@ -59,7 +59,8 @@ matrix:
       os: osx
       env:
         - DEPLOY_MACOSX_WHEEL: ON
-        - 
+        - COVERAGE: OFF
+        - BUILD_DOC: OFF
 
 before_install:
   - pip install --user cpp-coveralls
@@ -85,7 +86,7 @@ after_success:
 
 before_deploy:
   - |
-    if [[${DEPLOY_MACOSX_WHEEL} == "true"]]; then
+    if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
         ./scripts/travis/macpython-build-wheels.sh 3.5 3.6 3.7
     fi
 

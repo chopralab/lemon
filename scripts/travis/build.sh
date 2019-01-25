@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[${DEPLOY_MACOSX_WHEEL} == "true"]]; then
+if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
     exit 0
 fi
 
