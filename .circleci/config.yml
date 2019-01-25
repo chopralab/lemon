@@ -17,7 +17,8 @@ jobs:
       - run:
          name: Upload to PyPi
          command: |
-           ./avogadrolibs/scripts/upload_pypi.sh
+            ./lemon/scripts/upload_pypi.sh
+
 workflows:
     version: 2
     package_wheel:
@@ -26,5 +27,11 @@ workflows:
             filters:
               tags:
                 only: /.*/
+        - upload:
+            requires:
+              - package
+            filters:
+              tags:
+                only: /.*/
               branches:
-ignore: /.*/
+                ignore: /.*/

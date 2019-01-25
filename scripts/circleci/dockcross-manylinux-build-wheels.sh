@@ -13,15 +13,15 @@ mkdir deps
 cd deps
 curl -L http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz -O
 gunzip boost_1_58_0.tar.gz
-tar xvf boost_1_58_0.tar
+tar xf boost_1_58_0.tar
 cd boost_1_58_0/
 sh bootstrap.sh
-./bjam cxxflags=-fPIC cflags=-fPIC -a --with-filesystem --with-program_files
+./bjam cxxflags=-fPIC cflags=-fPIC -a --with-filesystem --with-program_options
 popd
 
 # Build wheels
 mkdir -p dist
-cd avogadrolibs
+cd lemon
 DOCKER_ARGS="-v $HOME/dist:/work/dist/ -v $HOME/deps:/deps"
 /tmp/dockcross-manylinux-x64 \
   -a "$DOCKER_ARGS" \

@@ -73,13 +73,13 @@ for PYBIN in "${PYBINARIES[@]}"; do
     if [[ -e /work/requirements-dev.txt ]]; then
       ${PYBIN}/pip install --upgrade -r /work/requirements-dev.txt
     fi
-    ${PYBIN}/python setup.py bdist_wheel --build-type MinSizeRel -G Ninja -- \
+    ${PYBIN}/python setup.py bdist_wheel --build-type MinSizeRel -G 'Unix Makefiles' -- \
       -DBOOST_ROOT:PATH=/deps/boost_1_58_0/ \
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE} \
       -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR} \
       -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY} \
     || exit 1
-    ${PYBIN}/python setup.py clean
+    #${PYBIN}/python setup.py clean
 done
 
 # Update wheel to switching from 'linux' to 'manylinux1' tag

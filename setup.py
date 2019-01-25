@@ -18,7 +18,7 @@ setup(
     url="http://github.com/chopralab/lemon",
     setup_requires=["scikit-build"],
     cmake_args=[
-        '-DLEMON_BUILD_PYTHON:BOOL=ON',
+        '-DLEMON_BUILD_PYTHON:BOOL=OFF',
         '-DLEMON_LINK_SHARED:BOOL=OFF',
         '-DLEMON_BUILD_PROGS:BOOL=OFF',
     ],
