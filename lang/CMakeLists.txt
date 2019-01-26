@@ -88,6 +88,7 @@ if(SKBUILD)
         target_link_libraries(lemon PRIVATE
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
+            Boost::program_options
             ws2_32
         )
     else()

@@ -102,4 +102,5 @@ deploy:
     script: ./scripts/upload_pypi.sh
     skip_cleanup: true
     on:
+        tags: true
         condition: $DEPLOY_MACOSX_WHEEL == true
