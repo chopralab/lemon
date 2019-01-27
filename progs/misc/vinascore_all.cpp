@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include "lemon/lemon.hpp"
+#include "lemon/xscore.hpp"
 
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);

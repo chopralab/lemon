@@ -1,4 +1,5 @@
-#include "lemon/structure.hpp"
+#include "lemon/tmalign.hpp"
+
 #include "chemfiles/Topology.hpp"
 #include "chemfiles/Trajectory.hpp"
 

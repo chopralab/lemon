@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "lemon/lemon.hpp"
+#include "lemon/geometry.hpp"
 
 // typedefs for binned data
 typedef std::pair<std::string, int> BondImproperBin;

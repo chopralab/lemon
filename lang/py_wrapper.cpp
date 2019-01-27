@@ -2,6 +2,10 @@
 #include <iostream>
 
 #include "lemon/lemon.hpp"
+#include "lemon/geometry.hpp"
+#include "lemon/tmalign.hpp"
+#include "lemon/xscore.hpp"
+
 #include "chemfiles/File.hpp"
 
 #pragma clang diagnostic push

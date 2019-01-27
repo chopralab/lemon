@@ -7,6 +7,9 @@ When developing a benchmarking set, a user may wish to select complexes with a
 certain set of interactions.  We provide the scoring function used by the
 AutoDOCK vina software package to help users select desirable interactions.
 
+**Note:** You will need to include the additional file: `<lemon/xscore.hpp>` to
+have access to these features.
+
 .. doxygenstruct:: lemon::xscore::VinaScore
 
 .. doxygenfunction:: lemon::xscore::vina_score
@@ -19,7 +22,7 @@ C++
 
 .. literalinclude:: ../../progs/misc/vinascore_all.cpp
    :language: cpp
-   :lines: 9-49
+   :lines: 10-51
    :dedent: 4
 
 Python
