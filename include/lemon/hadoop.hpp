@@ -116,25 +116,34 @@ inline std::vector<fs::path> read_hadoop_dir(const fs::path& p) {
     std::vector<fs::path> pathvec;
     pathvec.reserve(700);
 
-    // There's only ~600 files to read here!
+    // There's only ~700 files to read here!
     auto begin = fs::directory_iterator(p);
     fs::directory_iterator end;
     std::transform(
         begin, end, std::back_inserter(pathvec),
         [](fs::directory_entry& entry) {
-            if (fs::is_directory(entry.path())) {
-                throw std::runtime_error(
-                    "Directory provided has subdirectories.\nPlease make sure "
-                    "you are using the tar ball provided by RCSB.");
-            }
-            if (entry.path().has_extension()) {
-                throw std::runtime_error(
-                    "Directory provided has file with extensions.\nPlease "
-                    "remove files with extensions if you are sure the seqeunce "
-                    "files are valid.");
-            }
             return entry.path();
-        });
+        }
+    );
+
+    pathvec.erase(std::remove_if(pathvec.begin(), pathvec.end(), 
+        [](const fs::path& entry) {
+        if (*entry.filename().string().begin() == '_') { // these are 'comments'
+            return true;
+        }
+        if (fs::is_directory(entry)) {
+            throw std::runtime_error(
+                "Directory provided has subdirectories.\nPlease make sure "
+                "you are using the tar ball provided by RCSB.");
+        } else if (entry.has_extension()) {
+            throw std::runtime_error(
+                "Directory provided has file with extensions.\nPlease "
+                "remove files with extensions if you are sure the seqeunce "
+                "files are valid.");
+        }
+
+        return false;
+    }), pathvec.end());
 
     return pathvec;
 }
