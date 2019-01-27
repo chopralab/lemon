@@ -67,6 +67,12 @@ before_install:
   
 script:
   - ./scripts/travis/build.sh
+#before_deploy:
+  - |
+    if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
+        ./scripts/travis/macpython-build-wheels.sh 3.5 3.6 3.7
+    fi
+
 
 after_success:
   - cd $TRAVIS_BUILD_DIR
@@ -82,12 +88,6 @@ after_success:
   - |
     if [[ "$BUILD_DOC" == "true" ]]; then
         ./scripts/build-doc.sh
-    fi
-
-before_deploy:
-  - |
-    if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
-        ./scripts/travis/macpython-build-wheels.sh 3.5 3.6 3.7
     fi
 
 deploy:
