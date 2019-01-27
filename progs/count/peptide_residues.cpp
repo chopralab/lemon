@@ -5,20 +5,20 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    auto worker = [](chemfiles::Frame complex, const std::string&) {
+    auto worker = [](chemfiles::Frame entry, const std::string&) {
 
         lemon::ResidueNameCount rnc;
 
         // Selection phase
         chemfiles::Frame protein_only;
-        auto peptides = lemon::select::peptides(complex);
+        auto peptides = lemon::select::peptides(entry);
 
         // Pruning phase
         if (peptides.size() == 0) {
             return rnc;
         }
 
-        lemon::separate::residues(complex, peptides, protein_only);
+        lemon::separate::residues(entry, peptides, protein_only);
 
         // Output phase
         lemon::count::residues(protein_only, rnc);

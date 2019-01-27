@@ -17,24 +17,24 @@ int main(int argc, char* argv[]) {
     std::ifstream is(o.entries());
     lemon::read_entry_file(is, entries, rnms);
 
-    auto worker = [distance, &rnms, &outdir](chemfiles::Frame complex,
+    auto worker = [distance, &rnms, &outdir](chemfiles::Frame entry,
                                              const std::string& pdbid) {
 
         // Selection phase
         std::list<size_t> smallm;
-        if (lemon::select::specific_residues(complex, smallm,
+        if (lemon::select::specific_residues(entry, smallm,
                                              rnms[pdbid]) == 0) {
             return "Skipping " + pdbid;
         }
 
         // Pruning phase
-        lemon::prune::identical_residues(complex, smallm);
+        lemon::prune::identical_residues(entry, smallm);
 
         // Output phase
         for (auto resid : smallm) {
             chemfiles::Frame prot;
             chemfiles::Frame lig;
-            lemon::separate::protein_and_ligand(complex, resid, distance,
+            lemon::separate::protein_and_ligand(entry, resid, distance,
                                                 prot, lig);
 
             auto protfile = boost::filesystem::path(outdir);

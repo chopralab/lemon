@@ -13,12 +13,12 @@ int main(int argc, char* argv[]) {
     chemfiles::Trajectory traj(reference);
     chemfiles::Frame native = traj.read();
 
-    auto worker = [&native](chemfiles::Frame complex,
+    auto worker = [&native](chemfiles::Frame entry,
                             const std::string& pdbid) {
 
         std::vector<chemfiles::Vector3D> junk;
 
-        auto tm = lemon::tmalign::TMscore(complex, native, junk);
+        auto tm = lemon::tmalign::TMscore(entry, native, junk);
 
         return pdbid + "\t" +
                std::to_string(tm.score) + "\t" +

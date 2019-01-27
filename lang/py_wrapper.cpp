@@ -138,9 +138,9 @@ void append_file(const chemfiles::Frame& frame, const std::string& filename) {
 }
 
 void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t threads) {
-    auto worker = [&py](chemfiles::Frame complex, const std::string& pdbid) {
+    auto worker = [&py](chemfiles::Frame entry, const std::string& pdbid) {
         try {
-            return py.worker(&complex, pdbid);
+            return py.worker(&entry, pdbid);
         } catch (py::error_already_set& err) {
             return pdbid + " " + err.what() + "\n";
         } catch (py::cast_error& err) {

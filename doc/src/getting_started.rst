@@ -12,8 +12,8 @@ function. All **Lemon** workflows must accept the arguments of
 
 .. code-block:: c++
 
-    auto worker = [](chemfiles::Frame complex, const std::string& pdbid) {
-        // do something cool with the complex pdbid and store to my_result
+    auto worker = [](chemfiles::Frame entry, const std::string& pdbid) {
+        // do something cool with the entry, pdbid and store to my_result
         return my_result;
     };
 

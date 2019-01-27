@@ -43,15 +43,15 @@ namespace protein {
 //! For peptide bonds and disulphide bridges, 'peptide_bond' and 'SG_SG'
 //! are returned.
 //! Other types of inter-residue bonds result in a geometry error being thrown.
-//! \param [in] complex Structure containing the peptide residues of interest
+//! \param [in] entry Structure containing the peptide residues of interest
 //! \param [in] bond Bond which name is going to be obtained
 //! \param [in] special Residue names that should be handled differently
 //! \return The name of the bond.
-inline std::string bond_name(const chemfiles::Frame& complex,
+inline std::string bond_name(const chemfiles::Frame& entry,
                              const chemfiles::Bond& bond,
                              const ResidueNameSet& special = proline_res) {
-    const auto& atom1 = complex[bond[0]];
-    const auto& atom2 = complex[bond[1]];
+    const auto& atom1 = entry[bond[0]];
+    const auto& atom2 = entry[bond[1]];
 
     if (atom1.type() == "H") {
         return atom2.name() + "_H";
@@ -72,8 +72,8 @@ inline std::string bond_name(const chemfiles::Frame& complex,
         return "C_O";
     }
 
-    const auto& residue1 = complex.topology().residue_for_atom(bond[0]);
-    const auto& residue2 = complex.topology().residue_for_atom(bond[1]);
+    const auto& residue1 = entry.topology().residue_for_atom(bond[0]);
+    const auto& residue2 = entry.topology().residue_for_atom(bond[1]);
 
     if (residue1 != residue2) {
         if (latom == "C" && hatom == "N") {
@@ -107,14 +107,14 @@ inline std::string bond_name(const chemfiles::Frame& complex,
 //! Inter-residue angles not part of the linker are handled similarly, both with the
 //! exception of proline derivates.
 //! Other types of inter-residue angles result in a geometry error being thrown.
-//! \param [in] complex Structure containing the peptide residues of interest
+//! \param [in] entry Structure containing the peptide residues of interest
 //! \param [in] angle angle which name is going to be obtained
 //! \return The name of the angle.
-inline std::string angle_name(const chemfiles::Frame& complex,
+inline std::string angle_name(const chemfiles::Frame& entry,
                               const chemfiles::Angle& angle) {
-    const auto& atom1 = complex[angle[0]];
-    const auto& atom2 = complex[angle[1]];
-    const auto& atom3 = complex[angle[2]];
+    const auto& atom1 = entry[angle[0]];
+    const auto& atom2 = entry[angle[1]];
+    const auto& atom3 = entry[angle[2]];
 
     if (atom1.type() == "H") {
         return atom3.name() + "_" + atom2.name() + "_H";
@@ -173,7 +173,7 @@ inline std::string angle_name(const chemfiles::Frame& complex,
         }
         // Proline-like!
         if (latom == "CD" || hatom == "CD") {
-            return complex.topology().residue_for_atom(angle[1])->name() +
+            return entry.topology().residue_for_atom(angle[1])->name() +
                    "_C_N_CD";
         }
         throw geometry_error("Unhandled common residue angle: " + latom + "_" +
@@ -185,11 +185,11 @@ inline std::string angle_name(const chemfiles::Frame& complex,
         return "CB_SG_SG";
     }
 
-    const auto& residue1 = complex.topology().residue_for_atom(angle[0]);
-    const auto& residue3 = complex.topology().residue_for_atom(angle[2]);
+    const auto& residue1 = entry.topology().residue_for_atom(angle[0]);
+    const auto& residue3 = entry.topology().residue_for_atom(angle[2]);
 
     if (residue1 != residue3) {
-        const auto& residue2 = complex.topology().residue_for_atom(angle[1]);
+        const auto& residue2 = entry.topology().residue_for_atom(angle[1]);
         throw geometry_error("Unhandled inter-residue angle: " +
                              residue1->name() + "_" + atom1.name() + " " +
                              residue2->name() + "_" + atom2.name() + " " +
@@ -206,17 +206,17 @@ inline std::string angle_name(const chemfiles::Frame& complex,
 //! residue not part of the amino acid linker. Namely: CA_C_N_CA, N_C_CA_N,
 //! C_CA_N_C, N_CA_C_O, and CA_N_C_O. These are tagged with the residue name
 //! if the residue is a proline derivative.
-//! \param [in] complex Structure containing the peptide residues of interest
+//! \param [in] entry Structure containing the peptide residues of interest
 //! \param [in] dihedral Dihedral which name is going to be obtained
 //! \param [in] special Residue names that should be handled differently
 //! \return The name of the dihedral.
-inline std::string dihedral_name(const chemfiles::Frame& complex,
+inline std::string dihedral_name(const chemfiles::Frame& entry,
                                  const chemfiles::Dihedral& dihedral,
                                  const ResidueNameSet& special = proline_res) {
-    const auto& atom1 = complex[dihedral[0]];
-    const auto& atom2 = complex[dihedral[1]];
-    const auto& atom3 = complex[dihedral[2]];
-    const auto& atom4 = complex[dihedral[3]];
+    const auto& atom1 = entry[dihedral[0]];
+    const auto& atom2 = entry[dihedral[1]];
+    const auto& atom3 = entry[dihedral[2]];
+    const auto& atom4 = entry[dihedral[3]];
 
     std::string llatom, lcatom, hcatom, hhatom;
     if (atom1.name() < atom4.name()) {
@@ -249,7 +249,7 @@ inline std::string dihedral_name(const chemfiles::Frame& complex,
         return atom4.name() + "_" + atom3.name() + "_" + atom2.name() + "_H";
     }
 
-    const auto& cresidue = complex.topology().residue_for_atom(dihedral[1]);
+    const auto& cresidue = entry.topology().residue_for_atom(dihedral[1]);
 
     std::string name = is_special_residue(cresidue->name(), special);
 
@@ -303,17 +303,17 @@ inline std::string dihedral_name(const chemfiles::Frame& complex,
 //! This function returns the 'name' of a given improper in the form
 //! {residue}_{atom1}_{atom2}_{atom3}_{atom4} for impropers within a single
 //! residue not part of the amino acid linker (CA_C_N_O). 
-//! \param [in] complex Structure containing the peptide residues of interest
+//! \param [in] entry Structure containing the peptide residues of interest
 //! \param [in] improper Improper dihedral which name is going to be obtained
 //! \param [in] special Residue names that should be handled differently
 //! \return The name of the improper.
-inline std::string improper_name(const chemfiles::Frame& complex,
+inline std::string improper_name(const chemfiles::Frame& entry,
                                  const chemfiles::Improper& improper,
                                  const ResidueNameSet& special = proline_res) {
-    const auto& atom1 = complex[improper[0]];
-    const auto& atom2 = complex[improper[1]];
-    const auto& atom3 = complex[improper[2]];
-    const auto& atom4 = complex[improper[3]];
+    const auto& atom1 = entry[improper[0]];
+    const auto& atom2 = entry[improper[1]];
+    const auto& atom3 = entry[improper[2]];
+    const auto& atom4 = entry[improper[3]];
 
     auto min_str = [](const std::string& s1, const std::string& s2) {
         return (s1 < s2)? s1 : s2;
@@ -354,7 +354,7 @@ inline std::string improper_name(const chemfiles::Frame& complex,
         return "CA_C_N_O";
     }
 
-    const auto& cresidue = complex.topology().residue_for_atom(improper[1]);
+    const auto& cresidue = entry.topology().residue_for_atom(improper[1]);
 
     std::string name = is_special_residue(cresidue->name(), special);
 

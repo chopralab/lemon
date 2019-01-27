@@ -1,20 +1,20 @@
 from lemon import *
 
 class MyWorkflow(Workflow):
-    def worker(self, frame, pdbid):
+    def worker(self, entry, pdbid):
         # Selection phase
-        smallm = select_small_molecules(frame, small_molecule_types, 10)
+        smallm = select_small_molecules(entry, small_molecule_types, 10)
         if (smallm.size() == 0):
             return ""
 
         # Pruning phase
-        prune_identical_residues(frame, smallm)
-        prune_cofactors(frame, smallm, common_cofactors)
-        prune_cofactors(frame, smallm, common_fatty_acids)
+        prune_identical_residues(entry, smallm)
+        prune_cofactors(entry, smallm, common_cofactors)
+        prune_cofactors(entry, smallm, common_fatty_acids)
 
         # Output phase
         prot = ResidueIDs()
-        residues = frame.topology().residues()
+        residues = entry.topology().residues()
         for resid in range(0, residues.size()):
             prot.append(resid)
         
@@ -25,9 +25,9 @@ class MyWorkflow(Workflow):
 
             # Hack to remove self
             prot_copy = ResidueIDs(prot)
-            remove_interactions(frame, prot_copy, lig_copy, 0.001)
+            remove_interactions(entry, prot_copy, lig_copy, 0.001)
 
-            vscore = vina_score(frame, smallm_id, prot_copy, 8.0)
+            vscore = vina_score(entry, smallm_id, prot_copy, 8.0)
 
             result += pdbid + "\t" 
             result += residues[smallm_id].name() + "\t" 

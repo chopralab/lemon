@@ -4,8 +4,8 @@ from lemon import *
 rnc = ResidueNameCount()
 
 class MyWorkflow(Workflow):
-    def worker(self, frame, pdbid):
-        count_residues(frame, rnc)
+    def worker(self, entry, pdbid):
+        count_residues(entry, rnc)
         return ""
     def finalize(self):
         for rn in rnc:

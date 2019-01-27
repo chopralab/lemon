@@ -118,18 +118,18 @@ inline size_t residue_property(const chemfiles::Frame& frame,
 
 //! Print select residue names and their respective counts
 //!
-//! \param [in] complex The complex containing the residues of interest
+//! \param [in] entry The entry containing the residues of interest
 //! \param [in] res_ids The set of residue ids for printing
 //! \return a string containing the formatted output.
 template<typename Container>
-inline std::string print_residue_names(const chemfiles::Frame& complex,
+inline std::string print_residue_names(const chemfiles::Frame& entry,
                                        const Container& res_ids) {
     if (res_ids.empty()) {
         return "";
     }
 
     ResidueNameCount rnc;
-    lemon::count::residues(complex, res_ids, rnc);
+    lemon::count::residues(entry, res_ids, rnc);
 
     std::stringstream ss;
     ss << rnc << "\n";

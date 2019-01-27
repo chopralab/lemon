@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     o.add_option("bin_size,b", bin_size, "Size of the angle bin.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [bin_size](chemfiles::Frame complex,
+    auto worker = [bin_size](chemfiles::Frame entry,
                              const std::string& pdbid) {
         AngleCounts bins;
 
@@ -25,12 +25,12 @@ int main(int argc, char* argv[]) {
         chemfiles::Frame protein_only;
         std::list<size_t> peptides;
 
-        if (lemon::select::specific_residues(complex, peptides,
+        if (lemon::select::specific_residues(entry, peptides,
                                              lemon::common_peptides) == 0) {
             return bins;
         }
 
-        lemon::separate::residues(complex, peptides, protein_only);
+        lemon::separate::residues(entry, peptides, protein_only);
 
         const auto& angles = protein_only.topology().angles();
 

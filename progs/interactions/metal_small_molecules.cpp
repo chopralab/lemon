@@ -10,21 +10,21 @@ int main(int argc, char* argv[]) {
                  "Largest distance between a metal and a small molecule.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [distance](chemfiles::Frame complex,
+    auto worker = [distance](chemfiles::Frame entry,
                              const std::string& pdbid) {
 
         // Selection phase
-        auto metals = lemon::select::metal_ions(complex);
-        auto smallm = lemon::select::small_molecules(complex);
+        auto metals = lemon::select::metal_ions(entry);
+        auto smallm = lemon::select::small_molecules(entry);
 
         // Pruning phase
-        lemon::prune::identical_residues(complex, smallm);
-        lemon::prune::cofactors(complex, smallm, lemon::common_cofactors);
-        lemon::prune::cofactors(complex, smallm, lemon::common_fatty_acids);
-        lemon::prune::keep_interactions(complex, smallm, metals, distance);
+        lemon::prune::identical_residues(entry, smallm);
+        lemon::prune::cofactors(entry, smallm, lemon::common_cofactors);
+        lemon::prune::cofactors(entry, smallm, lemon::common_fatty_acids);
+        lemon::prune::keep_interactions(entry, smallm, metals, distance);
 
         // Output phase
-        return pdbid + lemon::count::print_residue_names(complex, smallm);
+        return pdbid + lemon::count::print_residue_names(entry, smallm);
     };
 
     auto collector = lemon::print_combine(std::cout);

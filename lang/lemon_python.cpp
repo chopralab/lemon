@@ -59,9 +59,9 @@ int main(int argc, char *argv[]) {
     python::object py_base = PythonDerived();
     lemon::LemonPythonBase& py = py_base.cast<lemon::LemonPythonBase&>();
 
-    auto worker = [&py](chemfiles::Frame complex, const std::string& pdbid) {
+    auto worker = [&py](chemfiles::Frame entry, const std::string& pdbid) {
         try {
-            return py.worker(&complex, pdbid);
+            return py.worker(&entry, pdbid);
         } catch (python::error_already_set& err) {
             return pdbid + " " + err.what() + "\n";
         } catch (python::cast_error& err) {

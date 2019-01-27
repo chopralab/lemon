@@ -69,8 +69,8 @@ inline void run_parallel(Function&& worker, const fs::path& p,
                     #endif
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
-                    auto complex = traj.read();
-                    results[th].emplace_back(worker(std::move(complex), pair.first));
+                    auto entry = traj.read();
+                    results[th].emplace_back(worker(std::move(entry), pair.first));
                     #ifdef LEMON_BENCHMARK
                     auto stop = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
@@ -130,8 +130,8 @@ inline void run_parallel(Function&& worker, const fs::path& p,
                     #endif
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
-                    auto complex = traj.read();
-                    mini_collector.emplace_back(worker(std::move(complex), pair.first));
+                    auto entry = traj.read();
+                    mini_collector.emplace_back(worker(std::move(entry), pair.first));
                     #ifdef LEMON_BENCHMARK
                     auto stop = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);

@@ -21,7 +21,7 @@ namespace select {
 //! (http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Items/_chem_comp.type.html).
 //! Also, the selected entity must have a specified number of atoms (default 10),
 //! so that common residues such as water and metal ions are not selected.
-//! \param [in] frame The complex containing molecules of interest.
+//! \param [in] frame The entry containing molecules of interest.
 //! \param [out] output A container filled with the small molecule residue ids
 //! \param [in] types A set of `std::string` containing the accepted chemical
 //!  chemical composition. Defaults are *NON-POLYMER*, *OTHER*, *PEPTIDE-LIKE*
@@ -76,7 +76,7 @@ inline size_t small_molecules(const chemfiles::Frame& frame,
 //! (http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Items/_chem_comp.type.html).
 //! Also, the selected entity must have a specified number of atoms (default 10),
 //! so that common residues such as water and metal ions are not selected.
-//! \param [in] frame The complex containing molecules of interest.
+//! \param [in] frame The entry containing molecules of interest.
 //! \param [in] types A set of `std::string` containing the accepted chemical
 //!  chemical composition. Defaults are *NON-POLYMER*, *OTHER*, *PEPTIDE-LIKE*
 //! \param [in] min_heavy_atoms The minimum number of non-hydrogen atoms for a
@@ -95,7 +95,7 @@ inline Container small_molecules(const chemfiles::Frame& frame,
 //!
 //! This function populates the residue IDs of metal ions. We define a metal ion
 //! as a residue with a single, positively charged ion.
-//! \param [in] frame The complex containing metal ions of interest.
+//! \param [in] frame The entry containing metal ions of interest.
 //! \param [out] output A container of residue IDs which are metals.
 //! \return The number of added residue IDs
 template<typename Container>
@@ -120,7 +120,7 @@ inline size_t metal_ions(const chemfiles::Frame& frame, Container& output) {
 //!
 //! This function returns the residue IDs of metal ions. We define a metal ion
 //! as a residue with a single, positively charged ion.
-//! \param [in] frame The complex containing metal ions of interest.
+//! \param [in] frame The entry containing metal ions of interest.
 //! \return output A container of residue IDs which are metals.
 template <typename Container=std::list<size_t>>
 inline Container metal_ions(const chemfiles::Frame& frame) {
@@ -134,7 +134,7 @@ inline Container metal_ions(const chemfiles::Frame& frame) {
 //! This function populates the residue IDs of nucleic acid residues.
 //! We define a nuecleic acid as a residue with a chemical composition
 //! containing the *RNA* or *DNA* substring.
-//! \param [in] frame The complex containing nucleic acid residues.
+//! \param [in] frame The entry containing nucleic acid residues.
 //! \param [out] output A container of residue IDs which have nucleic acid linkage
 //! \return The number of added residue IDs
 template<typename Container>
@@ -164,7 +164,7 @@ inline size_t nucleic_acids(const chemfiles::Frame& frame, Container& output) {
 //! This function returns the residue IDs of nucleic acid residues.
 //! We define a nuecleic acid as a residue with a chemical composition
 //! containing the *RNA* or *DNA* substring.
-//! \param [in] frame The complex containing nucleic acid residues.
+//! \param [in] frame The entry containing nucleic acid residues.
 //! \return output A container of residue IDs which have nucleic acid linkage
 template <typename Container=std::list<size_t>>
 inline Container nucleic_acids(const chemfiles::Frame& frame) {
@@ -178,7 +178,7 @@ inline Container nucleic_acids(const chemfiles::Frame& frame) {
 //! This function populates the residue IDs of peptide residues.
 //! We define a peptided as a residue with a chemical composition
 //! containing the *PEPTIDE* substring which is not *PEPTIDE-LIKE*.
-//! \param [in] frame The complex containing peptide residues.
+//! \param [in] frame The entry containing peptide residues.
 //! \param [out] output A container of residue IDs which have peptide linkage
 //! \return The number of added residue IDs
 template <typename Container>
@@ -208,7 +208,7 @@ inline size_t peptides(const chemfiles::Frame& frame, Container& output) {
 //! This function returns the residue IDs of peptide residues.
 //! We define a peptided as a residue with a chemical composition
 //! containing the *PEPTIDE* substring which is not *PEPTIDE-LIKE*.
-//! \param [in] frame The complex containing peptide residues.
+//! \param [in] frame The entry containing peptide residues.
 //! \return A container of residue IDs which have peptide linkage
 template <typename Container=std::list<size_t>>
 inline Container peptides(const chemfiles::Frame& frame) {
@@ -220,7 +220,7 @@ inline Container peptides(const chemfiles::Frame& frame) {
 //! Select residues with a given name in a given frame
 //!
 //! This function populates the residue IDs of peptides matching a given name set.
-//! \param [in] frame The complex containing residues of interest.
+//! \param [in] frame The entry containing residues of interest.
 //! \param [out] output The residue IDs with names that match those in `resnames`
 //! \param [in] resnames The set of residue names of interest.
 //! \return The number of added residue IDs
@@ -248,7 +248,7 @@ inline size_t specific_residues(
 //! Select residues with a given name in a given frame
 //!
 //! This function returns the residue IDs of peptides matching a given name set.
-//! \param [in] frame The complex containing residues of interest.
+//! \param [in] frame The entry containing residues of interest.
 //! \param [in] resnames The set of residue names of interest.
 //! \return The residue IDs with names that match those in `resnames`
 template<typename Container=std::list<size_t>>
