@@ -69,41 +69,41 @@ TEST_CASE("Selective residue count") {
     std::set<size_t> first6({1, 2, 3, 4, 5, 6});
     lemon::count::residues(test1, first6, counter);
 
-    auto s1 = lemon::count::print_residue_name_counts("JUNK", test1, std::set<size_t>());
+    auto s1 = lemon::count::print_residue_names(test1, std::set<size_t>());
     CHECK(s1 == "");
 
-    auto s2 = lemon::count::print_residue_name_counts("5w1d", test1, std::set<size_t>({2, 5}));
-    CHECK(s2== "5w1d\tTYR\t2\n");
+    auto s2 = lemon::count::print_residue_names(test1, std::set<size_t>({2, 5}));
+    CHECK(s2== "\tTYR\t2\n");
 }
 
 TEST_CASE("Alternative Location count") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test = traj.read();
-    CHECK(lemon::count::altloc(test) == 0);
+    CHECK(lemon::count::atom_property(test, "altloc") == 0);
 
     traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count::altloc(test) == 0);
+    CHECK(lemon::count::atom_property(test, "altloc") == 0);
 
     traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count::altloc(test) == 2);
+    CHECK(lemon::count::atom_property(test, "altloc") == 2);
 
     traj = chemfiles::Trajectory("files/entry_10/5/A/5A1I.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count::altloc(test) == 4);
+    CHECK(lemon::count::atom_property(test, "altloc") == 4);
 }
 
 TEST_CASE("Assembly count") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto test = traj.read();
-    CHECK(lemon::count::bioassemblies(test) == 1);
+    CHECK(lemon::count::residue_property(test, "assembly") == 1);
 
     traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count::bioassemblies(test) == 2);
+    CHECK(lemon::count::residue_property(test, "assembly") == 2);
 
     traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     test = traj.read();
-    CHECK(lemon::count::bioassemblies(test) == 1);
+    CHECK(lemon::count::residue_property(test, "assembly") == 1);
 }

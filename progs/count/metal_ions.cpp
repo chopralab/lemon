@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
         lemon::select::metal_ions(complex, metal_ids);
 
         // No pruning, straight to out output phase
-        return lemon::count::print_residue_name_counts(pdbid, complex, metal_ids);
+        return pdbid + lemon::count::print_residue_names(complex, metal_ids);
     };
 
     auto collector = lemon::print_combine(std::cout);

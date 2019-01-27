@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
         lemon::prune::cofactors(complex, smallm, lemon::common_fatty_acids);
 
         // Output phase
-        return lemon::count::print_residue_name_counts(pdbid, complex, smallm);
+        return pdbid + lemon::count::print_residue_names(complex, smallm);
     };
 
     auto collector = lemon::print_combine(std::cout);

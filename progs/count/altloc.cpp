@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
     auto worker = [](chemfiles::Frame complex, const std::string& pdbid) {
 
         // Desired info is obtained directly 
-        auto result = lemon::count::altloc(complex);
+        auto result = lemon::count::atom_property(complex, "altloc");
 
         // Output phase
         return pdbid + " " + std::to_string(result) + "\n";

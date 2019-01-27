@@ -439,10 +439,10 @@ PYBIND11_MODULE(lemon, m) {
     /**************************************************************************
      * Count
      **************************************************************************/
-    m.def("count_altloc", count::altloc);
-    m.def("count_bioassemblies", count::bioassemblies);
-    m.def("print_residue_name_counts",
-        count::print_residue_name_counts<default_id_list>);
+    m.def("count_atomic_property", count::atom_property);
+    m.def("count_residue_property", count::residue_property);
+    m.def("count_print_residue_names",
+        count::print_residue_names<default_id_list>);
 
     void (*residues1)(const Frame&, ResidueNameCount&) = &count::residues;
     m.def("count_residues", residues1);

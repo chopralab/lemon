@@ -2,6 +2,7 @@
 #define LEMON_PARSE_HPP
 
 #include <set>
+#include <unordered_set>
 #include <list>
 #include <sstream>
 
@@ -63,49 +64,66 @@ inline void residues(const chemfiles::Frame& frame,
     }
 }
 
-//! Obtain the number of alternative location types in a `Frame`.
+//! Obtain the number of times a given property occurs in a `Frame`.
 //!
 //! \param [in] frame The frame containing atoms of interest.
+//! \param [in] name The name of the property
 //! \return the number of unique alternative location names
-inline size_t altloc(const chemfiles::Frame& frame) {
-    std::set<char> alt_locs;
+inline size_t atom_property(const chemfiles::Frame& frame,
+                            const std::string& name) {
+    std::unordered_set<std::string> string_props;
     for (const auto& atom : frame) {
-        const auto& altloc = atom.get("altloc");
-        if (altloc) {
-            alt_locs.insert(altloc->as_string()[0]);
+        const auto& prop = atom.get(name);
+        if (!prop) {
+            continue;
+        }
+        switch(prop->kind()) {
+            case chemfiles::Property::STRING:
+                string_props.insert(prop->as_string());
+                break;
+            default:
+                break; // Not a type we support
         }
     }
 
-    return alt_locs.size();
+    return string_props.size();
 }
 
 //! Obtain the number of bioassemblies in a `Frame`.
 //!
-//! \param [in] frame The frame containing assemblies of interest.
+//! \param [in] frame The frame containing residues of interest.
+//! \param [in] name The name of the property
 //! \return the number of unique bioassemblies location names
-inline size_t bioassemblies(const chemfiles::Frame& frame) {
+inline size_t residue_property(const chemfiles::Frame& frame,
+                               const std::string& name) {
     auto& residues = frame.topology().residues();
-    std::set<std::string> assembies;
+    std::unordered_set<std::string> string_props;
 
     for (auto& residue : residues) {
-        if (residue.get("assembly")) {
-            assembies.insert(residue.get("assembly")->as_string());
+        const auto& prop = residue.get(name);
+        if (!prop) {
+            continue;
+        }
+        switch(prop->kind()) {
+            case chemfiles::Property::STRING:
+                string_props.insert(prop->as_string());
+                break;
+            default:
+                break; // Not a type we support
         }
     }
 
-    return assembies.size();
+    return string_props.size();
 }
 
 //! Print select residue names and their respective counts
 //!
-//! \param [in] pdbid The current PDB id of the complex to be printed
 //! \param [in] complex The complex containing the residues of interest
 //! \param [in] res_ids The set of residue ids for printing
 //! \return a string containing the formatted output.
 template<typename Container>
-inline std::string print_residue_name_counts(const std::string& pdbid,
-                                             const chemfiles::Frame& complex,
-                                             const Container& res_ids) {
+inline std::string print_residue_names(const chemfiles::Frame& complex,
+                                       const Container& res_ids) {
     if (res_ids.empty()) {
         return "";
     }
@@ -114,7 +132,7 @@ inline std::string print_residue_name_counts(const std::string& pdbid,
     lemon::count::residues(complex, res_ids, rnc);
 
     std::stringstream ss;
-    ss << pdbid << rnc << "\n";
+    ss << rnc << "\n";
     return ss.str();
 }
 

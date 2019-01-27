@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
         lemon::prune::keep_interactions(complex, smallm, nucleic_acids, distance);
 
         // Output phase
-        return lemon::count::print_residue_name_counts(pdbid, complex, smallm);
+        return pdbid + lemon::count::print_residue_names(complex, smallm);
     };
 
     auto collector = lemon::print_combine(std::cout);
