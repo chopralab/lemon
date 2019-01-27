@@ -13,7 +13,7 @@ linux64_addons:
         - libboost-dev
         - libboost-filesystem1.58-dev
         - libboost-program-options1.58-dev
-        - libboost-python1.58-dev
+        - python3.5-dev
 
 matrix:
   fast_finish: true
@@ -27,6 +27,7 @@ matrix:
         - BUILD_TYPE: Debug
         - ASYNC: ON
         - BUILD_DOC: ON
+        - PYTHON_EXECUTABLE: /usr/bin/python3.5m
     - name: linux release
       os: linux
       compiler: gcc
@@ -35,6 +36,7 @@ matrix:
         - COVERAGE: OFF
         - BUILD_TYPE: Release
         - ASYNC: ON
+        - PYTHON_EXECUTABLE: /usr/bin/python3.5m
     - name: linux clang
       os: linux
       compiler: clang
@@ -43,6 +45,7 @@ matrix:
         - COVERAGE: OFF
         - BUILD_TYPE: Release
         - ASYNC: ON
+        - PYTHON_EXECUTABLE: /usr/bin/python3.5m
     - name: osx clang
       os: osx
       compiler: clang
@@ -52,25 +55,24 @@ matrix:
         - BUILD_TYPE: Release
         - ASYNC: OFF
         - PYTHON_EXECUTABLE: /usr/local/bin/python
-      before_install:
-        - brew update && brew bundle
-        - brew unlink python && brew upgrade python@2
+    - name: osx deploy
+      os: osx
+      env:
+        - DEPLOY_MACOSX_WHEEL: ON
+        - COVERAGE: OFF
+        - BUILD_DOC: OFF
 
 before_install:
   - pip install --user cpp-coveralls
   
 script:
-  - ${CC} --version
-  - ${CXX} --version
-  - cd $TRAVIS_BUILD_DIR
-  - mkdir build && cd build
+  - ./scripts/travis/build.sh
+#before_deploy:
   - |
-    cmake .. -DCOVERAGE=${COVERAGE} \
-             -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-             -DLEMON_TEST_ASYNC=${ASYNC} \
-             -DLEMON_BUILD_PYTHON=ON
-  - make -j2
-  - ctest -j2 --output-on-failure
+    if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
+        ./scripts/travis/macpython-build-wheels.sh 3.5 3.6 3.7
+    fi
+
 
 after_success:
   - cd $TRAVIS_BUILD_DIR
@@ -96,3 +98,9 @@ deploy:
     on:
         branch: master
         condition: $BUILD_DOC == true
+  - provider: script
+    script: ./scripts/upload_pypi.sh
+    skip_cleanup: true
+    on:
+        tags: true
+        condition: $DEPLOY_MACOSX_WHEEL == true

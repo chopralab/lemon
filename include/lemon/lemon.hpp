@@ -14,5 +14,6 @@
 #include "lemon/separate.hpp"
 #include "lemon/structure.hpp"
 #include "lemon/launch.hpp"
+#include "lemon/geometry.hpp"
 
 #endif

@@ -1,94 +1,41 @@
-if (${LEMON_BUILD_PYTHON})
-    find_package(PythonInterp)
+if (${LEMON_BUILD_PYTHON} OR SKBUILD)
 
-    if (${PYTHONINTERP_FOUND})
-        if (UNIX AND NOT APPLE)
-            if (${PYTHON_VERSION_MAJOR} EQUAL 3)
-                find_package(Boost COMPONENTS python${PYTHON_VERSION_SUFFIX})
-                find_package(PythonLibs 3 REQUIRED)
-            else()
-                find_package(Boost COMPONENTS python)
-                find_package(PythonLibs REQUIRED)
-            endif()
-        else()
-            if (${PYTHON_VERSION_MAJOR} EQUAL 3)
-                find_package(Boost COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-                find_package(PythonLibs 3 REQUIRED)
-            else()
-                find_package(Boost COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-                find_package(PythonLibs REQUIRED)
-            endif()
-        endif()
-    else()
-        message("Python not found")
-    endif()
-
-    python_add_module(lemon py_wrapper.cpp)
-    target_include_directories(lemon PRIVATE
-        ${PYTHON_INCLUDE_DIRS}
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xf ${CMAKE_CURRENT_SOURCE_DIR}/pybind11_v2.2.4.tar.gz
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 
+    add_subdirectory(
+        ${CMAKE_CURRENT_BINARY_DIR}/pybind11-2.2.4/
+        ${CMAKE_CURRENT_BINARY_DIR}/pybind11-2.2.4/
+        EXCLUDE_FROM_ALL
+    )
+endif()
+
+if (${LEMON_BUILD_PYTHON})
     add_executable(lemon_python ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp
                                 ${CMAKE_CURRENT_SOURCE_DIR}/py_wrapper.cpp)
 
     target_include_directories(lemon_python PRIVATE
-        ${PYTHON_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/include
         ${CHEMFILES_INCLUDE_DIR}
+        ${PYTHON_INCLUDE_DIRS}
     )
 
-    if (UNIX AND NOT APPLE)
-        target_link_libraries(lemon
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python
-            ${PYTHON_LIBRARIES}
-            pthread
-        )
-
+    if (MSVC)
         target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
             Boost::program_options
-            Boost::python
-            ${PYTHON_LIBRARIES}
-            pthread
-        )
-    elseif(WIN32)
-        target_link_libraries(lemon
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-            ${PYTHON_LIBRARIES}
-        )
-
-        target_link_libraries(lemon_python
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-            ${PYTHON_LIBRARIES}
+            pybind11::embed
+            ws2_32
         )
     else()
-        target_link_libraries(lemon
-            ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
-            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-            ${PYTHON_LIBRARIES}
-            pthread
-        )
-
         target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
             Boost::program_options
-            Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-            ${PYTHON_LIBRARIES}
+            pybind11::embed
             pthread
         )
     endif()
@@ -127,4 +74,31 @@ if (${LEMON_BUILD_PYTHON})
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )
     endif()
+endif()
+
+if(SKBUILD)
+    pybind11_add_module(lemon py_wrapper.cpp)
+
+    target_include_directories(lemon PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+        ${CHEMFILES_INCLUDE_DIR}
+    )
+
+    if (MSVC)
+        target_link_libraries(lemon PRIVATE
+            ${CHEMFILES_LIBRARY}
+            Boost::filesystem
+            Boost::program_options
+            ws2_32
+        )
+    else()
+        target_link_libraries(lemon PRIVATE
+            ${CHEMFILES_LIBRARY}
+            Boost::filesystem
+            pthread
+        )
+    endif()
+
+    install(TARGETS lemon LIBRARY COMPONENT lemon DESTINATION "lemon_proteins")
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py COMPONENT python DESTINATION "lemon_proteins")
 endif()

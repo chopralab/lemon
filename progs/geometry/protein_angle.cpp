@@ -8,80 +8,7 @@
 typedef std::pair<std::string, size_t> BondAngleBin;
 typedef std::map<BondAngleBin, size_t> AngleCounts;
 
-inline std::string get_angle_name(const chemfiles::Frame& complex,
-                                  const chemfiles::Angle& angle) {
-    const auto& atom1 = complex[angle[0]];
-    const auto& atom2 = complex[angle[1]];
-    const auto& atom3 = complex[angle[2]];
-
-    if (atom1.type() == "H") {
-        return atom3.type() + "_" + atom2.type() + "_H";
-    }
-
-    if (atom3.type() == "H") {
-        return atom1.type() + "_" + atom2.type() + "_H";
-    }
-
-    const std::string& latom =
-        atom1.name() < atom3.name() ? atom1.name() : atom3.name();
-
-    const std::string& hatom =
-        atom1.name() > atom3.name() ? atom1.name() : atom3.name();
-
-    const std::string& catom = atom2.name();
-
-    // The carbonyl angles should all be the same
-    if (catom == "C") {
-        // Does it involve the carbonyl?
-        if (latom == "O" || hatom == "O") {
-            if (latom == "CA" || hatom == "CA") {
-                return "CA_C_O";
-            }
-            if (latom == "N" || hatom == "N") {
-                return "N_C_O";
-            }
-            if (latom == "OXT" || hatom == "OXT") {
-                return "O_C_OXT";
-            }
-            // This should not be possible....
-        }
-
-        // Maybe proline logic should be added here?
-        return "CA_C_N";
-    }
-
-    if ((latom == "C" || hatom == "C") && catom == "CA") {
-        return "C_CA_N";
-    }
-
-    if ((latom == "C" || hatom == "C") && catom == "N") {
-        if (latom == "CA" || hatom == "CA") {
-            return "C_N_CA";
-        }
-        // Proline!
-        if (latom == "CD" || hatom == "CD") {
-            return "PRO_C_N_CD";
-        }
-        return "C_N_H";  // Hydrogens???
-    }
-
-    // Check for sulfide bridges
-    if (catom == "SG" && (latom == "SG" || hatom == "SG")) {
-        return "CB_SG_SG";
-    }
-
-    const auto& residue1 = complex.topology().residue_for_atom(angle[0]);
-    const auto& residue3 = complex.topology().residue_for_atom(angle[2]);
-
-    if (residue1 != residue3) {
-        std::cerr << "Unhandled inter-residue angle: " << residue1->name()
-                  << " " << atom1.name() << " " << residue3->name() << " "
-                  << atom3.name() << "\n";
-        return "err";
-    }
-
-    return residue1->name() + "_" + latom + "_" + catom + "_" + hatom;
-}
+using lemon::geometry::protein::angle_name;
 
 int main(int argc, char* argv[]) {
     lemon::Options o;
@@ -89,7 +16,8 @@ int main(int argc, char* argv[]) {
     o.add_option("bin_size,b", bin_size, "Size of the angle bin.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [bin_size](chemfiles::Frame complex, const std::string&) {
+    auto worker = [bin_size](chemfiles::Frame complex,
+                             const std::string& pdbid) {
         AngleCounts bins;
 
         // Selection phase
@@ -106,13 +34,18 @@ int main(int argc, char* argv[]) {
         const auto& angles = protein_only.topology().angles();
 
         for (const auto& angle : angles) {
-            std::string angle_name;
-            angle_name = get_angle_name(protein_only, angle);
+            std::string anglenm;
+            try {
+                anglenm = angle_name(protein_only, angle);
+            } catch (const lemon::geometry::geometry_error& e) {
+                auto msg = pdbid + ": " + e.what() + '\n';
+                std::cerr << msg;
+            }
 
             auto theta = protein_only.angle(angle[0], angle[1], angle[2]);
             size_t bin = static_cast<size_t>(std::floor(theta / bin_size));
 
-            BondAngleBin sbin = {angle_name, bin};
+            BondAngleBin sbin = {anglenm, bin};
             auto bin_iterator = bins.find(sbin);
 
             if (bin_iterator == bins.end()) {

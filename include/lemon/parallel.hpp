@@ -3,6 +3,8 @@
 
 #include "lemon/hadoop.hpp"
 
+#include <chrono>
+
 #ifdef LEMON_USE_ASYNC
 #include "lemon/thread_pool.hpp"
 #else
@@ -60,10 +62,18 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
                     continue;
                 }
                 try {
+                    #ifdef LEMON_BENCHMARK
+                    auto start = std::chrono::high_resolution_clock::now();
+                    #endif
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto complex = traj.read();
                     results[th].emplace_back(worker(std::move(complex), pair.first));
+                    #ifdef LEMON_BENCHMARK
+                    auto stop = std::chrono::high_resolution_clock::now();
+                    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+                    std::cerr << it->string() + "\t" + pair.first + "\t" + std::to_string(duration.count()) + "\n";
+                    #endif
                 } catch (...) {
                 }
             }
@@ -113,10 +123,18 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
                     continue;
                 }
                 try {
+                    #ifdef LEMON_BENCHMARK
+                    auto start = std::chrono::high_resolution_clock::now();
+                    #endif
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto complex = traj.read();
                     mini_collector.emplace_back(worker(std::move(complex), pair.first));
+                    #ifdef LEMON_BENCHMARK
+                    auto stop = std::chrono::high_resolution_clock::now();
+                    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+                    std::cerr << path.string() + "\t" + pair.first + "\t" + std::to_string(duration.count()) + "\n";
+                    #endif
                 } catch (...) {
                 }
             }

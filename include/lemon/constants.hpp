@@ -64,6 +64,10 @@ const ResidueNameSet common_fatty_acids{
     {"PEE"}, {"LHG"}, {"MC3"}, {"PAM"},
 };
 
+const ResidueNameSet proline_res{
+    {"PRO"}, {"HYP"}, {"PCA"},
+};
+
 //! Linkage types for small-molecules in the PDB
 //!
 //! This set contains the types of linkages used to initially identify a small

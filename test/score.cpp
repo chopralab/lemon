@@ -6,7 +6,8 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-static bool roughly(double a, double b, double tol = 1e-4) {
+static bool roughly(double a, double b, double tol = 1e-3) {
+    std::cout << a << " " << b << std::endl;
     return std::fabs(a - b) < tol;
 }
 

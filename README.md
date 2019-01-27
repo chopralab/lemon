@@ -48,4 +48,4 @@ tar xf full.tar /dev/shm/
 
 The results are printed to `stdout`.
 
-**Lemon** is &copy; 2018 Chopra Lab and Purdue University. Developed by Jonathan Fine and is  available as open source under the terms of the [BSD License](http://opensource.org/licenses/BSD). 
+**Lemon** is &copy; 2018 Chopra Lab and Purdue University. Developed by Jonathan Fine and is available as open source under the terms of the [BSD License](http://opensource.org/licenses/BSD). 

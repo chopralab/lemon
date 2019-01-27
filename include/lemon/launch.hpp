@@ -10,8 +10,8 @@ namespace lemon {
 class LemonPythonBase : public boost::noncopyable {
 public:
     virtual ~LemonPythonBase() {}
-    virtual std::string worker(chemfiles::Frame&, const std::string&) = 0;
-    virtual void finalize() = 0;
+    virtual std::string worker(const chemfiles::Frame*, const std::string&) = 0;
+    virtual void finalize() {/*Do nothing*/}
 };
 
 template<typename Map1, typename Map2>

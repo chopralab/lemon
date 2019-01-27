@@ -7,40 +7,58 @@ branches:
 
 environment:
   BOOST_ROOT: C:\Libraries\boost_1_67_0
+  TWINE_USERNAME:
+    secure: QHW0ZSR1Ljzd+51LcuQkvw==
+  TWINE_PASSWORD:
+    secure: KOUl0H5qkKF0r5gIMkenoftnnkSCIufpCiQAURaB8Zo=
   matrix:
+    - generator: Visual Studio 14 2017 Win64
+      ARCH: x64
+      make_wheel: true
     - generator: Visual Studio 14 2017
       ARCH: x86
       BUILD_TYPE: Release
       SHARED: OFF
+      make_wheel: false
     - generator: Visual Studio 14 2017 Win64
       ARCH: x64
       BUILD_TYPE: Release
       SHARED: ON
+      make_wheel: false
     - generator: Visual Studio 14 2017 Win64
       ARCH: x64
       BUILD_TYPE: Release
       SHARED: OFF
+      make_wheel: false
     - generator: Visual Studio 14 2017
       ARCH: x86
       BUILD_TYPE: Release
       SHARED: ON
+      make_wheel: false
 
 clone_depth: 10
 clone_folder: c:\lemon
 
-# Uncomment the following lines to enable remote desktop access to Appveyor
-# after a failed build.
-# init:
-#   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-# on_failure:
-#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
 build_script:
-  - cd C:\lemon
-  - mkdir build
-  - cd build
-  - cmake .. -DLEMON_TEST_ASYNC=ON -DLEMON_LINK_SHARED=%SHARED% -DLEMON_BUILD_PYTHON=OFF
-  - cmake --build . --config %BUILD_TYPE% -- /v:q /m
+  - cmd: >-
+      if not %make_wheel% equ true scripts\appveyor\build.bat
 
 test_script:
-  - ctest --build-config %BUILD_TYPE% --timeout 300 --output-on-failure
+  - cmd: >-
+      if not %make_wheel% equ true ctest --build-config %BUILD_TYPE% --timeout 300 --output-on-failure build
+
+install:
+  - ps: >-
+      if ($env:make_wheel -eq 'true')
+      {
+        cd c:\lemon
+        .\scripts\appveyor\build-wheels.ps1
+      }
+
+deploy_script:
+  - ps: >-
+      if ($env:appveyor_repo_tag -eq 'true' -and $env:make_wheel -eq 'true')
+      {
+        cd c:\lemon
+        .\scripts\appveyor\upload-pypi.ps1
+      }

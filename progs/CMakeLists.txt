@@ -2,7 +2,9 @@ function(add_cpp_prog _file_)
     get_filename_component(_name_ ${_file_} NAME_WE)
     
     add_executable(${_name_} ${_file_})
-    add_dependencies(${_name_} chemfiles)
+    if (NOT ${LEMON_EXTERNAL_CHEMFILES})
+        add_dependencies(${_name_} chemfiles)
+    endif()
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
 
     if(MSVC)
@@ -25,6 +27,10 @@ function(add_cpp_prog _file_)
         target_compile_definitions(${_name_} PRIVATE LEMON_USE_ASYNC=1)
     endif()
 
+    if (${LEMON_BENCHMARK})
+        target_compile_definitions(${_name_} PRIVATE LEMON_BENCHMARK=1)
+    endif()
+
     if (MSVC)
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
@@ -38,7 +44,7 @@ function(add_cpp_prog _file_)
             Boost::filesystem
             Boost::program_options
             pthread
-        )    
+        ) 
     endif()
 endfunction()
 
