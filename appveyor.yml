@@ -9,6 +9,8 @@ environment:
   BOOST_ROOT: C:\Libraries\boost_1_67_0
   TWINE_USERNAME:
     secure: QHW0ZSR1Ljzd+51LcuQkvw==
+  TWINE_PASSWORD:
+    secure: KOUl0H5qkKF0r5gIMkenoftnnkSCIufpCiQAURaB8Zo=
   matrix:
     - generator: Visual Studio 14 2017 Win64
       ARCH: x64
@@ -51,4 +53,12 @@ install:
       {
         cd c:\lemon
         .\scripts\appveyor\build-wheels.ps1
+      }
+
+deploy_script:
+  - ps: >-
+      if ($env:appveyor_repo_tag -eq 'true' -and $env:make_wheel -eq 'true')
+      {
+        cd c:\lemon
+        .\scripts\appveyor\upload-pypi.ps1
       }
