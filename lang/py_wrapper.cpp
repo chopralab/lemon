@@ -148,8 +148,8 @@ void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t thread
         }
     };
 
-    print_combine<std::ostream, std::string> combiner;
-    lemon::run_parallel(worker, combiner, p, std::cout, threads);
+    print_combine combiner(std::cout);
+    lemon::run_parallel(worker, p, combiner, threads);
 }
 }
 

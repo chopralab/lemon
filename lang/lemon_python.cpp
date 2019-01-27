@@ -73,7 +73,8 @@ int main(int argc, char *argv[]) {
         }
     };
 
-    lemon::launch<lemon::print_combine>(o, worker, std::cout);
+    auto collector = lemon::print_combine(std::cout);
+    lemon::launch(o, worker, collector);
 
     try {
         py.finalize();

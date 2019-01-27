@@ -25,5 +25,6 @@ int main(int argc, char* argv[]) {
                std::to_string(tm.aligned) + "\n";
     };
 
-    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
+    auto collector = lemon::print_combine(std::cout);
+    return lemon::launch(o, worker, collector);
 }

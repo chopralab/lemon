@@ -28,5 +28,6 @@ int main(int argc, char* argv[]) {
         return lemon::count::print_residue_name_counts(pdbid, complex, smallm);
     };
 
-    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
+    auto collector = lemon::print_combine(std::cout);
+    return lemon::launch(o, worker, collector);
 }

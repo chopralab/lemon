@@ -50,11 +50,11 @@ TEST_CASE("Use run_parallel") {
         return resn_counts;
     };
 
-    lemon::map_combine<lemon::ResidueNameCount, lemon::ResidueNameCount> combiner;
-    lemon::ResidueNameCount collector;
+    lemon::ResidueNameCount totals;
+    auto collector = lemon::map_combine<lemon::ResidueNameCount>(totals);
 
-    lemon::run_parallel(worker, combiner, p, collector, 2);
-    CHECK(collector.size() == 36);
+    lemon::run_parallel(worker, p, collector, 2);
+    CHECK(totals.size() == 36);
 }
 
 TEST_CASE("Use run_parallel, but only for a complex") {
@@ -67,12 +67,13 @@ TEST_CASE("Use run_parallel, but only for a complex") {
         return resn_counts;
     };
 
-    lemon::map_combine<lemon::ResidueNameCount, lemon::ResidueNameCount> combiner;
-    lemon::ResidueNameCount collector;
+    lemon::ResidueNameCount totals;
+    auto collector = lemon::map_combine<lemon::ResidueNameCount>(totals);
+
     std::unordered_set<std::string> e({"1DZE"});
 
-    lemon::run_parallel(worker, combiner, p, collector, 2, e);
-    CHECK(collector.size() == 27); // 1DZE has a lot of cofactors...
+    lemon::run_parallel(worker, p, collector, 2, e);
+    CHECK(totals.size() == 27); // 1DZE has a lot of cofactors...
 }
 
 TEST_CASE("Use run_parallel, but skip a complex") {
@@ -85,12 +86,12 @@ TEST_CASE("Use run_parallel, but skip a complex") {
         return resn_counts;
     };
 
-    lemon::map_combine<lemon::ResidueNameCount, lemon::ResidueNameCount> combiner;
-    lemon::ResidueNameCount collector;
+    lemon::ResidueNameCount totals;
+    auto collector = lemon::map_combine<lemon::ResidueNameCount>(totals);
     std::unordered_set<std::string> se({"1DZE"});
 
-    lemon::run_parallel(worker, combiner, p, collector, 2, lemon::Entries(), se);
-    CHECK(collector.size() == 28);
+    lemon::run_parallel(worker, p, collector, 2, lemon::Entries(), se);
+    CHECK(totals.size() == 28);
 }
 
 TEST_CASE("Provide an invalid directory to Hadoop run") {

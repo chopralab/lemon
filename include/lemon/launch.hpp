@@ -5,6 +5,8 @@
 #include "lemon/parallel.hpp"
 #include "lemon/constants.hpp"
 
+#include <ostream>
+
 namespace lemon {
 
 class LemonPythonBase : public boost::noncopyable {
@@ -14,43 +16,46 @@ public:
     virtual void finalize() {/*Do nothing*/}
 };
 
-template<typename Map1, typename Map2>
+template<typename Map1>
 struct map_combine {
-    void operator()(Map1& map1, const Map2& map2) const {
+
+    map_combine(Map1& collector):
+        internal_map_(collector) {}
+
+    template<typename Map2 = Map1>
+    void operator()(const Map2& map2) const {
         for (const auto& sc : map2) {
-            map1[sc.first] += sc.second;
+            internal_map_[sc.first] += sc.second;
         }
     }
+
+private:
+    Map1& internal_map_;
 };
 
-template<typename OS, typename Map>
 struct print_combine {
-    void operator()(OS& os, const Map& map) const {
-        os << map;
+
+    print_combine(std::ostream& collector):
+        internal_stream_(collector){}
+
+    template<typename Res>
+    void operator()(const Res& map) const {
+        internal_stream_ << map;
     }
+
+private:
+    std::ostream& internal_stream_;
 };
 
-template< template<typename C, typename R> class Combiner, typename Function,
-         typename Collector>
+template<typename Function, typename Collector>
 int launch(const Options& o, Function&& worker, Collector& collect) {
     auto p = o.work_dir();
     auto threads = o.ncpu();
     auto entries = read_entry_file(o.entries());
-    auto se = o.skip_entries();
-
-    std::unordered_set<std::string> skip_entries;
-    if (se.empty()) {
-        skip_entries = large_entries;
-    } else if (se != "*none*") {
-        skip_entries = read_entry_file(se);
-    }
-
-    using ret = typename std::result_of<Function&(chemfiles::Frame,
-                                                  const std::string&)>::type;
-    Combiner<Collector, ret> combiner;
+    auto skip_entries = read_entry_file(o.skip_entries());
 
     try {
-        lemon::run_parallel(worker, combiner, p, collect, threads, entries, skip_entries);
+        lemon::run_parallel(worker, p, collect, threads, entries, skip_entries);
     } catch(std::runtime_error& e){
         std::cerr << e.what() << "\n";
         return 1;

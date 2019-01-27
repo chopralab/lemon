@@ -26,7 +26,8 @@ int main(int argc, char* argv[]) {
     };
 
     lemon::ResidueNameCount resn_total;
-    lemon::launch<lemon::map_combine>(o, worker, resn_total);
+    auto collector = lemon::map_combine<lemon::ResidueNameCount>(resn_total);
+    lemon::launch(o, worker, collector);
 
     for (auto i : resn_total) {
         std::cout << i.first << "\t" << i.second << "\n";

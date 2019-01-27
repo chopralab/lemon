@@ -53,5 +53,6 @@ int main(int argc, char* argv[]) {
         return pdbid + std::to_string(smallm.size());
     };
 
-    return lemon::launch<lemon::print_combine>(o, worker, std::cout);
+    auto collector = lemon::print_combine(std::cout);
+    return lemon::launch(o, worker, collector);
 }

@@ -35,7 +35,7 @@ C++
 
 .. literalinclude:: ../../progs/count/metal_ions.cpp
    :language: cpp
-   :lines: 9-18
+   :lines: 9-19
    :dedent: 4
 
 Python
