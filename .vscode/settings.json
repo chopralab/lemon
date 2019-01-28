@@ -71,5 +71,6 @@
         "xtree": "cpp",
         "xutility": "cpp"
     },
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "restructuredtext.confPath": ""
 }

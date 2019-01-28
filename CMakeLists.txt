@@ -37,6 +37,14 @@ endif()
 if (${LEMON_BUILD_PROGS})
     enable_testing()
 
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/launch_lemon.pbs.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/launch_lemon.pbs"
+        @ONLY
+    )
+
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/launch_lemon.pbs" DESTINATION bin)
+
     add_subdirectory(progs)
     add_subdirectory(test)
 endif()

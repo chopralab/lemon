@@ -71,7 +71,6 @@ initializes and passes to the operations of interest.
     select
     prune
     count
-    geometry
     separate
 
 Miscellaneous Functionality
@@ -80,6 +79,7 @@ Miscellaneous Functionality
 .. toctree::
     :maxdepth: 2
 
+    geometry
     xscore
     tmalign
 
@@ -90,7 +90,6 @@ Invoking a **Lemon** program
     :maxdepth: 2
 
     options
-    hadoop
     parallel
 
 Example workflows

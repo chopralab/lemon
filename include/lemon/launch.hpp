@@ -47,6 +47,15 @@ private:
     std::ostream& internal_stream_;
 };
 
+//! Launch a **Lemon** workflow.
+//!
+//! This function reads **Lemon** options and passes them to the appropriate
+//! `run_parallel` function. This is the main entry point of a C++ **Lemon**
+//! program.
+//! \param [in] o An instance of the `Options` used to pass arguments to Lemon
+//! \param worker Function object representing the body of the workflow.
+//! \param collect Function object for collect the results of `worker`.
+//! \return 0 on success or a non-zero integer on error.
 template<typename Function, typename Collector>
 int launch(const Options& o, Function&& worker, Collector& collect) {
     auto p = o.work_dir();

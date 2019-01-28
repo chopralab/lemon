@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#PBS -d .
+#PBS -l walltime=01:00:00
+
+if [[ -z $LEMON_PROG ]]
+then
+    echo "You must specify the LEMON_PROG variable"
+    exit 1
+fi
+
+PPN=$(wc -l $PBS_NODEFILE)
+
+# /dev/shm is the location of shared memory on RedHat systems.
+# you may need to change this location!
+tar -xf full.tar -C /dev/shm/
+
+SECONDS=0
+time @CMAKE_INSTALL_PREFIX@/bin/lemon/$LEMON_PROG -w /dev/shm/full -n $PPN > ${LEMON_PROG}.log
+echo "$LEMON_PROG $SECONDS"
+
+rm -fr /dev/shm/full
