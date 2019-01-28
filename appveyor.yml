@@ -12,24 +12,20 @@ environment:
   TWINE_PASSWORD:
     secure: KOUl0H5qkKF0r5gIMkenoftnnkSCIufpCiQAURaB8Zo=
   matrix:
-    - generator: Visual Studio 15 2017
-      ARCH: x86
-      BUILD_TYPE: Release
-      SHARED: OFF
-      make_wheel: false
     - generator: Visual Studio 15 2017 Win64
       ARCH: x64
-      BUILD_TYPE: Release
       SHARED: ON
       make_wheel: false
+    - generator: Visual Studio 15 2017
+      ARCH: x86
+      SHARED: OFF
+      make_wheel: false
     - generator: Visual Studio 15 2017 Win64
       ARCH: x64
-      BUILD_TYPE: Release
-      SHARED: OFF
+      SHARED: ON
       make_wheel: false
     - generator: Visual Studio 15 2017
       ARCH: x86
-      BUILD_TYPE: Release
       SHARED: ON
       make_wheel: false
     - generator: Visual Studio 15 2017 Win64
@@ -44,7 +40,21 @@ build_script:
       if ($env:make_wheel -ne 'true')
       {
         cd c:\lemon
-        .\scripts\appveyor\build.ps1
+        New-Item build -ItemType Directory
+        cd build
+
+        if ($env:ARCH -eq 'x64')
+        {
+          Set-Item -Path Env:Path -Value ("C:\Python35-x64\;" + $Env:Path)
+        }
+
+        cmake .. -DLEMON_TEST_ASYNC=ON `
+                 -DLEMON_LINK_SHARED="$env:SHARED" `
+                 -DLEMON_BUILD_PYTHON=ON `
+                 -Wno-dev `
+                 -G $env:generator
+
+        cmake --build . --config Release -- /v:m /m:2
       }
 
 test_script:
@@ -52,7 +62,7 @@ test_script:
       if ($env:make_wheel -ne 'true')
       {
         cd c:\lemon\build
-        ctest --build-config $env:BUILD_TYPE --timeout 300 --output-on-failure
+        ctest --build-config Release --timeout 300 --output-on-failure
       } 
 
 install:

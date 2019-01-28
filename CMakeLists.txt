@@ -21,7 +21,7 @@ endif()
 
 include(CompilerFlags)
 
-if ((NOT ${LEMON_LINK_SHARED} OR MSVC) OR SKBUILD)
+if ( (NOT ${LEMON_LINK_SHARED}) OR MSVC OR SKBUILD)
     set(Boost_USE_STATIC_LIBS ON)
 endif()
 

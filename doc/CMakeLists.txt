@@ -52,5 +52,5 @@ if( ${SPHINX_HTML_OUTPUT} )
         DESTINATION share/lemon/doc
         COMPONENT Doc
         PATTERN "${SPHINX_DESTINATION}/html/*"
-        )
+    )
 endif()

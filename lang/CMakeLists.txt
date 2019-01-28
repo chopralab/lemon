@@ -12,6 +12,23 @@ if (${LEMON_BUILD_PYTHON} OR SKBUILD)
     )
 endif()
 
+function(add_python_test _name_)
+    add_test(NAME py_${_name_}
+        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p ${_name_}.py
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
+    )
+
+    if (MSVC AND ${LEMON_LINK_SHARED})
+        set_tests_properties( py_${_name_}
+            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING};${Boost_LIBRARY_DIRS};${CMAKE_BINARY_DIR}/chemfiles/bin;${PYTHON_PREFIX}/DLLS;${PYTHON_PREFIX}"
+        )
+    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
+        set_tests_properties( py_${_name_}
+            PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
+        )
+    endif()
+endfunction()
+
 if (${LEMON_BUILD_PYTHON})
     add_executable(lemon_python ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp
                                 ${CMAKE_CURRENT_SOURCE_DIR}/py_wrapper.cpp)
@@ -40,40 +57,14 @@ if (${LEMON_BUILD_PYTHON})
         )
     endif()
 
-    add_test(NAME py_simple
-        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p simple.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
-    )
-
-    add_test(NAME py_count
-        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p count.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
-    )
-
-    add_test(NAME py_invalid
-        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p invalid.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
-    )
-
-    add_test(NAME py_small_heme
-        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p small_heme.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
-    )
-
-    add_test(NAME py_tmscore
-        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p tmscore.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
-    )
-
-    if (MSVC AND ${LEMON_LINK_SHARED})
-        set_tests_properties( py_simple py_count py_invalid py_small_heme py_tmscore
-            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}\\chemfiles\\bin"
-        )
-    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
-        set_tests_properties( py_simple py_count py_invalid py_small_heme py_tmscore
-            PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
-        )
-    endif()
+    add_python_test(simple)
+    add_python_test(count)
+    add_python_test(metal_ions)
+    add_python_test(residues)
+    add_python_test(small_molecule)
+    add_python_test(small_heme)
+    add_python_test(tmscore)
+    add_python_test(vina)
 endif()
 
 if(SKBUILD)
