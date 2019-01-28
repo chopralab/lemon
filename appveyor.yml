@@ -12,40 +12,48 @@ environment:
   TWINE_PASSWORD:
     secure: KOUl0H5qkKF0r5gIMkenoftnnkSCIufpCiQAURaB8Zo=
   matrix:
-    - generator: Visual Studio 14 2017 Win64
+    - generator: Visual Studio 15 2017
+      ARCH: x86
+      BUILD_TYPE: Release
+      SHARED: OFF
+      make_wheel: false
+    - generator: Visual Studio 15 2017 Win64
+      ARCH: x64
+      BUILD_TYPE: Release
+      SHARED: ON
+      make_wheel: false
+    - generator: Visual Studio 15 2017 Win64
+      ARCH: x64
+      BUILD_TYPE: Release
+      SHARED: OFF
+      make_wheel: false
+    - generator: Visual Studio 15 2017
+      ARCH: x86
+      BUILD_TYPE: Release
+      SHARED: ON
+      make_wheel: false
+    - generator: Visual Studio 15 2017 Win64
       ARCH: x64
       make_wheel: true
-    - generator: Visual Studio 14 2017
-      ARCH: x86
-      BUILD_TYPE: Release
-      SHARED: OFF
-      make_wheel: false
-    - generator: Visual Studio 14 2017 Win64
-      ARCH: x64
-      BUILD_TYPE: Release
-      SHARED: ON
-      make_wheel: false
-    - generator: Visual Studio 14 2017 Win64
-      ARCH: x64
-      BUILD_TYPE: Release
-      SHARED: OFF
-      make_wheel: false
-    - generator: Visual Studio 14 2017
-      ARCH: x86
-      BUILD_TYPE: Release
-      SHARED: ON
-      make_wheel: false
 
 clone_depth: 10
 clone_folder: c:\lemon
 
 build_script:
-  - cmd: >-
-      if not %make_wheel% equ true scripts\appveyor\build.bat
+  - ps: >-
+      if ($env:make_wheel -ne 'true')
+      {
+        cd c:\lemon
+        .\scripts\appveyor\build.ps1
+      }
 
 test_script:
-  - cmd: >-
-      if not %make_wheel% equ true ctest --build-config %BUILD_TYPE% --timeout 300 --output-on-failure build
+  - ps: >-
+      if ($env:make_wheel -ne 'true')
+      {
+        cd c:\lemon\build
+        ctest --build-config $env:BUILD_TYPE --timeout 300 --output-on-failure
+      } 
 
 install:
   - ps: >-
