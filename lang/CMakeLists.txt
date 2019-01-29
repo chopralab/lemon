@@ -20,7 +20,7 @@ function(add_python_test _name_)
 
     if (MSVC AND ${LEMON_LINK_SHARED})
         set_tests_properties( py_${_name_}
-            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING};${Boost_LIBRARY_DIRS};${CMAKE_BINARY_DIR}/chemfiles/bin;${PYTHON_PREFIX}/DLLS;${PYTHON_PREFIX}"
+            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}/chemfiles/bin/"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
         set_tests_properties( py_${_name_}

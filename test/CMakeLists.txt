@@ -41,7 +41,7 @@ function(add_cpp_test _file_ _name_)
 
     if (MSVC AND ${LEMON_LINK_SHARED})
         set_tests_properties( ${_name_}
-            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}\\chemfiles\\bin"
+            PROPERTIES ENVIRONMENT "PATH=${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}\\chemfiles\\bin"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
         set_tests_properties( ${_name_}
