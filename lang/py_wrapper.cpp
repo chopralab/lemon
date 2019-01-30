@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <mutex>
 #include "lemon/lemon.hpp"
 #include "lemon/launch.hpp"
 #include "lemon/geometry.hpp"
@@ -28,9 +29,8 @@ namespace lemon {
 struct LemonPythonWrap : LemonPythonBase {
     virtual std::string worker(const chemfiles::Frame* frame,
                                const std::string& pdbid) override {
-        py::gil_scoped_release release;
-        {
-            //py::gil_scoped_acquire acquire;
+        py::gil_scoped_acquire acq;
+        try {
             PYBIND11_OVERLOAD_PURE(
                 std::string,
                 LemonPythonBase,
@@ -38,7 +38,17 @@ struct LemonPythonWrap : LemonPythonBase {
                 frame,
                 pdbid
             );
+        } catch (py::error_already_set& err) {
+            std::cerr << pdbid + " " + err.what() + "\n";
+        } catch (py::cast_error& err) {
+            std::cerr << pdbid + " Problem with type: " + err.what() + "\n";
+        } catch (std::exception& err) {
+            std::cerr << pdbid + " " + err.what() + "\n";
+        } catch (...) {
+            std::cerr << pdbid + " unknown error." + "\n";
         }
+
+        return std::string("");
     }
 
     virtual void finalize() override {
@@ -138,23 +148,16 @@ void append_file(const chemfiles::Frame& frame, const std::string& filename) {
 }
 
 void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t threads) {
-    auto worker = [&py](chemfiles::Frame entry, const std::string& pdbid) {
-        try {
-            return py.worker(&entry, pdbid);
-        } catch (py::error_already_set& err) {
-            std::cerr << pdbid + " " + err.what() + "\n";
-        } catch (py::cast_error& err) {
-            std::cerr << pdbid + " Problem with type: " + err.what() + "\n";
-        } catch (std::exception& err) {
-            std::cerr << pdbid + " " + err.what() + "\n";
-        } catch (...) {
-            std::cerr << pdbid + " unknown error." + "\n";
-        }
-        std::exit(1);
+    std::mutex py_mutex;
+    auto worker = [&py, &py_mutex](chemfiles::Frame entry, const std::string& pdbid) {
+        std::lock_guard<std::mutex> guard(py_mutex);
+        py::gil_scoped_release release;
+        return py.worker(&entry, pdbid);
     };
 
     print_combine combiner(std::cout);
     lemon::run_parallel(worker, p, combiner, threads);
+    py.finalize();
 }
 }
 

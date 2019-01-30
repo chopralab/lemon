@@ -61,18 +61,8 @@ int main(int argc, char *argv[]) {
     lemon::LemonPythonBase& py = py_base.cast<lemon::LemonPythonBase&>();
 
     auto worker = [&py](chemfiles::Frame entry, const std::string& pdbid) {
-        try {
-            return py.worker(&entry, pdbid);
-        } catch (python::error_already_set& err) {
-            std::cerr << pdbid + " " + err.what() + "\n";
-        } catch (python::cast_error& err) {
-            std::cerr << pdbid + " Problem with type: " + err.what() + "\n";
-        } catch (std::exception& err) {
-            std::cerr << pdbid + " " + err.what() + "\n";
-        } catch (...) {
-            std::cerr << pdbid + " unknown error." + "\n";
-        }
-        std::terminate();
+        python::gil_scoped_release release;
+        return py.worker(&entry, pdbid);
     };
 
     auto collector = lemon::print_combine(std::cout);
