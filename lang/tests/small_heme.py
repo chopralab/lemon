@@ -1,27 +1,26 @@
 from lemon import *
 
-distance = 6.0
-
 class MyWorkflow(Workflow):
     def worker(self, entry, pdbid):
-        heme_names = ResidueNameSet()
-        heme_names.append(ResidueName("HEM"))
-        heme_names.append(ResidueName("HEA"))
-        heme_names.append(ResidueName("HEB"))
-        heme_names.append(ResidueName("HEC"))
+        import lemon
+        heme_names = lemon.ResidueNameSet()
+        heme_names.append(lemon.ResidueName("HEM"))
+        heme_names.append(lemon.ResidueName("HEA"))
+        heme_names.append(lemon.ResidueName("HEB"))
+        heme_names.append(lemon.ResidueName("HEC"))
 
-        hemegs = select_specific_residues(entry, heme_names)
-        smallm = select_small_molecules(entry, small_molecule_types, 10)
+        hemegs = lemon.select_specific_residues(entry, heme_names)
+        smallm = lemon.select_small_molecules(entry, lemon.small_molecule_types, 10)
 
         # Pruning phase
-        prune_identical_residues(entry, smallm)
-        prune_cofactors(entry, smallm, common_cofactors)
-        prune_cofactors(entry, smallm, common_fatty_acids)
+        lemon.prune_identical_residues(entry, smallm)
+        lemon.prune_cofactors(entry, smallm, lemon.common_cofactors)
+        lemon.prune_cofactors(entry, smallm, lemon.common_fatty_acids)
 
-        keep_interactions(entry, smallm, hemegs, distance)
+        lemon.keep_interactions(entry, smallm, hemegs, 6.0)
 
         # Output phase
-        return print_residue_name_counts(pdbid, entry, smallm)
+        return pdbid + lemon.count_print_residue_names(entry, smallm) + '\n'
 
     def finalize(self):
         pass

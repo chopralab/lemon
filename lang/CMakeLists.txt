@@ -20,7 +20,7 @@ function(add_python_test _name_)
 
     if (MSVC AND ${LEMON_LINK_SHARED})
         set_tests_properties( py_${_name_}
-            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}/chemfiles/bin/"
+            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${CMAKE_BINARY_DIR}/chemfiles/bin/"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
         set_tests_properties( py_${_name_}
@@ -42,14 +42,12 @@ if (${LEMON_BUILD_PYTHON})
     if (MSVC)
         target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
-            Boost::filesystem
             pybind11::embed
             ws2_32
         )
     else()
         target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
-            Boost::filesystem
             pybind11::embed
             pthread
         )
@@ -76,13 +74,11 @@ if(SKBUILD)
     if (MSVC)
         target_link_libraries(lemon PRIVATE
             ${CHEMFILES_LIBRARY}
-            Boost::filesystem
             ws2_32
         )
     else()
         target_link_libraries(lemon PRIVATE
             ${CHEMFILES_LIBRARY}
-            Boost::filesystem
             pthread
         )
     endif()

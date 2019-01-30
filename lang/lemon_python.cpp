@@ -64,14 +64,15 @@ int main(int argc, char *argv[]) {
         try {
             return py.worker(&entry, pdbid);
         } catch (python::error_already_set& err) {
-            return pdbid + " " + err.what() + "\n";
+            std::cerr << pdbid + " " + err.what() + "\n";
         } catch (python::cast_error& err) {
-            return pdbid + " Problem with type: " + err.what() + "\n";
+            std::cerr << pdbid + " Problem with type: " + err.what() + "\n";
         } catch (std::exception& err) {
-            return pdbid + " " + err.what() + "\n";
+            std::cerr << pdbid + " " + err.what() + "\n";
         } catch (...) {
-            return pdbid + " unknown error." + "\n";
+            std::cerr << pdbid + " unknown error." + "\n";
         }
+        std::terminate();
     };
 
     auto collector = lemon::print_combine(std::cout);

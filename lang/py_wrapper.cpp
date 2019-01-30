@@ -30,7 +30,7 @@ struct LemonPythonWrap : LemonPythonBase {
                                const std::string& pdbid) override {
         py::gil_scoped_release release;
         {
-            py::gil_scoped_acquire acquire;
+            //py::gil_scoped_acquire acquire;
             PYBIND11_OVERLOAD_PURE(
                 std::string,
                 LemonPythonBase,
@@ -142,14 +142,15 @@ void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t thread
         try {
             return py.worker(&entry, pdbid);
         } catch (py::error_already_set& err) {
-            return pdbid + " " + err.what() + "\n";
+            std::cerr << pdbid + " " + err.what() + "\n";
         } catch (py::cast_error& err) {
-            return pdbid + " Problem with type: " + err.what() + "\n";
+            std::cerr << pdbid + " Problem with type: " + err.what() + "\n";
         } catch (std::exception& err) {
-            return pdbid + " " + err.what() + "\n";
+            std::cerr << pdbid + " " + err.what() + "\n";
         } catch (...) {
-            return pdbid + " unknown error." + "\n";
+            std::cerr << pdbid + " unknown error." + "\n";
         }
+        std::exit(1);
     };
 
     print_combine combiner(std::cout);
@@ -263,7 +264,7 @@ PYBIND11_MODULE(lemon, m) {
         .def("id", &Residue::id)
         .def("get", residue_get);
 
-    py::class_<std::vector<Residue>>(m, "ResidueVec");
+    py::bind_vector<std::vector<Residue>>(m, "ResidueVec");
 
     /**************************************************************************
      * Topology
@@ -337,20 +338,18 @@ PYBIND11_MODULE(lemon, m) {
             return to_string(v);
         })
         .def("__repl__",[](const ResidueName& v){
-            return "<ResidueName {" + to_string(v) + "}";
+            return "<ResidueName {" + to_string(v) + "}>";
         });
 
-    typedef std::pair<ResidueNameSet::iterator, bool> rns_insert_ret;
-    py::class_<rns_insert_ret>(m, "ResidueNameRet");
-
-    rns_insert_ret (ResidueNameSet::*rns_insert)
-        (const ResidueNameSet::value_type&) = &ResidueNameSet::insert;
     py::class_<ResidueNameSet>(m, "ResidueNameSet")
+        .def(py::init<>())
         .def("__len__", &ResidueNameSet::size)
         .def("__iter__", [](const ResidueNameSet& v) {
             return py::make_iterator(v.begin(), v.end());
         }, py::keep_alive<0, 1>())
-        .def("append", rns_insert)
+        .def("append", [](ResidueNameSet& v, const ResidueNameSet::value_type& t) {
+            v.insert(t);
+        })
         .def("__str__",[](const ResidueNameSet& v){
             return to_string(v);
         })
@@ -364,10 +363,13 @@ PYBIND11_MODULE(lemon, m) {
         &default_id_list::push_back;
 
     py::class_<default_id_list>(m, "ResidueIDs")
+        .def(py::init<>())
+        .def(py::init<const default_id_list&>())
         .def("__iter__", [](const default_id_list& v) {
             return py::make_iterator(v.begin(), v.end());
         }, py::keep_alive<0, 1>())
         .def("append", push_back)
+        .def("__len__", &default_id_list::size)
         .def("__str__",[](const default_id_list& v){
             return to_string(v);
         })

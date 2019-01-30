@@ -1,12 +1,15 @@
 from __future__ import print_function
-from lemon import *
+import lemon
 
-count = []
-
-class MyWorkflow(Workflow):
+class MyWorkflow(lemon.Workflow):
+    def __init__(self):
+        import lemon
+        lemon.Workflow.__init__(self)
+        self.count = []
     def worker(self, entry, pdbid):
-        smallm = select_molecules(entry, small_molecule_types, 10)
-        select_metal_ions(entry, smallm)
-        count.append(smallm.size())
+        import lemon
+        smallm = lemon.select_small_molecules(entry, lemon.small_molecule_types, 10)
+        self.count.append(smallm.__len__())
+        return ""
     def finalize(self):
-        print(str(count))
+        print(str(self.count))

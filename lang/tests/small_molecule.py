@@ -1,15 +1,14 @@
-from lemon import *
+import lemon
 
-distance = 6.0
-
-class MyWorkflow(Workflow):
+class MyWorkflow(lemon.Workflow):
     def worker(self, entry, pdbid):
-        smallm = select_small_molecules(entry, small_molecule_types, 10)
+        import lemon
+        smallm = lemon.select_small_molecules(entry, lemon.small_molecule_types, 10)
 
         # Pruning phase
-        prune_identical_residues(entry, smallm)
-        prune_cofactors(entry, smallm, common_cofactors)
-        prune_cofactors(entry, smallm, common_fatty_acids)
+        lemon.prune_identical_residues(entry, smallm)
+        lemon.prune_cofactors(entry, smallm, lemon.common_cofactors)
+        lemon.prune_cofactors(entry, smallm, lemon.common_fatty_acids)
 
         # Output phase
-        return print_residue_name_counts(pdbid, entry, smallm)
+        return pdbid + lemon.count_print_residue_names(entry, smallm)

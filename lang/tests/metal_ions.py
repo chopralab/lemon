@@ -4,10 +4,11 @@ distance = 6.0
 
 class MyWorkflow(Workflow):
     def worker(self, entry, pdbid):
+        import lemon
         # Selection phase
-        metals = select_metal_ions(entry)
+        metals = lemon.select_metal_ions(entry)
 
         # Output phase
-        return print_residue_name_counts(pdbid, entry, metals)
+        return pdbid + lemon.count_print_residue_names(entry, metals) + '\n'
     def finalize(self):
         pass
