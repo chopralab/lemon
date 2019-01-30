@@ -23,13 +23,11 @@ function(add_cpp_test _file_ _name_)
             ${CHEMFILES_LIBRARY}
             ws2_32
             Boost::filesystem
-            Boost::program_options
         )
     else()
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
-            Boost::program_options
             pthread
         )
     endif()

@@ -43,7 +43,6 @@ if (${LEMON_BUILD_PYTHON})
         target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
-            Boost::program_options
             pybind11::embed
             ws2_32
         )
@@ -51,7 +50,6 @@ if (${LEMON_BUILD_PYTHON})
         target_link_libraries(lemon_python
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
-            Boost::program_options
             pybind11::embed
             pthread
         )
@@ -79,7 +77,6 @@ if(SKBUILD)
         target_link_libraries(lemon PRIVATE
             ${CHEMFILES_LIBRARY}
             Boost::filesystem
-            Boost::program_options
             ws2_32
         )
     else()

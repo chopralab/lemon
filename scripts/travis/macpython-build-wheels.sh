@@ -84,7 +84,7 @@ gunzip boost_1_67_0.tar.gz
 tar xf boost_1_67_0.tar
 cd boost_1_67_0/
 sh bootstrap.sh
-./bjam cxxflags=-fPIC cflags=-fPIC -a --with-filesystem --with-program_options
+./bjam cxxflags=-fPIC cflags=-fPIC -a --with-filesystem
 cd ..
 git clone https://github.com/frodofine/chemfiles.git -b read_from_memory_2
 cd chemfiles

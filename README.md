@@ -18,7 +18,7 @@ With these ideas in mind, the major, and crucial role of **Lemon** is the creati
 
 Technically speaking, **Lemon** is a *header-only* library. This means to use lemon in your own project, just copy the `include/lemon` directory into your project and include the file `lemon/lemon.hpp`. There is *no* need to link a special library or package other than Boost.
 
-**Lemon** is developed to have as few dependencies as possible. You only need a recent C++ compiler which supports C++ and a copy of the Boost `filesystem` library and `program_options` library. If you plan on building Python support, you will also need a copy of the Python interpreter and occompaning libraries and header files. All other dependencies are installed for you by the build system.
+**Lemon** is developed to have as few dependencies as possible. You only need a recent C++ compiler which supports C++ and a copy of the Boost `filesystem` library. If you plan on building Python support, you will also need a copy of the Python interpreter and occompaning libraries and header files. All other dependencies are installed for you by the build system.
 
 ```bash
 git clone https://github.com/chopralab/lemon.git

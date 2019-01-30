@@ -26,7 +26,7 @@ if ( (NOT ${LEMON_LINK_SHARED}) OR MSVC OR SKBUILD)
 endif()
 
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
+find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIRS})
 
