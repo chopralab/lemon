@@ -26,7 +26,7 @@ C++
 
 .. literalinclude:: ../../progs/misc/tmscore_all.cpp
    :language: cpp
-   :lines: 8-27
+   :lines: 8-28
    :dedent: 4
 
 Python

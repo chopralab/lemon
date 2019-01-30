@@ -24,18 +24,25 @@ class Options : public CLI::App {
     Options()
         : work_dir_("."), ncpu_(1) {
         add_option("--work_dir,-w", work_dir_,
-                   "Directory containing the MMTF or Hadoop files");
+                   "Directory containing the MMTF or Hadoop files")->
+                   ignore_case()->
+                   ignore_underscore()->
+                   check(CLI::ExistingDirectory);
 
         add_option("--ncpu,-n", ncpu_,
-                   "Number of CPUs used for run independant jobs");
+                   "Number of CPUs used for run independant jobs")->
+                   ignore_case();
 
         add_option("--entries,-e", entries_,
-                   "Preselected index file returned by RCSB");
+                   "Preselected index file returned by RCSB")->
+                   ignore_case()->
+                   check(CLI::ExistingFile);
 
         add_option("--skip_entries,-s", skip_entries_,
-                   "Index file containing PDB ids to skip. By default, the entries "
-                   "listed in the large_entries constant are used. Set to *none* to"
-                   "use all entries.");
+                   "Index file containing PDB ids to skip")->
+                   ignore_case()->
+                   ignore_underscore()->
+                   check(CLI::ExistingFile);
     }
 
     //! Constructor for an `Options` class which does not use custom options
