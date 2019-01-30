@@ -2,7 +2,7 @@
 #define LEMON_OPTIONS_HPP
 
 #define CLI11_EXPERIMENTAL_OPTIONAL 0
-#include "lemon/CLI11.hpp"
+#include "lemon/external/CLI11.hpp"
 
 namespace lemon {
 
@@ -78,7 +78,7 @@ class Options : public CLI::App {
     //! Directory containing the MMTF or Hadoop files
     const std::string& work_dir() const { return work_dir_; }
 
-    //! Number of CPUs used for run independant jobs
+    //! Number of CPUs used to run independant jobs
     size_t ncpu() const { return ncpu_; }
 
     //! Index to preselect entries. Eg a search on RCSB

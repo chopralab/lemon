@@ -14,7 +14,7 @@ endif()
 
 function(add_python_test _name_)
     add_test(NAME py_${_name_}
-        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/tests/files/rcsb_hadoop/ -p ${_name_}.py
+        COMMAND lemon_python -w ${CMAKE_SOURCE_DIR}/test/files/rcsb_hadoop/ -p ${_name_}.py
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
     )
 
