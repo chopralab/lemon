@@ -52,14 +52,14 @@ script after the `Worker.finalize` method is called.
 Using the Python Interpreter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For users of the `lemon_proteins` PyPI package, one must submit the derived
+For users of the `candiy_lemon` PyPI package, one must submit the derived
 **Lemon** workflow manually using the `lemon.launch` function. An example is
 given below. The arguments to this function are the `lemon.Workflow` daughter
 class, the path to the RCSB Hadoop files and the number of cores to use.
 
 .. code-block:: python
 
-    from lemon_proteins.lemon import *
+    from candiy_lemon.lemon import *
     class MyWorkflow(Workflow):
         def worker(self, entry, pdbid):
             return entry.topology().residue(1).get("chainname").get().as_string() + '\n'

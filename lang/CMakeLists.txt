@@ -83,6 +83,6 @@ if(SKBUILD)
         )
     endif()
 
-    install(TARGETS lemon LIBRARY COMPONENT lemon DESTINATION "lemon_proteins")
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py COMPONENT python DESTINATION "lemon_proteins")
+    install(TARGETS lemon LIBRARY COMPONENT lemon DESTINATION "candiy_lemon")
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py COMPONENT python DESTINATION "candiy_lemon")
 endif()
