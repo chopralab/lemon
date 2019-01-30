@@ -6,7 +6,6 @@ branches:
     - master
 
 environment:
-  BOOST_ROOT: C:\Libraries\boost_1_67_0
   TWINE_USERNAME:
     secure: QHW0ZSR1Ljzd+51LcuQkvw==
   TWINE_PASSWORD:

@@ -79,13 +79,6 @@ pushd .
 cd $TRAVIS_BUILD_DIR/../
 mkdir deps
 cd deps
-curl -L http://sourceforge.net/projects/boost/files/boost/1.67.0/boost_1_67_0.tar.gz -O
-gunzip boost_1_67_0.tar.gz
-tar xf boost_1_67_0.tar
-cd boost_1_67_0/
-sh bootstrap.sh
-./bjam cxxflags=-fPIC cflags=-fPIC -a --with-filesystem
-cd ..
 git clone https://github.com/frodofine/chemfiles.git -b read_from_memory_2
 cd chemfiles
 mkdir build
@@ -118,7 +111,6 @@ for VENV in "${VENVS[@]}"; do
     
     # Generate wheel
     ${PYTHON_EXECUTABLE} setup.py bdist_wheel --build-type ${build_type} --plat-name ${plat_name} -G 'Unix Makefiles' -- \
-      -DBOOST_ROOT:PATH=$TRAVIS_BUILD_DIR/../deps/boost_1_67_0/ \
       -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${osx_target} \
       -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64 \
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE} \

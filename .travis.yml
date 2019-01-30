@@ -10,9 +10,6 @@ linux64_addons:
     addons: &linux64
       apt:
         packages:
-        - libboost-dev
-        - libboost-filesystem1.58-dev
-        - libboost-program-options1.58-dev
         - python3.5-dev
 
 matrix:

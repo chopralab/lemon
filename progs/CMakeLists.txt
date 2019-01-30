@@ -32,12 +32,10 @@ function(add_cpp_prog _file_)
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
             ws2_32
-            Boost::filesystem
         )
     else()
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
-            Boost::filesystem
             pthread
         ) 
     endif()

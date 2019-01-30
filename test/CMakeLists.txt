@@ -22,12 +22,10 @@ function(add_cpp_test _file_ _name_)
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
             ws2_32
-            Boost::filesystem
         )
     else()
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
-            Boost::filesystem
             pthread
         )
     endif()
@@ -39,7 +37,7 @@ function(add_cpp_test _file_ _name_)
 
     if (MSVC AND ${LEMON_LINK_SHARED})
         set_tests_properties( ${_name_}
-            PROPERTIES ENVIRONMENT "PATH=${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}\\chemfiles\\bin"
+            PROPERTIES ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}\\chemfiles\\bin"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
         set_tests_properties( ${_name_}

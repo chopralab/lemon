@@ -21,15 +21,6 @@ endif()
 
 include(CompilerFlags)
 
-if ( (NOT ${LEMON_LINK_SHARED}) OR MSVC OR SKBUILD)
-    set(Boost_USE_STATIC_LIBS ON)
-endif()
-
-set(Boost_USE_MULTITHREADED ON)
-find_package(Boost COMPONENTS system filesystem REQUIRED)
-
-include_directories(${Boost_INCLUDE_DIRS})
-
 if (${LEMON_BUILD_DOCS})
     add_subdirectory(doc)
 endif()
