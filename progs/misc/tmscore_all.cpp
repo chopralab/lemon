@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
-
 #include "lemon/lemon.hpp"
+#include "lemon/launch.hpp"
 #include "lemon/tmalign.hpp"
 
 int main(int argc, char* argv[]) {

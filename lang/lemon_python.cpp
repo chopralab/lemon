@@ -12,6 +12,7 @@
 
 // Mac OSX problems with a tolower macro
 #include "lemon/lemon.hpp"
+#include "lemon/launch.hpp"
 #include <pybind11/embed.h>
 
 namespace python = pybind11;

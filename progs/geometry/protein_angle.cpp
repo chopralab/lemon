@@ -1,8 +1,8 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
-
 #include "lemon/lemon.hpp"
+#include "lemon/launch.hpp"
 #include "lemon/geometry.hpp"
 
 // typedefs for binned data

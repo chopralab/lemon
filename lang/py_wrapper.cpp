@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
-
 #include "lemon/lemon.hpp"
+#include "lemon/launch.hpp"
 #include "lemon/geometry.hpp"
 #include "lemon/tmalign.hpp"
 #include "lemon/xscore.hpp"
