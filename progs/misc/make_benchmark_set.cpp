@@ -7,9 +7,9 @@ int main(int argc, char* argv[]) {
     lemon::Options o;
     std::string outdir;
     auto distance = 6.0;
-    o.add_option("distance,d", distance,
+    o.add_option("--distance,-d", distance,
                  "Largest distance between protein and a small molecule.");
-    o.add_option("outdir,o", outdir, "output directory");
+    o.add_option("--outdir,-o", outdir, "output directory");
     o.parse_command_line(argc, argv);
 
     lemon::Entries entries;

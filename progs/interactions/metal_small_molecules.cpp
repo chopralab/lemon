@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
     lemon::Options o;
     auto distance = 6.0;
-    o.add_option("distance,d", distance,
+    o.add_option("--distance,-d", distance,
                  "Largest distance between a metal and a small molecule.");
     o.parse_command_line(argc, argv);
 

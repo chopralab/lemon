@@ -29,8 +29,8 @@ int main(int argc, char *argv[]) {
     lemon::Options o;
     std::string py_script("lemon.py");
     std::string py_derive("MyWorkflow");
-    o.add_option("py_script,p", py_script, "Python script to load");
-    o.add_option("py_class,c", py_derive, "Class deriving from Workflow");
+    o.add_option("--py_script,-p", py_script, "Python script to load");
+    o.add_option("--py_class,-c", py_derive, "Class deriving from Workflow");
     o.parse_command_line(argc, argv);
 
     // Register the module with the interpreter

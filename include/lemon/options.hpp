@@ -1,6 +1,7 @@
 #ifndef LEMON_OPTIONS_HPP
 #define LEMON_OPTIONS_HPP
 
+#define CLI11_EXPERIMENTAL_OPTIONAL 0
 #include "lemon/CLI11.hpp"
 
 namespace lemon {
@@ -21,17 +22,17 @@ class Options : public CLI::App {
     //! automatically and additional options can be added with the `add_option`
     //! function.
     Options()
-        : options_compiled_(false), work_dir_("."), ncpu_(1) {
-        add_option("work_dir,w", work_dir_,
+        : work_dir_("."), ncpu_(1) {
+        add_option("--work_dir,-w", work_dir_,
                    "Directory containing the MMTF or Hadoop files");
 
-        add_option("ncpu,n", ncpu_,
+        add_option("--ncpu,-n", ncpu_,
                    "Number of CPUs used for run independant jobs");
 
-        add_option("entries,e", entries_,
+        add_option("--entries,-e", entries_,
                    "Preselected index file returned by RCSB");
 
-        add_option("skip_entries,s", skip_entries_,
+        add_option("--skip_entries,-s", skip_entries_,
                    "Index file containing PDB ids to skip. By default, the entries "
                    "listed in the large_entries constant are used. Set to *none* to"
                    "use all entries.");
@@ -59,17 +60,12 @@ class Options : public CLI::App {
     //! \param argv The arguments and their values. Typically obtained from the
     //!  `main` function.
     void parse_command_line(int argc, const char* const argv[]) {
-        if (options_compiled_) {
-            throw std::runtime_error("You cannot parse options twice.");
-        }
-
         try {
             parse((argc), (argv));
         } catch(const CLI::ParseError &e) {
             this->exit(e);
             std::exit(1);
         }
-        options_compiled_ = true;
     }
 
     //! Directory containing the MMTF or Hadoop files
@@ -86,7 +82,6 @@ class Options : public CLI::App {
 
    private:
 
-    bool options_compiled_;
     std::string work_dir_;
     size_t ncpu_;
     std::string entries_;

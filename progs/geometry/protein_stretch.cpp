@@ -14,7 +14,7 @@ using lemon::geometry::protein::bond_name;
 int main(int argc, char* argv[]) {
     lemon::Options o;
     auto bin_size = 0.01;
-    o.add_option("bin_size,b", bin_size, "Size of the length(stretch) bin.");
+    o.add_option("--bin_size,-b", bin_size, "Size of the length(stretch) bin.");
     o.parse_command_line(argc, argv);
 
     auto worker = [bin_size](chemfiles::Frame entry,
