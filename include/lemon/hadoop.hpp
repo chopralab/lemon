@@ -6,8 +6,10 @@
 
 #ifndef _MSVC_LANG
 #include <arpa/inet.h>
+#include <dirent.h>
 #else
 #include <WinSock2.h>
+#include <lemon/external/dirent.h>
 #endif
 
 #include <cassert>
@@ -16,11 +18,7 @@
 #include <string>
 #include <vector>
 
-#include <boost/filesystem.hpp>
-
 namespace lemon {
-
-namespace fs = boost::filesystem;
 
 //! The `Hadoop` class is used to read input sequence files.
 //!
@@ -108,43 +106,38 @@ class Hadoop {
 };
 
 //! \brief Read a directory containing hadoop sequence files
-inline std::vector<fs::path> read_hadoop_dir(const fs::path& p) {
-    if (!fs::is_directory(p)) {
-        throw std::runtime_error("Provided directory not valid.");
-    }
+inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
 
-    std::vector<fs::path> pathvec;
+    struct dirent *entry;
+    DIR *dp;
+    std::vector<std::string> pathvec;
     pathvec.reserve(700);
 
-    // There's only ~700 files to read here!
-    auto begin = fs::directory_iterator(p);
-    fs::directory_iterator end;
-    std::transform(
-        begin, end, std::back_inserter(pathvec),
-        [](fs::directory_entry& entry) {
-            return entry.path();
-        }
-    );
+    dp = opendir(p.c_str());
+    if (dp == NULL) {
+        throw std::runtime_error("Path does not exist or could not be read.");
+    }
 
-    pathvec.erase(std::remove_if(pathvec.begin(), pathvec.end(), 
-        [](const fs::path& entry) {
-        if (*entry.filename().string().begin() == '_') { // these are 'comments'
-            return true;
+    while ((entry = readdir(dp))) {
+        if (entry->d_name[0] == '_' ||
+            entry->d_name[0] == '.' ||
+            entry->d_type != DT_REG) {
+            continue;
         }
-        if (fs::is_directory(entry)) {
-            throw std::runtime_error(
-                "Directory provided has subdirectories.\nPlease make sure "
-                "you are using the tar ball provided by RCSB.");
-        } else if (entry.has_extension()) {
+
+        std::string s = entry->d_name;
+        if (s.find('.') != std::string::npos) {
+            closedir(dp);
             throw std::runtime_error(
                 "Directory provided has file with extensions.\nPlease "
                 "remove files with extensions if you are sure the seqeunce "
                 "files are valid.");
         }
+        s = p + '/' + s;
+        pathvec.emplace_back(s);
+    }
 
-        return false;
-    }), pathvec.end());
-
+    closedir(dp);
     return pathvec;
 }
 }  // namespace lemon

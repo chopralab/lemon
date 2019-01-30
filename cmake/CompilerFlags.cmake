@@ -73,7 +73,6 @@ if(MSVC)
     remove_msvc_warning(4623) # default constructor was implicitly defined as deleted
     remove_msvc_warning(4625) # copy constructor was implicitly defined as deleted
     remove_msvc_warning(4626) # assignment operator was implicitly defined as deleted
-    remove_msvc_warning(4643) # forward declaring in boost
     remove_msvc_warning(4668) # not defined preprocessor macro, replacing with '0' for '#if/#elif'
     remove_msvc_warning(4710) # function not inlined
     remove_msvc_warning(4711) # function selected for automatic inlining

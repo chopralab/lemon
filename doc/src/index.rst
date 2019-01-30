@@ -31,15 +31,13 @@ Obtaining Lemon
 **Lemon**'s source code is availible under the BSD license and located at
 github_. **Lemon** can be obtained using the following commands in a UNIX-like
 environment. To build the **C++** side of **Lemon**, you need a C++11 compiler,
-the CMake_ build system, and the `Boost C++ Libraries`_.  Note ASYNC features
-require a C++14 compiler.  For Python support, please install the *Python
-interpreter* and C development libraries for the version of Python you wish to
-use and sure that this version of Python is the default version used on the
-command-line.
+the CMake_ build system.  Note ASYNC features require a C++14 compiler.
+For Python support, please install the *Python interpreter* and C development
+libraries for the version of Python you wish to use and sure that this version
+of Python is the default version used on the command-line.
 
 .. _github: http://github.com/chopralab/lemon
 .. _CMake: https://cmake.org
-.. _`Boost C++ Libraries`: https://www.boost.org
 
 .. code-block:: bash
 

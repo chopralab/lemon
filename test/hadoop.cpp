@@ -41,7 +41,7 @@ TEST_CASE("Read multiple MMTF Sequence File") {
 }
 
 TEST_CASE("Use run_parallel") {
-    boost::filesystem::path p("files/rcsb_hadoop");
+    std::string p("files/rcsb_hadoop");
 
     auto worker = [](const chemfiles::Frame& entry,
                      const std::string&) {
@@ -58,7 +58,7 @@ TEST_CASE("Use run_parallel") {
 }
 
 TEST_CASE("Use run_parallel, but only for a entry") {
-    boost::filesystem::path p("files/rcsb_hadoop");
+    std::string p("files/rcsb_hadoop");
 
     auto worker = [](const chemfiles::Frame& entry,
                      const std::string&) {
@@ -77,7 +77,7 @@ TEST_CASE("Use run_parallel, but only for a entry") {
 }
 
 TEST_CASE("Use run_parallel, but skip a entry") {
-    boost::filesystem::path p("files/rcsb_hadoop");
+    std::string p("files/rcsb_hadoop");
 
     auto worker = [](const chemfiles::Frame& entry,
                      const std::string&) {

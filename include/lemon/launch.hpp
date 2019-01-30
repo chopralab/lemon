@@ -9,7 +9,7 @@
 
 namespace lemon {
 
-class LemonPythonBase : public boost::noncopyable {
+class LemonPythonBase {
 public:
     virtual ~LemonPythonBase() {}
     virtual std::string worker(const chemfiles::Frame*, const std::string&) = 0;

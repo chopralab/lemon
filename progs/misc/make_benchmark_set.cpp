@@ -5,12 +5,14 @@
 
 int main(int argc, char* argv[]) {
     lemon::Options o;
-    std::string outdir;
+    std::string outdir = ".";
     auto distance = 6.0;
     o.add_option("--distance,-d", distance,
                  "Largest distance between protein and a small molecule.");
     o.add_option("--outdir,-o", outdir, "output directory");
     o.parse_command_line(argc, argv);
+
+    outdir += "/";
 
     lemon::Entries entries;
     std::unordered_map<std::string, lemon::ResidueNameSet> rnms;
@@ -34,16 +36,13 @@ int main(int argc, char* argv[]) {
         for (auto resid : smallm) {
             chemfiles::Frame prot;
             chemfiles::Frame lig;
-            lemon::separate::protein_and_ligand(entry, resid, distance,
-                                                prot, lig);
+            lemon::separate::protein_and_ligand(entry, resid, distance, prot, lig);
 
-            auto protfile = boost::filesystem::path(outdir);
-            protfile /= pdbid + "_" + lig.get("name")->as_string() + ".pdb";
-            auto ligfile  = boost::filesystem::path(outdir);
-            ligfile /= pdbid + "_" + lig.get("name")->as_string() + ".sdf";
+            auto protfile = outdir + pdbid + "_" + lig.get("name")->as_string() + ".pdb";
+            auto ligfile  = outdir + pdbid + "_" + lig.get("name")->as_string() + ".sdf";
 
-            chemfiles::Trajectory prot_traj(protfile.string(),'w');
-            chemfiles::Trajectory lig_traj(ligfile.string(),'w');
+            chemfiles::Trajectory prot_traj(protfile,'w');
+            chemfiles::Trajectory lig_traj(ligfile,'w');
             prot_traj.write(prot);
             lig_traj.write(lig);
             prot_traj.close();

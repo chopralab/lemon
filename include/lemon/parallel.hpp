@@ -35,7 +35,7 @@ namespace lemon {
 //! \param [in] entries Which entries to use. Not used if blank.
 //! \param [in] skip_entries Which entries to skip. Not used if blank.
 template <typename Function, typename Collector>
-inline void run_parallel(Function&& worker, const fs::path& p,
+inline void run_parallel(Function&& worker, const std::string& p,
                          Collector& collector, size_t ncpu = 1,
                          const Entries& entries = Entries(),
                          const Entries& skip_entries = Entries()) {
@@ -46,13 +46,13 @@ inline void run_parallel(Function&& worker, const fs::path& p,
     // Total number of jobs for each thread
     const int grainsize = static_cast<int>(pathvec.size() / ncpu);
     auto work_iter = pathvec.begin();
-    using iter = std::vector<fs::path>::iterator;
+    using iter = std::vector<std::string>::iterator;
     std::unordered_map<std::thread::id, std::list<ret>> results;
 
     auto call_function = [&worker, &results, &entries, &skip_entries](iter first, iter last) {
         auto th = std::this_thread::get_id();
         for (auto it = first; it != last; ++it) {
-            std::ifstream data(it->string(), std::istream::binary);
+            std::ifstream data(*it, std::istream::binary);
             Hadoop sequence(data);
 
             while (sequence.has_next()) {
@@ -101,7 +101,7 @@ inline void run_parallel(Function&& worker, const fs::path& p,
 #else
 
 template <typename Function, typename Collector>
-inline void run_parallel(Function&& worker, const fs::path& p,
+inline void run_parallel(Function&& worker, const std::string& p,
                          Collector& collector, size_t ncpu = 1,
                          const Entries& entries = Entries(),
                          const Entries& skip_entries = Entries()) {
@@ -112,7 +112,7 @@ inline void run_parallel(Function&& worker, const fs::path& p,
 
     for (const auto& path : pathvec) {
         threads.queue_task([path, &results, &worker, &entries, &skip_entries] {
-            std::ifstream data(path.string(), std::istream::binary);
+            std::ifstream data(path, std::istream::binary);
             Hadoop sequence(data);
             std::list<ret> mini_collector;
 
