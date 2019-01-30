@@ -9,7 +9,7 @@
 #include <dirent.h>
 #else
 #include <WinSock2.h>
-#include <lemon/external/dirent.h>
+#include <lemon/external/dirent.hpp>
 #endif
 
 #include <cassert>
