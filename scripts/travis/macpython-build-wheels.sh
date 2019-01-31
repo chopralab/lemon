@@ -87,7 +87,8 @@ git clone https://github.com/frodofine/chemfiles.git -b read_from_memory_2
 cd chemfiles
 mkdir build
 cd build
-cmake .. --build-type ${build_type} --plat-name ${plat_name} -G 'Unix Makefiles' \
+cmake .. -G 'Unix Makefiles' \
+      -DCMAKE_BUILD_TYPE=${build_type} \
       -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${osx_target} \
       -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64 \
       -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/../chfl \

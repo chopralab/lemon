@@ -68,7 +68,7 @@ script:
 #before_deploy:
   - |
     if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
-        ./scripts/travis/macpython-build-wheels.sh 3.4 3.5 3.6 3.7
+        ./scripts/travis/macpython-build-wheels.sh 3.5 3.6 3.7
     fi
 
 

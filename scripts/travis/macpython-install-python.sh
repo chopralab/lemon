@@ -200,7 +200,6 @@ function install_virtualenv {
 # Remove previous versions
 sudo rm -rf ${MACPYTHON_FRAMEWORK}
 
-LATEST_34=3.4.7
 LATEST_35=3.5.4
 LATEST_36=3.6.6
 LATEST_37=3.7.0
