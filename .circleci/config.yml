@@ -29,11 +29,3 @@ workflows:
                 only: /.*/
               branches:
                 ignore: /.*/
-        - upload:
-            requires:
-              - package
-            filters:
-              tags:
-                only: /.*/
-              branches:
-                ignore: /.*/

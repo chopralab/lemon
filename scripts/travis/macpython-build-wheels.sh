@@ -74,6 +74,10 @@ ${PYTHON_EXECUTABLE} -m pip install --no-cache delocate
 DELOCATE_LISTDEPS=${VENV}/bin/delocate-listdeps
 DELOCATE_WHEEL=${VENV}/bin/delocate-wheel
 
+build_type="MinSizeRel"
+plat_name="macosx-10.9-x86_64"
+osx_target="10.9"
+
 # Include deps
 pushd .
 cd $TRAVIS_BUILD_DIR/../
@@ -83,11 +87,14 @@ git clone https://github.com/frodofine/chemfiles.git -b read_from_memory_2
 cd chemfiles
 mkdir build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/../chfl -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON -DCMAKE_BUILD_TYPE:STRING=Release
+cmake .. --build-type ${build_type} --plat-name ${plat_name} -G 'Unix Makefiles' \
+      -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${osx_target} \
+      -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64 \
+      -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/../chfl \
+      -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
 make
 make install
 popd
-
 
 for VENV in "${VENVS[@]}"; do
     py_mm=$(basename ${VENV})
@@ -101,10 +108,6 @@ for VENV in "${VENVS[@]}"; do
 
     # Install dependencies
     ${PYTHON_EXECUTABLE} -m pip install --upgrade -r ${SCRIPT_DIR}/../../requirements-dev.txt
-
-    build_type="MinSizeRel"
-    plat_name="macosx-10.9-x86_64"
-    osx_target="10.9"
 
     # Clean up previous invocations
     rm -rf _skbuild
