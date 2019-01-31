@@ -26,7 +26,7 @@ configure_file(
     @ONLY
 )
 
-file(GLOB_RECURSE HEADERS ${PROJECT_SOURCE_DIR}/include/**.hpp)
+file(GLOB_RECURSE HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doxygen/xml/index.xml
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
@@ -52,5 +52,5 @@ if( ${SPHINX_HTML_OUTPUT} )
         DESTINATION share/lemon/doc
         COMPONENT Doc
         PATTERN "${SPHINX_DESTINATION}/html/*"
-        )
+    )
 endif()

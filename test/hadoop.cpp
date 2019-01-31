@@ -41,56 +41,57 @@ TEST_CASE("Read multiple MMTF Sequence File") {
 }
 
 TEST_CASE("Use run_parallel") {
-    boost::filesystem::path p("files/rcsb_hadoop");
+    std::string p("files/rcsb_hadoop");
 
-    auto worker = [](const chemfiles::Frame& complex,
+    auto worker = [](const chemfiles::Frame& entry,
                      const std::string&) {
         lemon::ResidueNameCount resn_counts;
-        lemon::count::residues(complex, resn_counts);
+        lemon::count::residues(entry, resn_counts);
         return resn_counts;
     };
 
-    lemon::map_combine<lemon::ResidueNameCount, lemon::ResidueNameCount> combiner;
-    lemon::ResidueNameCount collector;
+    lemon::ResidueNameCount totals;
+    auto collector = lemon::map_combine<lemon::ResidueNameCount>(totals);
 
-    lemon::run_parallel(worker, combiner, p, collector, 2);
-    CHECK(collector.size() == 36);
+    lemon::run_parallel(worker, p, collector, 2);
+    CHECK(totals.size() == 36);
 }
 
-TEST_CASE("Use run_parallel, but only for a complex") {
-    boost::filesystem::path p("files/rcsb_hadoop");
+TEST_CASE("Use run_parallel, but only for a entry") {
+    std::string p("files/rcsb_hadoop");
 
-    auto worker = [](const chemfiles::Frame& complex,
+    auto worker = [](const chemfiles::Frame& entry,
                      const std::string&) {
         lemon::ResidueNameCount resn_counts;
-        lemon::count::residues(complex, resn_counts);
+        lemon::count::residues(entry, resn_counts);
         return resn_counts;
     };
 
-    lemon::map_combine<lemon::ResidueNameCount, lemon::ResidueNameCount> combiner;
-    lemon::ResidueNameCount collector;
+    lemon::ResidueNameCount totals;
+    auto collector = lemon::map_combine<lemon::ResidueNameCount>(totals);
+
     std::unordered_set<std::string> e({"1DZE"});
 
-    lemon::run_parallel(worker, combiner, p, collector, 2, e);
-    CHECK(collector.size() == 27); // 1DZE has a lot of cofactors...
+    lemon::run_parallel(worker, p, collector, 2, e);
+    CHECK(totals.size() == 27); // 1DZE has a lot of cofactors...
 }
 
-TEST_CASE("Use run_parallel, but skip a complex") {
-    boost::filesystem::path p("files/rcsb_hadoop");
+TEST_CASE("Use run_parallel, but skip a entry") {
+    std::string p("files/rcsb_hadoop");
 
-    auto worker = [](const chemfiles::Frame& complex,
+    auto worker = [](const chemfiles::Frame& entry,
                      const std::string&) {
         lemon::ResidueNameCount resn_counts;
-        lemon::count::residues(complex, resn_counts);
+        lemon::count::residues(entry, resn_counts);
         return resn_counts;
     };
 
-    lemon::map_combine<lemon::ResidueNameCount, lemon::ResidueNameCount> combiner;
-    lemon::ResidueNameCount collector;
+    lemon::ResidueNameCount totals;
+    auto collector = lemon::map_combine<lemon::ResidueNameCount>(totals);
     std::unordered_set<std::string> se({"1DZE"});
 
-    lemon::run_parallel(worker, combiner, p, collector, 2, lemon::Entries(), se);
-    CHECK(collector.size() == 28);
+    lemon::run_parallel(worker, p, collector, 2, lemon::Entries(), se);
+    CHECK(totals.size() == 28);
 }
 
 TEST_CASE("Provide an invalid directory to Hadoop run") {

@@ -21,21 +21,20 @@ endif()
 
 include(CompilerFlags)
 
-if ((NOT ${LEMON_LINK_SHARED} OR MSVC) OR SKBUILD)
-    set(Boost_USE_STATIC_LIBS ON)
-endif()
-
-set(Boost_USE_MULTITHREADED ON)
-find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
-
-include_directories(${Boost_INCLUDE_DIRS})
-
 if (${LEMON_BUILD_DOCS})
     add_subdirectory(doc)
 endif()
 
 if (${LEMON_BUILD_PROGS})
     enable_testing()
+
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/launch_lemon.pbs.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/launch_lemon.pbs"
+        @ONLY
+    )
+
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/launch_lemon.pbs" DESTINATION bin)
 
     add_subdirectory(progs)
     add_subdirectory(test)

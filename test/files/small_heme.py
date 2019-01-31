@@ -1,8 +1,7 @@
-from lemon import *
+from candiy_lemon import *
 
-class MyWorkflow(Workflow):
+class MyWorkflow(lemon.Workflow):
     def worker(self, entry, pdbid):
-        import lemon
         heme_names = lemon.ResidueNameSet()
         heme_names.append(lemon.ResidueName("HEM"))
         heme_names.append(lemon.ResidueName("HEA"))
@@ -24,3 +23,8 @@ class MyWorkflow(Workflow):
 
     def finalize(self):
         pass
+
+a = MyWorkflow()
+
+lemon.launch(a, "rcsb_hadoop", 6)
+

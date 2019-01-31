@@ -1,8 +1,9 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
-
 #include "lemon/lemon.hpp"
+#include "lemon/launch.hpp"
+#include "lemon/geometry.hpp"
 
 // typedefs for binned data
 typedef std::pair<std::string, size_t> BondAngleBin;
@@ -13,10 +14,10 @@ using lemon::geometry::protein::angle_name;
 int main(int argc, char* argv[]) {
     lemon::Options o;
     auto bin_size = 0.01;
-    o.add_option("bin_size,b", bin_size, "Size of the angle bin.");
+    o.add_option("--bin_size,-b", bin_size, "Size of the angle bin.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [bin_size](chemfiles::Frame complex,
+    auto worker = [bin_size](chemfiles::Frame entry,
                              const std::string& pdbid) {
         AngleCounts bins;
 
@@ -24,12 +25,12 @@ int main(int argc, char* argv[]) {
         chemfiles::Frame protein_only;
         std::list<size_t> peptides;
 
-        if (lemon::select::specific_residues(complex, peptides,
+        if (lemon::select::specific_residues(entry, peptides,
                                              lemon::common_peptides) == 0) {
             return bins;
         }
 
-        lemon::separate::residues(complex, peptides, protein_only);
+        lemon::separate::residues(entry, peptides, protein_only);
 
         const auto& angles = protein_only.topology().angles();
 
@@ -60,7 +61,8 @@ int main(int argc, char* argv[]) {
     };
 
     AngleCounts sc_total;
-    lemon::launch<lemon::map_combine>(o, worker, sc_total);
+    auto collector = lemon::map_combine<AngleCounts>(sc_total);
+    lemon::launch(o, worker, collector);
 
     for (const auto& i : sc_total) {
         std::cout << i.first.first << "\t"

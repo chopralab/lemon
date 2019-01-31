@@ -293,8 +293,8 @@ inline std::unordered_multimap<size_t, size_t> create_bond_map(const std::vector
 //! XScore program is not open source, we've included a copy of the Vina version of
 //! this scoring function.
 //! \param [in] frame The frame for which the ligand-protein score will be calculated.
-//! \param [in] ligid The residue ID for the ligand in the complex
-//! \param [in] recid The residue IDs for the protein in the complex
+//! \param [in] ligid The residue ID for the ligand in the entry
+//! \param [in] recid The residue IDs for the protein in the entry
 //! \param [in] cutoff The interaction distance cutoff between ligand and protein
 //! \return The five components of Vina/XScore's scoring function.
 template<typename Container>

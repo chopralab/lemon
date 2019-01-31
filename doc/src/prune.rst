@@ -26,7 +26,7 @@ residues from a selection.
 
 .. literalinclude:: ../../progs/count/small_molecules.cpp
    :language: cpp
-   :lines: 9-25
+   :lines: 9-26
    :dedent: 4
 
 This example extends the previous one to show how one can find only the small-
@@ -34,7 +34,7 @@ molecules interacting with a **Heme** group.
 
 .. literalinclude:: ../../progs/interactions/hem_small_molecules.cpp
     :language: cpp
-    :lines: 13-30
+    :lines: 13-31
     :dedent: 4
 
 Python

@@ -67,15 +67,16 @@ if(MSVC)
     remove_msvc_warning(4275) # non-dll-export interface as base class of dll-export class
     remove_msvc_warning(4251) # class <> needs to be dll-export
     remove_msvc_warning(4514) # unreferenced inline function has been removed
+    remove_msvc_warning(4571) # SEH exceptions no longer caught
     remove_msvc_warning(4582) # constructor is not implicitly called
     remove_msvc_warning(4583) # destructor is not implicitly called
     remove_msvc_warning(4623) # default constructor was implicitly defined as deleted
     remove_msvc_warning(4625) # copy constructor was implicitly defined as deleted
     remove_msvc_warning(4626) # assignment operator was implicitly defined as deleted
     remove_msvc_warning(4668) # not defined preprocessor macro, replacing with '0' for '#if/#elif'
-    remove_msvc_warning(4627) # move assignment operator was implicitly defined as deleted
     remove_msvc_warning(4710) # function not inlined
     remove_msvc_warning(4711) # function selected for automatic inlining
+    remove_msvc_warning(4774) # arguments to print_s not string literals
     remove_msvc_warning(4820) # padding added
     remove_msvc_warning(5026) # move constructor was implicitly defined as deleted
     remove_msvc_warning(5027) # move assignment operator was implicitly defined as deleted

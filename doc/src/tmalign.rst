@@ -8,6 +8,9 @@ a potential protein to a reference protein. Potential applications include the
 creation of a benchmarking set of all proteins with a given fold or motif. To
 address this, we've included the *TMalign* algorithm within **Lemon**.
 
+**Note:** You will need to include the additional file: `<lemon/tmalign.hpp>`
+to have access to these features.
+
 The TMscore function for alignment
 ----------------------------------
 
@@ -23,7 +26,7 @@ C++
 
 .. literalinclude:: ../../progs/misc/tmscore_all.cpp
    :language: cpp
-   :lines: 7-26
+   :lines: 8-28
    :dedent: 4
 
 Python
@@ -31,4 +34,4 @@ Python
 
 .. literalinclude:: ../../lang/tests/tmscore.py
    :language: python
-   :lines: 1-13
+   :lines: 1-16

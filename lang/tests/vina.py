@@ -1,33 +1,35 @@
-from lemon import *
+import lemon
 
-class MyWorkflow(Workflow):
-    def worker(self, frame, pdbid):
+class MyWorkflow(lemon.Workflow):
+    def worker(self, entry, pdbid):
+        import lemon
+
         # Selection phase
-        smallm = select_small_molecules(frame, small_molecule_types, 10)
-        if (smallm.size() == 0):
+        smallm = lemon.select_small_molecules(entry, lemon.small_molecule_types, 10)
+        if (len(smallm) == 0):
             return ""
 
         # Pruning phase
-        prune_identical_residues(frame, smallm)
-        prune_cofactors(frame, smallm, common_cofactors)
-        prune_cofactors(frame, smallm, common_fatty_acids)
+        lemon.prune_identical_residues(entry, smallm)
+        lemon.prune_cofactors(entry, smallm, lemon.common_cofactors)
+        lemon.prune_cofactors(entry, smallm, lemon.common_fatty_acids)
 
         # Output phase
-        prot = ResidueIDs()
-        residues = frame.topology().residues()
-        for resid in range(0, residues.size()):
+        prot = lemon.ResidueIDs()
+        residues = entry.topology().residues()
+        for resid in range(0, len(residues)):
             prot.append(resid)
         
         result = ""
         for smallm_id in smallm:
-            lig_copy = ResidueIDs()
+            lig_copy = lemon.ResidueIDs()
             lig_copy.append(smallm_id)
 
             # Hack to remove self
-            prot_copy = ResidueIDs(prot)
-            remove_interactions(frame, prot_copy, lig_copy, 0.001)
+            prot_copy = lemon.ResidueIDs(prot)
+            lemon.remove_interactions(entry, prot_copy, lig_copy, 0.001)
 
-            vscore = vina_score(frame, smallm_id, prot_copy, 8.0)
+            vscore = lemon.vina_score(entry, smallm_id, prot_copy, 8.0)
 
             result += pdbid + "\t" 
             result += residues[smallm_id].name() + "\t" 

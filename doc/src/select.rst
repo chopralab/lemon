@@ -35,7 +35,7 @@ C++
 
 .. literalinclude:: ../../progs/count/metal_ions.cpp
    :language: cpp
-   :lines: 9-18
+   :lines: 9-19
    :dedent: 4
 
 Python
@@ -43,4 +43,4 @@ Python
 
 .. literalinclude:: ../../lang/tests/metal_ions.py
     :language: python
-    :lines: 1-13
+    :lines: 1-14

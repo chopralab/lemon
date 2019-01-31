@@ -13,22 +13,22 @@ the current thread as the key.
 
 .. literalinclude:: ../../progs/count/residues.cpp
    :language: cpp
-   :lines: 6-20
+   :lines: 6-21
    :dedent: 4
 
 Looking at a residue property
 -----------------------------
 
-We can also count the number of bioassemblies in a complex:
+We can also count the number of bioassemblies in a entry:
 
 .. literalinclude:: ../../progs/count/bioassemblies.cpp
    :language: cpp
-   :lines: 9-18
+   :lines: 9-19
    :dedent: 4
 
-or the number of alternative locations in a given complex:
+or the number of alternative locations in a given entry:
 
 .. literalinclude:: ../../progs/count/altloc.cpp
    :language: cpp
-   :lines: 9-18
+   :lines: 9-19
    :dedent: 4

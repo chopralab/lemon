@@ -11,6 +11,10 @@
 #include <thread>
 #endif
 
+#ifdef LEMON_BENCHMARK
+#include <iostream>
+#endif
+
 namespace lemon {
 
 #ifndef LEMON_USE_ASYNC
@@ -24,17 +28,15 @@ namespace lemon {
 //! See the `Lemon Workflow` documention for more details.
 //! \param worker A function object (C++11 lambda, struct the with operator()
 //!  overloaded, or std::function object) that the user wishes to apply.
-//! \param combine A function object that combines the return value of `worker`
-//!  to the `collector` object.
 //! \param [in] p A path to the Hadoop sequence file directory.
-//! \param [out] collector An object to hold the collection of values returned
 //!  by the worker object which are appended with `combine`.
+//! \param collector A function object that handles the output of `worker`.
 //! \param [in] ncpu The number of threads to use.
 //! \param [in] entries Which entries to use. Not used if blank.
 //! \param [in] skip_entries Which entries to skip. Not used if blank.
-template <typename Function, typename Combiner, typename Collector>
-inline void run_parallel(Function&& worker, Combiner&& combine,
-                         const fs::path& p, Collector& collector, size_t ncpu = 1,
+template <typename Function, typename Collector>
+inline void run_parallel(Function&& worker, const std::string& p,
+                         Collector& collector, size_t ncpu = 1,
                          const Entries& entries = Entries(),
                          const Entries& skip_entries = Entries()) {
     auto pathvec = read_hadoop_dir(p);
@@ -44,13 +46,13 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
     // Total number of jobs for each thread
     const int grainsize = static_cast<int>(pathvec.size() / ncpu);
     auto work_iter = pathvec.begin();
-    using iter = std::vector<fs::path>::iterator;
+    using iter = std::vector<std::string>::iterator;
     std::unordered_map<std::thread::id, std::list<ret>> results;
 
     auto call_function = [&worker, &results, &entries, &skip_entries](iter first, iter last) {
         auto th = std::this_thread::get_id();
         for (auto it = first; it != last; ++it) {
-            std::ifstream data(it->string(), std::istream::binary);
+            std::ifstream data(*it, std::istream::binary);
             Hadoop sequence(data);
 
             while (sequence.has_next()) {
@@ -67,8 +69,8 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
                     #endif
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
-                    auto complex = traj.read();
-                    results[th].emplace_back(worker(std::move(complex), pair.first));
+                    auto entry = traj.read();
+                    results[th].emplace_back(worker(std::move(entry), pair.first));
                     #ifdef LEMON_BENCHMARK
                     auto stop = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
@@ -91,16 +93,16 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
     }
     for (const auto& thread_result : results) {
         for (auto sub_result : thread_result.second) {
-            combine(collector, sub_result);
+            collector(sub_result);
         }
     }
 }
 
 #else
 
-template <typename Function, typename Combiner, typename Collector>
-inline void run_parallel(Function&& worker, Combiner&& combine,
-                         const fs::path& p, Collector& collector, size_t ncpu = 1,
+template <typename Function, typename Collector>
+inline void run_parallel(Function&& worker, const std::string& p,
+                         Collector& collector, size_t ncpu = 1,
                          const Entries& entries = Entries(),
                          const Entries& skip_entries = Entries()) {
     using ret = typename std::result_of<Function&(chemfiles::Frame, const std::string&)>::type;
@@ -110,7 +112,7 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
 
     for (const auto& path : pathvec) {
         threads.queue_task([path, &results, &worker, &entries, &skip_entries] {
-            std::ifstream data(path.string(), std::istream::binary);
+            std::ifstream data(path, std::istream::binary);
             Hadoop sequence(data);
             std::list<ret> mini_collector;
 
@@ -128,8 +130,8 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
                     #endif
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
-                    auto complex = traj.read();
-                    mini_collector.emplace_back(worker(std::move(complex), pair.first));
+                    auto entry = traj.read();
+                    mini_collector.emplace_back(worker(std::move(entry), pair.first));
                     #ifdef LEMON_BENCHMARK
                     auto stop = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
@@ -146,7 +148,7 @@ inline void run_parallel(Function&& worker, Combiner&& combine,
     std::size_t tasks_complete = 0;
     while (auto result = results.pop_front()) {
         for (auto sub_result : *result)
-            combine(collector, sub_result);
+            collector(sub_result);
         ++tasks_complete;
         if (tasks_complete == pathvec.size()) {
             break;

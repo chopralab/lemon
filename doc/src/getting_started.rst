@@ -12,23 +12,24 @@ function. All **Lemon** workflows must accept the arguments of
 
 .. code-block:: c++
 
-    auto worker = [](chemfiles::Frame complex, const std::string& pdbid) {
-        // do something cool with the complex pdbid and store to my_result
+    auto worker = [](chemfiles::Frame entry, const std::string& pdbid) {
+        // do something cool with the entry, pdbid and store to my_result
         return my_result;
     };
 
-Note that my_result can be of any type! There is a section on custom, user
+Note that `my_result` can be of any type! There is a section on custom, user
 defined types later on in the documentation. Once created, the *lambda*
 function is passed to the `launch` function.
 
 .. code-block:: c++
 
     lemon::Options o(argc, argv);
-    lemon::launch<lemon::print_combine>(o, worker, std::cout);
+    auto collector = lemon::print_combine(std::cout);
+    lemon::launch(o, worker, collector);
 
 The meaning of `print_combine` is to print the results of the workflow using
-the `<< operator` and `std::cout`. This may need to change if the user wishes
-for a different result or `return`s a custom type from their workflow.
+the `operator<<` and `std::cout`. This may need to change if the user wishes
+for a different result or returns a custom type from their workflow.
 
 Python
 ------

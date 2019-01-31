@@ -12,6 +12,7 @@
 
 // Mac OSX problems with a tolower macro
 #include "lemon/lemon.hpp"
+#include "lemon/launch.hpp"
 #include <pybind11/embed.h>
 
 namespace python = pybind11;
@@ -28,8 +29,8 @@ int main(int argc, char *argv[]) {
     lemon::Options o;
     std::string py_script("lemon.py");
     std::string py_derive("MyWorkflow");
-    o.add_option("py_script,p", py_script, "Python script to load");
-    o.add_option("py_class,c", py_derive, "Class deriving from Workflow");
+    o.add_option("--py_script,-p", py_script, "Python script to load");
+    o.add_option("--py_class,-c", py_derive, "Class deriving from Workflow");
     o.parse_command_line(argc, argv);
 
     // Register the module with the interpreter
@@ -59,21 +60,13 @@ int main(int argc, char *argv[]) {
     python::object py_base = PythonDerived();
     lemon::LemonPythonBase& py = py_base.cast<lemon::LemonPythonBase&>();
 
-    auto worker = [&py](chemfiles::Frame complex, const std::string& pdbid) {
-        try {
-            return py.worker(&complex, pdbid);
-        } catch (python::error_already_set& err) {
-            return pdbid + " " + err.what() + "\n";
-        } catch (python::cast_error& err) {
-            return pdbid + " Problem with type: " + err.what() + "\n";
-        } catch (std::exception& err) {
-            return pdbid + " " + err.what() + "\n";
-        } catch (...) {
-            return pdbid + " unknown error." + "\n";
-        }
+    auto worker = [&py](chemfiles::Frame entry, const std::string& pdbid) {
+        python::gil_scoped_release release;
+        return py.worker(&entry, pdbid);
     };
 
-    lemon::launch<lemon::print_combine>(o, worker, std::cout);
+    auto collector = lemon::print_combine(std::cout);
+    lemon::launch(o, worker, collector);
 
     try {
         py.finalize();

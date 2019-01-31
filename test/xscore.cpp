@@ -1,4 +1,5 @@
-#include "lemon/score.hpp"
+#include "lemon/xscore.hpp"
+
 #include <chemfiles.hpp>
 #include "lemon/prune.hpp"
 #include "lemon/select.hpp"
@@ -7,7 +8,6 @@
 #include "catch.hpp"
 
 static bool roughly(double a, double b, double tol = 1e-3) {
-    std::cout << a << " " << b << std::endl;
     return std::fabs(a - b) < tol;
 }
 

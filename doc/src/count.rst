@@ -21,7 +21,7 @@ C++
 
 .. literalinclude:: ../../progs/count/residues.cpp
    :language: cpp
-   :lines: 7-20
+   :lines: 7-21
    :dedent: 4
 
 Python

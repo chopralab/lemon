@@ -11,11 +11,7 @@ function(add_cpp_test _file_ _name_)
         ${CMAKE_CURRENT_SOURCE_DIR}/external
     )
 
-    if(MSVC)
-        target_compile_options(${_name_} PRIVATE /W4)
-    else()
-        target_compile_options(${_name_} PRIVATE -Wall -Wextra -pedantic)
-
+    if(NOT MSVC)
         if (${COVERAGE})
             target_compile_options(${_name_} PRIVATE --coverage)
             target_link_libraries(${_name_} PRIVATE --coverage)
@@ -26,16 +22,12 @@ function(add_cpp_test _file_ _name_)
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
             ws2_32
-            Boost::filesystem
-            Boost::program_options
         )
     else()
         target_link_libraries( ${_name_} PUBLIC
             ${CHEMFILES_LIBRARY}
-            Boost::filesystem
-            Boost::program_options
             pthread
-        )    
+        )
     endif()
 
     add_test(NAME ${_name_}
@@ -44,11 +36,11 @@ function(add_cpp_test _file_ _name_)
     )
 
     if (MSVC AND ${LEMON_LINK_SHARED})
-        set_tests_properties(${_name_}
-            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${Boost_LIBRARY_DIRS}\;${CMAKE_BINARY_DIR}\\chemfiles\\bin"
+        set_tests_properties( ${_name_}
+            PROPERTIES ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}\\chemfiles\\bin"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
-        set_tests_properties(${_name_}
+        set_tests_properties( ${_name_}
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )
     endif()

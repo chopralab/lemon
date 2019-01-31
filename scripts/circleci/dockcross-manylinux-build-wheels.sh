@@ -11,14 +11,6 @@ chmod u+x /tmp/dockcross-manylinux-x64
 pushd .
 mkdir deps
 cd deps
-wget --quiet https://cmake.org/files/v3.6/cmake-3.6.2-Linux-x86_64.tar.gz && tar -xvf cmake-3.6.2-Linux-x86_64.tar.gz
-curl -L http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz -O
-gunzip boost_1_58_0.tar.gz
-tar xf boost_1_58_0.tar
-cd boost_1_58_0/
-sh bootstrap.sh
-./bjam cxxflags=-fPIC cflags=-fPIC -a --with-filesystem --with-program_options
-cd ..
 git clone https://github.com/frodofine/chemfiles.git -b read_from_memory_2
 cd chemfiles
 mkdir build

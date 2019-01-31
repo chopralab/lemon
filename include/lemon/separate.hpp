@@ -10,7 +10,7 @@
 
 namespace lemon {
 
-//! Separate complexes into corresponding sub-frames
+//! Separate entry frames into corresponding sub-frames
 namespace separate {
 
 //! Copy residues from one frame into a second frame

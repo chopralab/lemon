@@ -1,7 +1,12 @@
 #include <string>
 #include <iostream>
-
+#include <mutex>
 #include "lemon/lemon.hpp"
+#include "lemon/launch.hpp"
+#include "lemon/geometry.hpp"
+#include "lemon/tmalign.hpp"
+#include "lemon/xscore.hpp"
+
 #include "chemfiles/File.hpp"
 
 #pragma clang diagnostic push
@@ -24,9 +29,8 @@ namespace lemon {
 struct LemonPythonWrap : LemonPythonBase {
     virtual std::string worker(const chemfiles::Frame* frame,
                                const std::string& pdbid) override {
-        py::gil_scoped_release release;
-        {
-            py::gil_scoped_acquire acquire;
+        py::gil_scoped_acquire acq;
+        try {
             PYBIND11_OVERLOAD_PURE(
                 std::string,
                 LemonPythonBase,
@@ -34,7 +38,17 @@ struct LemonPythonWrap : LemonPythonBase {
                 frame,
                 pdbid
             );
+        } catch (py::error_already_set& err) {
+            std::cerr << pdbid + " " + err.what() + "\n";
+        } catch (py::cast_error& err) {
+            std::cerr << pdbid + " Problem with type: " + err.what() + "\n";
+        } catch (std::exception& err) {
+            std::cerr << pdbid + " " + err.what() + "\n";
+        } catch (...) {
+            std::cerr << pdbid + " unknown error." + "\n";
         }
+
+        return std::string("");
     }
 
     virtual void finalize() override {
@@ -134,22 +148,16 @@ void append_file(const chemfiles::Frame& frame, const std::string& filename) {
 }
 
 void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t threads) {
-    auto worker = [&py](chemfiles::Frame complex, const std::string& pdbid) {
-        try {
-            return py.worker(&complex, pdbid);
-        } catch (py::error_already_set& err) {
-            return pdbid + " " + err.what() + "\n";
-        } catch (py::cast_error& err) {
-            return pdbid + " Problem with type: " + err.what() + "\n";
-        } catch (std::exception& err) {
-            return pdbid + " " + err.what() + "\n";
-        } catch (...) {
-            return pdbid + " unknown error." + "\n";
-        }
+    std::mutex py_mutex;
+    auto worker = [&py, &py_mutex](chemfiles::Frame entry, const std::string& pdbid) {
+        std::lock_guard<std::mutex> guard(py_mutex);
+        py::gil_scoped_release release;
+        return py.worker(&entry, pdbid);
     };
 
-    print_combine<std::ostream, std::string> combiner;
-    lemon::run_parallel(worker, combiner, p, std::cout, threads);
+    print_combine combiner(std::cout);
+    lemon::run_parallel(worker, p, combiner, threads);
+    py.finalize();
 }
 }
 
@@ -259,7 +267,7 @@ PYBIND11_MODULE(lemon, m) {
         .def("id", &Residue::id)
         .def("get", residue_get);
 
-    py::class_<std::vector<Residue>>(m, "ResidueVec");
+    py::bind_vector<std::vector<Residue>>(m, "ResidueVec");
 
     /**************************************************************************
      * Topology
@@ -333,20 +341,18 @@ PYBIND11_MODULE(lemon, m) {
             return to_string(v);
         })
         .def("__repl__",[](const ResidueName& v){
-            return "<ResidueName {" + to_string(v) + "}";
+            return "<ResidueName {" + to_string(v) + "}>";
         });
 
-    typedef std::pair<ResidueNameSet::iterator, bool> rns_insert_ret;
-    py::class_<rns_insert_ret>(m, "ResidueNameRet");
-
-    rns_insert_ret (ResidueNameSet::*rns_insert)
-        (const ResidueNameSet::value_type&) = &ResidueNameSet::insert;
     py::class_<ResidueNameSet>(m, "ResidueNameSet")
+        .def(py::init<>())
         .def("__len__", &ResidueNameSet::size)
         .def("__iter__", [](const ResidueNameSet& v) {
             return py::make_iterator(v.begin(), v.end());
         }, py::keep_alive<0, 1>())
-        .def("append", rns_insert)
+        .def("append", [](ResidueNameSet& v, const ResidueNameSet::value_type& t) {
+            v.insert(t);
+        })
         .def("__str__",[](const ResidueNameSet& v){
             return to_string(v);
         })
@@ -360,10 +366,13 @@ PYBIND11_MODULE(lemon, m) {
         &default_id_list::push_back;
 
     py::class_<default_id_list>(m, "ResidueIDs")
+        .def(py::init<>())
+        .def(py::init<const default_id_list&>())
         .def("__iter__", [](const default_id_list& v) {
             return py::make_iterator(v.begin(), v.end());
         }, py::keep_alive<0, 1>())
         .def("append", push_back)
+        .def("__len__", &default_id_list::size)
         .def("__str__",[](const default_id_list& v){
             return to_string(v);
         })
@@ -435,10 +444,10 @@ PYBIND11_MODULE(lemon, m) {
     /**************************************************************************
      * Count
      **************************************************************************/
-    m.def("count_altloc", count::altloc);
-    m.def("count_bioassemblies", count::bioassemblies);
-    m.def("print_residue_name_counts",
-        count::print_residue_name_counts<default_id_list>);
+    m.def("count_atomic_property", count::atom_property);
+    m.def("count_residue_property", count::residue_property);
+    m.def("count_print_residue_names",
+        count::print_residue_names<default_id_list>);
 
     void (*residues1)(const Frame&, ResidueNameCount&) = &count::residues;
     m.def("count_residues", residues1);
