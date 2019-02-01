@@ -1,10 +1,13 @@
 ## Lemon:  A framework for rapidly mining structural information from the Protein Data Bank
 
 ![Logo](doc/icon.svg)
+
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](http://chopralab.github.io/lemon)
 [![Build Status -- Linux and Mac OSX](https://travis-ci.org/chopralab/lemon.svg?branch=master)](https://travis-ci.org/chopralab/lemon)
+[![CircleCI](https://circleci.com/gh/chopralab/lemon.svg?style=svg)](https://circleci.com/gh/chopralab/lemon)
 [![Build status -- Windows](https://ci.appveyor.com/api/projects/status/gsbuqupcn2598l4d/branch/master?svg=true)](https://ci.appveyor.com/project/frodofine/lemon/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/chopralab/lemon/badge.svg?branch=master)](https://coveralls.io/github/chopralab/lemon?branch=master)
+[![PyPI version](https://badge.fury.io/py/candiy-lemon.svg)](https://badge.fury.io/py/candiy-lemon)
 
 ### What is Lemon's purpose?
 
