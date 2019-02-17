@@ -19,9 +19,11 @@ With these ideas in mind, the major, and crucial role of **Lemon** is the creati
 
 ### How do I obtain Lemon?
 
-Technically speaking, **Lemon** is a *header-only* library. This means to use lemon in your own project, just copy the `include/lemon` directory into your project and include the file `lemon/lemon.hpp`. There is *no* need to link a special library or package.
+#### C++ Library
 
-**Lemon** is developed to have as few dependencies as possible. You only need a recent C++ compiler which supports C++11. If you plan on building Python support, you will also need a copy of the Python interpreter and occompaning libraries and header files. All other dependencies are installed for you by the build system.
+Technically speaking, **Lemon** is a *header-only* library. This means to use lemon in your own chemfiles-based project, just copy the `include/lemon` directory into your project and include the file `lemon/lemon.hpp`. There is *no* need to link a special library or package.
+
+**Lemon** is developed to have as few dependencies as possible. You only need a recent **C++** compiler which supports C++11. If you plan on building Python support, you will also need a copy of the Python interpreter and occompaning libraries and header files. All other dependencies are installed for you by the build system.
 
 ```bash
 git clone https://github.com/chopralab/lemon.git
@@ -37,6 +39,16 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j 2
 
 ```
+
+#### Python Module
+
+Pre-built **Python** modules for v3.5+ are on PyPI under the name `candiy-lemon`. You can install them with `pip` using the following command:
+
+```bash
+python3 -m pip install candiy-lemon
+```
+
+For details on how to use this module, please see the *Getting Starting* page of the documentation.
 
 ### How does one use Lemon?
 

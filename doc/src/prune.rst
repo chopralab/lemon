@@ -44,8 +44,8 @@ These examples are availible in python as:
 
 .. literalinclude:: ../../lang/tests/small_molecule.py
     :language: python
-    :lines: 1-15
+    :lines: 1-14
 
 .. literalinclude:: ../../lang/tests/small_heme.py
     :language: python
-    :lines: 1-27
+    :lines: 1-26

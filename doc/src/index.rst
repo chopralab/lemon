@@ -113,6 +113,7 @@ initializes and passes to the operations of interest.
     prune
     count
     separate
+    return
 
 Miscellaneous Functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

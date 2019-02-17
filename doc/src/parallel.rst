@@ -25,13 +25,13 @@ example of how to use this given below for a sample workflow.
 .. code-block:: bash
 
     wget -N https://mmtf.rcsb.org/v1.0/hadoopfiles/full.tar
-    qsub launch_lemon.pbs -v protein_angle
+    qsub launch_lemon.pbs -v LEMON_PROG=protein_angle
 
 **Note:** The provided script will *not* work on all systems and may need to be
 edited to work in a given computing environment.
 
-Python Workflows
-----------------
+Python Workflows using lemon_python
+-----------------------------------
 
 The program `lemon_python` is secretly a **Lemon** workflow! This workflow
 searches for a class called `MyWorkflow` (which must subclass `lemon.Workflow`.
