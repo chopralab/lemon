@@ -396,7 +396,7 @@ PYBIND11_MODULE(lemon, m) {
      * Select
      **************************************************************************/
 
-    // Returns a new object    
+    // Returns a new object
     default_id_list (*small_molecules)(const Frame&,
                                        const std::unordered_set<std::string>&,
                                        size_t) =
