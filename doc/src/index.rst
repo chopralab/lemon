@@ -59,7 +59,7 @@ Prebuilt **Python** module for `pip`
 
 A prebuilt version of **Lemon** is availible on the *Python Package Index*
 (PyPI_). It can be installed for recent versions of **Python** (v3.5+). For
-Linux platforms, v2.7 is support as well for legacy reasons. Use the following
+Linux platforms, v2.7 is supported as well for legacy reasons. Use the following
 command to install it.
 
 .. code-block:: bash

@@ -48,7 +48,7 @@ Pre-built **Python** modules for v3.5+ are on PyPI under the name `candiy-lemon`
 python3 -m pip install candiy-lemon
 ```
 
-For details on how to use this module, please see the *Getting Starting* page of the documentation.
+For details on how to use this module, please see the [Getting Starting](https://chopralab.github.io/lemon/latest/getting_started.html#using-the-pypi-pip-package) page of the documentation.
 
 ### How does one use Lemon?
 
