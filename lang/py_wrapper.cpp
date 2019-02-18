@@ -301,6 +301,7 @@ PYBIND11_MODULE(lemon, m) {
         (const std::string&) const = &Frame::get;
 
     py::class_<Frame>(m, "Frame")
+        .def(py::init<>())
         .def("__len__", &Frame::size)
         .def("__get_item__", get_index<Frame,const Atom&>,
             py::return_value_policy::reference_internal)
@@ -395,7 +396,7 @@ PYBIND11_MODULE(lemon, m) {
      * Select
      **************************************************************************/
 
-    // Returns a new object    
+    // Returns a new object
     default_id_list (*small_molecules)(const Frame&,
                                        const std::unordered_set<std::string>&,
                                        size_t) =

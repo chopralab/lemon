@@ -5,6 +5,7 @@
 #include "lemon/parallel.hpp"
 #include "lemon/constants.hpp"
 
+#include <iostream>
 #include <ostream>
 
 namespace lemon {
@@ -16,12 +17,23 @@ public:
     virtual void finalize() {/*Do nothing*/}
 };
 
+//! Functor to combine the results of a workflow into a map
+//!
+//! This is a template functor which opens combines the results of a workflow
+//! into a single map object. Use this class only when the work flow returns a
+//! map oject or other type of associative array.
 template<typename Map1>
 struct map_combine {
 
+    //! Construct a map_combine class which fills the `collector`
+    //!
+    //! This constructor will copy all results to the `collector` object. This
+    //! operation is performed when the workflow completes for all entries.
+    //! \param collector A map like object to store results in. 
     map_combine(Map1& collector):
         internal_map_(collector) {}
 
+    //! Add a map to the current `collector`.
     template<typename Map2 = Map1>
     void operator()(const Map2& map2) const {
         for (const auto& sc : map2) {
@@ -33,8 +45,21 @@ private:
     Map1& internal_map_;
 };
 
+//! Functor to stream workflow results to an ostream object
+//!
+//! This is a template functor which streams workflow results to a `collector`.
+//! This class is typically used to stream text results from workflows to the
+//! `std::cout` object. Any class which derives from `std::ostream` is supported.
 struct print_combine {
 
+    //! Construct a print_combine which streams results to `collector`.
+    //!
+    //! This contructor will create a `print_combine` object which streams results
+    //! to `collector`. This argument must derive from the `std::ostream` class
+    //! and therefore provide an overload to the `<<` operator. Common examples
+    //! of `collector` are `std::cout` and friends. All workflow results are
+    //! streamed to the `collect` after all entries have been evaluated.
+    //! \param collector An object for each workflow objects will be streamed to
     print_combine(std::ostream& collector):
         internal_stream_(collector){}
 

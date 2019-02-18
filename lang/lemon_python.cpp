@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <mutex>
 
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #pragma clang diagnostic ignored "-Wold-style-cast"
@@ -60,8 +61,10 @@ int main(int argc, char *argv[]) {
     python::object py_base = PythonDerived();
     lemon::LemonPythonBase& py = py_base.cast<lemon::LemonPythonBase&>();
 
-    auto worker = [&py](chemfiles::Frame entry, const std::string& pdbid) {
+    std::mutex py_mutex;
+    auto worker = [&py, &py_mutex](chemfiles::Frame entry, const std::string& pdbid) {
         python::gil_scoped_release release;
+        std::lock_guard<std::mutex> guard(py_mutex);
         return py.worker(&entry, pdbid);
     };
 

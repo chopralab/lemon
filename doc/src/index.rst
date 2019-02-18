@@ -28,15 +28,19 @@ environments.
 Obtaining Lemon
 ---------------
 
-**Lemon**'s source code is availible under the BSD license and located at
-github_. **Lemon** can be obtained using the following commands in a UNIX-like
+C++ header library and example programs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Lemon**'s source code is availible under the BSD license and located on
+GitHub_. **Lemon** can be obtained using the following commands in a UNIX-like
 environment. To build the **C++** side of **Lemon**, you need a C++11 compiler,
 the CMake_ build system.  Note ASYNC features require a C++14 compiler.
+
 For Python support, please install the *Python interpreter* and C development
 libraries for the version of Python you wish to use and sure that this version
-of Python is the default version used on the command-line.
+of **Python** is the default version used on the command-line.
 
-.. _github: http://github.com/chopralab/lemon
+.. _GitHub: http://github.com/chopralab/lemon
 .. _CMake: https://cmake.org
 
 .. code-block:: bash
@@ -47,8 +51,47 @@ of Python is the default version used on the command-line.
     cd build
     # The LEMON_BUILD_PYTHON and LEMON_TEST_ASYNC variables are optional and
     # OFF by default
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DLEMON_BUILD_PYTHON=ON -DLEMON_TEST_ASYNC=ON
-    make -j 2
+    cmake .. -DCMAKE_BUILD_TYPE=Release # Give additional build arguments here
+    cmake --build . -- #(additional build arguments like -j2 or /m:2)
+
+Prebuilt **Python** module for `pip`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A prebuilt version of **Lemon** is availible on the *Python Package Index*
+(PyPI_). It can be installed for recent versions of **Python** (v3.5+). For
+Linux platforms, v2.7 is support as well for legacy reasons. Use the following
+command to install it.
+
+.. code-block:: bash
+
+    python3 -m pip install candiy-lemon
+
+.. _PyPI: https://pypi.org/project/candiy-lemon/
+
+Note that this package uses the synchronous threading model and is compiled
+using a relatively old version of GCC to meet the requirements of the PyPI
+service. Therefore, some users may wish to install the package themselves.
+See the next section for details.
+
+Building the **Python** module manually
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Users interested in better compiler options can opt to build the **Lemon**
+module themselves. This is the only option for supporting older versions of
+**Python** and asynchronous threading. Make sure the `python` command
+corresponds to the version of **Python** you wish to build the module for.
+
+.. code-block:: bash
+
+    git clone https://github.com/chopralab/lemon.git
+    cd lemon
+    python setup.py bdist_wheel --build-type MinSizeRel -- \
+      -DPYTHON_EXECUTABLE:FILEPATH=`which python` \
+      # Other cmake options here
+    python -m pip install *.whl # The name of the wheel file is dependant on the python version
+
+Please be sure to check the output of the build process to ensure the correct
+compiler, **Python** interpreter, and other build options are selected.
 
 Developing a **Lemon** workflow
 -------------------------------
@@ -70,6 +113,7 @@ initializes and passes to the operations of interest.
     prune
     count
     separate
+    return
 
 Miscellaneous Functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
