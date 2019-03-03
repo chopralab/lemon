@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.2)
 
 project(lemon C CXX)
 
+set(LEMON_VERSION 0.1.2)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
 option(BUILD_SHARED_LIBS "Link lemon programs dynamically" ON)
@@ -20,6 +22,46 @@ else()
 endif()
 
 include(CompilerFlags)
+
+#----------------------------------------------------------------------------------------#
+# Installation configuration
+#----------------------------------------------------------------------------------------#
+
+add_library(lemon INTERFACE)
+#target_include_directories(lemon INTERFACE include/)
+install(TARGETS lemon EXPORT lemon-targets
+    INCLUDES DESTINATION include
+)
+install(DIRECTORY include/ DESTINATION include)
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/lemon-config-version.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/lemon-config-version.cmake"
+    @ONLY
+)
+
+# Install package files
+set(PACKAGE_LOCATION lib${LIB_SUFFIX}/cmake/lemon)
+install(EXPORT lemon-targets
+  FILE lemon-targets.cmake
+  DESTINATION ${PACKAGE_LOCATION}
+)
+install(FILES
+    cmake/lemon-config.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/lemon-config-version.cmake"
+    DESTINATION ${PACKAGE_LOCATION}
+    COMPONENT Devel
+)
+
+# uninstall target
+configure_file(
+    "${PROJECT_SOURCE_DIR}/cmake/uninstall.in.cmake"
+    "${PROJECT_BINARY_DIR}/uninstall.cmake"
+    @ONLY
+)
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/uninstall.cmake
+)
 
 if (${LEMON_BUILD_DOCS})
     add_subdirectory(doc)
