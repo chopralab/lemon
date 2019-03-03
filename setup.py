@@ -19,7 +19,7 @@ setup(
     setup_requires=["scikit-build"],
     cmake_args=[
         '-DLEMON_BUILD_PYTHON:BOOL=OFF',
-        '-DLEMON_LINK_SHARED:BOOL=OFF',
+        '-DBUILD_SHARED_LIBS:BOOL=OFF',
         '-DLEMON_BUILD_PROGS:BOOL=OFF',
     ],
     packages=['candiy_lemon'],

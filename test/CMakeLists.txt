@@ -35,11 +35,11 @@ function(add_cpp_test _file_ _name_)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-    if (MSVC AND ${LEMON_LINK_SHARED})
+    if (MSVC AND ${BUILD_SHARED_LIBS})
         set_tests_properties( ${_name_}
             PROPERTIES ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}\\chemfiles\\bin"
         )
-    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
+    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${BUILD_SHARED_LIBS})
         set_tests_properties( ${_name_}
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )
