@@ -37,7 +37,7 @@ target_include_directories(lemon INTERFACE
 )
 
 if (MSVC)
-    target_link_libraries(lemon INTERFACE $<BUILD_INTERFACE::chemfiles> ws2_32)
+    target_link_libraries(lemon INTERFACE chemfiles ws2_32)
 else()
     target_link_libraries(lemon INTERFACE chemfiles pthread)
 endif()
