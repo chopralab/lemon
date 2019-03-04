@@ -16,7 +16,7 @@ option(LEMON_BUILD_PYTHON "Build Python support" OFF)
 option(LEMON_EXTERNAL_CHEMFILES "Should we use an external chemfiles?" OFF)
 
 if (${LEMON_EXTERNAL_CHEMFILES})
-    find_package(Chemfiles)
+    find_package(chemfiles REQUIRED)
 else()
     include(InstallChemfiles)
 endif()
@@ -28,10 +28,16 @@ include(CompilerFlags)
 #----------------------------------------------------------------------------------------#
 
 add_library(lemon INTERFACE)
-#target_include_directories(lemon INTERFACE include/)
 install(TARGETS lemon EXPORT lemon-targets
     INCLUDES DESTINATION include
 )
+
+if (MSVC)
+    target_link_libraries(lemon INTERFACE $<BUILD_INTERFACE::chemfiles> ws2_32)
+else()
+    target_link_libraries(lemon INTERFACE chemfiles pthread)
+endif()
+
 install(DIRECTORY include/ DESTINATION include)
 
 configure_file(

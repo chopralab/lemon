@@ -35,23 +35,10 @@ if (${LEMON_BUILD_PYTHON})
 
     target_include_directories(lemon_python PRIVATE
         ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
         ${PYTHON_INCLUDE_DIRS}
     )
 
-    if (MSVC)
-        target_link_libraries(lemon_python
-            ${CHEMFILES_LIBRARY}
-            pybind11::embed
-            ws2_32
-        )
-    else()
-        target_link_libraries(lemon_python
-            ${CHEMFILES_LIBRARY}
-            pybind11::embed
-            pthread
-        )
-    endif()
+    target_link_libraries(lemon_python lemon pybind11::embed)
 
     add_python_test(simple)
     add_python_test(count)
@@ -66,25 +53,14 @@ if (${LEMON_BUILD_PYTHON})
 endif()
 
 if(SKBUILD)
-    pybind11_add_module(lemon py_wrapper.cpp)
+    pybind11_add_module(pylemon py_wrapper.cpp)
 
-    target_include_directories(lemon PRIVATE
+    target_include_directories(pylemon PRIVATE
         ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
     )
 
-    if (MSVC)
-        target_link_libraries(lemon PRIVATE
-            ${CHEMFILES_LIBRARY}
-            ws2_32
-        )
-    else()
-        target_link_libraries(lemon PRIVATE
-            ${CHEMFILES_LIBRARY}
-            pthread
-        )
-    endif()
+    target_link_libraries(pylemon lemon)
 
-    install(TARGETS lemon LIBRARY COMPONENT lemon DESTINATION "candiy_lemon")
+    install(TARGETS lemon LIBRARY COMPONENT lemon DESTINATION "candiy_lemon" RENAME lemon)
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py COMPONENT python DESTINATION "candiy_lemon")
 endif()

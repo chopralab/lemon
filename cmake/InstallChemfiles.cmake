@@ -28,5 +28,6 @@ endif()
 
 add_dependencies(chemfiles CHEMFILES)
 
-set(CHEMFILES_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles/include)
-set(CHEMFILES_LIBRARY chemfiles)
+set_target_properties(chemfiles PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}/chemfiles/include
+)

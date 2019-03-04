@@ -18,17 +18,7 @@ function(add_cpp_test _file_ _name_)
         endif()
     endif()
 
-    if (MSVC)
-        target_link_libraries( ${_name_} PUBLIC
-            ${CHEMFILES_LIBRARY}
-            ws2_32
-        )
-    else()
-        target_link_libraries( ${_name_} PUBLIC
-            ${CHEMFILES_LIBRARY}
-            pthread
-        )
-    endif()
+    target_link_libraries( ${_name_} PRIVATE lemon)
 
     add_test(NAME ${_name_}
         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${_name_}
