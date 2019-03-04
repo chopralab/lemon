@@ -12,11 +12,6 @@ function(add_cpp_prog _file_)
         endif()
     endif()
 
-    target_include_directories(${_name_} SYSTEM PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
-    )
-
     if(${LEMON_TEST_ASYNC})
         target_compile_definitions(${_name_} PRIVATE LEMON_USE_ASYNC=1)
     endif()

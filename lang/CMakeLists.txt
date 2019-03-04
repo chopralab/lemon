@@ -33,11 +33,6 @@ if (${LEMON_BUILD_PYTHON})
     add_executable(lemon_python ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp
                                 ${CMAKE_CURRENT_SOURCE_DIR}/py_wrapper.cpp)
 
-    target_include_directories(lemon_python PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-        ${PYTHON_INCLUDE_DIRS}
-    )
-
     target_link_libraries(lemon_python lemon pybind11::embed)
 
     add_python_test(simple)
@@ -55,12 +50,8 @@ endif()
 if(SKBUILD)
     pybind11_add_module(pylemon py_wrapper.cpp)
 
-    target_include_directories(pylemon PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-    )
+    target_link_libraries(pylemon PUBLIC lemon)
 
-    target_link_libraries(pylemon lemon)
-
-    install(TARGETS lemon LIBRARY COMPONENT lemon DESTINATION "candiy_lemon" RENAME lemon)
+    install(TARGETS pylemon LIBRARY COMPONENT lemon DESTINATION "candiy_lemon" RENAME lemon)
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py COMPONENT python DESTINATION "candiy_lemon")
 endif()

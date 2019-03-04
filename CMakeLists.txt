@@ -32,6 +32,10 @@ install(TARGETS lemon EXPORT lemon-targets
     INCLUDES DESTINATION include
 )
 
+target_include_directories(lemon INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+
 if (MSVC)
     target_link_libraries(lemon INTERFACE $<BUILD_INTERFACE::chemfiles> ws2_32)
 else()

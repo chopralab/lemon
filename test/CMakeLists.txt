@@ -6,8 +6,6 @@ function(add_cpp_test _file_ _name_)
     endif()
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
     target_include_directories(${_name_} SYSTEM PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/external
     )
 
