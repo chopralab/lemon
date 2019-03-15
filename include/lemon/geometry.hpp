@@ -1,10 +1,10 @@
 #ifndef LEMON_GEOMETRY_HPP
 #define LEMON_GEOMETRY_HPP
 
-#include <string>
 #include "chemfiles/Frame.hpp"
-#include "lemon/residue_name.hpp"
 #include "lemon/constants.hpp"
+#include "lemon/residue_name.hpp"
+#include <string>
 
 namespace lemon {
 
@@ -13,11 +13,11 @@ namespace geometry {
 
 //! Error to handle odd geometries
 class geometry_error : public std::logic_error {
-public:
-    explicit geometry_error( const std::string& what_arg ) :
-        std::logic_error(what_arg) {}
-    explicit geometry_error( const char* what_arg ) :
-        std::logic_error(what_arg) {}
+  public:
+    explicit geometry_error(const std::string& what_arg)
+        : std::logic_error(what_arg) {}
+    explicit geometry_error(const char* what_arg)
+        : std::logic_error(what_arg) {}
 };
 
 //! Is special residue
@@ -39,14 +39,13 @@ namespace protein {
 //! {residue}_{atom1}_{atom2} for bonds within a single residue not part of the
 //! amino acid linker. For bonds within the amino acid linker, only the atom
 //! names are returned, ('CA_C', 'CA_N', 'C_O'), unless the residue name is in
-//! `special` (C_O not included)). The default special residues are proline derivatives.
-//! For peptide bonds and disulphide bridges, 'peptide_bond' and 'SG_SG'
-//! are returned.
-//! Other types of inter-residue bonds result in a geometry error being thrown.
-//! \param [in] entry Structure containing the peptide residues of interest
-//! \param [in] bond Bond which name is going to be obtained
-//! \param [in] special Residue names that should be handled differently
-//! \return The name of the bond.
+//! `special` (C_O not included)). The default special residues are proline
+//! derivatives. For peptide bonds and disulphide bridges, 'peptide_bond' and
+//! 'SG_SG' are returned. Other types of inter-residue bonds result in a
+//! geometry error being thrown. \param [in] entry Structure containing the
+//! peptide residues of interest \param [in] bond Bond which name is going to be
+//! obtained \param [in] special Residue names that should be handled
+//! differently \return The name of the bond.
 inline std::string bond_name(const chemfiles::Frame& entry,
                              const chemfiles::Bond& bond,
                              const ResidueNameSet& special = proline_res) {
@@ -84,9 +83,11 @@ inline std::string bond_name(const chemfiles::Frame& entry,
             return "SG_SG";
         }
 
+        // clang-format off
         throw geometry_error( "Unhandled inter-residue bond: " +
                               residue1->name() + "_" + atom1.name() + " " +
                               residue2->name() + "_" + atom2.name());
+        // clang-format on
     }
 
     // Let's keep the aminoacid group all the same (except proline)
@@ -104,12 +105,11 @@ inline std::string bond_name(const chemfiles::Frame& entry,
 //! This function returns the 'name' of a given angle in the form
 //! {residue}_{atom1}_{atom2}_{atom3} for angles within a single residue not
 //! part of the amino acid linker, namely: CA_C_O, N_C_O, and O_C_OXT.
-//! Inter-residue angles not part of the linker are handled similarly, both with the
-//! exception of proline derivates.
-//! Other types of inter-residue angles result in a geometry error being thrown.
-//! \param [in] entry Structure containing the peptide residues of interest
-//! \param [in] angle angle which name is going to be obtained
-//! \return The name of the angle.
+//! Inter-residue angles not part of the linker are handled similarly, both with
+//! the exception of proline derivates. Other types of inter-residue angles
+//! result in a geometry error being thrown. \param [in] entry Structure
+//! containing the peptide residues of interest \param [in] angle angle which
+//! name is going to be obtained \return The name of the angle.
 inline std::string angle_name(const chemfiles::Frame& entry,
                               const chemfiles::Angle& angle) {
     const auto& atom1 = entry[angle[0]];
@@ -154,9 +154,8 @@ inline std::string angle_name(const chemfiles::Frame& entry,
         if (hatom == "N" || hatom == "OXT") {
             return latom + "_" + catom + "_" + hatom;
         }
-        throw geometry_error("Odd angle centered on 'C' atom " + latom +
-                             "_" + hatom);
-
+        throw geometry_error("Odd angle centered on 'C' atom " + latom + "_" +
+                             hatom);
     }
 
     if ((latom == "C" || hatom == "C") && catom == "CA") {
@@ -188,6 +187,7 @@ inline std::string angle_name(const chemfiles::Frame& entry,
     const auto& residue1 = entry.topology().residue_for_atom(angle[0]);
     const auto& residue3 = entry.topology().residue_for_atom(angle[2]);
 
+    // clang-format off
     if (residue1 != residue3) {
         const auto& residue2 = entry.topology().residue_for_atom(angle[1]);
         throw geometry_error("Unhandled inter-residue angle: " +
@@ -195,6 +195,7 @@ inline std::string angle_name(const chemfiles::Frame& entry,
                              residue2->name() + "_" + atom2.name() + " " +
                              residue3->name() + "_" + atom3.name());
     }
+    // clang-format on
 
     return residue1->name() + "_" + latom + "_" + catom + "_" + hatom;
 }
@@ -273,15 +274,13 @@ inline std::string dihedral_name(const chemfiles::Frame& entry,
     // Inter-residue dihedral for the peptide to N-CA bond
     // The version of this to the N-H bond is covered previously
     // The case for alpha-carbon to alpha-carbon is already covered
-    if ((llatom == "N" && hhatom == "O") ||
-        (llatom == "O" && hhatom == "N")) {
+    if ((llatom == "N" && hhatom == "O") || (llatom == "O" && hhatom == "N")) {
         return name + "N_CA_C_O";
     }
 
     // Inter-residue dihedral for the peptide bond
     // The version of this to the N-H bond is covered previously
-    if ((lcatom == "C" && hcatom == "N") ||
-        (lcatom == "N" && hcatom == "C")) {
+    if ((lcatom == "C" && hcatom == "N") || (lcatom == "N" && hcatom == "C")) {
         return name + "CA_N_C_O";
     }
 
@@ -302,7 +301,7 @@ inline std::string dihedral_name(const chemfiles::Frame& entry,
 //!
 //! This function returns the 'name' of a given improper in the form
 //! {residue}_{atom1}_{atom2}_{atom3}_{atom4} for impropers within a single
-//! residue not part of the amino acid linker (CA_C_N_O). 
+//! residue not part of the amino acid linker (CA_C_N_O).
 //! \param [in] entry Structure containing the peptide residues of interest
 //! \param [in] improper Improper dihedral which name is going to be obtained
 //! \param [in] special Residue names that should be handled differently
@@ -316,11 +315,11 @@ inline std::string improper_name(const chemfiles::Frame& entry,
     const auto& atom4 = entry[improper[3]];
 
     auto min_str = [](const std::string& s1, const std::string& s2) {
-        return (s1 < s2)? s1 : s2;
+        return (s1 < s2) ? s1 : s2;
     };
 
     auto max_str = [](const std::string& s1, const std::string& s2) {
-        return (s1 > s2)? s1 : s2;
+        return (s1 > s2) ? s1 : s2;
     };
 
     const std::string& latom =
@@ -365,8 +364,8 @@ inline std::string improper_name(const chemfiles::Frame& entry,
     return cresidue->name() + "_" + latom + "_" + catom + "_" + matom + "_" +
            hatom;
 }
-} // protein
-} // geometry
-} // lemon
+} // namespace protein
+} // namespace geometry
+} // namespace lemon
 
 #endif

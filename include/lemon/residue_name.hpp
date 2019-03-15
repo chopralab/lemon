@@ -43,42 +43,42 @@ class ResidueName : private std::array<char, 3> {
         return static_cast<char>(10 + c - 'A');
     }
 
-   public:
+  public:
     ResidueName(const std::string& s) : super({{0, 0, 0}}) {
         switch (s.length()) {
-            case 3:
-                (*this)[2] = check_digit_(s[2]);
-            case 2:
-                (*this)[1] = check_digit_(s[1]);
-            case 1:
-                (*this)[0] = check_digit_(s[0]);
-                break;
-            default:
-                throw std::length_error(
-                    "Cannot have a residue name with given character length");
-                break;
+        case 3:
+            (*this)[2] = check_digit_(s[2]);
+        case 2:
+            (*this)[1] = check_digit_(s[1]);
+        case 1:
+            (*this)[0] = check_digit_(s[0]);
+            break;
+        default:
+            throw std::length_error(
+                "Cannot have a residue name with given character length");
+            break;
         }
     }
     ResidueName(const char* s) : super({{0, 0, 0}}) {
         switch (std::strlen(s)) {
-            case 3:
-                (*this)[2] = check_digit_(s[2]);
-            case 2:
-                (*this)[1] = check_digit_(s[1]);
-            case 1:
-                (*this)[0] = check_digit_(s[0]);
-                break;
-            default:
-                throw std::length_error(
-                    "Cannot have a residue name with given character length");
-                break;
+        case 3:
+            (*this)[2] = check_digit_(s[2]);
+        case 2:
+            (*this)[1] = check_digit_(s[1]);
+        case 1:
+            (*this)[0] = check_digit_(s[0]);
+            break;
+        default:
+            throw std::length_error(
+                "Cannot have a residue name with given character length");
+            break;
         }
     }
 
     unsigned short hash() const {
-        return static_cast<unsigned short>(
-               clamp_((*this)[0]) + clamp_((*this)[1]) * 37 +
-               clamp_((*this)[2]) * (37 * 37));
+        return static_cast<unsigned short>(clamp_((*this)[0]) +
+                                           clamp_((*this)[1]) * 37 +
+                                           clamp_((*this)[2]) * (37 * 37));
     }
     const std::array<char, 3>& operator*() const { return *this; }
 };
@@ -95,16 +95,15 @@ inline bool operator==(const ResidueName& lhs, const ResidueName& rhs) {
 
 inline bool operator==(const ResidueName& lhs, const std::string& rhs) {
     switch (rhs.length()) {
-        case 3:
-            return (lhs[0] == rhs[0]) && (lhs[1] == rhs[1]) &&
-                   (lhs[2] == rhs[2]);
-            break;
-        case 2:
-            return (lhs[0] == rhs[0]) && (lhs[1] == rhs[1]) && (lhs[2] == 0);
-            break;
-        case 1:
-            return (lhs[0] == rhs[0]) && (lhs[1] == 0) && (lhs[2] == 0);
-            break;
+    case 3:
+        return (lhs[0] == rhs[0]) && (lhs[1] == rhs[1]) && (lhs[2] == rhs[2]);
+        break;
+    case 2:
+        return (lhs[0] == rhs[0]) && (lhs[1] == rhs[1]) && (lhs[2] == 0);
+        break;
+    case 1:
+        return (lhs[0] == rhs[0]) && (lhs[1] == 0) && (lhs[2] == 0);
+        break;
     }
 
     return false;
@@ -182,6 +181,6 @@ inline std::ostream& operator<<(std::ostream& os, const ResidueNameSet& rnc) {
     }
     return os;
 }
-}
+} // namespace lemon
 
 #endif

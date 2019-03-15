@@ -5,18 +5,17 @@
 #include <chrono>
 #include <deque>
 #include <future>
+#include <mutex>
 #include <sstream>
 #include <thread>
 #include <utility>
 #include <vector>
-#include <mutex>
 
 #include "chemfiles/external/optional.hpp"
 
 namespace lemon {
 
-template <class T>
-struct threaded_queue {
+template <class T> struct threaded_queue {
     using lock = std::unique_lock<std::mutex>;
     void push_back(T t) {
         {
@@ -29,7 +28,8 @@ struct threaded_queue {
     chemfiles::optional<T> pop_front() {
         lock l(m);
         cv.wait(l, [this] { return abort || !data.empty(); });
-        if (abort) return chemfiles::nullopt;
+        if (abort)
+            return chemfiles::nullopt;
         auto r = std::move(data.back());
         data.pop_back();
         return std::move(r);
@@ -46,7 +46,7 @@ struct threaded_queue {
 
     ~threaded_queue() { terminate(); }
 
-   private:
+  private:
     std::mutex m;
     std::deque<T> data;
     std::condition_variable cv;
@@ -103,11 +103,11 @@ struct thread_pool {
         }
     }
 
-   private:
+  private:
     std::vector<std::future<void>> threads;
     threaded_queue<std::packaged_task<void()>> tasks;
     std::atomic<std::size_t> active;
 };
-}  // namespace lemon
+} // namespace lemon
 
 #endif

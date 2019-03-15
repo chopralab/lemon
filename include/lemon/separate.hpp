@@ -1,12 +1,12 @@
 #ifndef LEMON_SEPARATE_HPP
 #define LEMON_SEPARATE_HPP
 
-#include <set>
 #include <list>
+#include <set>
 #include <unordered_set>
 
-#include "chemfiles/Topology.hpp"
 #include "chemfiles/Frame.hpp"
+#include "chemfiles/Topology.hpp"
 
 namespace lemon {
 
@@ -22,15 +22,15 @@ namespace separate {
 //! \param [in] input The original Frame from where the residues will be copied.
 //! \param [in] accepted_residues The residue IDs for the residues to be copied.
 //! \param [in,out] new_frame The frame where the residues wil be copied to.
-template<typename Container>
+template <typename Container>
 inline void residues(const chemfiles::Frame& input,
                      const Container& accepted_residues,
                      chemfiles::Frame& new_frame) {
 
-    const auto& residues  = input.topology().residues();
+    const auto& residues = input.topology().residues();
     const auto& positions = input.positions();
     const auto& old_bonds = input.topology().bonds();
-    const auto& bond_ord  = input.topology().bond_orders();
+    const auto& bond_ord = input.topology().bond_orders();
 
     std::unordered_map<size_t, size_t> old_to_new;
     std::unordered_set<size_t> accepted_atoms;
@@ -55,8 +55,8 @@ inline void residues(const chemfiles::Frame& input,
             accepted_atoms.count(old_bonds[bond_idx][1])) {
 
             new_frame.add_bond(old_to_new[old_bonds[bond_idx][0]],
-                    old_to_new[old_bonds[bond_idx][1]],
-                    bond_ord[bond_idx]);
+                               old_to_new[old_bonds[bond_idx][1]],
+                               bond_ord[bond_idx]);
         }
     }
 }
@@ -68,12 +68,12 @@ inline void residues(const chemfiles::Frame& input,
 //! *environment* into separate *frame*s s that they can written to disk.
 //! \param [in] input The original Frame from where the residues will be copied.
 //! \param [in] ligand_id The residue IDs for the ligand.
-//! \param [in] pocket_size The radius of the ligand environment copied into protein
-//! \param [in,out] protein The frame where the protein residues wil be copied to.
-//! \param [in,out] ligand The frame where the ligand residue will be copied to.
-inline void protein_and_ligand(const chemfiles::Frame& input,
-                               size_t ligand_id, double pocket_size,
-                               chemfiles::Frame& protein,
+//! \param [in] pocket_size The radius of the ligand environment copied into
+//! protein \param [in,out] protein The frame where the protein residues wil be
+//! copied to. \param [in,out] ligand The frame where the ligand residue will be
+//! copied to.
+inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
+                               double pocket_size, chemfiles::Frame& protein,
                                chemfiles::Frame& ligand) {
     const auto& topo = input.topology();
     const auto& residues = topo.residues();
@@ -94,7 +94,7 @@ inline void protein_and_ligand(const chemfiles::Frame& input,
                 }
             }
         }
-        found_interaction:;
+    found_interaction:;
     }
 
     lemon::separate::residues(input, accepted_residues, protein);

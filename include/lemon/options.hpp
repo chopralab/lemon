@@ -14,35 +14,34 @@ namespace lemon {
 //! cores to use for a given search or a preselected set of entries.
 //! Users can add their own options with the `add_options` member function.
 class Options : public CLI::App {
-   public:
+  public:
     //! Default constructor to initialize a custom `Options` class
     //!
     //! This constructor is intended for users who wish to add their own custom
     //! options. The *work_dir*, *ncpu*, and *entries* options are added
     //! automatically and additional options can be added with the `add_option`
     //! function.
-    Options()
-        : work_dir_("."), ncpu_(1) {
+    Options() : work_dir_("."), ncpu_(1) {
         add_option("--work_dir,-w", work_dir_,
-                   "Directory containing the MMTF or Hadoop files")->
-                   ignore_case()->
-                   ignore_underscore()->
-                   check(CLI::ExistingDirectory);
+                   "Directory containing the MMTF or Hadoop files")
+            ->ignore_case()
+            ->ignore_underscore()
+            ->check(CLI::ExistingDirectory);
 
         add_option("--ncpu,-n", ncpu_,
-                   "Number of CPUs used for run independant jobs")->
-                   ignore_case();
+                   "Number of CPUs used for run independant jobs")
+            ->ignore_case();
 
         add_option("--entries,-e", entries_,
-                   "Preselected index file returned by RCSB")->
-                   ignore_case()->
-                   check(CLI::ExistingFile);
+                   "Preselected index file returned by RCSB")
+            ->ignore_case()
+            ->check(CLI::ExistingFile);
 
         add_option("--skip_entries,-s", skip_entries_,
-                   "Index file containing PDB ids to skip")->
-                   ignore_case()->
-                   ignore_underscore()->
-                   check(CLI::ExistingFile);
+                   "Index file containing PDB ids to skip")
+            ->ignore_case()
+            ->ignore_underscore()
+            ->check(CLI::ExistingFile);
     }
 
     //! Constructor for an `Options` class which does not use custom options
@@ -69,7 +68,7 @@ class Options : public CLI::App {
     void parse_command_line(int argc, const char* const argv[]) {
         try {
             parse((argc), (argv));
-        } catch(const CLI::ParseError &e) {
+        } catch (const CLI::ParseError& e) {
             this->exit(e);
             std::exit(1);
         }
@@ -85,15 +84,14 @@ class Options : public CLI::App {
     const std::string& entries() const { return entries_; }
 
     //! Index to skip entries.
-    const std::string& skip_entries() const {return skip_entries_;}
+    const std::string& skip_entries() const { return skip_entries_; }
 
-   private:
-
+  private:
     std::string work_dir_;
     size_t ncpu_;
     std::string entries_;
     std::string skip_entries_;
 };
-}  // namespace lemon
+} // namespace lemon
 
 #endif
