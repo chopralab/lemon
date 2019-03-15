@@ -6,8 +6,8 @@
 #include "lemon/geometry.hpp"
 
 // typedefs for binned data
-typedef std::pair<std::string, size_t> BondAngleBin;
-typedef std::map<BondAngleBin, size_t> AngleCounts;
+using BondAngleBin = std::pair<std::string, size_t>;
+using AngleCounts  = std::map<BondAngleBin, size_t>;
 
 using lemon::geometry::protein::angle_name;
 
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
             }
 
             auto theta = protein_only.angle(angle[0], angle[1], angle[2]);
-            size_t bin = static_cast<size_t>(std::floor(theta / bin_size));
+            auto bin = static_cast<size_t>(std::floor(theta / bin_size));
 
             BondAngleBin sbin = {anglenm, bin};
             auto bin_iterator = bins.find(sbin);

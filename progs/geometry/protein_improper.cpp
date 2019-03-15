@@ -7,8 +7,8 @@
 #include "lemon/geometry.hpp"
 
 // typedefs for binned data
-typedef std::pair<std::string, int> BondImproperBin;
-typedef std::map<BondImproperBin, size_t> ImproperCounts;
+using BondImproperBin = std::pair<std::string, int>;
+using ImproperCounts  = std::map<BondImproperBin, size_t>;
 
 using lemon::geometry::protein::improper_name;
 
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
             auto theta = protein_only.out_of_plane(improper[0], improper[1],
                                                    improper[2], improper[3]);
 
-            int bin = static_cast<int>(std::floor(theta / bin_size));
+            auto bin = static_cast<int>(std::floor(theta / bin_size));
 
             BondImproperBin sbin = {impropernm, bin};
             auto bin_iterator = bins.find(sbin);

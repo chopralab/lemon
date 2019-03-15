@@ -6,8 +6,8 @@
 #include "lemon/geometry.hpp"
 
 // typedefs for binned data
-typedef std::pair<std::string, size_t> BondStretchBin;
-typedef std::map<BondStretchBin, size_t> StretchCounts;
+using BondStretchBin = std::pair<std::string, size_t>;
+using StretchCounts  =  std::map<BondStretchBin, size_t>;
 
 using lemon::geometry::protein::bond_name;
 
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
                 std::cerr << msg;
             }
             auto distance = protein_only.distance(bond[0], bond[1]);
-            size_t bin = static_cast<size_t>(std::floor(distance / bin_size));
+            auto bin = static_cast<size_t>(std::floor(distance / bin_size));
 
             BondStretchBin sbin = {bondnm, bin};
             auto bin_iterator = bins.find(sbin);

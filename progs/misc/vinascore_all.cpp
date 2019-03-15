@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
             auto prot_copy = proteins;
 
             lemon::prune::keep_interactions(entry, smallm, prot_copy, 8.0);
-            prot_copy.erase(std::remove(prot_copy.begin(), prot_copy.end(), smallm_id));
+            prot_copy.erase(std::remove(prot_copy.begin(), prot_copy.end(), smallm_id), prot_copy.end());
 
             auto vscore =
                 lemon::xscore::vina_score(entry, smallm_id, prot_copy);
