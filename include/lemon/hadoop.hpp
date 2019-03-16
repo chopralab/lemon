@@ -27,8 +27,7 @@ namespace lemon {
 //! supplied by RCSB at this location:
 //! [Full](https://mmtf.rcsb.org/v1.0/hadoopfiles/full.tar)
 class Hadoop {
-   public:
-
+  public:
     //! Create a `Hadoop` class using a `std::istream`.
     //!
     //! This Hadoop constructor takes a binary stream as input.  This stream
@@ -51,7 +50,7 @@ class Hadoop {
     //! PDB ID and the second contains the GZ compressed MMTF file.
     std::pair<std::string, std::vector<char>> next() { return read(); }
 
-   private:
+  private:
     std::istream& stream_;
     std::string marker_ = "";
     std::vector<char> key_;
@@ -108,8 +107,8 @@ class Hadoop {
 //! \brief Read a directory containing hadoop sequence files
 inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
 
-    struct dirent *entry;
-    DIR *dp;
+    struct dirent* entry;
+    DIR* dp;
     std::vector<std::string> pathvec;
     pathvec.reserve(700);
 
@@ -119,8 +118,7 @@ inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
     }
 
     while ((entry = readdir(dp))) {
-        if (entry->d_name[0] == '_' ||
-            entry->d_name[0] == '.' ||
+        if (entry->d_name[0] == '_' || entry->d_name[0] == '.' ||
             entry->d_type != DT_REG) {
             continue;
         }
@@ -140,6 +138,6 @@ inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
     closedir(dp);
     return pathvec;
 }
-}  // namespace lemon
+} // namespace lemon
 
 #endif

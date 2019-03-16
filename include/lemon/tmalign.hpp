@@ -1,19 +1,19 @@
 #ifndef LEMON_STRUCTURE_HPP
 #define LEMON_STRUCTURE_HPP
 
+#include "chemfiles/Frame.hpp"
 #include <algorithm>
 #include <set>
-#include "chemfiles/Frame.hpp"
 
 namespace lemon {
 
 namespace tmalign {
 
 inline double kabsch(const std::vector<double>& w,
-              const std::vector<chemfiles::Vector3D>& x,
-              const std::vector<chemfiles::Vector3D>& y, size_t n,
-              chemfiles::Matrix3D& u, chemfiles::Vector3D& t, int& ier,
-              double tol = 0.010, double tol2 = 0.010) {
+                     const std::vector<chemfiles::Vector3D>& x,
+                     const std::vector<chemfiles::Vector3D>& y, size_t n,
+                     chemfiles::Matrix3D& u, chemfiles::Vector3D& t, int& ier,
+                     double tol = 0.010, double tol2 = 0.010) {
     auto r = chemfiles::Matrix3D::zero();
     auto a = chemfiles::Matrix3D::unit();
     auto b = chemfiles::Matrix3D::zero();
@@ -30,11 +30,13 @@ inline double kabsch(const std::vector<double>& w,
     constexpr std::array<size_t, 4> ip2312 = {1, 2, 0, 1};
 
     ier = -1;
-    if (n == 0) return 0.0;
+    if (n == 0)
+        return 0.0;
 
     ier = -2;
     for (size_t m = 0; m < n; ++m) {
-        if (w[m] < 0.0) return 0.0;
+        if (w[m] < 0.0)
+            return 0.0;
         wc += w[m];
         for (size_t i = 0; i < 3; ++i) {
             xc[i] += w[m] * x[m][i];
@@ -42,7 +44,8 @@ inline double kabsch(const std::vector<double>& w,
         }
     }
 
-    if (wc <= 0.0) return 0.0;
+    if (wc <= 0.0)
+        return 0.0;
     for (size_t i = 0; i < 3; ++i) {
         xc[i] /= wc;
         yc[i] /= wc;
@@ -81,7 +84,8 @@ inline double kabsch(const std::vector<double>& w,
         e[i] = spur;
     }
 
-    if (spur <= 0) goto middle;
+    if (spur <= 0)
+        goto middle;
 
     d = spur * spur;
     h = d - cof;
@@ -92,7 +96,8 @@ inline double kabsch(const std::vector<double>& w,
 
     sqrth = std::sqrt(h);
     d = h * h * h - g * g;
-    if (d < 0.0) d = 0.0;
+    if (d < 0.0)
+        d = 0.0;
 
     d = std::atan2(std::sqrt(d), -g) / 3.0;
     cth = sqrth * std::cos(d);
@@ -114,7 +119,8 @@ inline double kabsch(const std::vector<double>& w,
 
         if (std::abs(ss[0]) >= std::abs(ss[2])) {
             j = 1;
-            if (std::abs(ss[0]) < std::abs(ss[5])) j = 3;
+            if (std::abs(ss[0]) < std::abs(ss[5]))
+                j = 3;
         } else if (std::abs(ss[2]) >= std::abs(ss[5])) {
             j = 2;
         } else {
@@ -129,7 +135,8 @@ inline double kabsch(const std::vector<double>& w,
             a[l][i] = static_cast<double>(ss[k]);
             d += ss[k] * ss[k];
         }
-        if (d > 0) d = 1.0 / std::sqrt(d);
+        if (d > 0)
+            d = 1.0 / std::sqrt(d);
         for (size_t i = 0; i < 3; ++i) {
             a[l][i] *= d;
         }
@@ -156,7 +163,8 @@ inline double kabsch(const std::vector<double>& w,
         p = 1.0;
         size_t j = 0;
         for (size_t i = 0; i < 3; ++i) {
-            if (p < std::abs(a[m][i])) continue;
+            if (p < std::abs(a[m][i]))
+                continue;
             p = std::abs(a[m][i]);
             j = i;
         }
@@ -164,7 +172,8 @@ inline double kabsch(const std::vector<double>& w,
         size_t k = ip2312[j];
         size_t l = ip2312[j + 1];
         p = std::sqrt(a[m][k] * a[m][k] + a[m][l] * a[m][l]);
-        if (p <= tol2) goto middle;
+        if (p <= tol2)
+            goto middle;
         a[m1][j] = 0;
         a[m1][k] = -a[m][l] / p;
         a[m1][l] = a[m][k] / p;
@@ -187,7 +196,8 @@ begin:
             b[l][i] = r[0][i] * a[l][0] + r[1][i] * a[l][1] + r[2][i] * a[l][2];
             d += b[l][i] * b[l][i];
         }
-        if (d > 0.0) d = 1.0 / std::sqrt(d);
+        if (d > 0.0)
+            d = 1.0 / std::sqrt(d);
         for (size_t i = 0; i < 3; ++i) {
             b[l][i] *= d;
         }
@@ -205,14 +215,16 @@ begin:
         p = 1.0;
         size_t j = 0;
         for (size_t i = 0; i < 3; ++i) {
-            if (p < std::abs(b[0][i])) continue;
+            if (p < std::abs(b[0][i]))
+                continue;
             p = std::abs(b[0][i]);
             j = i;
         }
         size_t k = ip2312[j];
         size_t l = ip2312[j + 1];
         p = std::sqrt(b[0][k] * b[0][k] + b[0][l] * b[0][l]);
-        if (p <= tol2) goto middle;
+        if (p <= tol2)
+            goto middle;
         b[1][j] = 0;
         b[1][k] = -b[0][l] / p;
         b[1][l] = b[0][k] / p;
@@ -238,31 +250,35 @@ middle:
     for (size_t i = 0; i < 3; ++i) {
         t[i] = ((yc[i] - u[0][i] * xc[0]) - u[1][i] * xc[1]) - u[2][i] * xc[2];
     }
-//end:
+    // end:
     for (size_t i = 0; i < 3; ++i) {
-        if (e[i] < 0) e[i] = 0;
+        if (e[i] < 0)
+            e[i] = 0;
         e[i] = std::sqrt(e[i]);
     }
 
     ier = 0;
-    if (e[1] <= (e[0] * 1.0e-05)) ier = -127;
+    if (e[1] <= (e[0] * 1.0e-05))
+        ier = -127;
 
     d = e[2];
     if (sigma < 0.0) {
         d = -d;
-        if ((e[1] - e[2]) <= (e[0] * 1.0e-05)) ier = -126;
+        if ((e[1] - e[2]) <= (e[0] * 1.0e-05))
+            ier = -126;
     }
     d = (d + e[1]) + e[0];
 
     rms = (e0 - d) - d;
-    if (rms < 0.0) rms = 0.0;
+    if (rms < 0.0)
+        rms = 0.0;
 
     return rms;
 }
 
 inline size_t find_element_by_name(const chemfiles::Frame& frame,
-                            const chemfiles::Residue& res,
-                            const std::string& elem) {
+                                   const chemfiles::Residue& res,
+                                   const std::string& elem) {
     for (auto i : res) {
         if (frame[i].name() == elem) {
             return i;
@@ -273,9 +289,9 @@ inline size_t find_element_by_name(const chemfiles::Frame& frame,
 }
 
 inline size_t find_operlapping_residues(const chemfiles::Frame& search,
-                                 const chemfiles::Frame& native,
-                                 std::vector<size_t>& a_search,
-                                 std::vector<size_t>& a_native) {
+                                        const chemfiles::Frame& native,
+                                        std::vector<size_t>& a_search,
+                                        std::vector<size_t>& a_native) {
     const auto& search_res = search.topology().residues();
     const auto& native_res = native.topology().residues();
 
@@ -311,16 +327,16 @@ inline size_t count_number_of_atom_names(const chemfiles::Frame& frame,
                                          const std::string& elem) {
     const auto& residues = frame.topology().residues();
     auto c = std::count_if(residues.begin(), residues.end(),
-                          [&frame, &elem](const chemfiles::Residue& nres) {
-                              return find_element_by_name(frame, nres, elem) !=
-                                     frame.size();
-                         });
+                           [&frame, &elem](const chemfiles::Residue& nres) {
+                               return find_element_by_name(frame, nres, elem) !=
+                                      frame.size();
+                           });
     return static_cast<size_t>(c);
 }
 
 //! Structure representing the TMScore
 //!
-//! 
+//!
 struct TMResult {
     //! The TMscore
     double score;
@@ -334,25 +350,27 @@ struct TMResult {
 
 //! TMalign is an algorithm used to align protein chains in 3D space.
 //!
-//! Ported from https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f
-//! Original reference:
-//! Yang Zhang, Jeffrey Skolnick, Proteins 2004 57:702-10.
+//! Ported from
+//! https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f Original
+//! reference: Yang Zhang, Jeffrey Skolnick, Proteins 2004 57:702-10.
 //!
 //! Original License:
-//! Permission to use, copy, modify, and distribute this program for 
+//! Permission to use, copy, modify, and distribute this program for
 //! any purpose, with or without fee, is hereby granted, provided that
 //! the notices on the head, the reference information, and this
-//! copyright notice appear in all copies or substantial portions of 
-//! the Software. It is provided "as is" without express or implied 
+//! copyright notice appear in all copies or substantial portions of
+//! the Software. It is provided "as is" without express or implied
 //! warranty.
 //! \param [in] search The frame that is being aligned to native.
 //! \param [in] native The 'native' chain that the search chain is aligned to.
 //! \param [out] rot The aligned version of the search frame.
 //! \param [in] align Should the search frame to aligned to native.
-//! \return A strucure with theTMScore, RMSD after alignment, and number of aligned residues
-inline TMResult TMscore(
-    const chemfiles::Frame& search, const chemfiles::Frame& native,
-    std::vector<chemfiles::Vector3D>& rot, bool align = false) {
+//! \return A strucure with theTMScore, RMSD after alignment, and number of
+//! aligned residues
+inline TMResult TMscore(const chemfiles::Frame& search,
+                        const chemfiles::Frame& native,
+                        std::vector<chemfiles::Vector3D>& rot,
+                        bool align = false) {
     std::vector<size_t> a_search;
     std::vector<size_t> a_native;
 
@@ -370,19 +388,23 @@ inline TMResult TMscore(
     // parameters:
     // d0------------->
     double d0 = 1.24 * std::pow(nseqB - 15, 1.0 / 3.0) - 1.8;
-    if (d0 < 0.5) d0 = 0.5;
+    if (d0 < 0.5)
+        d0 = 0.5;
 
     // d0_search ----->
     double d0_search = d0;
-    if (d0_search > 8) d0_search = 8;
-    if (d0_search < 4.5) d0_search = 4.5;
+    if (d0_search > 8)
+        d0_search = 8;
+    if (d0_search < 4.5)
+        d0_search = 4.5;
 
     // iterative parameters ----->
-    size_t n_it = 20;       // maximum number of iterations
-    size_t n_init_max = 6;  // maximum number of L_init
+    size_t n_it = 20;      // maximum number of iterations
+    size_t n_init_max = 6; // maximum number of L_init
     size_t L_ini_min = 4;
     std::vector<size_t> L_ini(n_init_max);
-    if (n_ali < 4) L_ini_min = n_ali;
+    if (n_ali < 4)
+        L_ini_min = n_ali;
 
     size_t n_init;
     for (n_init = 0; n_init < n_init_max; ++n_init) {
@@ -419,11 +441,11 @@ inline TMResult TMscore(
     auto score_fun = [&](double d) -> double {
         double score_sum;
         do {
-            n_cut = 0;  // number of residue-pairs dis<d, for iteration
+            n_cut = 0; // number of residue-pairs dis<d, for iteration
             score_sum = 0.0;
             for (size_t k = 0; k < n_ali; ++k) {
-                auto i = a_search[k];  // [1,nseqA] reoder number of structureA
-                auto j = a_native[k];  // [1,nseqB]
+                auto i = a_search[k]; // [1,nseqA] reoder number of structureA
+                auto j = a_native[k]; // [1,nseqB]
 
                 auto diff = rot[i] - b[j];
                 double dis = std::sqrt(diff[0] * diff[0] + diff[1] * diff[1] +
@@ -450,11 +472,11 @@ inline TMResult TMscore(
         std::vector<chemfiles::Vector3D> r_1(n_ali);
         std::vector<chemfiles::Vector3D> r_2(n_ali);
 
-        for (size_t iL = 0; iL < iL_max; ++iL) {  // on residues, [0, nseqA - 1]
+        for (size_t iL = 0; iL < iL_max; ++iL) { // on residues, [0, nseqA - 1]
             size_t ka = 0;
 
             for (size_t i = 0; i < L_init; ++i) {
-                auto k = iL + i;  // [0,n_ali - 1] common aligned
+                auto k = iL + i; // [0,n_ali - 1] common aligned
 
                 r_1[i] = a[a_search[k]];
                 r_2[i] = b[a_native[k]];
@@ -465,7 +487,7 @@ inline TMResult TMscore(
             int ier;
             // u rotate r_1 to r_2
             double rms = kabsch(w, r_1, r_2, L_init, u, t, ier);
-            if (i_init == 0) {  // global superposition
+            if (i_init == 0) { // global superposition
                 armsd = std::sqrt(rms / static_cast<double>(L_init));
             }
 
@@ -497,7 +519,7 @@ inline TMResult TMscore(
             for (size_t it = 1; it <= n_it; ++it) {
                 ka = 0;
                 for (size_t i = 0; i < n_cut; ++i) {
-                    auto m = i_ali[i];  // [0,n_ali - 1]
+                    auto m = i_ali[i]; // [0,n_ali - 1]
                     r_1[i] = a[a_search[m]];
 
                     r_2[i] = b[a_native[m]];
@@ -527,17 +549,20 @@ inline TMResult TMscore(
                         k_ali0[i] = k_ali[i];
                     }
                 }
-                if (it == n_it) break;
+                if (it == n_it)
+                    break;
                 if (n_cut == ka) {
                     size_t neq = 0;
                     for (size_t i = 0; i < n_cut; ++i) {
-                        if (i_ali[i] == k_ali[i]) ++neq;
+                        if (i_ali[i] == k_ali[i])
+                            ++neq;
                     }
-                    if (n_cut == neq) break;
+                    if (n_cut == neq)
+                        break;
                 }
             }
-        }  //! for shift
-    }      //! for initial length, L_ali/M
+        } //! for shift
+    }     //! for initial length, L_ali/M
 
     if (!align) {
         return {score_max, armsd, n_ali};

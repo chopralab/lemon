@@ -21,12 +21,12 @@ namespace lemon {
 
 //! The `run_parallel` function launches jobs which do return data.
 //!
-//! Use this function to run the `worker` function on `ncpu` threads. The `worker`
-//! should accept two arguments, a `chemfiles::Frame` and a `std::string`. It
-//! must return a value as this value will be appended, using the `combine`
-//! function object, the the `collector`.
-//! See the `Lemon Workflow` documention for more details.
-//! \param worker A function object (C++11 lambda, struct the with operator()
+//! Use this function to run the `worker` function on `ncpu` threads. The
+//! `worker` should accept two arguments, a `chemfiles::Frame` and a
+//! `std::string`. It must return a value as this value will be appended, using
+//! the `combine` function object, the the `collector`. See the `Lemon Workflow`
+//! documention for more details. \param worker A function object (C++11 lambda,
+//! struct the with operator()
 //!  overloaded, or std::function object) that the user wishes to apply.
 //! \param [in] p A path to the Hadoop sequence file directory.
 //!  by the worker object which are appended with `combine`.
@@ -41,7 +41,8 @@ inline void run_parallel(Function&& worker, const std::string& p,
                          const Entries& skip_entries = Entries()) {
     auto pathvec = read_hadoop_dir(p);
     std::vector<std::thread> threads(ncpu);
-    using ret = typename std::result_of<Function&(chemfiles::Frame, const std::string&)>::type;
+    using ret = typename std::result_of<Function&(chemfiles::Frame,
+                                                  const std::string&)>::type;
 
     // Total number of jobs for each thread
     const int grainsize = static_cast<int>(pathvec.size() / ncpu);
@@ -49,7 +50,8 @@ inline void run_parallel(Function&& worker, const std::string& p,
     using iter = std::vector<std::string>::iterator;
     std::unordered_map<std::thread::id, std::list<ret>> results;
 
-    auto call_function = [&worker, &results, &entries, &skip_entries](iter first, iter last) {
+    auto call_function = [&worker, &results, &entries,
+                          &skip_entries](iter first, iter last) {
         auto th = std::this_thread::get_id();
         for (auto it = first; it != last; ++it) {
             std::ifstream data(*it, std::istream::binary);
@@ -60,22 +62,27 @@ inline void run_parallel(Function&& worker, const std::string& p,
                 if (entries.size() && entries.count(pair.first) == 0) {
                     continue;
                 }
-                if (skip_entries.size() && skip_entries.count(pair.first) != 0) {
+                if (skip_entries.size() &&
+                    skip_entries.count(pair.first) != 0) {
                     continue;
                 }
                 try {
-                    #ifdef LEMON_BENCHMARK
+#ifdef LEMON_BENCHMARK
                     auto start = std::chrono::high_resolution_clock::now();
-                    #endif
+#endif
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto entry = traj.read();
-                    results[th].emplace_back(worker(std::move(entry), pair.first));
-                    #ifdef LEMON_BENCHMARK
+                    results[th].emplace_back(
+                        worker(std::move(entry), pair.first));
+#ifdef LEMON_BENCHMARK
                     auto stop = std::chrono::high_resolution_clock::now();
-                    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-                    std::cerr << it->string() + "\t" + pair.first + "\t" + std::to_string(duration.count()) + "\n";
-                    #endif
+                    auto duration =
+                        std::chrono::duration_cast<std::chrono::microseconds>(
+                            stop - start);
+                    std::cerr << it->string() + "\t" + pair.first + "\t" +
+                                     std::to_string(duration.count()) + "\n";
+#endif
                 } catch (...) {
                 }
             }
@@ -105,7 +112,8 @@ inline void run_parallel(Function&& worker, const std::string& p,
                          Collector& collector, size_t ncpu = 1,
                          const Entries& entries = Entries(),
                          const Entries& skip_entries = Entries()) {
-    using ret = typename std::result_of<Function&(chemfiles::Frame, const std::string&)>::type;
+    using ret = typename std::result_of<Function&(chemfiles::Frame,
+                                                  const std::string&)>::type;
     auto pathvec = read_hadoop_dir(p);
     thread_pool threads(ncpu);
     threaded_queue<std::list<ret>> results;
@@ -121,22 +129,27 @@ inline void run_parallel(Function&& worker, const std::string& p,
                 if (entries.size() && entries.count(pair.first) == 0) {
                     continue;
                 }
-                if (skip_entries.size() && skip_entries.count(pair.first) != 0) {
+                if (skip_entries.size() &&
+                    skip_entries.count(pair.first) != 0) {
                     continue;
                 }
                 try {
-                    #ifdef LEMON_BENCHMARK
+#ifdef LEMON_BENCHMARK
                     auto start = std::chrono::high_resolution_clock::now();
-                    #endif
+#endif
                     auto traj = chemfiles::Trajectory(std::move(pair.second),
                                                       "MMTF/GZ");
                     auto entry = traj.read();
-                    mini_collector.emplace_back(worker(std::move(entry), pair.first));
-                    #ifdef LEMON_BENCHMARK
+                    mini_collector.emplace_back(
+                        worker(std::move(entry), pair.first));
+#ifdef LEMON_BENCHMARK
                     auto stop = std::chrono::high_resolution_clock::now();
-                    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-                    std::cerr << path.string() + "\t" + pair.first + "\t" + std::to_string(duration.count()) + "\n";
-                    #endif
+                    auto duration =
+                        std::chrono::duration_cast<std::chrono::microseconds>(
+                            stop - start);
+                    std::cerr << path.string() + "\t" + pair.first + "\t" +
+                                     std::to_string(duration.count()) + "\n";
+#endif
                 } catch (...) {
                 }
             }
@@ -156,7 +169,7 @@ inline void run_parallel(Function&& worker, const std::string& p,
     }
 }
 
-#endif  // LEMON_USE_ASYNC
+#endif // LEMON_USE_ASYNC
 
-}  // namespace lemon
+} // namespace lemon
 #endif

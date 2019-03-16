@@ -1,14 +1,14 @@
 #ifndef LEMON_PARSE_HPP
 #define LEMON_PARSE_HPP
 
-#include <set>
-#include <unordered_set>
 #include <list>
+#include <set>
 #include <sstream>
+#include <unordered_set>
 
-#include <chemfiles.hpp>
 #include "lemon/entries.hpp"
 #include "lemon/residue_name.hpp"
+#include <chemfiles.hpp>
 
 namespace lemon {
 
@@ -46,9 +46,8 @@ inline void residues(const chemfiles::Frame& frame,
 //! \param [in] frame The frame containing residues of interest
 //! \param [in] resids Residue ids to consider
 //! \param [in,out] resn_count A map of residue names to their respective count
-template<typename Container>
-inline void residues(const chemfiles::Frame& frame,
-                     const Container& resids,
+template <typename Container>
+inline void residues(const chemfiles::Frame& frame, const Container& resids,
                      ResidueNameCount& resn_count) {
     auto& residues = frame.topology().residues();
 
@@ -77,12 +76,12 @@ inline size_t atom_property(const chemfiles::Frame& frame,
         if (!prop) {
             continue;
         }
-        switch(prop->kind()) {
-            case chemfiles::Property::STRING:
-                string_props.insert(prop->as_string());
-                break;
-            default:
-                break; // Not a type we support
+        switch (prop->kind()) {
+        case chemfiles::Property::STRING:
+            string_props.insert(prop->as_string());
+            break;
+        default:
+            break; // Not a type we support
         }
     }
 
@@ -104,12 +103,12 @@ inline size_t residue_property(const chemfiles::Frame& frame,
         if (!prop) {
             continue;
         }
-        switch(prop->kind()) {
-            case chemfiles::Property::STRING:
-                string_props.insert(prop->as_string());
-                break;
-            default:
-                break; // Not a type we support
+        switch (prop->kind()) {
+        case chemfiles::Property::STRING:
+            string_props.insert(prop->as_string());
+            break;
+        default:
+            break; // Not a type we support
         }
     }
 
@@ -121,7 +120,7 @@ inline size_t residue_property(const chemfiles::Frame& frame,
 //! \param [in] entry The entry containing the residues of interest
 //! \param [in] res_ids The set of residue ids for printing
 //! \return a string containing the formatted output.
-template<typename Container>
+template <typename Container>
 inline std::string print_residue_names(const chemfiles::Frame& entry,
                                        const Container& res_ids) {
     if (res_ids.empty()) {

@@ -106,7 +106,7 @@ TEST_CASE("Scoring") {
     }
 
     lemon::prune::keep_interactions(frame1, ade, proteins, 8.0);
-    proteins.erase(std::remove(proteins.begin(), proteins.end(), *ade.begin()));
+    proteins.erase(std::remove(proteins.begin(), proteins.end(), *ade.begin()), proteins.end());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
     CHECK(roughly(vscore.g1, 79.23012));

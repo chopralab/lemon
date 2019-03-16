@@ -55,7 +55,8 @@ def build_wheels(py_envs=DEFAULT_PY_ENVS):
                 '-DPYTHON_INCLUDE_DIR:PATH=%s' % python_include_dir,
                 '-DPYTHON_LIBRARY:FILEPATH=%s' % python_library,
                 '-DLEMON_EXTERNAL_CHEMFILES:BOOL=ON',
-                '-DCHEMFILES_ROOT_DIR:PATH=%s' % os.path.join(chfl_install_dir),
+                '-DCHEMFILES_ROOT:PATH=%s' % os.path.join(chfl_install_dir),
+                '-Dchemfiles_DIR=:PATH=%s' % os.path.join(chfl_install_dir, 'lib', 'cmake', 'chemfiles'),
                 '-DLEMON_BUILD_PROGS:BOOL=OFF',
             ])
             # Cleanup

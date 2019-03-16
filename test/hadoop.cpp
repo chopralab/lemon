@@ -95,7 +95,7 @@ TEST_CASE("Use run_parallel, but skip a entry") {
 }
 
 TEST_CASE("Provide an invalid directory to Hadoop run") {
-    CHECK_THROWS_AS(lemon::read_hadoop_dir({"/nodir/"}), std::runtime_error);
-    CHECK_THROWS_AS(lemon::read_hadoop_dir({"."}), std::runtime_error);
-    CHECK_THROWS_AS(lemon::read_hadoop_dir({"files/entry_10/1/0"}), std::runtime_error);
+    CHECK_THROWS_AS(lemon::read_hadoop_dir({"/nodir/"}), std::runtime_error&);
+    CHECK_THROWS_AS(lemon::read_hadoop_dir({"."}), std::runtime_error&);
+    CHECK_THROWS_AS(lemon::read_hadoop_dir({"files/entry_10/1/0"}), std::runtime_error&);
 }

@@ -6,8 +6,8 @@
 #include "lemon/geometry.hpp"
 
 // typedefs for binned data
-typedef std::pair<std::string, int> BondDihedralBin;
-typedef std::map<BondDihedralBin, size_t> DihedralCounts;
+using BondDihedralBin = std::pair<std::string, int>;
+using DihedralCounts  = std::map<BondDihedralBin, size_t>;
 
 using lemon::geometry::protein::dihedral_name;
 
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
             auto theta = protein_only.dihedral(dihedral[0], dihedral[1],
                                                dihedral[2], dihedral[3]);
 
-            int bin = static_cast<int>(std::floor(theta / bin_size));
+            auto bin = static_cast<int>(std::floor(theta / bin_size));
 
             BondDihedralBin sbin = {dihedralnm, bin};
             auto bin_iterator = bins.find(sbin);

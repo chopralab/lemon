@@ -92,7 +92,6 @@ else()
     add_warning_flag("-Wsign-promo")
     # C++11 functionalities
     add_warning_flag("-Wsuggest-override")
-    add_warning_flag("-Wsuggest-final-types")
     # C++ standard conformance
     add_warning_flag("-Wpedantic")
     add_warning_flag("-pedantic")

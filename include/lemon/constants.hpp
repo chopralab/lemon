@@ -41,31 +41,31 @@ const ResidueNameSet common_peptides{
 //! Many proteins require a cofactor to function properly. These cofators are
 //! present with the corresponding protein. Common cofactors include: flavin
 //! groups (*FAD*, *FMN*), nicotinamide groups (*NAD*, *NAP*), heme groups (
-//! *HEM*, *HEA*, *HEB*, *HEC*), nucleotides (*ADP*, *ATP*, *GDP*, *GTP*), 
+//! *HEM*, *HEA*, *HEB*, *HEC*), nucleotides (*ADP*, *ATP*, *GDP*, *GTP*),
 //! citric acid (*CIT*, *FLC*), and S-adenosylmethionine (*SAM*).
 const ResidueNameSet common_cofactors{
-    {"FAD"}, {"FMN"}, {"NAD"}, {"NAP"}, {"CLA"}, {"HEM"}, {"HEA"},
-    {"HEB"}, {"HEC"}, {"ADP"}, {"ATP"}, {"GDP"}, {"GTP"}, {"UNL"},
-    {"CIT"}, {"FLC"}, {"BE7"}, {"MHA"}, {"DHD"}, {"B3P"}, {"BTB"},
-    {"NHE"}, {"GOL"}, {"DTP"}, {"SAM"}, {"SIA"}, {"ICT"}, {"EPE"},
-    {"MES"},
+    {"FAD"}, {"FMN"}, {"NAD"}, {"NAP"}, {"CLA"}, {"HEM"}, {"HEA"}, {"HEB"},
+    {"HEC"}, {"ADP"}, {"ATP"}, {"GDP"}, {"GTP"}, {"UNL"}, {"CIT"}, {"FLC"},
+    {"BE7"}, {"MHA"}, {"DHD"}, {"B3P"}, {"BTB"}, {"NHE"}, {"GOL"}, {"DTP"},
+    {"SAM"}, {"SIA"}, {"ICT"}, {"EPE"}, {"MES"},
 };
 
 //! Common fatty-acids in the PDB
 //!
 //! Several protein crystal structures contain fatty acids used to help induce
 //! crystallization.  This list contains fatty acids and other 'linear' small
-//! molecules. 
+//! molecules.
 const ResidueNameSet common_fatty_acids{
-    {"PG6"}, {"PE7"}, {"PG5"}, {"PEU"}, {"PGE"}, {"PIG"}, {"PE8"},
-    {"PE4"}, {"P33"}, {"C8E"}, {"OTE"}, {"XPE"}, {"N8E"}, {"DR6"},
-    {"PEG"}, {"2PE"}, {"P6G"}, {"1PE"}, {"SPM"}, {"SPK"}, {"SPD"},
-    {"1PG"}, {"PG4"}, {"MYR"}, {"OLA"}, {"OLB"}, {"OLC"}, {"PLM"},
-    {"PEE"}, {"LHG"}, {"MC3"}, {"PAM"},
+    {"PG6"}, {"PE7"}, {"PG5"}, {"PEU"}, {"PGE"}, {"PIG"}, {"PE8"}, {"PE4"},
+    {"P33"}, {"C8E"}, {"OTE"}, {"XPE"}, {"N8E"}, {"DR6"}, {"PEG"}, {"2PE"},
+    {"P6G"}, {"1PE"}, {"SPM"}, {"SPK"}, {"SPD"}, {"1PG"}, {"PG4"}, {"MYR"},
+    {"OLA"}, {"OLB"}, {"OLC"}, {"PLM"}, {"PEE"}, {"LHG"}, {"MC3"}, {"PAM"},
 };
 
 const ResidueNameSet proline_res{
-    {"PRO"}, {"HYP"}, {"PCA"},
+    {"PRO"},
+    {"HYP"},
+    {"PCA"},
 };
 
 //! Linkage types for small-molecules in the PDB
@@ -74,8 +74,7 @@ const ResidueNameSet proline_res{
 //! molecule in a crystal structure.*PEPTIDE-LIKE* is included here becasue
 //! many drugs are classified with this linkage.
 const std::unordered_set<std::string> small_molecule_types{
-    {"NON-POLYMER"}, {"OTHER"}, {"PEPTIDE-LIKE"}
-};
+    {"NON-POLYMER"}, {"OTHER"}, {"PEPTIDE-LIKE"}};
 
 //! PDB entries that should be skipped as they are time consuming to calculate.
 //!
@@ -85,9 +84,8 @@ const std::unordered_set<std::string> small_molecule_types{
 //! These entries are indentified as they take an order of magnitude longer to
 //! perform an operation than other entries.
 const std::unordered_set<std::string> large_entries{
-    {"3J3Q"}, {"3J3Y"}, {"5Y6P"}
-};
+    {"3J3Q"}, {"3J3Y"}, {"5Y6P"}};
 
-}
+} // namespace lemon
 
 #endif

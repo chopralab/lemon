@@ -9,13 +9,13 @@ TEST_CASE("Residue Name") {
     REQUIRE(sizeof(lemon::ResidueName) == sizeof(char) * 3);
 
     // String cannot be over 3 digits, or have no digits
-    CHECK_THROWS_AS(lemon::ResidueName("ASDF"), std::length_error);
-    CHECK_THROWS_AS(lemon::ResidueName(std::string("")), std::length_error);
+    CHECK_THROWS_AS(lemon::ResidueName("ASDF"), std::length_error&);
+    CHECK_THROWS_AS(lemon::ResidueName(std::string("")), std::length_error&);
 
     // Must be alpha numeric
 #ifndef NDEBUG
-    CHECK_THROWS_AS(lemon::ResidueName("+"), std::range_error);
-    CHECK_THROWS_AS(lemon::ResidueName(std::string(" ")), std::range_error);
+    CHECK_THROWS_AS(lemon::ResidueName("+"), std::range_error&);
+    CHECK_THROWS_AS(lemon::ResidueName(std::string(" ")), std::range_error&);
 #endif
 
     CHECK(lemon::ResidueName("ABC") == std::string("ABC"));

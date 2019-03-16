@@ -1,10 +1,8 @@
 function(add_cpp_prog _file_)
     get_filename_component(_name_ ${_file_} NAME_WE)
-    
+    set(_name_ lm_${_name_})
+
     add_executable(${_name_} ${_file_})
-    if (NOT ${LEMON_EXTERNAL_CHEMFILES})
-        add_dependencies(${_name_} chemfiles)
-    endif()
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
 
     if(NOT MSVC)
@@ -14,12 +12,6 @@ function(add_cpp_prog _file_)
         endif()
     endif()
 
-    target_include_directories(${_name_} SYSTEM PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/external
-    )
-
     if(${LEMON_TEST_ASYNC})
         target_compile_definitions(${_name_} PRIVATE LEMON_USE_ASYNC=1)
     endif()
@@ -28,17 +20,21 @@ function(add_cpp_prog _file_)
         target_compile_definitions(${_name_} PRIVATE LEMON_BENCHMARK=1)
     endif()
 
-    if (MSVC)
-        target_link_libraries( ${_name_} PUBLIC
-            ${CHEMFILES_LIBRARY}
-            ws2_32
-        )
-    else()
-        target_link_libraries( ${_name_} PUBLIC
-            ${CHEMFILES_LIBRARY}
-            pthread
-        ) 
+    target_link_libraries( ${_name_} PUBLIC lemon)
+    if(NOT MSVC)
+        if (APPLE)
+            set_target_properties(${_name_} PROPERTIES
+                MACOSX_RPATH 1
+                INSTALL_RPATH "@loader_path/../lib"
+            )
+        else()
+            set_target_properties(${_name_} PROPERTIES
+                INSTALL_RPATH "\$ORIGIN/../lib"
+            )
+        endif()
     endif()
+
+    install( TARGETS ${_name_} RUNTIME DESTINATION bin)
 endfunction()
 
 file(GLOB all_test_files

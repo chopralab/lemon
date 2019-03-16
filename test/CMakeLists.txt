@@ -6,8 +6,6 @@ function(add_cpp_test _file_ _name_)
     endif()
     set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
     target_include_directories(${_name_} SYSTEM PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/external
     )
 
@@ -18,28 +16,18 @@ function(add_cpp_test _file_ _name_)
         endif()
     endif()
 
-    if (MSVC)
-        target_link_libraries( ${_name_} PUBLIC
-            ${CHEMFILES_LIBRARY}
-            ws2_32
-        )
-    else()
-        target_link_libraries( ${_name_} PUBLIC
-            ${CHEMFILES_LIBRARY}
-            pthread
-        )
-    endif()
+    target_link_libraries( ${_name_} PRIVATE lemon)
 
     add_test(NAME ${_name_}
         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${_name_}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-    if (MSVC AND ${LEMON_LINK_SHARED})
+    if (MSVC AND ${BUILD_SHARED_LIBS})
         set_tests_properties( ${_name_}
             PROPERTIES ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}\\chemfiles\\bin"
         )
-    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
+    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${BUILD_SHARED_LIBS})
         set_tests_properties( ${_name_}
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )

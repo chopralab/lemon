@@ -2,12 +2,12 @@
 #define LEMON_ENTRIES_HPP
 
 #include <array>
-#include <istream>
-#include <string>
-#include <sstream>
-#include <vector>
 #include <fstream>
+#include <istream>
+#include <sstream>
+#include <string>
 #include <unordered_set>
+#include <vector>
 
 #include "lemon/residue_name.hpp"
 
@@ -26,7 +26,7 @@ inline Entries read_entry_file(std::istream& input) {
 }
 inline Entries read_entry_file(const std::string& input) {
 
-    if(input == "") {
+    if (input == "") {
         return Entries();
     }
 
@@ -39,9 +39,9 @@ inline Entries read_entry_file(const std::string& input) {
     return lemon::read_entry_file(input_file);
 }
 
-inline void read_entry_file(std::istream& input,
-                     Entries& result,
-                     std::unordered_map<std::string, ResidueNameSet>& rnm) {
+inline void
+read_entry_file(std::istream& input, Entries& result,
+                std::unordered_map<std::string, ResidueNameSet>& rnm) {
     std::string temp, item;
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
@@ -58,6 +58,6 @@ inline void read_entry_file(std::istream& input,
         result.insert(a);
     }
 }
-}
+} // namespace lemon
 
 #endif

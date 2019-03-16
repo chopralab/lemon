@@ -18,11 +18,11 @@ function(add_python_test _name_)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
     )
 
-    if (MSVC AND ${LEMON_LINK_SHARED})
+    if (MSVC AND ${BUILD_SHARED_LIBS})
         set_tests_properties( py_${_name_}
             PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${CMAKE_BINARY_DIR}/chemfiles/bin/"
         )
-    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${LEMON_LINK_SHARED})
+    elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${BUILD_SHARED_LIBS})
         set_tests_properties( py_${_name_}
             PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
         )
@@ -33,25 +33,7 @@ if (${LEMON_BUILD_PYTHON})
     add_executable(lemon_python ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp
                                 ${CMAKE_CURRENT_SOURCE_DIR}/py_wrapper.cpp)
 
-    target_include_directories(lemon_python PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
-        ${PYTHON_INCLUDE_DIRS}
-    )
-
-    if (MSVC)
-        target_link_libraries(lemon_python
-            ${CHEMFILES_LIBRARY}
-            pybind11::embed
-            ws2_32
-        )
-    else()
-        target_link_libraries(lemon_python
-            ${CHEMFILES_LIBRARY}
-            pybind11::embed
-            pthread
-        )
-    endif()
+    target_link_libraries(lemon_python lemon pybind11::embed)
 
     add_python_test(simple)
     add_python_test(count)
@@ -66,25 +48,10 @@ if (${LEMON_BUILD_PYTHON})
 endif()
 
 if(SKBUILD)
-    pybind11_add_module(lemon py_wrapper.cpp)
+    pybind11_add_module(pylemon py_wrapper.cpp)
 
-    target_include_directories(lemon PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-        ${CHEMFILES_INCLUDE_DIR}
-    )
+    target_link_libraries(pylemon PUBLIC lemon)
 
-    if (MSVC)
-        target_link_libraries(lemon PRIVATE
-            ${CHEMFILES_LIBRARY}
-            ws2_32
-        )
-    else()
-        target_link_libraries(lemon PRIVATE
-            ${CHEMFILES_LIBRARY}
-            pthread
-        )
-    endif()
-
-    install(TARGETS lemon LIBRARY COMPONENT lemon DESTINATION "candiy_lemon")
+    install(TARGETS pylemon LIBRARY COMPONENT lemon DESTINATION "candiy_lemon" RENAME lemon)
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py COMPONENT python DESTINATION "candiy_lemon")
 endif()

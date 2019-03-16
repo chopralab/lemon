@@ -1,9 +1,9 @@
 #ifndef LEMON_LAUNCH_HPP
 #define LEMON_LAUNCH_HPP
 
+#include "lemon/constants.hpp"
 #include "lemon/options.hpp"
 #include "lemon/parallel.hpp"
-#include "lemon/constants.hpp"
 
 #include <iostream>
 #include <ostream>
@@ -11,10 +11,11 @@
 namespace lemon {
 
 class LemonPythonBase {
-public:
+  public:
     virtual ~LemonPythonBase() {}
     virtual std::string worker(const chemfiles::Frame*, const std::string&) = 0;
-    virtual void finalize() {/*Do nothing*/}
+    virtual void finalize() { /*Do nothing*/
+    }
 };
 
 //! Functor to combine the results of a workflow into a map
@@ -22,26 +23,23 @@ public:
 //! This is a template functor which opens combines the results of a workflow
 //! into a single map object. Use this class only when the work flow returns a
 //! map oject or other type of associative array.
-template<typename Map1>
-struct map_combine {
+template <typename Map1> struct map_combine {
 
     //! Construct a map_combine class which fills the `collector`
     //!
     //! This constructor will copy all results to the `collector` object. This
     //! operation is performed when the workflow completes for all entries.
-    //! \param collector A map like object to store results in. 
-    map_combine(Map1& collector):
-        internal_map_(collector) {}
+    //! \param collector A map like object to store results in.
+    map_combine(Map1& collector) : internal_map_(collector) {}
 
     //! Add a map to the current `collector`.
-    template<typename Map2 = Map1>
-    void operator()(const Map2& map2) const {
+    template <typename Map2 = Map1> void operator()(const Map2& map2) const {
         for (const auto& sc : map2) {
             internal_map_[sc.first] += sc.second;
         }
     }
 
-private:
+  private:
     Map1& internal_map_;
 };
 
@@ -49,26 +47,26 @@ private:
 //!
 //! This is a template functor which streams workflow results to a `collector`.
 //! This class is typically used to stream text results from workflows to the
-//! `std::cout` object. Any class which derives from `std::ostream` is supported.
+//! `std::cout` object. Any class which derives from `std::ostream` is
+//! supported.
 struct print_combine {
 
     //! Construct a print_combine which streams results to `collector`.
     //!
-    //! This contructor will create a `print_combine` object which streams results
-    //! to `collector`. This argument must derive from the `std::ostream` class
-    //! and therefore provide an overload to the `<<` operator. Common examples
-    //! of `collector` are `std::cout` and friends. All workflow results are
-    //! streamed to the `collect` after all entries have been evaluated.
-    //! \param collector An object for each workflow objects will be streamed to
-    print_combine(std::ostream& collector):
-        internal_stream_(collector){}
+    //! This contructor will create a `print_combine` object which streams
+    //! results to `collector`. This argument must derive from the
+    //! `std::ostream` class and therefore provide an overload to the `<<`
+    //! operator. Common examples of `collector` are `std::cout` and friends.
+    //! All workflow results are streamed to the `collect` after all entries
+    //! have been evaluated. \param collector An object for each workflow
+    //! objects will be streamed to
+    print_combine(std::ostream& collector) : internal_stream_(collector) {}
 
-    template<typename Res>
-    void operator()(const Res& map) const {
+    template <typename Res> void operator()(const Res& map) const {
         internal_stream_ << map;
     }
 
-private:
+  private:
     std::ostream& internal_stream_;
 };
 
@@ -81,7 +79,7 @@ private:
 //! \param worker Function object representing the body of the workflow.
 //! \param collect Function object for collect the results of `worker`.
 //! \return 0 on success or a non-zero integer on error.
-template<typename Function, typename Collector>
+template <typename Function, typename Collector>
 int launch(const Options& o, Function&& worker, Collector& collect) {
     auto p = o.work_dir();
     auto threads = o.ncpu();
@@ -90,7 +88,7 @@ int launch(const Options& o, Function&& worker, Collector& collect) {
 
     try {
         lemon::run_parallel(worker, p, collect, threads, entries, skip_entries);
-    } catch(std::runtime_error& e){
+    } catch (std::runtime_error& e) {
         std::cerr << e.what() << "\n";
         return 1;
     }
