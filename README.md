@@ -17,6 +17,8 @@ Due to the incredibly fast parsing speed of the MMTF format, Lemon uses this for
 
 With these ideas in mind, the major, and crucial role of **Lemon** is the creation of standardized workflows for mining structural features. Since **Lemon** handles the rest, these workflows can be used for any future versions of the PDB. Hopefully, the structural biology community can use our software to replace custom/in-house scripts that need to be run on the ever growing PDB!
 
+You can read more about lemon in our [publication](https://doi.org/10.1093/bioinformatics/btz178).
+
 ### How do I obtain Lemon?
 
 #### C++ Library
@@ -65,4 +67,12 @@ tar xf full.tar /dev/shm/
 
 The results for this program are printed to `stdout`.
 
-**Lemon** is &copy; 2018 Chopra Lab and Purdue University. Developed by Jonathan Fine and is available as open source under the terms of the [BSD License](http://opensource.org/licenses/BSD). 
+### Citation
+
+If you find **Lemon** useful, please cite:
+
+Jonathan Fine, Gaurav Chopra, Lemon: a framework for rapidly mining structural information from the Protein Data Bank, Bioinformatics, , btz178, https://doi.org/10.1093/bioinformatics/btz178
+
+### Copyright
+
+**Lemon** is &copy; 2018 Chopra Lab and Purdue University, developed by Jonathan Fine and is available as open source under the terms of the [BSD License](http://opensource.org/licenses/BSD). 
