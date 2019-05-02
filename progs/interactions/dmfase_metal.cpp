@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[]) {
     lemon::Options o;
-    auto distance = 4.0;
+    auto distance = 2.4;
     o.add_option("--distance,-d", distance,
                  "Largest distance between a metal and a small molecule.");
     std::string reference("ref.pdb");
@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
 
     auto ref = chemfiles::Trajectory(reference).read();
     auto ref_fe1 = lemon::select::specific_residues(ref, {"FE"});
-    auto ref_res = lemon::select::specific_residues(ref, {"GLU", "HIS", "TYR"});
+    auto ref_res = lemon::select::specific_residues(ref, {"GLU", "TYR"});
 
     // Only the first iron from this file
     lemon::prune::keep_interactions(ref, ref_res, {*ref_fe1.begin()}, distance);
@@ -34,8 +34,9 @@ int main(int argc, char* argv[]) {
 
         // Selection phase
         auto metals = lemon::select::metal_ions(entry);
+        //auto metals = lemon::select::specific_residues(entry, {"FE"});
         auto resids = lemon::select::specific_residues(entry,
-            {"GLU", "ASP", "HIS", "TYR", "SER", "CYS", "MET", "THR", "LYS"}
+            {"GLU", "ASP", "TYR"}
         );
 
         std::string result;
@@ -44,12 +45,17 @@ int main(int argc, char* argv[]) {
             return result;
         }
 
-        // Pruning phase
         for (auto metal : metals) {
             auto resids2 = resids;
             lemon::prune::keep_interactions(entry, resids2, {metal}, distance);
             std::vector<chemfiles::Vector3D> y;
+
+            if (resids2.size() != 3) {
+                continue;
+            }
+
             result += entry.topology().residues()[metal].name() + " ";
+
             for (auto res : resids2) {
                 auto cur_res = entry.topology().residues()[res];
                 auto loc = lemon::tmalign::find_element_by_name(entry, cur_res, "CA");
@@ -61,11 +67,41 @@ int main(int argc, char* argv[]) {
             chemfiles::Vector3D t;
             int err;
 
-            while (y.size() >= x.size()) {
-                auto rms = lemon::tmalign::kabsch(w, x, y, x.size(), u, t, err);
-                result += std::to_string(rms) + " ";
-                y.erase(y.begin());
-            }
+            auto rms = lemon::tmalign::kabsch(w, x,
+                {y[0], y[1], y[2]},
+                x.size(), u, t, err
+            );
+            result += std::to_string(rms) + " ";
+
+            rms = lemon::tmalign::kabsch(w, x,
+                {y[0], y[2], y[1]},
+                x.size(), u, t, err
+            );
+            result += std::to_string(rms) + " ";
+
+            rms = lemon::tmalign::kabsch(w, x,
+                {y[1], y[0], y[2]},
+                x.size(), u, t, err
+            );
+            result += std::to_string(rms) + " ";
+
+            rms = lemon::tmalign::kabsch(w, x,
+                {y[1], y[2], y[0]},
+                x.size(), u, t, err
+            );
+            result += std::to_string(rms) + " ";
+
+            rms = lemon::tmalign::kabsch(w, x,
+                {y[2], y[0], y[1]},
+                x.size(), u, t, err
+            );
+            result += std::to_string(rms) + " ";
+
+            rms = lemon::tmalign::kabsch(w, x,
+                {y[2], y[1], y[0]},
+                x.size(), u, t, err
+            );
+            result += std::to_string(rms) + " ";
 
             result += pdbid + "\n";
         }
