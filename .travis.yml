@@ -12,6 +12,8 @@ linux64_addons:
       apt:
         packages:
         - python3.5-dev
+        - python3-setuptools
+        - python3-pip
 
 matrix:
   fast_finish: true
@@ -61,7 +63,7 @@ matrix:
         - BUILD_DOC: OFF
 
 before_install:
-  - pip install --user cpp-coveralls
+  - pip3 install --user cpp-coveralls
   
 script:
   - ./scripts/travis/build.sh
