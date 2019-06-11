@@ -48,8 +48,13 @@ class ResidueName : private std::array<char, 3> {
         switch (s.length()) {
         case 3:
             (*this)[2] = check_digit_(s[2]);
+            (*this)[1] = check_digit_(s[1]);
+            (*this)[0] = check_digit_(s[0]);
+            break;
         case 2:
             (*this)[1] = check_digit_(s[1]);
+            (*this)[0] = check_digit_(s[0]);
+            break;
         case 1:
             (*this)[0] = check_digit_(s[0]);
             break;
@@ -63,8 +68,13 @@ class ResidueName : private std::array<char, 3> {
         switch (std::strlen(s)) {
         case 3:
             (*this)[2] = check_digit_(s[2]);
+            (*this)[1] = check_digit_(s[1]);
+            (*this)[0] = check_digit_(s[0]);
+            break;
         case 2:
             (*this)[1] = check_digit_(s[1]);
+            (*this)[0] = check_digit_(s[0]);
+            break;
         case 1:
             (*this)[0] = check_digit_(s[0]);
             break;

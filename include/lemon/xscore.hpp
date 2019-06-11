@@ -263,15 +263,15 @@ inline double repulsion(double offset, double r) {
     return r * r;
 }
 
-inline double slope_step(double bad, double good, double r) {
-    assert(bad < good);
-    if (r <= bad) {
-        return 0;
+inline double slope_step(double end, double intercept, double r) {
+    if(intercept < end) {
+        if(r <= intercept) return 0;
+        if(r >= end) return 1;
+    } else {
+        if(r >= intercept) return 0;
+        if(r <= end) return 1;
     }
-    if (r >= good) {
-        return 1;
-    }
-    return (r - bad) / (good - bad);
+    return (r - intercept) / (end - intercept);
 }
 
 // Move to a topology.hpp file?

@@ -8,7 +8,12 @@
 #include "catch.hpp"
 
 static bool roughly(double a, double b, double tol = 1e-3) {
-    return std::fabs(a - b) < tol;
+    if (std::fabs(a - b) < tol) {
+        return true;    
+    }
+
+    std::cout << "Got: " << a << " but expected " << b << std::endl;
+    return false;
 }
 
 TEST_CASE("Gaussian Terms") {
@@ -111,7 +116,7 @@ TEST_CASE("Scoring") {
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
     CHECK(roughly(vscore.g1, 79.23012));
     CHECK(roughly(vscore.g2, 639.67236));
-    CHECK(roughly(vscore.hydrogen, 47.031564));
+    CHECK(roughly(vscore.hydrogen, 1.96844));
     CHECK(roughly(vscore.hydrophobic, 0.00000));
     CHECK(roughly(vscore.rep, 2.35422));
 }
@@ -135,8 +140,8 @@ TEST_CASE("Scoring with hydrophobics") {
     auto vscore = lemon::xscore::vina_score(frame1, (*azm.begin()), proteins);
     CHECK(roughly(vscore.g1, 52.6882));
     CHECK(roughly(vscore.g2, 766.766, 1e-3));
-    CHECK(roughly(vscore.hydrogen, 78.3355));
-    CHECK(roughly(vscore.hydrophobic, 17.1033));
+    CHECK(roughly(vscore.hydrogen, 3.66453));
+    CHECK(roughly(vscore.hydrophobic, 4.8967));
     CHECK(roughly(vscore.rep, 4.13918));
 }
 
@@ -160,7 +165,7 @@ TEST_CASE("Dry scoring") {
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
     CHECK(roughly(vscore.g1, 121.94136));
     CHECK(roughly(vscore.g2, 2103.34799));
-    //CHECK(roughly(vscore.hydrogen, 78.3355));
-    //CHECK(roughly(vscore.hydrophobic, 17.1033));
+    CHECK(roughly(vscore.hydrogen, 0.0000));
+    CHECK(roughly(vscore.hydrophobic, 60.4782));
     CHECK(roughly(vscore.rep, 14.48645));
 }
