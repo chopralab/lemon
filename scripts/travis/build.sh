@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo $PYPI_PASSWORD
+
 if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
     exit 0
 fi
