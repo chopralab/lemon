@@ -445,7 +445,7 @@ inline size_t escape_detect(std::string &str, size_t offset) {
     if((next == '\"') || (next == '\'') || (next == '`')) {
         auto astart = str.find_last_of("-/ \"\'`", offset - 1);
         if(astart != std::string::npos) {
-            if(str[astart] == (str[offset] == '=') ? '-' : '/')
+            if(str[astart] == ((str[offset] == '=') ? '-' : '/'))
                 str[offset] = ' '; // interpret this as a space so the split_up works properly
         }
     }
@@ -2080,6 +2080,11 @@ class Option : public OptionBase<Option> {
     /// @name Parser tools
     ///@{
 
+    #ifdef __GNUC__
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wsign-conversion"
+    #endif
+
     /// Process the callback
     void run_callback() {
 
@@ -2119,14 +2124,14 @@ class Option : public OptionBase<Option> {
         } else {
             // Exact number required
             if(get_items_expected() > 0) {
-                if(results_.size() != static_cast<size_t>(get_items_expected()))
+                if(results_.size() != static_cast<size_t>(std::abs(get_items_expected())))
                     throw ArgumentMismatch(get_name(), get_items_expected(), results_.size());
                 // Variable length list
             } else if(get_items_expected() < 0) {
                 // Require that this be a multiple of expected size and at least as many as expected
                 size_t dim = static_cast<size_t>(get_type_size() < 0 ? -get_type_size() : get_type_size());
                 size_t mod = results_.size() % dim;
-                if(results_.size() < static_cast<size_t>(-get_items_expected()) || mod != 0)
+                if(results_.size() < static_cast<size_t>(std::abs(get_items_expected())) || mod != 0)
                     throw ArgumentMismatch(get_name(), get_items_expected(), results_.size());
             }
             local_result = !callback_(results_);
@@ -2135,6 +2140,10 @@ class Option : public OptionBase<Option> {
         if(local_result)
             throw ConversionError(get_name(), results_);
     }
+
+    #ifdef __GNUC__
+    #pragma GCC diagnostic pop
+    #endif
 
     /// If options share any of the same names, they are equal (not counting positional)
     bool operator==(const Option &other) const {
