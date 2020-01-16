@@ -14,3 +14,7 @@ class MyWorkflow(lemon.Workflow):
         return pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n"
     def finalize(self):
         pass
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)

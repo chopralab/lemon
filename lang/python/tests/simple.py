@@ -4,3 +4,7 @@ class MyWorkflow(lemon.Workflow):
         return entry.topology().residue(1).get("chainname").get().as_string() + '\n'
     def finalize(self):
         pass
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)

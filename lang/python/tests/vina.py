@@ -42,3 +42,7 @@ class MyWorkflow(lemon.Workflow):
         return result
     def finalize(self):
         pass
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)

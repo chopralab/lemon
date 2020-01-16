@@ -22,6 +22,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
+
 namespace py = pybind11;
 
 namespace lemon {
@@ -61,10 +62,9 @@ struct LemonPythonWrap : LemonPythonBase {
 };
 
 void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t threads) {
-    std::mutex py_mutex;
-    auto worker = [&py, &py_mutex](chemfiles::Frame entry, const std::string& pdbid) {
-        std::lock_guard<std::mutex> guard(py_mutex);
-        py::gil_scoped_release release;
+    py::gil_scoped_release release;
+
+    auto worker = [&py](chemfiles::Frame entry, const std::string& pdbid) {
         return py.worker(&entry, pdbid);
     };
 

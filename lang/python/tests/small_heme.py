@@ -1,6 +1,6 @@
-from lemon import *
+import lemon
 
-class MyWorkflow(Workflow):
+class MyWorkflow(lemon.Workflow):
     def worker(self, entry, pdbid):
         import lemon
         heme_names = lemon.ResidueNameSet()
@@ -24,3 +24,7 @@ class MyWorkflow(Workflow):
 
     def finalize(self):
         pass
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)

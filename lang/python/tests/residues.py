@@ -13,3 +13,7 @@ class MyWorkflow(lemon.Workflow):
     def finalize(self):
         for rn in self.rnc:
             print(str(rn) + '\t' + str(self.rnc[rn]))
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)

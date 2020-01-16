@@ -29,9 +29,7 @@ namespace python = pybind11;
 int main(int argc, char *argv[]) {
     lemon::Options o;
     std::string py_script("lemon.py");
-    std::string py_derive("MyWorkflow");
     o.add_option("--py_script,-p", py_script, "Python script to load");
-    o.add_option("--py_class,-c", py_derive, "Class deriving from Workflow");
     o.parse_command_line(argc, argv);
 
     // Register the module with the interpreter
@@ -43,7 +41,10 @@ int main(int argc, char *argv[]) {
     python::scoped_interpreter guard{};
 
     auto locals = python::dict();
+
     try {
+        python::exec("LEMON_HADOOP_DIR='" + o.work_dir() + "'\n");
+        python::exec("LEMON_NUM_THREADS=" + std::to_string(o.ncpu()));
         python::eval_file(py_script, python::globals(), locals);
     } catch (python::error_already_set& err) {
         std::cerr << err.what() << std::endl;
@@ -54,27 +55,6 @@ int main(int argc, char *argv[]) {
     } catch (...) {
         std::cerr << "unknown error" << std::endl;
         return 1;
-    }
-
-    // Obtained derived class from python
-    python::object PythonDerived = locals[py_derive.c_str()];
-    python::object py_base = PythonDerived();
-    lemon::LemonPythonBase& py = py_base.cast<lemon::LemonPythonBase&>();
-
-    std::mutex py_mutex;
-    auto worker = [&py, &py_mutex](chemfiles::Frame entry, const std::string& pdbid) {
-        python::gil_scoped_release release;
-        std::lock_guard<std::mutex> guard(py_mutex);
-        return py.worker(&entry, pdbid);
-    };
-
-    auto collector = lemon::print_combine(std::cout);
-    lemon::launch(o, worker, collector);
-
-    try {
-        py.finalize();
-    } catch(python::error_already_set& err) {
-        std::cerr << err.what() << std::endl;
     }
 
     return 0;

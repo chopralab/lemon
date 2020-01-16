@@ -12,3 +12,7 @@ class MyWorkflow(lemon.Workflow):
 
         # Output phase
         return pdbid + lemon.count_print_residue_names(entry, smallm)
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)

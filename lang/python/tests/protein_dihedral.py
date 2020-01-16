@@ -46,3 +46,7 @@ class MyWorkflow(lemon.Workflow):
     def finalize(self):
         for sbin, count in self.dihedral_dict.items():
             print(sbin[0], '\t', sbin[1], '\t', count)
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)

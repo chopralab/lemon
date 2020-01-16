@@ -13,3 +13,7 @@ class MyWorkflow(lemon.Workflow):
         return ""
     def finalize(self):
         print(str(self.count))
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)
