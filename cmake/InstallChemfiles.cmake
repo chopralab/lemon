@@ -3,7 +3,7 @@ include(ExternalProject)
 
 ExternalProject_Add( CHEMFILES
     GIT_REPOSITORY https://github.com/frodofine/chemfiles.git
-    GIT_TAG read_from_memory_2
+    GIT_TAG read_from_memory
     SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_build
     CMAKE_CACHE_ARGS    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/chemfiles
                         -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
