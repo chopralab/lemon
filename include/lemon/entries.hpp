@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_set>
 #include <vector>
+#include <algorithm>
 
 #include "lemon/residue_name.hpp"
 
@@ -20,10 +21,12 @@ inline Entries read_entry_file(std::istream& input) {
     std::string temp;
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
+        std::transform(a.begin(), a.end(), a.begin(), ::toupper);
         result.insert(a);
     }
     return result;
 }
+
 inline Entries read_entry_file(const std::string& input) {
 
     if (input == "") {
@@ -45,6 +48,8 @@ read_entry_file(std::istream& input, Entries& result,
     std::string temp, item;
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
+
+        std::transform(a.begin(), a.end(), a.begin(), ::toupper);
 
         std::stringstream ss(temp);
         std::vector<std::string> residue_names;
