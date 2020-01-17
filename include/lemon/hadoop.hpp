@@ -22,7 +22,7 @@ namespace lemon {
 
 //! The `Hadoop` class is used to read input sequence files.
 //!
-//! This class reads an Apache Hadoop Sequence file and interates through the
+//! This class reads an Apache Hadoop Sequence file and iterates through the
 //! key/value pairs.  It has been modified so that it can only read files
 //! supplied by RCSB at this location:
 //! [Full](https://mmtf.rcsb.org/v1.0/hadoopfiles/full.tar)
@@ -44,7 +44,7 @@ class Hadoop {
     //! Returns the next MMTF file.
     //!
     //! This function reads the next MMTF record from the underlying stream.
-    //! Bewarned that this function does minimal error checking and should only
+    //! Be-warned that this function does minimal error checking and should only
     //! be used if has_next() has returned `true`.
     //! \return A pair of `std::vector<char>`s. The first member contains the
     //! PDB ID and the second contains the GZ compressed MMTF file.

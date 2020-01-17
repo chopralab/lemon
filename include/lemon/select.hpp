@@ -133,7 +133,7 @@ inline Container metal_ions(const chemfiles::Frame& frame) {
 //! Select nucleic acid residues in a given frame
 //!
 //! This function populates the residue IDs of nucleic acid residues.
-//! We define a nuecleic acid as a residue with a chemical composition
+//! We define a nucleic acid as a residue with a chemical composition
 //! containing the *RNA* or *DNA* substring.
 //! \param [in] frame The entry containing nucleic acid residues.
 //! \param [out] output A container of residue IDs which have nucleic acid
@@ -163,7 +163,7 @@ inline size_t nucleic_acids(const chemfiles::Frame& frame, Container& output) {
 //! Select nucleic acid residues in a given frame
 //!
 //! This function returns the residue IDs of nucleic acid residues.
-//! We define a nuecleic acid as a residue with a chemical composition
+//! We define a nucleic acid as a residue with a chemical composition
 //! containing the *RNA* or *DNA* substring.
 //! \param [in] frame The entry containing nucleic acid residues.
 //! \return output A container of residue IDs which have nucleic acid linkage

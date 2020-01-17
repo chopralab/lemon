@@ -70,7 +70,7 @@ inline void identical_residues(const chemfiles::Frame& frame,
 //! Remove residues which are typically present in many crystal structures
 //!
 //! There are a common set of cofactors present in many crystal structures such
-//! as sugars and fatty acids used to induce crystalization. As a result, some
+//! as sugars and fatty acids used to induce crystallization. As a result, some
 //! users may remove these cofactors as they may match other criteria (such as
 //! being a small molecule) set by the user.
 //! \param [in] frame The `frame` containing residues of interest.

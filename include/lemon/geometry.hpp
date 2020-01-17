@@ -106,7 +106,7 @@ inline std::string bond_name(const chemfiles::Frame& entry,
 //! {residue}_{atom1}_{atom2}_{atom3} for angles within a single residue not
 //! part of the amino acid linker, namely: CA_C_O, N_C_O, and O_C_OXT.
 //! Inter-residue angles not part of the linker are handled similarly, both with
-//! the exception of proline derivates. Other types of inter-residue angles
+//! the exception of proline derivatives. Other types of inter-residue angles
 //! result in a geometry error being thrown. \param [in] entry Structure
 //! containing the peptide residues of interest \param [in] angle angle which
 //! name is going to be obtained \return The name of the angle.
@@ -160,7 +160,7 @@ inline std::string angle_name(const chemfiles::Frame& entry,
 
     if ((latom == "C" || hatom == "C") && catom == "CA") {
         // Special handling of the intra aminoacid group.
-        // Another posibility is C_CA_CB, which is residue specific
+        // Another possibility is C_CA_CB, which is residue specific
         if ((hatom == "N") || (latom == "N")) {
             return "C_CA_N";
         }
