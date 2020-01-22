@@ -1,0 +1,27 @@
+@<reference>
+pdbID_ref_1 path_to_reference_pdb_file_1
+@<align_sm_ligands>
+pdbID_1 chemicalID_1
+pdbID_2 chemicalID_2
+pdbID_3 chemicalID_3
+pdbID_n chemicalID_n
+@<align_non_sm_ligands>
+pdbID_1 chainID_1-residue_num_1
+pdbID_2 chainID_2-residue_num_2
+pdbID_3 chainID_3-residue_num_3
+pdbID_n chainID_n-residue_num_n
+@<end>
+
+@<reference>
+pdbID_ref_2 path_to_reference_pdb_file_2
+@<align_sm_ligands>
+pdbID_1 chemicalID_1
+pdbID_2 chemicalID_2
+pdbID_3 chemicalID_3
+pdbID_n chemicalID_n
+@<align_non_sm_ligands>
+pdbID_1 chainID_1-residue_num_1
+pdbID_2 chainID_2-residue_num_2
+pdbID_3 chainID_3-residue_num_3
+pdbID_n chainID_n-residue_num_n
+@<end>

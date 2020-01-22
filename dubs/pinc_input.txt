@@ -1,0 +1,131 @@
+@<reference>
+2IQG pinc_reference_files/betasecretase1/protein1.mol2
+@<align_sm_ligands>
+2IQG F2I
+2G94 ZPQ
+1W51 L01
+2Q11 XX4
+2OHQ 7IP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1IF4 pinc_reference_files/carbonicanhydrase2/protein1.mol2
+@<align_sm_ligands>
+1IF4 FBS
+1G52 F2B
+1Z9Y FUN
+1G1D FSB
+1BN4 AL9
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1H1P pinc_reference_files/cdk2/protein1.mol2
+@<align_sm_ligands>
+1H1P CMG
+1H0V UN4
+1CKP PVB
+1H1S 4SP
+1JVP LIG
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1MTB pinc_reference_files/hivproteasea1/protein1.mol2
+@<align_sm_ligands>
+1MTB HPH
+4HVP 2NC
+2FGV NTB
+1MTR PI6
+2AID THK
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1HVI pinc_reference_files/hivproteaseb1/protein1.mol2
+@<align_sm_ligands>
+1HVI A77
+1MET DMP
+1HIH C20
+1GNO U0E
+1HVK A79
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1A8K pinc_reference_files/hivproteasebr/protein1.mol2
+@<align_sm_ligands>
+1A8K 0Q4
+1IIQ 0ZR
+2UPJ U02
+1D4Y TPV
+1AAQ PSI
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1RT4 pinc_reference_files/hivrt/protein1.mol2
+@<align_sm_ligands>
+1RT4 UC1
+1RTI HEF
+1REV TB9
+1RT1 MKC
+1VRU AAP
+@<align_non_sm_ligands>
+@<end>
+
+<@reference>
+2H55 pinc_reference_files/hsp90alpha/protein1.mol2
+<@align_sm_ligands>
+2H55 DZ8
+1UYG PU2
+1YC4 43P
+2UWD 2GG
+1YET GDM
+<@align_non_sm_ligands>
+<@end>
+
+@<reference>
+1ZYJ pinc_reference_files/mapk14/protein1.mol2
+@<align_sm_ligands>
+1ZYJ BI5
+1W83 L11
+1BL7 SB4
+1WBT WBT
+2BAL PQA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2ATH pinc_reference_files/pparg/protein1.mol2
+@<align_sm_ligands>
+2ATH 3EA
+2I4J DRJ
+1FM6 BRL
+2HWQ DRY
+1FM9 570
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1KAK pinc_reference_files/ptp1b/protein1.mol2
+@<align_sm_ligands>
+1KAK FNP
+1NL9 989
+1C85 OBA
+1G7G INX
+1ECV 878
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1K21 pinc_reference_files/thrombin/protein1.mol2
+@<align_sm_ligands>
+1K21 IGN
+1CA8 0KV
+1DWB BEN
+1BMN BM9
+1D3P BT3
+@<align_non_sm_ligands>
+@<end>
