@@ -1,5 +1,11 @@
 @<reference>
 reference_pdbID_1 path_to_reference_pdb_file_1
+@<align_prot>
+pdbID_1
+pdbID_2
+pdbID_3
+...
+pdbID_n
 @<align_sm_ligands>
 pdbID_1 chemicalID_1
 pdbID_2 chemicalID_2
@@ -16,6 +22,12 @@ pdbID_n chainID_n-residue_num_n
 
 @<reference>
 reference_pdbID_2 path_to_reference_pdb_file_2
+@<align_prot>
+pdbID_1
+pdbID_2
+pdbID_3
+...
+pdbID_n
 @<algin_sm_ligands>
 pdbID_1 chemicalID_1
 pdbID_2 chemicalID_2

@@ -1,1 +1,1 @@
-This folder contains the reference protien .mol2 files for alignment using Lemon
+This folder contains the reference protien .mmtf files for alignment using Lemon

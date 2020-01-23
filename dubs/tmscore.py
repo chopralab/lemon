@@ -63,25 +63,8 @@ def parse_input_file(fname):
                 else:
                     pdbIDNonSMDict[pdbID].append(tuple([chainID,residNum]))
 
-
-class MyWorkflow(lemon.Workflow):
-    def __init__(self):
-        lemon.Workflow.__init__(self)
-        self.native = lemon.open_file("../../../test/files/1AAQ.mmtf")
-    def worker(self, entry, pdbid):
-        junk = lemon.PositionVec()
-
-        tm = lemon.TMscore(entry, self.native, junk, False)
-
-        return pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n"
-    def finalize(self):
-        pass
-
-#wf = MyWorkflow()
-
-#lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)
-
-fname = "test_format.txt"
+"""
+fname = "pinc_input.txt"
 parse_input_file(fname)
 
 print("Path Dict")
@@ -92,3 +75,41 @@ print("SM Dict")
 print(pdbIDSMDict)
 print("Non SM Dict")
 print(pdbIDNonSMDict)
+"""
+
+# Define Lemon workflow class
+class MyWorkflow(lemon.Workflow):
+    def __init__(self):
+        lemon.Workflow.__init__(self)
+        #self.native = lemon.open_file("../../../test/files/1AAQ.mmtf")
+    def worker(self, entry, pdbid):
+        # If the pdbid is not used, then we just skip over it
+        if pdbid not in pdbIDSMDict.keys() and pdbid not in pdbIDNonSMDict.keys():
+            return ""
+        
+        junk = lemon.PositionVec()
+
+        # Define and assign the reference pdbid
+        refpdbid = ""
+        for key, value in referenceDict.items():
+            if pdbid in value:
+                refpdbid = key
+
+        # Get the path to the reference file and set native to it
+        refPath = pathDict[refpdbid]
+        self.native = lemon.open_file(refPath)
+
+        # Get a list of the ligands associated with the protein we are trying to align
+        SM_ligandList = pdbIDSMDict[pdbid] 
+        Non_SM_ligandList = pdbIDNonSMDict[pdbid]
+
+        tm = le'mon.TMscore(entry, self.native, junk, False)
+        print(pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n")
+        return pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n"
+    def finalize(self):
+        pass
+
+
+wf = MyWorkflow()
+
+lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)
