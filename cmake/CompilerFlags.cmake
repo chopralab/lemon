@@ -80,6 +80,7 @@ if(MSVC)
     remove_msvc_warning(4820) # padding added
     remove_msvc_warning(5026) # move constructor was implicitly defined as deleted
     remove_msvc_warning(5027) # move assignment operator was implicitly defined as deleted
+    remove_msvc_warning(5045) # spectre mitigation warning
 else()
     # Add some warnings in debug mode
     # Basic set of warnings
