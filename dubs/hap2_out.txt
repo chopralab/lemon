@@ -1,0 +1,1475 @@
+@<reference>
+2d59 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2d5a COA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2iyt DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2iys SKM
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1alb DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1lif STE
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1gqv DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2c05 B4P
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1eut DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1eus DAN
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1uaj DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1uak SAM
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3c2e DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3c2o NTM
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1wu4 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1wu5 GOL
+1wu5 XYP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1quv DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2brl POO
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1ia8 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2r0u M54
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2qev DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2pql TSS
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1ile DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1jzs MRC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2x16 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2x1t RES
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1fmk DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2h8h H8H
+2h8h PTR
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1h7e DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1h7f C5P
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2exo DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3cuf 9MR
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1a3h DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+4a3h DCB
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2npo DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3bfp FLC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1kwb DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1kwc BPY
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2ohg DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2ohv NHL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1f46 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1s1s WAC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2jdw DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+7jdw DAV
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1pud DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1k4h APQ
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1izd DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1ize IVA
+1ize MAN
+1ize STA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3acb DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3acd DIO
+3acd IMP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1bsq DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1gx9 REA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1brq DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1rbp RTL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1i76 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1bzs BSI
+1bzs EPE
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2hc1 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2h03 3UN
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1py3 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3d5i SGP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2dul DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2ejt GOL
+2ejt SAM
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1lcl DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1qkq MAN
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2j1x DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2x0u X0U
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1rbb DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1eos U2G
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1t80 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1t7v NAG
+1t7v P6G
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1eyp DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1fm8 DDC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1cz1 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1eqc CTS
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2cc9 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2ccb RBF
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3erf DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3ibh GSH
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1b73 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1b74 DGN
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1tje DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1tke SER
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+6rhn DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+5rhn 8BR
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1pjb DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1pjc NAD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2qbv DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2vkl MLT
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1jam DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2oxd K32
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1sjs DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+9icd NAP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1egu DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1f9g ASC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2r5g DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2per MNB
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3htz DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1ygb SER
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2wbz DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1lxz TLA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1gy0 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1og1 TAD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1b8p DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1b8v NAD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1qba DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1qbb CBS
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2ebg DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2ei5 BTB
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1nie DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2bw5 MLI
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1lz7 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1ziz GAL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1rtc DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1br5 NEO
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2zco DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2zy1 830
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1gbs DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1lsp BUL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3go7 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3go6 ADP
+3go6 RIB
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2bls DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3gr2 GF4
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1kxo DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1lnm DTX
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3gvr DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1r3y CP3
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1dhn DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1rsi 977
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1dvq DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1dvy BPD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1x1h DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1x1j 46D
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2ris DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2riu 5RP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1hcl DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1aq1 STU
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2cl3 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3bho B4P
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1v8i DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1v8l APR
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1nx2 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1nx3 ISA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1wka DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1wk9 TSB
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1e8y DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1e8z STU
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1jsm DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1jso NAG
+1jso SIA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1qid DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1qti GNT
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1tpo DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1o2i 655
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+6yas DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+5yas FAC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1pjb DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1say PYR
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1bsi DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1xcw 3SA
+1xcw NAG
+1xcw PCA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2psr DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2wor 2AN
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3aap DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3aar ANP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+16gs DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3csj CBL
+3csj MES
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1ks9 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1yon A2R
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3f9q DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1lee R36
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2ozq DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1znl DE1
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2wxr DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2wxo ZZP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1eut DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1euu GAL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1jks DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3eha ANP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3gez DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3gf2 SAL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1ufk DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2zbr SFG
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2hjw DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3jrx S1A
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2w91 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2w92 1PE
+2w92 NGT
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+5dfr DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1ra1 NAP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1nux DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1cnq F6P
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1doz DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1c1h MMP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3ba1 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3baz NAP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1tqi DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1tqm ANP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2gpn DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1z6p 194
+1z6p LLP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1iiw DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1ii5 GLU
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1bk7 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1uca U2P
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1s4q DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1znz GDP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+4pgm DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1bq4 BHC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1ri5 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1ri4 SAM
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2cpl DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1w8l 1P3
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1sca DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1bfu DIO
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1xqz DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1yxt ANP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1gta DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1m99 GTS
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1jrl DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1v2g IMD
+1v2g OCA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1qtr DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1x2e ATX
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2wxr DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2wxh ZZO
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2cwk DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2dxf GNP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1erk DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3erk SB4
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3dw3 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1oyo 3ID
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2bv9 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2bvd ISX
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1gpi DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1z3w IDC
+1z3w NAG
+1z3w PCA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2qht DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2qhs OCA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3pte DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1ikg REX
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1j1q DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1j1s FMP
+1j1s NAG
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3fw6 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3ii1 BGC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1dup DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1dud DUD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1vp3 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1jsz NDM
+1jsz SAH
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2vef DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2veg PMM
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3iep DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3ier PG4
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2zgl DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2zgn GAL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1tw7 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1rpi GLC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3ewq DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3ewr APR
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1gcg DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1gca GAL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3cj1 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3cj7 AMP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1pah DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1lrm HBI
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1nm8 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1s5o 152
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2d2r DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2dtn DPO
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3h97 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3h9b CIT
+3h9b NOT
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3a7f DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3a7i ADE
+3a7i TPO
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1frz DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1fs5 16G
+1fs5 TLA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2wck DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2wcj M21
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1gta DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1m9a GTX
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2bgt DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1qkj UDP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2g52 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1pq5 ARG
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2fya DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2fy7 PGE
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2gfv DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3g11 P9C
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1jud DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1qh9 LAC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1y2q DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2hkz SER
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1s7k DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1s7f MLA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1j4b DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1loo GTP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3ado DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3adp NAI
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2vk5 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2bf6 GOL
+2bf6 SIA
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1sgk DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1dtp APU
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+226l DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+225l PXY
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2h4x DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2h52 3PG
+2h52 HAI
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3jyl DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3jyn NDP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3wrp DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1wrp TRP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2fgz DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2fh6 GLC
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1lp8 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1lpc CMP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1cy2 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1cy7 TMP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1ahc DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1aha ADE
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2a78 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2a9k GDP
+2a9k NAD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2ys7 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2yrx AMP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1zn9 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1zn8 AMP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1akz DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3fci 3FI
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2o9p DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2z1s CTT
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1uyl DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2byi 2DD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3ftv DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3ftw 11X
+3ftw IMD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1zhf DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1zg3 2HI
+1zg3 SAH
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2uyo DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2uyq SAM
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2paw DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1pax DHQ
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1wos DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1wor RED
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2qwa DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2qwf BMA
+2qwf G20
+2qwf MAN
+2qwf NAG
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1adi DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1hon GNH
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2r60 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2r68 SUP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2btz DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2bu7 TF3
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+2j64 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+2j5z GAL
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1iq8 DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1it8 PQ0
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1y2v DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1y2w GAL
+1y2w NAG
+1y2w NGA
+1y2w SER
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1kwg DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1kwk GAL
+1kwk MPD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1s0d DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1i1e DM2
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1ctq DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1p2s GNP
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+3f6f DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3gh6 GSH
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1khg DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1m51 TSX
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1sll DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+3sli SKD
+@<align_non_sm_ligands>
+@<end>
+
+@<reference>
+1x6l DEFINE_PATH_HERE
+@<align_prot>
+@<align_sm_ligands>
+1x6n AO3
+@<align_non_sm_ligands>
+@<end>
+
