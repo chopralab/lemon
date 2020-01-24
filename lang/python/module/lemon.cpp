@@ -61,7 +61,7 @@ struct LemonPythonWrap : LemonPythonBase {
     }
 };
 
-void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t threads) {
+void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t threads, const Entries& entries) {
     py::gil_scoped_release release;
 
     auto worker = [&py](chemfiles::Frame entry, const std::string& pdbid) {
@@ -69,7 +69,7 @@ void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t thread
     };
 
     print_combine combiner(std::cout);
-    lemon::run_parallel(worker, p, combiner, threads);
+    lemon::run_parallel(worker, p, combiner, threads, entries);
     py.finalize();
 }
 
@@ -87,6 +87,16 @@ template<typename T>
 std::string to_string(const T& v) {
     std::stringstream ss;
     ss << v;
+    return ss.str();
+}
+
+std::string entries_to_string(const Entries& v) {
+    std::stringstream ss;
+    ss << "{ ";
+    for (auto& i : v) {
+        ss << i << " ";
+    }
+    ss << "}";
     return ss.str();
 }
 
@@ -109,6 +119,29 @@ void add_lemon_features(py::module& m) {
         .def("finalize", &LemonPythonBase::finalize);
 
     m.def("launch", run_lemon_workflow);
+    m.def("launch", [](LemonPythonBase& py, const std::string& p, size_t threads){
+        run_lemon_workflow(py, p, threads, Entries());
+    });
+
+    /**************************************************************************
+     * Entries
+     **************************************************************************/
+
+    py::class_<Entries>(m, "Entries")
+        .def(py::init<>())
+        .def("__len__", &Entries::size)
+        .def("__iter__", [](const Entries& v) {
+            return py::make_iterator(v.begin(), v.end());
+        }, py::keep_alive<0, 1>())
+        .def("add", [](Entries& v, const Entries::value_type& t) {
+            v.insert(t);
+        })
+        .def("__str__",[](const Entries& v){
+            return entries_to_string(v);
+        })
+        .def("__repl__",[](const Entries& v){
+            return "Entries {" + entries_to_string(v) + "}";
+        });
 
     /**************************************************************************
      * Residue Name
@@ -161,7 +194,6 @@ void add_lemon_features(py::module& m) {
     /**************************************************************************
      * Constants
      **************************************************************************/
-    py::class_<std::unordered_set<std::string>>(m, "StringSet");
     m.attr("small_molecule_types") = small_molecule_types;
 
     m.attr("common_peptides") = common_peptides;
