@@ -1,14 +1,12 @@
 from candiy_lemon import lemon
 
-# Define constants used later in Lemon test script
-LEMON_HADOOP_DIR = "../../full"
-LEMON_NUM_THREADS = 8
-
-# List of dictonaries to keep track of parts of the file
+# List of dictionaries to keep track of parts of the file
 pathDict = {}
 referenceDict = {}
 pdbIDSMDict = {}
 pdbIDNonSMDict = {}
+
+entries_to_use = lemon.Entries()
 
 # Method for parsing a formated input file
 def parse_input_file(fname):
@@ -34,6 +32,7 @@ def parse_input_file(fname):
                 path = line.split(" ")[1].strip()
                 curRefPdbID = pdbID
                 pathDict[pdbID] = path
+                
             elif SMLigFlag == 1:
                 pdbID = line.split(" ")[0].strip()
                 chemID = line.split(" ")[1].strip()
@@ -47,6 +46,8 @@ def parse_input_file(fname):
                     pdbIDSMDict[pdbID] = [chemID]
                 else:
                     pdbIDSMDict[pdbID].append(chemID)
+
+                entries.add(pdbID)
 
             elif nonSMligFlag == 1:
                 pdbID = line.split(" ")[0].strip()
@@ -62,6 +63,8 @@ def parse_input_file(fname):
                     pdbIDNonSMDict[pdbID] = [tuple([chainID,residNum])]
                 else:
                     pdbIDNonSMDict[pdbID].append(tuple([chainID,residNum]))
+
+                entries.add(pdbID)
 
 """
 fname = "pinc_input.txt"
@@ -81,12 +84,8 @@ print(pdbIDNonSMDict)
 class MyWorkflow(lemon.Workflow):
     def __init__(self):
         lemon.Workflow.__init__(self)
-        #self.native = lemon.open_file("../../../test/files/1AAQ.mmtf")
+        # TODO load the reference files and use them in the worker thread
     def worker(self, entry, pdbid):
-        # If the pdbid is not used, then we just skip over it
-        if pdbid not in pdbIDSMDict.keys() and pdbid not in pdbIDNonSMDict.keys():
-            return ""
-        
         junk = lemon.PositionVec()
 
         # Define and assign the reference pdbid
@@ -103,7 +102,7 @@ class MyWorkflow(lemon.Workflow):
         SM_ligandList = pdbIDSMDict[pdbid] 
         Non_SM_ligandList = pdbIDNonSMDict[pdbid]
 
-        tm = le'mon.TMscore(entry, self.native, junk, False)
+        tm = lemon.TMscore(entry, self.native, junk, False)
         print(pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n")
         return pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n"
     def finalize(self):
@@ -112,4 +111,5 @@ class MyWorkflow(lemon.Workflow):
 
 wf = MyWorkflow()
 
-lemon.launch(wf, LEMON_HADOOP_DIR, LEMON_NUM_THREADS)
+# TODO Get these from the command-line or ask the user
+lemon.launch(wf, "../../full", 8)
