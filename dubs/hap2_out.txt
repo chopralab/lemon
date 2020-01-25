@@ -58,7 +58,6 @@
 1wu4 DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
-1wu5 GOL
 1wu5 XYP
 @<align_non_sm_ligands>
 @<end>
@@ -108,7 +107,6 @@
 @<align_prot>
 @<align_sm_ligands>
 2h8h H8H
-2h8h PTR
 @<align_non_sm_ligands>
 @<end>
 
@@ -188,9 +186,7 @@
 1izd DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
-1ize IVA
 1ize MAN
-1ize STA
 @<align_non_sm_ligands>
 @<end>
 
@@ -198,7 +194,6 @@
 3acb DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
-3acd DIO
 3acd IMP
 @<align_non_sm_ligands>
 @<end>
@@ -224,7 +219,6 @@
 @<align_prot>
 @<align_sm_ligands>
 1bzs BSI
-1bzs EPE
 @<align_non_sm_ligands>
 @<end>
 
@@ -248,7 +242,6 @@
 2dul DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
-2ejt GOL
 2ejt SAM
 @<align_non_sm_ligands>
 @<end>
@@ -282,7 +275,6 @@
 @<align_prot>
 @<align_sm_ligands>
 1t7v NAG
-1t7v P6G
 @<align_non_sm_ligands>
 @<end>
 
@@ -326,6 +318,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here (only lignad is common peptide)
 @<reference>
 1tje DEFINE_PATH_HERE
 @<align_prot>
@@ -390,6 +383,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here (ligand is common peptide)
 @<reference>
 3htz DEFINE_PATH_HERE
 @<align_prot>
@@ -482,7 +476,6 @@
 3go7 DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
-3go6 ADP
 3go6 RIB
 @<align_non_sm_ligands>
 @<end>
@@ -596,7 +589,6 @@
 @<align_prot>
 @<align_sm_ligands>
 1jso NAG
-1jso SIA
 @<align_non_sm_ligands>
 @<end>
 
@@ -632,13 +624,13 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 1bsi DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
 1xcw 3SA
 1xcw NAG
-1xcw PCA
 @<align_non_sm_ligands>
 @<end>
 
@@ -663,7 +655,6 @@
 @<align_prot>
 @<align_sm_ligands>
 3csj CBL
-3csj MES
 @<align_non_sm_ligands>
 @<end>
 
@@ -743,7 +734,6 @@
 2w91 DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
-2w92 1PE
 2w92 NGT
 @<align_non_sm_ligands>
 @<end>
@@ -788,6 +778,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 2gpn DEFINE_PATH_HERE
 @<align_prot>
@@ -797,6 +788,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here (lignad is common peptide)
 @<reference>
 1iiw DEFINE_PATH_HERE
 @<align_prot>
@@ -869,6 +861,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 1jrl DEFINE_PATH_HERE
 @<align_prot>
@@ -926,13 +919,13 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 1gpi DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
 1z3w IDC
 1z3w NAG
-1z3w PCA
 @<align_non_sm_ligands>
 @<end>
 
@@ -952,6 +945,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 1j1q DEFINE_PATH_HERE
 @<align_prot>
@@ -982,7 +976,6 @@
 @<align_prot>
 @<align_sm_ligands>
 1jsz NDM
-1jsz SAH
 @<align_non_sm_ligands>
 @<end>
 
@@ -1070,7 +1063,6 @@
 3h97 DEFINE_PATH_HERE
 @<align_prot>
 @<align_sm_ligands>
-3h9b CIT
 3h9b NOT
 @<align_non_sm_ligands>
 @<end>
@@ -1080,10 +1072,10 @@
 @<align_prot>
 @<align_sm_ligands>
 3a7i ADE
-3a7i TPO
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 1frz DEFINE_PATH_HERE
 @<align_prot>
@@ -1149,6 +1141,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here (lignad is common peptide)
 @<reference>
 1y2q DEFINE_PATH_HERE
 @<align_prot>
@@ -1181,6 +1174,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here (both are common cofactors)
 @<reference>
 2vk5 DEFINE_PATH_HERE
 @<align_prot>
@@ -1206,6 +1200,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 2h4x DEFINE_PATH_HERE
 @<align_prot>
@@ -1263,6 +1258,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here (both are common cofactors)
 @<reference>
 2a78 DEFINE_PATH_HERE
 @<align_prot>
@@ -1312,6 +1308,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 3ftv DEFINE_PATH_HERE
 @<align_prot>
@@ -1326,7 +1323,6 @@
 @<align_prot>
 @<align_sm_ligands>
 1zg3 2HI
-1zg3 SAH
 @<align_non_sm_ligands>
 @<end>
 
@@ -1354,6 +1350,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 2qwa DEFINE_PATH_HERE
 @<align_prot>
@@ -1405,6 +1402,7 @@
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 1y2v DEFINE_PATH_HERE
 @<align_prot>
@@ -1412,10 +1410,10 @@
 1y2w GAL
 1y2w NAG
 1y2w NGA
-1y2w SER
 @<align_non_sm_ligands>
 @<end>
 
+# TODO choose here
 @<reference>
 1kwg DEFINE_PATH_HERE
 @<align_prot>

@@ -1,9 +1,17 @@
 from candiy_lemon import lemon
+import sys
 
 # List of dictionaries to keep track of parts of the file
+
+# Key: reference pdbid, Value: path to .mmtf file
 pathDict = {}
+# Key: reference pdbID, Value: list of associated ligands (both SM and non SM)
 referenceDict = {}
+# Key: reference pdbID, Value: list of proteins to aling to reference (like in pinc)
+alignProtDict = {}
+# Key: pdbID, Value: chemical id for SM ligand
 pdbIDSMDict = {}
+# Key: pdbID, Value: tuple with chain ID and number of residues
 pdbIDNonSMDict = {}
 
 entries_to_use = lemon.Entries()
@@ -13,13 +21,17 @@ def parse_input_file(fname):
     f = open(fname,"r")
     curRefPdbID = ""
     refFlag = 0
+    protFlag = 0
     SMLigFlag = 0
     nonSMligFlag = 0
     for line in f:
         if line.startswith("@<reference>"):
             refFlag = 1
-        elif line.startswith("@<align_sm_ligands>"):
+        elif line.startswith("@<align_prot>"):
             refFlag = 0
+            protFlag = 1
+        elif line.startswith("@<align_sm_ligands>"):
+            protFlag = 0
             SMLigFlag = 1
         elif line.startswith("@<align_non_sm_ligands>"):
             SMLigFlag = 0
@@ -32,7 +44,14 @@ def parse_input_file(fname):
                 path = line.split(" ")[1].strip()
                 curRefPdbID = pdbID
                 pathDict[pdbID] = path
-                
+            
+            elif protFlag == 1:
+                pdbID = line.strip()
+                if alignProtDict.get(curRefPdbID,0) == 0:
+                    referenceDict[curRefPdbID] = [pdbID]
+                else:
+                    referenceDict[curRefPdbID].append(pdbID)
+
             elif SMLigFlag == 1:
                 pdbID = line.split(" ")[0].strip()
                 chemID = line.split(" ")[1].strip()
@@ -110,6 +129,15 @@ class MyWorkflow(lemon.Workflow):
 
 
 wf = MyWorkflow()
+
+# Get from the command line
+# for testing we also can hard set the path
+if len(sys.argv) > 1:
+    hadoop_path = sys.argv[1]
+    cores = int(sys.argv[2])
+else:
+    path = "../../full"
+    cores = 8
 
 # TODO Get these from the command-line or ask the user
 lemon.launch(wf, "../../full", 8)
