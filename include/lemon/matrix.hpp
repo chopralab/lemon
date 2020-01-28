@@ -8,25 +8,25 @@
 #include <complex>
 #include <vector>
 #include <algorithm>
-
+#include <iostream>
 namespace lemon {
 
 using Vector3D = chemfiles::Vector3D;
 using Matrix3D = chemfiles::Matrix3D;
+using Coordinates = std::vector<Vector3D>;
 
 inline double trace(const Matrix3D& matrix) {
     return matrix[0][0] + matrix[1][1] + matrix[2][2];
 }
 
-inline Matrix3D covarience(const std::vector<Vector3D>& a,
-                           const std::vector<Vector3D>& b) {
+inline Matrix3D covariant(const Coordinates& a, const Coordinates& b) {
 
     Matrix3D result = Matrix3D::zero();
 
-    for (size_t i = 0; i < a.size(); ++i) {
-        for (size_t j = 0; j < b.size(); ++j) { // transpose of b, not b
-            for (size_t k = 0; k < 3; ++k) {    // We are stuck in 3 dimensions
-                result[i][j] += a[i][k] * b[j][k]; // transpose of b, not b
+    for (size_t i = 0; i < 3; ++i) {
+        for (size_t j = 0; j < 3; ++j) { // transpose of b, not b
+            for (size_t k = 0; k < a.size(); ++k) {    // We are stuck in 3 dimensions
+                result[i][j] += a[k][i] * b[k][j]; // transpose of b, not b
             }
         }
     }
@@ -68,7 +68,7 @@ inline std::array<Z, 3> cardano(double a, double b, double c, double d,
 
         // For some reason, acos(1.0) and acos(-1.0) return nan instead of pi.
         // Otherwise, it is impossible for |R / (2 * sqrt(R^2 / 4 - P)) | to
-        // be greater than 1 as P is gaurenteed to be either 0 or negative
+        // be greater than 1 as P is guaranteed to be either 0 or negative
         auto theta = std::acos(clamp(-R / (2 * i), -1.0 + eps, 1.0 - eps));
 
         auto m = std::cos(theta / 3);
@@ -143,13 +143,19 @@ inline std::array<Vector3D, 3> eigenvectors(const Matrix3D& m,
 struct SingularValueDecomposition {
     Matrix3D U;
     Matrix3D S;
-    Matrix3D Vt;
+    Matrix3D V;
 };
 
 inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
     // clang-format off
     auto mt_m = m.transpose() * m;
     auto e_vals = eigenvalues(mt_m, eps);
+
+    auto zero = std::complex<double>(0.0, 0.0);
+    e_vals[0] = e_vals[0].real() > std::sqrt(eps) ? e_vals[0] : zero;
+    e_vals[1] = e_vals[1].real() > std::sqrt(eps) ? e_vals[1] : zero;
+    e_vals[2] = e_vals[2].real() > std::sqrt(eps) ? e_vals[2] : zero;
+
     auto e_vecs = eigenvectors(mt_m, e_vals, eps);
 
     // Create V with rows being the eigen vectors of m' * m
@@ -158,13 +164,24 @@ inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
                        e_vecs[1][0], e_vecs[1][1], e_vecs[1][2],
                        e_vecs[0][0], e_vecs[0][1], e_vecs[0][2]
     );
-    
     auto V = Vt.transpose();
-    auto U = m * V;
 
-    auto U_c0 = Vector3D{U[0][0], U[1][0], U[2][0]};
-    auto U_c1 = Vector3D{U[0][1], U[1][1], U[2][1]};
-    auto U_c2 = Vector3D{U[0][2], U[1][2], U[2][2]};
+    auto rank = (e_vals[0].real() > eps) + (e_vals[1].real() > eps) + (e_vals[2].real() > eps);
+
+    Vector3D U_c0, U_c1, U_c2;
+
+
+    if (rank == 2) {
+        U_c0 = m * Vector3D{V[0][0], V[1][0], V[2][0]};
+        U_c1 = m * Vector3D{V[0][1], V[1][1], V[2][1]};
+        U_c2 = chemfiles::cross(U_c0, U_c1);
+    } else {
+        auto U = m * V;
+
+        U_c0 = Vector3D{U[0][0], U[1][0], U[2][0]};
+        U_c1 = Vector3D{U[0][1], U[1][1], U[2][1]};
+        U_c2 = Vector3D{U[0][2], U[1][2], U[2][2]};
+    }
 
     U_c0 = U_c0 / U_c0.norm();
     U_c1 = U_c1 / U_c1.norm();
@@ -180,8 +197,55 @@ inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
                       0.0, 0.0, std::sqrt(e_vals[0].real())
     );
 
-    return {std::move(O), std::move(S), std::move(Vt)};
+    return {std::move(O), std::move(S), std::move(V)};
     // clang-format on
+}
+
+struct Affine {
+    Vector3D T;
+    Matrix3D R;
+};
+
+inline Affine kabsch(Coordinates in, Coordinates out, double eps = 1e-10) {
+
+    // Find the centroids then shift to the origin
+    auto in_ctr = Vector3D{0.0, 0.0, 0.0};
+    auto out_ctr = Vector3D{0.0, 0.0, 0.0};
+
+    for (auto& i : in) {
+        in_ctr += i;
+    }
+
+    for (auto& i : out) {
+        out_ctr += i;
+    }
+  
+    in_ctr /= static_cast<double>(in.size());
+    out_ctr /= static_cast<double>(out.size());
+
+    for (auto& i : in) {
+        i -= in_ctr;
+    }
+
+    for (auto& i : out) {
+        i -= out_ctr;
+    }
+
+    auto cov = covariant(out, in).transpose();
+    auto SVD = svd(cov, eps);
+
+    auto d = (SVD.V * SVD.U.transpose()).determinant();
+    if (d > 0.0) {
+        d = 1.0;
+    } else {
+        d = -1.0;
+    }
+
+    auto I = Matrix3D::unit();
+    I[2][2] = d;
+    auto R = SVD.V * I * SVD.U.transpose();
+
+    return {std::move(out_ctr - R*in_ctr), std::move(R)};
 }
 
 } // namespace lemon

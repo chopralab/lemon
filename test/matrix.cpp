@@ -120,7 +120,6 @@ TEST_CASE("Eigenvalues and Eigenvectors") {
 }
 
 TEST_CASE("Singular Value Decomposition") {
-    using namespace Catch;
 
     auto matrix_2 = lemon::Matrix3D(2, 0, 0, 0, 3, 4, 0, 4, 9);
     auto svd = lemon::svd(matrix_2);
@@ -145,17 +144,18 @@ TEST_CASE("Singular Value Decomposition") {
     CHECK(svd.S[2][1] == 0.0_a);
     CHECK(svd.S[2][2] == 1.0_a);
 
-    CHECK(svd.Vt[0][0] == 0.0_a);
-    CHECK(svd.Vt[0][1] == 0.447214_a);
-    CHECK(svd.Vt[0][2] == 0.894427_a);
-    CHECK(-svd.Vt[1][0] == 1.0_a);
-    CHECK(svd.Vt[1][1] == 0.0_a);
-    CHECK(svd.Vt[1][2] == 0.0_a);
-    CHECK(svd.Vt[2][0] == 0.0_a);
-    CHECK(svd.Vt[2][1] == 0.894427_a);
-    CHECK(-svd.Vt[2][2] == 0.447214_a);
+    auto Vt = svd.V.transpose();
+    CHECK(Vt[0][0] == 0.0_a);
+    CHECK(Vt[0][1] == 0.447214_a);
+    CHECK(Vt[0][2] == 0.894427_a);
+    CHECK(-Vt[1][0] == 1.0_a);
+    CHECK(Vt[1][1] == 0.0_a);
+    CHECK(Vt[1][2] == 0.0_a);
+    CHECK(Vt[2][0] == 0.0_a);
+    CHECK(Vt[2][1] == 0.894427_a);
+    CHECK(-Vt[2][2] == 0.447214_a);
 
-    auto m = svd.U * svd.S * svd.Vt;
+    auto m = svd.U * svd.S * svd.V.transpose();
 
     CHECK(m[0][0] == 2.0_a);
     CHECK(m[0][1] == 0.0_a);
@@ -166,4 +166,46 @@ TEST_CASE("Singular Value Decomposition") {
     CHECK(m[2][0] == 0.0_a);
     CHECK(m[2][1] == 4.0_a);
     CHECK(m[2][2] == 9.0_a);
+}
+
+TEST_CASE("Kabsch") {
+    lemon::Coordinates in(100);
+    lemon::Coordinates out(100);
+
+    for (size_t row = 0; row < 100; ++row) {
+        for (size_t col = 0; col < 3; ++col) {
+            in[row][col] = std::log(2.0*static_cast<double>(row) + 10.0)/
+                               std::sqrt(1.0*static_cast<double>(col) + 4.0) +
+                               std::sqrt(static_cast<double>(col)*1.0)/
+                               (static_cast<double>(row) + 1.0);
+        }
+    }
+
+    auto s = lemon::Vector3D{ -5, 6, -27 };
+        auto r = lemon::Matrix3D(
+         -0.487179,   0.666667,   0.564103,
+          0.871795,   0.333333,   0.358974,
+          0.0512821,  0.666667,  -0.74359
+    );
+
+    for (size_t row = 0; row < 100; ++row) {
+        out[row] = r*in[row];
+        out[row] += s;
+    }
+
+    auto affine = lemon::kabsch(in, out);
+
+    CHECK(-affine.T[0] == 5.0_a);
+    CHECK(affine.T[1] == 6.0_a);
+    CHECK(-affine.T[2] == 27.0_a);
+
+    CHECK(-affine.R[0][0] == 0.487179_a);
+    CHECK(affine.R[0][1] == 0.666667_a);
+    CHECK(affine.R[0][2] == 0.564103_a);
+    CHECK(affine.R[1][0] == 0.871795_a);
+    CHECK(affine.R[1][1] == 0.333333_a);
+    CHECK(affine.R[1][2] == 0.358974_a);
+    CHECK(affine.R[2][0] == 0.0512821_a);
+    CHECK(affine.R[2][1] == 0.666667_a);
+    CHECK(-affine.R[2][2] == 0.74359_a);
 }
