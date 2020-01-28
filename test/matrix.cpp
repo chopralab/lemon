@@ -55,9 +55,9 @@ TEST_CASE("Cardano") {
 TEST_CASE("Eigenvalues and Eigenvectors") {
     auto matrix_1 = lemon::Matrix3D(1, -3, 3, 3, -5, 3, 6, -6, 4);
     auto eigenvalues_1 = lemon::eigenvalues(matrix_1);
-    CHECK(roughly(std::get<0>(eigenvalues_1).real(), 4));
+    CHECK(roughly(std::get<0>(eigenvalues_1).real(), -2));
     CHECK(roughly(std::get<1>(eigenvalues_1).real(), -2));
-    CHECK(roughly(std::get<2>(eigenvalues_1).real(), -2));
+    CHECK(roughly(std::get<2>(eigenvalues_1).real(), 4));
     CHECK(roughly(std::get<0>(eigenvalues_1).imag(), 0.0));
     CHECK(roughly(std::get<1>(eigenvalues_1).imag(), 0.0));
     CHECK(roughly(std::get<2>(eigenvalues_1).imag(), 0.0));
@@ -65,21 +65,21 @@ TEST_CASE("Eigenvalues and Eigenvectors") {
     // just to be safe, another easy one
     auto matrix_2 = lemon::Matrix3D(2, 0, 0, 0, 3, 4, 0, 4, 9);
     auto eigenvalues_2 = lemon::eigenvalues(matrix_2);
-    CHECK(roughly(std::get<0>(eigenvalues_2).real(), 11));
-    CHECK(roughly(std::get<1>(eigenvalues_2).real(), 1));
-    CHECK(roughly(std::get<2>(eigenvalues_2).real(), 2));
+    CHECK(roughly(std::get<0>(eigenvalues_2).real(), 1));
+    CHECK(roughly(std::get<1>(eigenvalues_2).real(), 2));
+    CHECK(roughly(std::get<2>(eigenvalues_2).real(), 11));
     CHECK(roughly(std::get<0>(eigenvalues_2).imag(), 0.0));
     CHECK(roughly(std::get<1>(eigenvalues_2).imag(), 0.0));
     CHECK(roughly(std::get<2>(eigenvalues_2).imag(), 0.0));
 
     auto matrix_3 = lemon::Matrix3D(0, 1, 0, 0, 0, 1, 1, 0, 0);
     auto eigenvalues_3 = lemon::eigenvalues(matrix_3);
-    CHECK(roughly(std::get<0>(eigenvalues_3).real(), 1));
+    CHECK(roughly(std::get<0>(eigenvalues_3).real(), -0.5));
     CHECK(roughly(std::get<1>(eigenvalues_3).real(), -0.5));
-    CHECK(roughly(std::get<2>(eigenvalues_3).real(), -0.5));
-    CHECK(roughly(std::get<0>(eigenvalues_3).imag(), 0.0));
-    CHECK(roughly(std::get<1>(eigenvalues_3).imag(), std::sqrt(3) / 2));
-    CHECK(roughly(std::get<2>(eigenvalues_3).imag(), -std::sqrt(3) / 2));
+    CHECK(roughly(std::get<2>(eigenvalues_3).real(), 1.0));
+    CHECK(roughly(std::get<0>(eigenvalues_3).imag(), std::sqrt(3) / 2));
+    CHECK(roughly(std::get<1>(eigenvalues_3).imag(), -std::sqrt(3) / 2));
+    CHECK(roughly(std::get<2>(eigenvalues_3).imag(), 0.0));
 
     // Eigenvectors
 
@@ -87,14 +87,30 @@ TEST_CASE("Eigenvalues and Eigenvectors") {
 
     auto eigenvectors_2 = lemon::eigenvectors(matrix_2, eigenvalues_2);
     CHECK(roughly(eigenvectors_2[0][0], 0.0 / std::sqrt(5.0)));
-    CHECK(roughly(eigenvectors_2[0][1], 1.0 / std::sqrt(5.0)));
-    CHECK(roughly(eigenvectors_2[0][2], 2.0 / std::sqrt(5.0)));
+    CHECK(roughly(eigenvectors_2[0][1], 2.0 / std::sqrt(5.0)));
+    CHECK(roughly(eigenvectors_2[0][2], -1.0 / std::sqrt(5.0)));
 
-    CHECK(roughly(eigenvectors_2[1][0], 0.0 / std::sqrt(5.0)));
-    CHECK(roughly(eigenvectors_2[1][1], 2.0 / std::sqrt(5.0)));
-    CHECK(roughly(eigenvectors_2[1][2], -1.0 / std::sqrt(5.0)));
+    CHECK(roughly(eigenvectors_2[1][0], -1.0 / std::sqrt(1.0)));
+    CHECK(roughly(eigenvectors_2[1][1], 0.0 / std::sqrt(1.0)));
+    CHECK(roughly(eigenvectors_2[1][2], 0.0 / std::sqrt(1.0)));
 
-    CHECK(roughly(eigenvectors_2[2][0], -1.0 / std::sqrt(1.0)));
-    CHECK(roughly(eigenvectors_2[2][1], 0.0 / std::sqrt(1.0)));
-    CHECK(roughly(eigenvectors_2[2][2], 0.0 / std::sqrt(1.0)));
+    CHECK(roughly(eigenvectors_2[2][0], 0.0 / std::sqrt(5.0)));
+    CHECK(roughly(eigenvectors_2[2][1], 1.0 / std::sqrt(5.0)));
+    CHECK(roughly(eigenvectors_2[2][2], 2.0 / std::sqrt(5.0)));
+
+    auto wikipedia_example = lemon::Matrix3D(3, 2, 6, 2, 2, 5, -2, -1, -4);
+    auto eigenvalues_wkpd = lemon::eigenvalues(wikipedia_example);
+    auto eigenvectors_wkpd = lemon::eigenvectors(wikipedia_example, eigenvalues_wkpd);
+
+    CHECK(roughly(eigenvectors_wkpd[0][0], -2.0 / std::sqrt(6.0)));
+    CHECK(roughly(eigenvectors_wkpd[0][1], -1.0 / std::sqrt(6.0)));
+    CHECK(roughly(eigenvectors_wkpd[0][2],  1.0 / std::sqrt(6.0)));
+
+    CHECK(roughly(eigenvectors_wkpd[1][0], -1.0 / std::sqrt(3.0)));
+    CHECK(roughly(eigenvectors_wkpd[1][1], -1.0 / std::sqrt(3.0)));
+    CHECK(roughly(eigenvectors_wkpd[1][2], 1.0 / std::sqrt(3.0)));
+
+    CHECK(roughly(eigenvectors_wkpd[2][0], 2.0 / std::sqrt(6.0)));
+    CHECK(roughly(eigenvectors_wkpd[2][1], 1.0 / std::sqrt(6.0)));
+    CHECK(roughly(eigenvectors_wkpd[2][2], -1.0 / std::sqrt(6.0)));
 }

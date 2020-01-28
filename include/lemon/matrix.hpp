@@ -104,7 +104,12 @@ inline std::array<Z, 3> eigenvalues(const Matrix3D& m, double eps = 1e-10) {
     auto c = -0.5 * (trace(m * m) - trace(m) * trace(m));
     auto d = -m.determinant();
 
-    return cardano<Z>(a, b, c, d, eps);
+    auto roots = cardano<Z>(a, b, c, d, eps);
+    std::sort(roots.begin(), roots.end(), [](const Z& z1, const Z& z2){
+        return std::abs(z1) < std::abs(z2);
+    });
+
+    return roots;
 }
 
 namespace {
