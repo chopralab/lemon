@@ -140,6 +140,50 @@ inline std::array<Vector3D, 3> eigenvectors(const Matrix3D& m,
                                    cayley_hamilton(alpha1 * alpha2, eps)};
 }
 
+struct SingularValueDecomposition {
+    Matrix3D U;
+    Matrix3D S;
+    Matrix3D Vt;
+};
+
+inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
+    // clang-format off
+    auto mt_m = m.transpose() * m;
+    auto e_vals = eigenvalues(mt_m, eps);
+    auto e_vecs = eigenvectors(mt_m, e_vals, eps);
+
+    // Create V with rows being the eigen vectors of m' * m
+    // Note: the eigen vector function has already normalized these vectors
+    auto Vt = Matrix3D(e_vecs[2][0], e_vecs[2][1], e_vecs[2][2],
+                       e_vecs[1][0], e_vecs[1][1], e_vecs[1][2],
+                       e_vecs[0][0], e_vecs[0][1], e_vecs[0][2]
+    );
+    
+    auto V = Vt.transpose();
+    auto U = m * V;
+
+    auto U_c0 = Vector3D{U[0][0], U[1][0], U[2][0]};
+    auto U_c1 = Vector3D{U[0][1], U[1][1], U[2][1]};
+    auto U_c2 = Vector3D{U[0][2], U[1][2], U[2][2]};
+
+    U_c0 = U_c0 / U_c0.norm();
+    U_c1 = U_c1 / U_c1.norm();
+    U_c2 = U_c2 / U_c2.norm();
+
+    auto O = Matrix3D(U_c0[0], U_c1[0], U_c2[0],
+                      U_c0[1], U_c1[1], U_c2[1],
+                      U_c0[2], U_c1[2], U_c2[2]
+    );
+
+    auto S = Matrix3D(std::sqrt(e_vals[2].real()), 0.0, 0.0,
+                      0.0, std::sqrt(e_vals[1].real()), 0.0,
+                      0.0, 0.0, std::sqrt(e_vals[0].real())
+    );
+
+    return {std::move(O), std::move(S), std::move(Vt)};
+    // clang-format on
+}
+
 } // namespace lemon
 
 #endif

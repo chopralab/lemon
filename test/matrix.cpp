@@ -3,6 +3,10 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
+Catch::Detail::Approx operator "" _a(long double val) {
+    return Catch::Detail::Approx(val);
+}
+
 static bool roughly(double a, double b, double tol = 1e-4) {
     return std::fabs(a - b) < tol;
 }
@@ -113,4 +117,53 @@ TEST_CASE("Eigenvalues and Eigenvectors") {
     CHECK(roughly(eigenvectors_wkpd[2][0], 2.0 / std::sqrt(6.0)));
     CHECK(roughly(eigenvectors_wkpd[2][1], 1.0 / std::sqrt(6.0)));
     CHECK(roughly(eigenvectors_wkpd[2][2], -1.0 / std::sqrt(6.0)));
+}
+
+TEST_CASE("Singular Value Decomposition") {
+    using namespace Catch;
+
+    auto matrix_2 = lemon::Matrix3D(2, 0, 0, 0, 3, 4, 0, 4, 9);
+    auto svd = lemon::svd(matrix_2);
+
+    CHECK(svd.U[0][0] == 0.0_a);
+    CHECK(-svd.U[0][1] == 1.0_a);
+    CHECK(svd.U[0][2] == 0.0_a);
+    CHECK(svd.U[1][0] == 0.447214_a);
+    CHECK(svd.U[1][1] == 0.0_a);
+    CHECK(svd.U[1][2] == 0.894427_a);
+    CHECK(svd.U[2][0] == 0.894427_a);
+    CHECK(svd.U[2][1] == 0.0_a);
+    CHECK(-svd.U[2][2] == 0.447214_a);
+
+    CHECK(svd.S[0][0] == 11.0_a);
+    CHECK(svd.S[0][1] == 0.0_a);
+    CHECK(svd.S[0][2] == 0.0_a);
+    CHECK(svd.S[1][0] == 0.0_a);
+    CHECK(svd.S[1][1] == 2.0_a);
+    CHECK(svd.S[1][2] == 0.0_a);
+    CHECK(svd.S[2][0] == 0.0_a);
+    CHECK(svd.S[2][1] == 0.0_a);
+    CHECK(svd.S[2][2] == 1.0_a);
+
+    CHECK(svd.Vt[0][0] == 0.0_a);
+    CHECK(svd.Vt[0][1] == 0.447214_a);
+    CHECK(svd.Vt[0][2] == 0.894427_a);
+    CHECK(-svd.Vt[1][0] == 1.0_a);
+    CHECK(svd.Vt[1][1] == 0.0_a);
+    CHECK(svd.Vt[1][2] == 0.0_a);
+    CHECK(svd.Vt[2][0] == 0.0_a);
+    CHECK(svd.Vt[2][1] == 0.894427_a);
+    CHECK(-svd.Vt[2][2] == 0.447214_a);
+
+    auto m = svd.U * svd.S * svd.Vt;
+
+    CHECK(m[0][0] == 2.0_a);
+    CHECK(m[0][1] == 0.0_a);
+    CHECK(m[0][2] == 0.0_a);
+    CHECK(m[1][0] == 0.0_a);
+    CHECK(m[1][1] == 3.0_a);
+    CHECK(m[1][2] == 4.0_a);
+    CHECK(m[2][0] == 0.0_a);
+    CHECK(m[2][1] == 4.0_a);
+    CHECK(m[2][2] == 9.0_a);
 }
