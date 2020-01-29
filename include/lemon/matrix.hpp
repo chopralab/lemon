@@ -268,7 +268,7 @@ inline Affine kabsch(Container in, Container out, double eps = 1e-10) {
 }
 
 template <typename Container = Coordinates>
-inline void align(Container& in, Affine& affine) {
+inline void align(Container& in, const Affine& affine) {
     for (auto& c : in) {
         c -= affine.T;
         c = affine.R.transpose() * c;
