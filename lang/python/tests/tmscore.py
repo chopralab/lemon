@@ -7,11 +7,10 @@ class MyWorkflow(lemon.Workflow):
         self.native = lemon.open_file("../../../test/files/1AAQ.mmtf")
     def worker(self, entry, pdbid):
         import lemon
-        junk = lemon.PositionVec()
 
-        tm = lemon.TMscore(entry, self.native, junk, False)
+        tm = lemon.TMscore(entry, self.native)
 
-        return pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n"
+        return pdbid + "\t" + str(tm.score) + "\t" + str(tm.aligned) + "\n"
     def finalize(self):
         pass
 

@@ -8,18 +8,22 @@
 #include <complex>
 #include <vector>
 #include <algorithm>
-#include <iostream>
+
 namespace lemon {
 
 using Vector3D = chemfiles::Vector3D;
 using Matrix3D = chemfiles::Matrix3D;
 using Coordinates = std::vector<Vector3D>;
 
+using chemfiles::cross;
+using chemfiles::dot;
+
 inline double trace(const Matrix3D& matrix) {
     return matrix[0][0] + matrix[1][1] + matrix[2][2];
 }
 
-inline Matrix3D covariant(const Coordinates& a, const Coordinates& b) {
+template <typename Container = Coordinates>
+inline Matrix3D covariant(const Container& a, const Container& b) {
 
     Matrix3D result = Matrix3D::zero();
 
@@ -32,6 +36,25 @@ inline Matrix3D covariant(const Coordinates& a, const Coordinates& b) {
     }
 
     return result;
+}
+
+template <typename Container = Coordinates>
+inline double rmsd(const Container& a, const Container& b) {
+    double result = 0;
+    for (size_t i = 0; i < a.size(); ++i) {
+        auto dist =  a[i] - b[i];
+        result += dot(dist, dist);
+    }
+    return std::sqrt(result / static_cast<double>(a.size()));
+}
+
+template <typename Container = Coordinates>
+inline Vector3D center(const Container& a) {
+    Vector3D result = {0.0, 0.0, 0.0};
+    for (size_t i = 0; i < a.size(); ++i) {
+        result += a[i];
+    }
+    return result / static_cast<double>(a.size());
 }
 
 template <class T>
@@ -112,9 +135,7 @@ inline std::array<Z, 3> eigenvalues(const Matrix3D& m, double eps = 1e-10) {
     return roots;
 }
 
-namespace {
-
-Vector3D cayley_hamilton(const Matrix3D& m, double e) {
+inline Vector3D cayley_hamilton(const Matrix3D& m, double e) {
     using std::fabs;
     size_t col = (fabs(m[0][0]) > e || fabs(m[1][0]) > e || fabs(m[2][0]) > e)
             ? 0
@@ -123,8 +144,6 @@ Vector3D cayley_hamilton(const Matrix3D& m, double e) {
     auto result = Vector3D{m[0][col], m[1][col], m[2][col]};
     return result / result.norm();
 }
-
-} // namespace
 
 template <typename Z = std::complex<double>>
 inline std::array<Vector3D, 3> eigenvectors(const Matrix3D& m,
@@ -156,6 +175,8 @@ inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
     e_vals[1] = e_vals[1].real() > std::sqrt(eps) ? e_vals[1] : zero;
     e_vals[2] = e_vals[2].real() > std::sqrt(eps) ? e_vals[2] : zero;
 
+    auto rank = (e_vals[0].real() > eps) + (e_vals[1].real() > eps) + (e_vals[2].real() > eps);
+
     auto e_vecs = eigenvectors(mt_m, e_vals, eps);
 
     // Create V with rows being the eigen vectors of m' * m
@@ -166,15 +187,12 @@ inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
     );
     auto V = Vt.transpose();
 
-    auto rank = (e_vals[0].real() > eps) + (e_vals[1].real() > eps) + (e_vals[2].real() > eps);
-
     Vector3D U_c0, U_c1, U_c2;
-
 
     if (rank == 2) {
         U_c0 = m * Vector3D{V[0][0], V[1][0], V[2][0]};
         U_c1 = m * Vector3D{V[0][1], V[1][1], V[2][1]};
-        U_c2 = chemfiles::cross(U_c0, U_c1);
+        U_c2 = cross(U_c0, U_c1);
     } else {
         auto U = m * V;
 
@@ -206,7 +224,8 @@ struct Affine {
     Matrix3D R;
 };
 
-inline Affine kabsch(Coordinates in, Coordinates out, double eps = 1e-10) {
+template <typename Container = Coordinates>
+inline Affine kabsch(Container in, Container out, double eps = 1e-10) {
 
     // Find the centroids then shift to the origin
     auto in_ctr = Vector3D{0.0, 0.0, 0.0};
@@ -246,6 +265,14 @@ inline Affine kabsch(Coordinates in, Coordinates out, double eps = 1e-10) {
     auto R = SVD.V * I * SVD.U.transpose();
 
     return {std::move(out_ctr - R*in_ctr), std::move(R)};
+}
+
+template <typename Container = Coordinates>
+inline void align(Container& in, Affine& affine) {
+    for (auto& c : in) {
+        c -= affine.T;
+        c = affine.R.transpose() * c;
+    }
 }
 
 } // namespace lemon

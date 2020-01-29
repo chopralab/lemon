@@ -182,7 +182,8 @@ TEST_CASE("Kabsch") {
     }
 
     auto s = lemon::Vector3D{ -5, 6, -27 };
-        auto r = lemon::Matrix3D(
+
+    auto r = lemon::Matrix3D(
          -0.487179,   0.666667,   0.564103,
           0.871795,   0.333333,   0.358974,
           0.0512821,  0.666667,  -0.74359
@@ -192,6 +193,8 @@ TEST_CASE("Kabsch") {
         out[row] = r*in[row];
         out[row] += s;
     }
+
+    auto before_rmsd = lemon::rmsd(in, out);    
 
     auto affine = lemon::kabsch(in, out);
 
@@ -208,4 +211,9 @@ TEST_CASE("Kabsch") {
     CHECK(affine.R[2][0] == 0.0512821_a);
     CHECK(affine.R[2][1] == 0.666667_a);
     CHECK(-affine.R[2][2] == 0.74359_a);
+
+    lemon::align(out, affine);
+    auto after_rmsd = lemon::rmsd(in, out);
+    CHECK(after_rmsd < before_rmsd);
+    CHECK(after_rmsd == Approx(0.0).epsilon(1e-6));
 }
