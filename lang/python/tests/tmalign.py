@@ -10,7 +10,11 @@ class MyWorkflow(lemon.Workflow):
 
         tm = lemon.TMscore(entry, self.native)
 
-        return pdbid + "\t" + str(tm.score) + "\t" + str(tm.aligned) + "\n"
+        return pdbid + "\t" + \
+               str(tm.score) + "\t" + \
+               str(tm.aligned) + "\t" + \
+               str(tm.affine) + "\n"
+
     def finalize(self):
         pass
 

@@ -291,6 +291,17 @@ void add_lemon_features(py::module& m) {
     py::register_exception<geometry::geometry_error>(m,"GeometryError");
 
     /**************************************************************************
+     * Matrix
+     **************************************************************************/
+    py::class_<Affine>(m, "Affine"); // Python cannot modify or read this
+
+    Affine (*kabsch_f)(Coordinates&, Coordinates&, double) = &kabsch;
+    m.def("kabsch", kabsch_f);
+
+    void (*align_f)(span<Vector3D>&, const Affine&) = &align;
+    m.def("align", align_f);
+
+    /**************************************************************************
      * Vina Score
      **************************************************************************/
     py::class_<xscore::VinaScore>(m,"VinaScore")
@@ -308,7 +319,8 @@ void add_lemon_features(py::module& m) {
     py::class_<tmalign::TMResult>(m,"TMResult")
         .def_readonly("score", &tmalign::TMResult::score)
         .def_readonly("rmsd", &tmalign::TMResult::rmsd)
-        .def_readonly("aligned", &tmalign::TMResult::aligned);
+        .def_readonly("aligned", &tmalign::TMResult::aligned)
+        .def_readonly("affine", &tmalign::TMResult::affine);
 
     m.def("TMscore", tmalign::TMscore);
 }

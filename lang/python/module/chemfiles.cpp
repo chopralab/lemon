@@ -108,7 +108,19 @@ void add_chemfiles_features(py::module& m) {
         .def("__getitem__", &get_index<Vector3D,double,3>)
         .def("norm", &Vector3D::norm);
 
-    py::bind_vector<std::vector<Vector3D>>(m, "PositionVec");
+    py::class_<Matrix3D>(m, "Matrix3D")
+        .def(py::init<double,double,double,double,double,double,double,double,double>())
+        .def("__getitem__", [](const Matrix3D& m, int i){
+            if (static_cast<size_t>(i) >= 3) {
+                throw pybind11::index_error("invalid matrix index");
+            }
+
+            return m[static_cast<size_t>(i)];
+        });
+
+    py::bind_vector<std::vector<Vector3D>>(m, "Coordinates");
+
+    py::class_<span<Vector3D>>(m, "CoordinateSpan");
 
     /**************************************************************************
      * Optional
@@ -215,6 +227,12 @@ void add_chemfiles_features(py::module& m) {
         .def("__iter__", [](const Frame& v) {
             return py::make_iterator(v.begin(), v.end());
         }, py::keep_alive<0, 1>())
+        .def("positions", [](Frame& v) {
+            return v.positions();
+        }, py::keep_alive<0, 1>())
+        .def("positions_const", [](const Frame& v) {
+            return v.positions();
+        },  py::return_value_policy::reference_internal)
         .def("topology", &Frame::topology,
             py::return_value_policy::reference_internal)
         .def("distance", &Frame::distance)
