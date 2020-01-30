@@ -1,5 +1,6 @@
 #include "lemon/launch.hpp"
 #include "lemon/lemon.hpp"
+#include "lemon/tmalign.hpp"
 
 #include <map>
 
@@ -80,7 +81,8 @@ inline string_view trim(string_view string) {
 
 class DUBSParser {
   public:
-    DUBSParser(std::istream& i) { parse_stream(i); }
+
+    void parse(std::istream& i) { parse_stream(i); }
 
     enum class TAG_TYPE {
         NONE = 0,
@@ -107,6 +109,19 @@ class DUBSParser {
         return get_mapping(reference_to_path_, reference);
     }
 
+    const chemfiles::Frame& reference_structure(const std::string& reference) const {
+        return reference_to_structure_.at(reference);
+    }
+
+    const lemon::ResidueNameSet& ligands(const std::string& entry) const {
+        auto rns = entries_to_rns_.find(entry);
+        if (rns == entries_to_rns_.end()) {
+            return blank_rns_;
+        }
+
+        return rns->second;
+    }
+
     std::string dump() const {
 
         std::ostringstream oss;
@@ -129,17 +144,18 @@ class DUBSParser {
                 }
             }
 
+            oss << "@<align_sm_ligands>\n";
             for (auto& entry : ref.second) {
                 auto small_molecule_iter = entries_to_rns_.find(entry);
                 if (small_molecule_iter != entries_to_rns_.end()) {
-                    oss << "@<align_sm_ligands>\n" << ref.first << " ";
+                    oss << entry << " ";
                     for (auto& align_sm : small_molecule_iter->second) {
                         oss << align_sm << "\n";
                     }
                 }
             }
 
-            oss << "@<end>\n";
+            oss << "@<end>\n\n";
         }
 
         return oss.str();
@@ -148,6 +164,7 @@ class DUBSParser {
   private:
     TAG_TYPE current_tag_ = TAG_TYPE::NONE;
     const std::string blank_ = "";
+    const lemon::ResidueNameSet blank_rns_ = lemon::ResidueNameSet();
 
     string_view get_mapping(const std::map<std::string, std::string>& map,
                             const std::string& e) const {
@@ -178,6 +195,7 @@ class DUBSParser {
     std::string last_line_;
     std::string current_reference_;
     std::map<std::string, std::string> reference_to_path_;
+    std::map<std::string, chemfiles::Frame> reference_to_structure_; 
     std::map<std::string, std::string> reference_to_name_;
     std::map<std::string, std::vector<std::string>> reference_align_prot_;
     std::map<std::string, std::vector<std::string>> reference_entries_;
@@ -188,8 +206,8 @@ class DUBSParser {
 
     void parse_stream(std::istream& i) {
         std::string line;
-        while (std::getline(i, line)) {
 
+        while (std::getline(i, line)) {
             if (line == "") {
                 continue;
             }
@@ -212,6 +230,7 @@ class DUBSParser {
             case TAG_TYPE::LIGAND_ALIGN:
             default: // <- Shouldn't be needed
                 current_tag_ = tag;
+                continue;
                 break;
             }
 
@@ -243,7 +262,7 @@ class DUBSParser {
                 if (current_tag_ == TAG_TYPE::LIGAND_ALIGN) {
                     auto ligand = std::string(split[1].begin(), split[1].end());
                     entries_to_rns_[entry] = lemon::ResidueNameSet({ligand});
-                    // TODO Suppport multiple liands
+                    // TODO Suppport multiple ligands
                 }
             }
         }
@@ -263,11 +282,14 @@ class DUBSParser {
         if (!last_line_.empty()) {
             reference_to_name_[current_reference_] = last_line_;
         }
+
+        chemfiles::Trajectory trj(reference_path, 'r');
+        reference_to_structure_[current_reference_] = std::move(trj.read());
     }
 };
 
 const std::map<std::string, DUBSParser::TAG_TYPE> DUBSParser::TAGS = {
-    {"<@reference>", TAG_TYPE::REFERENCE},
+    {"@<reference>", TAG_TYPE::REFERENCE},
     {"@<align_prot>", TAG_TYPE::PROTEIN_ALIGN},
     {"@<align_sm_ligands>", TAG_TYPE::LIGAND_ALIGN},
     {"@<align_non_sm_ligands>", TAG_TYPE::PEPTIDE_ALIGN},
@@ -277,63 +299,96 @@ int main(int argc, char* argv[]) {
     lemon::Options o;
     std::string outdir = ".";
     auto distance = 6.0;
+    bool dump_input = false;
     o.add_option("--distance,-d", distance,
                  "Largest distance between protein and a small molecule.");
     o.add_option("--outdir,-o", outdir, "output directory");
+    o.add_option("--dump_input", dump_input, "Dump the input file (for debugging)");
     o.parse_command_line(argc, argv);
 
     outdir += "/";
 
-    std::ifstream is(o.entries());
+    std::ifstream is;
+    is.open(o.entries(), std::ios::in);
 
-    DUBSParser parser(is);
-    std::cout << parser.dump();
+    DUBSParser parser;
+    try {
+        parser.parse(is);
+    } catch (const std::exception& e) {
+        std::cerr << "Could not parse " << o.entries() << ": " << e.what() << std::endl;
+        return 1;
+    }
 
-    /*
-    auto worker = [distance, &outdir](chemfiles::Frame entry,
-                                      const std::string& pdbid) {
-        // Selection phase
-        std::list<size_t> smallm;
-        if (lemon::select::specific_residues(entry, smallm, rnms[pdbid]) == 0) {
-            return "Skipping " + pdbid;
+    if (dump_input) {
+        std::cout << parser.dump() << std::endl;
+    }
+
+    auto worker = [distance, &outdir, &parser](chemfiles::Frame entry,
+                                               const std::string& PDBid) {
+
+        auto& rns = parser.ligands(PDBid);
+        if (rns.empty()) { // reference file
+            auto protfile = outdir + PDBid + "_" + PDBid + ".pdb";
+
+            chemfiles::Trajectory reference(protfile, 'w');
+            reference.write(entry);
+
+            return "Added reference file: " + PDBid;
         }
 
+        // Selection phase
+        auto ligand_ids = lemon::select::specific_residues(entry, rns);
+
         // Pruning phase
-        lemon::prune::identical_residues(entry, smallm);
+        lemon::prune::identical_residues(entry, ligand_ids);
+
+        auto reference = parser.reference(PDBid);
+        auto result_str = PDBid;
+
+        if (!reference.empty()) {
+            auto ref_str = std::string(reference.begin(), reference.end());
+
+            auto& reference_struct = parser.reference_structure(ref_str);
+
+            auto alignment = lemon::tmalign::TMscore(entry, reference_struct);
+
+            auto pos = entry.positions();
+            lemon::align(pos, alignment.affine);
+
+            result_str += " aligned to " + ref_str + " with score of " + std::to_string(alignment.score); 
+        }
 
         // Output phase
-        for (auto resid : smallm) {
+        for (auto resid : ligand_ids) {
             chemfiles::Frame prot;
             chemfiles::Frame lig;
             lemon::separate::protein_and_ligand(entry, resid, distance, prot,
                                                 lig);
 
-            auto protfile =
-                outdir + pdbid + "_" + lig.get("name")->as_string() + ".pdb";
-            auto ligfile =
-                outdir + pdbid + "_" + lig.get("name")->as_string() + ".sdf";
+            auto lig_name = lig.get<chemfiles::Property::STRING>("name").value_or("UNK");
 
-            chemfiles::Trajectory prot_traj(protfile, 'w');
-            chemfiles::Trajectory lig_traj(ligfile, 'w');
-            prot_traj.write(prot);
-            lig_traj.write(lig);
-            prot_traj.close();
-            lig_traj.close();
+            result_str += " and ligand " + lig_name;
+
+            auto prot_file = outdir + PDBid + "_" + lig_name + ".pdb";
+            auto lig_file = outdir + PDBid + "_" + lig_name + ".sdf";
+
+            chemfiles::Trajectory prot_trj(prot_file, 'w');
+            chemfiles::Trajectory lig_trj(lig_file, 'w');
+            prot_trj.write(prot);
+            lig_trj.write(lig);
         }
 
-        return pdbid + std::to_string(smallm.size());
+        return PDBid + std::to_string(ligand_ids.size());
     };
 
     auto collector = lemon::print_combine(std::cout);
-    auto p = o.work_dir();
-    auto threads = o.ncpu();
 
     try {
-        lemon::run_parallel(worker, p, collector, threads, entries, entries);
+        lemon::run_parallel(worker, o.work_dir(), collector, o.ncpu(), parser.entries());
     } catch (std::runtime_error& e) {
         std::cerr << e.what() << "\n";
         return 1;
-    }*/
+    }
 
     return 0;
 }

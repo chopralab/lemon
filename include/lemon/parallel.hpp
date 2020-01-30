@@ -1,6 +1,8 @@
 #ifndef LEMON_PARALLEL_HPP
 #define LEMON_PARALLEL_HPP
 
+#include <list>
+
 #include "lemon/hadoop.hpp"
 #include "lemon/entries.hpp"
 

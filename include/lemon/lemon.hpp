@@ -5,6 +5,7 @@
 #include "lemon/count.hpp"
 #include "lemon/entries.hpp"
 #include "lemon/hadoop.hpp"
+#include "lemon/matrix.hpp"
 #include "lemon/parallel.hpp"
 #include "lemon/prune.hpp"
 #include "lemon/residue_name.hpp"
