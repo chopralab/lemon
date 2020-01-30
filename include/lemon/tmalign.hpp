@@ -82,6 +82,9 @@ struct TMResult {
 
     //! Number of aligned residues
     size_t aligned;
+
+    //! The affine transformation found to maximize the score
+    Affine affine;
 };
 
 //! TMalign is an algorithm used to align protein chains in 3D space.
@@ -114,7 +117,7 @@ inline TMResult TMscore(const chemfiles::Frame& search,
                                            aligned_native_ids);
 
     if (n_ali == 0) {
-        return {0.0, 0.0, 0};
+        return {0.0, 0.0, 0, Affine{{0.0, 0.0, 0.0}, Matrix3D::unit()}};
     }
 
     // parameters:
@@ -156,16 +159,14 @@ inline TMResult TMscore(const chemfiles::Frame& search,
     const auto& search_pos = search.positions();
     const auto& native_pos = native.positions();
 
-    // The number of well aligned residues. Updated by score_fun
-    auto n_cut = 0ul;
-
-    // Aligned residues where the distance is below the `d` threshold.
-    auto cut_scored_ids = std::vector<size_t>(n_ali);
-
-    // Calculate the TMscore of an `align_pos` to the `native_pos`. Updates
-    // both n_cut and cut_scored_ids. Depends on multiple 'global' variables
+    // Calculate the TMscore of an `align_pos` to the `native_pos`.
     auto score_fun = [&](double d, const Coordinates& align_pos) {
         auto score_sum = 0.0;
+        auto cut_scored_ids = std::vector<size_t>(n_ali);
+
+        // The number of well aligned residues. Updated by score_fun
+        auto n_cut = 0ul;
+
         do {
             n_cut = 0; // number of residue-pairs dis<d, for iteration
             score_sum = 0.0;
@@ -181,19 +182,21 @@ inline TMResult TMscore(const chemfiles::Frame& search,
             }
             d += 0.5;
         } while (n_cut < 3 && n_ali > 3);
-        return score_sum / static_cast<double>(n_seq);
+
+        cut_scored_ids.resize(n_cut);
+
+        return std::make_pair(score_sum / static_cast<double>(n_seq), cut_scored_ids);
     };
-
-    auto score_max = std::numeric_limits<double>::min();
-
-    // Which residues have been aligned
-    auto aligned_ids = std::vector<size_t>(n_ali);
 
     // Aligns a given number of positions to native positions and retuns
     // the result.
     // If `start` is zero, the `cut_scored_ids` vector is used to find aligned
     // residues, otherwise it is calculated from `start` and the current loop index
-    auto rotate_substructure = [&](size_t start, size_t length) {
+    auto rotate_substructure = [&](size_t start, size_t length,
+                                   const std::vector<size_t>& cut_ids) {
+
+        // Which residues have been aligned
+        auto aligned_ids = std::vector<size_t>(length);
 
         auto rotated_search_pos = Coordinates(n_ali);
 
@@ -207,7 +210,7 @@ inline TMResult TMscore(const chemfiles::Frame& search,
 
         for (size_t i = 0; i < length; ++i) {
              // The current residue to copy into the alignment arrays
-            auto k = start == 0 ? cut_scored_ids[i] : start - 1 + i;
+            auto k = start == 0 ? cut_ids[i] : start - 1 + i;
 
             search_align_pos[i] = search_pos[aligned_search_ids[k]];
             native_align_pos[i] = native_pos[aligned_native_ids[k]];
@@ -220,40 +223,54 @@ inline TMResult TMscore(const chemfiles::Frame& search,
 
         lemon::align(rotated_search_pos, affine);
 
-        return rotated_search_pos;
+        return std::make_tuple(rotated_search_pos, aligned_ids, affine);
     };
+
+    auto score_max = std::numeric_limits<double>::min();
+
+    auto best_affine = Affine{{0.0, 0.0, 0.0}, Matrix3D::unit()};
 
     for (auto local_start : local_init) {
 
         for (auto iL = 1ul; iL <= n_ali - local_start + 1; ++iL) {
 
-            // Initialize and 
-            auto rotated_search_pos = rotate_substructure(iL, local_start);
+            double score;
+            auto cut_ids = std::vector<size_t>();
+            auto aligned = std::vector<size_t>();
+            auto rotated = Coordinates();
+            auto affine = Affine{{0.0, 0.0, 0.0}, Matrix3D::unit()};
 
-            // Get the current score and update `cut_scored_ids`
-            score_max = std::max(score_max, score_fun(d0_search - 1, rotated_search_pos));
+            // Rotate based on current alignment
+            std::tie(rotated, aligned, affine) = rotate_substructure(iL, local_start, cut_ids);
+
+            // Get the current score and update `cut_ids`
+            std::tie(score, cut_ids) = score_fun(d0_search - 1, rotated);
+
+            if (score > score_max) {
+                score_max = score;
+                best_affine = std::move(affine);
+            }
 
             // iterations for extending the local search
             for (auto it = 0ul; it <= max_iter; ++it) {
-                auto rotated_search_pos_local = rotate_substructure(0, n_cut);
+                std::tie(rotated, aligned, affine) = rotate_substructure(0, cut_ids.size(), cut_ids);
 
                 // get scores, n_cut+cut_scored_ids(i) for iteration
-                score_max = std::max(score_max, score_fun(d0_search + 1,
-                                     rotated_search_pos_local)
-                                    );
+                std::tie(score, cut_ids) = score_fun(d0_search + 1, rotated);
 
-                auto neq = 0ul;
-                for (auto i = 0ul; i < n_cut; ++i) {
-                    neq += (cut_scored_ids[i] == aligned_ids[i]);
+                if (score > score_max) {
+                    score_max = score;
+                    best_affine = std::move(affine);
                 }
-                if (n_cut == neq) {
+
+                if (cut_ids == aligned) {
                     break;
                 }
             }
         }
     }
 
-    return {score_max, 0.0, n_ali};
+    return {score_max, 0.0, n_ali, best_affine};
 }
 
 } // namespace tmalign
