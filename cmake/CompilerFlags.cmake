@@ -18,7 +18,7 @@ include(CheckCCompilerFlag)
 set(CMAKE_REQUIRED_QUIET YES)
 
 if(MSVC)
-    add_definitions("/D NOMINMAX")
+    add_definitions("/DNOMINMAX")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
     set(CMAKE_SHARED_LINKER_FLAGS "/SUBSYSTEM:CONSOLE")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -66,6 +66,7 @@ if(MSVC)
     remove_msvc_warning(4061) # enumerator in switch of enum is not explicitly handled by a case label
     remove_msvc_warning(4275) # non-dll-export interface as base class of dll-export class
     remove_msvc_warning(4251) # class <> needs to be dll-export
+    remove_msvc_warning(4371) # layout of class may have changed from a previous version of the compiler due to better packing of member
     remove_msvc_warning(4514) # unreferenced inline function has been removed
     remove_msvc_warning(4571) # SEH exceptions no longer caught
     remove_msvc_warning(4582) # constructor is not implicitly called

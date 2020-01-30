@@ -24,7 +24,7 @@ inline size_t find_element_by_name(const chemfiles::Frame& frame,
     return frame.size();
 }
 
-inline size_t find_operlapping_residues(const chemfiles::Frame& search,
+inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
                                         const chemfiles::Frame& native,
                                         std::vector<size_t>& a_search,
                                         std::vector<size_t>& a_native) {
@@ -34,7 +34,7 @@ inline size_t find_operlapping_residues(const chemfiles::Frame& search,
     a_search.reserve(search_res.size());
     a_native.reserve(native_res.size());
 
-    size_t n_ali = 0;
+    auto n_ali = 0ul;
     for (const auto& s_res : search_res) {
         auto i = find_element_by_name(search, s_res, "CA");
         if (i == search.size()) {
@@ -59,7 +59,7 @@ inline size_t find_operlapping_residues(const chemfiles::Frame& search,
     return n_ali;
 }
 
-inline size_t count_number_of_atom_names(const chemfiles::Frame& frame,
+inline unsigned long count_number_of_atom_names(const chemfiles::Frame& frame,
                                          const std::string& elem) {
     const auto& residues = frame.topology().residues();
     auto c = std::count_if(residues.begin(), residues.end(),
@@ -67,7 +67,7 @@ inline size_t count_number_of_atom_names(const chemfiles::Frame& frame,
                                return find_element_by_name(frame, n_res, elem) !=
                                       frame.size();
                            });
-    return static_cast<size_t>(c);
+    return static_cast<unsigned long>(c);
 }
 
 //! Structure representing the TMScore

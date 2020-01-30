@@ -93,4 +93,3 @@ if (${LEMON_BUILD_PROGS})
 endif()
 
 add_subdirectory(lang)
-

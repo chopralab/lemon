@@ -2,6 +2,7 @@
 #define LEMON_PARALLEL_HPP
 
 #include "lemon/hadoop.hpp"
+#include "lemon/entries.hpp"
 
 #include <chrono>
 
