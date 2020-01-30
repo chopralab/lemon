@@ -162,12 +162,12 @@ def parse_input_file(fname):
 class MyWorkflow(lemon.Workflow):
     def __init__(self):
         lemon.Workflow.__init__(self)
-        # TODO load the reference files and use them in the worker thread
-        # TODO I plan on loading in the worker class after selection, is this ok?
-    def worker(self, entry, pdbid):
-        # TODO I dont think this is junk anymore
-        junk = lemon.PositionVec()
+        
+        self.reference_structures = {}
+        for key, value in pathDict:
+            self.reference_structures[key] = lemon.open_file(value)
 
+    def worker(self, entry, pdbid):
         # Define and assign the reference pdbid
         refpdbid = ""
         # mode is 0 unassigned, 1 for alignment for protein, 2 for alignment for ligand
@@ -185,32 +185,61 @@ class MyWorkflow(lemon.Workflow):
                 refpdbid = key
                 mode = 2
 
-        # Get the path to the reference file and set native to it
-        refPath = pathDict[refpdbid]
-        self.native = lemon.open_file(refPath)
-
         if mode == 0:
-            # TODO if it is unassigned, something can be done here?
-            return
+
+            for ligand_code in pdbIDSMDict.get(pdbID, []):
+
+                ligand_ids = lemon.select_specific_residues(entry, lemon.ResidueName(ligand_code))
+                lemon.prune_identical_residues(entry, ligand_ids)
+
+                for ligand_id in ligand_ids:
+                    protein = lemon.Frame()
+                    ligand = lemon.Frame()
+
+                    lemon.separate_protein_and_ligand(entry, ligand_id, 25.0, protein, ligand)
+                    lemon.write_file(protein, pdbid + "_" + ligand_code + ".pdb")
+                    lemon.write_file(ligand, pdbid + "_" + ligand_code + ".sdf")
+
+            return pdbid + " no alignment"
+
         elif mode == 1:
-            # TODO If we need to align to a protein (like in PINC) that can be done here
-            # I checked in matrix.py but we only have a single path to the reference protein, not multiple paths
-            print("Align Protein: " + pdbid)
-            return
+            # If we need to align to a protein (like in PINC)
+            alignment = lemon.TMscore(entry, self.reference_structures[refpdbid])
+            positions = entry.positions()
+            lemon.align(positions, alignment.affine)
+            return "Align Protein: " + pdbid + " to " + refpdbid + " with score of " + alignment.score
+
         elif mode == 2:
             # If we are doing ligand alignment, that can be done here
             # Get a list of the ligands associated with the protein we are trying to align
             SM_ligandList = pdbIDSMDict.get(pdbID, []) 
             Non_SM_ligandList = pdbIDNonSMDict.get(pdbID, [])
 
+            alignment = lemon.TMscore(entry, self.reference_structures[refpdbid])
+            positions = entry.positions()
+            lemon.align(positions, alignment.affine)
+
             if len(SM_ligandList) > 0:
-                # TODO stuff here for small ligands
+
+                for ligand_code in SM_ligandList:
+
+                    ligand_ids = lemon.select_specific_residues(entry, lemon.ResidueName(ligand_code))
+                    lemon.prune_identical_residues(entry, ligand_ids)
+
+                    for ligand_id in ligand_ids:
+                        protein = lemon.Frame()
+                        ligand = lemon.Frame()
+
+                        lemon.separate_protein_and_ligand(entry, ligand_id, 25.0, protein, ligand)
+                        lemon.write_file(protein, pdbid + "_" + ligand_code + ".pdb")
+                        lemon.write_file(ligand, pdbid + "_" + ligand_code + ".sdf")
+
             if len(Non_SM_ligandList > 0):
                 # TODO stuff here for non-small ligands
+                pass
 
-            tm = lemon.TMscore(entry, self.native, junk, False)
-            #print(pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n")
-            return pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n"
+            return "YAY"
+
     def finalize(self):
         pass
 
