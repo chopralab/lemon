@@ -11,8 +11,12 @@ referenceDict = {}
 alignProtDict = {}
 # Key: pdbID, Value: chemical id for SM ligand
 pdbIDSMDict = {}
-# Key: pdbID, Value: tuple with chain ID and number of residues
+# Key: pdbID, Value: tuple(resCode, chainID, residue ID)
 pdbIDNonSMDict = {}
+# Key: pdbID, Value: chemical id for SM ligand
+noAlignSMDict = {}
+# Key: pdbID, Value: tuple(resCode, chainID, residue ID)
+noAlignNonSMDict = {}
 
 entries_to_use = lemon.Entries()
 
@@ -25,23 +29,61 @@ def parse_input_file(fname):
     protFlag = 0
     SMLigFlag = 0
     nonSMligFlag = 0
+    noAlignSMFlag = 0
+    noAlignNonSMFlag = 0
 
     for line in f:
         # Check to see if the line contains any of the tags
         # Set appropriate flags if it does
         if line.startswith("@<reference>"):
             refFlag = 1
+            protFlag = 0
+            SMLigFlag = 0
+            nonSMligFlag = 0
+            noAlignSMFlag = 0
+            noAlignNonSMFlag = 0
         elif line.startswith("@<align_prot>"):
             refFlag = 0
             protFlag = 1
+            SMLigFlag = 0
+            nonSMligFlag = 0
+            noAlignSMFlag = 0
+            noAlignNonSMFlag = 0
         elif line.startswith("@<align_sm_ligands>"):
+            refFlag = 0
             protFlag = 0
             SMLigFlag = 1
-        elif line.startswith("@<align_non_sm_ligands>"):
-            SMLigFlag = 0
-            nonSMligFlag = 1
-        elif line.startswith("@<end>"):
             nonSMligFlag = 0
+            noAlignSMFlag = 0
+            noAlignNonSMFlag = 0
+        elif line.startswith("@<align_non_sm_ligands>"):
+            refFlag = 0
+            protFlag = 0
+            SMLigFlag = 0 
+            nonSMligFlag = 1
+            noAlignSMFlag = 0
+            noAlignNonSMFlag = 0
+        elif line.startswith("@<no_align_sm_ligands>"):
+            refFlag = 0
+            protFlag = 0
+            SMLigFlag = 0 
+            nonSMligFlag = 0
+            noAlignSMFlag = 1
+            noAlignNonSMFlag = 0
+        elif line.startswith("@<no_align_non_sm_ligands>"):
+            refFlag = 0
+            protFlag = 0
+            SMLigFlag = 0 
+            nonSMligFlag = 0
+            noAlignSMFlag = 0
+            noAlignNonSMFlag = 1
+        elif line.startswith("@<end>"):
+            refFlag = 0
+            protFlag = 0
+            SMLigFlag = 0
+            nonSMligFlag = 0
+            noAlignSMFlag = 0
+            noAlignNonSMFlag = 0
         else:
             # If the line does not contain a flag
             # Add info to appropriate dictionary based of set flags
@@ -76,8 +118,9 @@ def parse_input_file(fname):
 
             elif nonSMligFlag == 1:
                 pdbID = line.split(" ")[0].strip()
-                chainID = line.split(" ")[1].split("-")[0].strip()
-                residNum = line.split(" ")[1].split("-")[1].strip()
+                residueCode = line.split(" ")[1].split("-")[0].strip()
+                chainID = line.split(" ")[1].split("-")[1].strip()
+                residueID = line.split(" ")[1].split("-")[2].strip()
 
                 if referenceDict.get(curRefPdbID,0) == 0:
                     referenceDict[curRefPdbID] = [pdbID]
@@ -85,12 +128,35 @@ def parse_input_file(fname):
                     referenceDict[curRefPdbID].append(pdbID)
                 
                 if pdbIDNonSMDict.get(pdbID,0) == 0:
-                    pdbIDNonSMDict[pdbID] = [tuple([chainID,residNum])]
+                    pdbIDNonSMDict[pdbID] = [tuple([residueCode,chainID,residueID])]
                 else:
-                    pdbIDNonSMDict[pdbID].append(tuple([chainID,residNum]))
+                    pdbIDNonSMDict[pdbID].append(tuple([residueCode,chainID,residueID]))
 
                 entries.add(pdbID)
+            
+            elif noAlignSMFlag == 1:
+                pdbID = line.split(" ")[0].strip()
+                chemID = line.split(" ")[1].strip()
 
+                if noAlignSMDict.get(pdbID,0) == 0:
+                    noAlignSMDict[pdbID] = [chemID]
+                else:
+                    noAlignSMDict[pdbID].append(chemID)
+
+                # TODO decide if enteries.add(pdbID) is needed here
+
+            elif noAlignNonSMFlag == 1:
+                pdbID = line.split(" ")[0].strip()
+                residueCode = line.split(" ")[1].split("-")[0].strip()
+                chainID = line.split(" ")[1].split("-")[1].strip()
+                residueID = line.split(" ")[1].split("-")[2].strip()
+
+                if noAlignNonSMDict.get(pdbID,0) == 0:
+                    noAlignNonSMDict[pdbID] = [tuple([residueCode,chainID,residueID])]
+                else:
+                    noAlignNonSMDict[pdbID].append(tuple([residueCode,chainID,residueID]))
+
+                # TODO decide if enteries.add(pdbID) is needed here
 
 # Define Lemon workflow class
 class MyWorkflow(lemon.Workflow):
@@ -129,15 +195,21 @@ class MyWorkflow(lemon.Workflow):
         elif mode == 1:
             # TODO If we need to align to a protein (like in PINC) that can be done here
             # I checked in matrix.py but we only have a single path to the reference protein, not multiple paths
+            print("Align Protein: " + pdbid)
             return
         elif mode == 2:
             # If we are doing ligand alignment, that can be done here
             # Get a list of the ligands associated with the protein we are trying to align
-            SM_ligandList = pdbIDSMDict[pdbid] 
-            Non_SM_ligandList = pdbIDNonSMDict[pdbid]
+            SM_ligandList = pdbIDSMDict.get(pdbID, []) 
+            Non_SM_ligandList = pdbIDNonSMDict.get(pdbID, [])
+
+            if len(SM_ligandList) > 0:
+                # TODO stuff here for small ligands
+            if len(Non_SM_ligandList > 0):
+                # TODO stuff here for non-small ligands
 
             tm = lemon.TMscore(entry, self.native, junk, False)
-            print(pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n")
+            #print(pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n")
             return pdbid + "\t" + str(tm.score) + "\t" + str(tm.rmsd) + "\t" + str(tm.aligned) + "\n"
     def finalize(self):
         pass

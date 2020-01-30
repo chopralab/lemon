@@ -241,8 +241,8 @@
 # TODO choose here (only lignad is common peptide)
 @<reference>
 1tje hap2_reference_files/1tje.mmtf.gz
-@<align_sm_ligands>
-1tke SER
+@<align_non_sm_ligands>
+1tke SER-A-500
 @<end>
 
 @<reference>
@@ -290,8 +290,8 @@
 # TODO choose here (ligand is common peptide)
 @<reference>
 3htz hap2_reference_files/3htz.mmtf.gz
-@<align_sm_ligands>
-1ygb SER
+@<align_non_sm_ligands>
+1ygb SER-A-501
 @<end>
 
 @<reference>
@@ -468,12 +468,11 @@
 1say PYR
 @<end>
 
-# TODO choose here
+# TODO choose here (NAG removed)
 @<reference>
 1bsi hap2_reference_files/1bsi.mmtf.gz
 @<align_sm_ligands>
 1xcw 3SA
-1xcw NAG
 @<end>
 
 @<reference>
@@ -584,19 +583,18 @@
 1tqm ANP
 @<end>
 
-# TODO choose here
+# TODO choose here (removed LLP)
 @<reference>
 2gpn hap2_reference_files/2gpn.mmtf.gz
 @<align_sm_ligands>
 1z6p 194
-1z6p LLP
 @<end>
 
 # TODO choose here (lignad is common peptide)
 @<reference>
 1iiw hap2_reference_files/1iiw.mmtf.gz
-@<align_sm_ligands>
-1ii5 GLU
+@<align_non_sm_ligands>
+1ii5 GLU-A-999
 @<end>
 
 @<reference>
@@ -647,11 +645,10 @@
 1m99 GTS
 @<end>
 
-# TODO choose here
+# TODO choose here (removed IMD)
 @<reference>
 1jrl hap2_reference_files/1jrl.mmtf.gz
 @<align_sm_ligands>
-1v2g IMD
 1v2g OCA
 @<end>
 
@@ -691,12 +688,11 @@
 2bvd ISX
 @<end>
 
-# TODO choose here
+# TODO choose here (removed NAG)
 @<reference>
 1gpi hap2_reference_files/1gpi.mmtf.gz
 @<align_sm_ligands>
 1z3w IDC
-1z3w NAG
 @<end>
 
 @<reference>
@@ -711,12 +707,11 @@
 1ikg REX
 @<end>
 
-# TODO choose here
+# TODO choose here (removed NAG)
 @<reference>
 1j1q hap2_reference_files/1j1q.mmtf.gz
 @<align_sm_ligands>
 1j1s FMP
-1j1s NAG
 @<end>
 
 @<reference>
@@ -809,12 +804,11 @@
 3a7i ADE
 @<end>
 
-# TODO choose here
+# TODO choose here (removed TLA)
 @<reference>
 1frz hap2_reference_files/1frz.mmtf.gz
 @<align_sm_ligands>
 1fs5 16G
-1fs5 TLA
 @<end>
 
 @<reference>
@@ -862,8 +856,8 @@
 # TODO choose here (lignad is common peptide)
 @<reference>
 1y2q hap2_reference_files/1y2q.mmtf.gz
-@<align_sm_ligands>
-2hkz SER
+@<align_non_sm_ligands>
+2hkz SER-A-201
 @<end>
 
 @<reference>
@@ -884,11 +878,10 @@
 3adp NAI
 @<end>
 
-# TODO choose here (both are common cofactors)
+# TODO choose here (removed GOL)
 @<reference>
 2vk5 hap2_reference_files/2vk5.mmtf.gz
 @<align_sm_ligands>
-2bf6 GOL
 2bf6 SIA
 @<end>
 
@@ -904,12 +897,11 @@
 225l PXY
 @<end>
 
-# TODO choose here
+# TODO choose here (removed HAI)
 @<reference>
 2h4x hap2_reference_files/2h4x.mmtf.gz
 @<align_sm_ligands>
 2h52 3PG
-2h52 HAI
 @<end>
 
 @<reference>
@@ -948,11 +940,10 @@
 1aha ADE
 @<end>
 
-# TODO choose here (both are common cofactors)
+# TODO choose here (removed GDP)
 @<reference>
 2a78 hap2_reference_files/2a78.mmtf.gz
 @<align_sm_ligands>
-2a9k GDP
 2a9k NAD
 @<end>
 
@@ -986,12 +977,11 @@
 2byi 2DD
 @<end>
 
-# TODO choose here
+# TODO choose here (removed IMD)
 @<reference>
 3ftv hap2_reference_files/3ftv.mmtf.gz
 @<align_sm_ligands>
 3ftw 11X
-3ftw IMD
 @<end>
 
 @<reference>
@@ -1018,14 +1008,11 @@
 1wor RED
 @<end>
 
-# TODO choose here
+# TODO choose here (removed BMA, MAN, NAG)
 @<reference>
 2qwa hap2_reference_files/2qwa.mmtf.gz
 @<align_sm_ligands>
-2qwf BMA
 2qwf G20
-2qwf MAN
-2qwf NAG
 @<end>
 
 @<reference>
@@ -1058,21 +1045,18 @@
 1it8 PQ0
 @<end>
 
-# TODO choose here
+# TODO choose here (removed GAL, NGA)
 @<reference>
 1y2v hap2_reference_files/1y2v.mmtf.gz
 @<align_sm_ligands>
-1y2w GAL
 1y2w NAG
-1y2w NGA
 @<end>
 
-# TODO choose here
+# TODO choose here (removed MPD)
 @<reference>
 1kwg hap2_reference_files/1kwg.mmtf.gz
 @<align_sm_ligands>
 1kwk GAL
-1kwk MPD
 @<end>
 
 @<reference>

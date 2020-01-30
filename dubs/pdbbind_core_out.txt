@@ -1,4 +1,4 @@
-@<no_align>
+@<no_align_sm_ligands>
 2brb PFQ
 2v00 V15
 2qe4 JJ3

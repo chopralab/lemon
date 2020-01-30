@@ -1,4 +1,4 @@
-@<no_align>
+@<no_align_sm_ligands>
 1m2z DEX
 1pmn 984
 1s3v TQD
