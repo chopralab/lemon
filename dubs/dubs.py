@@ -18,13 +18,17 @@ entries_to_use = lemon.Entries()
 
 # Method for parsing a formated input file
 def parse_input_file(fname):
+    # Open file and initilize flags to 0
     f = open(fname,"r")
     curRefPdbID = ""
     refFlag = 0
     protFlag = 0
     SMLigFlag = 0
     nonSMligFlag = 0
+
     for line in f:
+        # Check to see if the line contains any of the tags
+        # Set appropriate flags if it does
         if line.startswith("@<reference>"):
             refFlag = 1
         elif line.startswith("@<align_prot>"):
@@ -39,6 +43,8 @@ def parse_input_file(fname):
         elif line.startswith("@<end>"):
             nonSMligFlag = 0
         else:
+            # If the line does not contain a flag
+            # Add info to appropriate dictionary based of set flags
             if refFlag == 1:
                 pdbID = line.split(" ")[0].strip()
                 path = line.split(" ")[1].strip()
@@ -48,9 +54,9 @@ def parse_input_file(fname):
             elif protFlag == 1:
                 pdbID = line.strip()
                 if alignProtDict.get(curRefPdbID,0) == 0:
-                    referenceDict[curRefPdbID] = [pdbID]
+                    alignProtDict[curRefPdbID] = [pdbID]
                 else:
-                    referenceDict[curRefPdbID].append(pdbID)
+                    alignProtDict[curRefPdbID].append(pdbID)
 
             elif SMLigFlag == 1:
                 pdbID = line.split(" ")[0].strip()
@@ -85,12 +91,17 @@ def parse_input_file(fname):
 
                 entries.add(pdbID)
 
+
 """
-fname = "pinc_input.txt"
+# Test Formatting Code, can be removed once finished
+
+fname = "test_format.txt"
 parse_input_file(fname)
 
 print("Path Dict")
 print(pathDict)
+print("Alignment Protein Dict")
+print(alignProtDict)
 print("Reference Dict")
 print(referenceDict)
 print("SM Dict")
@@ -136,8 +147,8 @@ if len(sys.argv) > 1:
     hadoop_path = sys.argv[1]
     cores = int(sys.argv[2])
 else:
-    path = "../../full"
+    hadoop_path = "../../full"
     cores = 8
 
 # TODO Get these from the command-line or ask the user
-lemon.launch(wf, "../../full", 8)
+lemon.launch(wf, hadoop_path, cores)
