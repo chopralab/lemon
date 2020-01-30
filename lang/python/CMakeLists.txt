@@ -53,13 +53,13 @@ endif()
 
 if(SKBUILD)
     pybind11_add_module(pylemon
-        ${CMAKE_CURRENT_SOURCE_DIR}/lemon_python.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/module/py_wrapper.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/module/lemon.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/module/chemfiles.cpp
     )
     
     target_link_libraries(pylemon PUBLIC lemon)
+    set_target_properties(pylemon PROPERTIES OUTPUT_NAME "lemon")
 
     install(TARGETS pylemon LIBRARY COMPONENT lemon DESTINATION "candiy_lemon" RENAME lemon)
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py COMPONENT python DESTINATION "candiy_lemon")

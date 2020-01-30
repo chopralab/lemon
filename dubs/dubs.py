@@ -18,11 +18,11 @@ noAlignSMDict = {}
 # Key: pdbID, Value: tuple(resCode, chainID, residue ID)
 noAlignNonSMDict = {}
 
-entries_to_use = lemon.Entries()
+entries = lemon.Entries()
 
 # Method for parsing a formated input file
 def parse_input_file(fname):
-    # Open file and initilize flags to 0
+    # Open file and initialize flags to 0
     f = open(fname,"r")
     curRefPdbID = ""
     refFlag = 0
@@ -143,7 +143,7 @@ def parse_input_file(fname):
                 else:
                     noAlignSMDict[pdbID].append(chemID)
 
-                # TODO decide if enteries.add(pdbID) is needed here
+                entries.add(pdbID)
 
             elif noAlignNonSMFlag == 1:
                 pdbID = line.split(" ")[0].strip()
@@ -156,7 +156,7 @@ def parse_input_file(fname):
                 else:
                     noAlignNonSMDict[pdbID].append(tuple([residueCode,chainID,residueID]))
 
-                # TODO decide if enteries.add(pdbID) is needed here
+                entries.add(pdbID)
 
 # Define Lemon workflow class
 class MyWorkflow(lemon.Workflow):
@@ -173,7 +173,7 @@ class MyWorkflow(lemon.Workflow):
         # mode is 0 unassigned, 1 for alignment for protein, 2 for alignment for ligand
         mode = 0
 
-        # Check for pdbID as a portein to be aligned (like in PINC)
+        # Check for pdbID as a protein to be aligned (like in PINC)
         for key, value in alignProtDict.items():
             if pdbid in value:
                 refpdbid = key
@@ -187,7 +187,7 @@ class MyWorkflow(lemon.Workflow):
 
         if mode == 0:
 
-            for ligand_code in pdbIDSMDict.get(pdbID, []):
+            for ligand_code in pdbIDSMDict.get(pdbid, []):
 
                 ligand_ids = lemon.select_specific_residues(entry, lemon.ResidueName(ligand_code))
                 lemon.prune_identical_residues(entry, ligand_ids)
@@ -212,8 +212,8 @@ class MyWorkflow(lemon.Workflow):
         elif mode == 2:
             # If we are doing ligand alignment, that can be done here
             # Get a list of the ligands associated with the protein we are trying to align
-            SM_ligandList = pdbIDSMDict.get(pdbID, []) 
-            Non_SM_ligandList = pdbIDNonSMDict.get(pdbID, [])
+            SM_ligandList = pdbIDSMDict.get(pdbid, []) 
+            Non_SM_ligandList = pdbIDNonSMDict.get(pdbid, [])
 
             alignment = lemon.TMscore(entry, self.reference_structures[refpdbid])
             positions = entry.positions()
@@ -238,7 +238,7 @@ class MyWorkflow(lemon.Workflow):
                 # TODO stuff here for non-small ligands
                 pass
 
-            return "YAY"
+            return pdbid
 
     def finalize(self):
         pass
@@ -262,4 +262,4 @@ parse_input_file(input_file_path)
 wf = MyWorkflow()
 
 # TODO Get these from the command-line or ask the user
-lemon.launch(wf, hadoop_path, cores)
+lemon.launch(wf, hadoop_path, cores, entries)
