@@ -5,10 +5,14 @@ import sys
 
 # Key: reference pdbid, Value: path to .mmtf file
 pathDict = {}
-# Key: reference pdbID, Value: list of associated ligands (both SM and non SM)
+# Key: reference pdbID, Value: chemical ID of ligand bound to reference protein for removal
+referenceLigandDict = {}
+# Key: reference pdbID, Value: list of sm or non-sm protein
 referenceDict = {}
 # Key: reference pdbID, Value: list of proteins to aling to reference (like in pinc)
 alignProtDict = {}
+# Key: align protein pdbID, Value: ligand chemical ID code for ligand removal 
+alignProtLigandDict = {}
 # Key: pdbID, Value: chemical id for SM ligand
 pdbIDSMDict = {}
 # Key: pdbID, Value: tuple(resCode, chainID, residue ID)
@@ -92,13 +96,24 @@ def parse_input_file(fname):
                 path = line.split(" ")[1].strip()
                 curRefPdbID = pdbID
                 pathDict[pdbID] = path
+
+                if len(line.split(" ")) == 3:
+                    chemID = line.split(" ")[2].strip()
+                    referenceLigandDict[pdbID] = chemID 
             
             elif protFlag == 1:
-                pdbID = line.strip()
+                pdbID = line.split(" ")[0].strip()
+                chemID = line.split(" ")[1].strip()
+
                 if alignProtDict.get(curRefPdbID,0) == 0:
                     alignProtDict[curRefPdbID] = [pdbID]
                 else:
                     alignProtDict[curRefPdbID].append(pdbID)
+
+                if alignProtLigandDict.get(pdbID, 0) == 0:
+                    alignProtLigandDict[pdbID] = [chemID]
+                else:
+                    alignProtLigandDict[pdbID].append(chemID)
 
             elif SMLigFlag == 1:
                 pdbID = line.split(" ")[0].strip()
