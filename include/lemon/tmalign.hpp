@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <set>
 #include <limits>
+#include <cmath>
 
 #include "chemfiles/Frame.hpp"
 #include "lemon/matrix.hpp"
@@ -174,6 +175,11 @@ inline TMResult TMscore(const chemfiles::Frame& search,
                 auto j = aligned_native_ids[k];
 
                 auto dis = (align_pos[k] - native_pos[j]).norm();
+
+                if (std::isnan(dis)) {
+                    return std::make_pair(0.0, cut_scored_ids);
+                }
+
                 if (dis < d) {
                     // [0,n_ali - 1], mark the residue-pairs in dis<d
                     cut_scored_ids[n_cut++] = k;
