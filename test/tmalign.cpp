@@ -107,3 +107,15 @@ TEST_CASE("tmalign::TMscore for 1AAQ/1YT9") {
     CHECK(tm.score == Approx(0.9762572135).epsilon(1e-4));
     CHECK(tm.aligned == 198);
 }
+
+TEST_CASE("tmalign::TMscore for 1K21/2V3O") {
+    auto traj = chemfiles::Trajectory("files/1K21.mmtf.gz", 'r');
+    auto frame1 = traj.read();
+
+    traj = chemfiles::Trajectory("files/2V3O.mmtf.gz", 'r');
+    auto frame2 = traj.read();
+
+    auto tm = lemon::tmalign::TMscore(frame1, frame2);
+    CHECK(tm.score == Approx(0.9068108101).epsilon(1e-4));
+    CHECK(tm.aligned == 276);
+}
