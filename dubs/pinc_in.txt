@@ -1,11 +1,11 @@
 hivproteasea2
 @<reference>
-1MTB pinc_reference_files/hivproteasea2/1MTB.mmtf
+1MTB pinc_reference_files/hivproteasea2/1MTB.mmtf HPH
 @<align_prot>
-4HVP
-2FGV
-1MTR
-2AID
+4HVP 2NC
+2FGV NTB
+1MTR PI6
+2AID THK
 @<align_sm_ligands>
 3MXD K53
 2FGU NTB
@@ -51,12 +51,12 @@ hivproteasea2
 
 hivproteasebr
 @<reference>
-1A8K pinc_reference_files/hivproteasebr/1A8K.mmtf
+1A8K pinc_reference_files/hivproteasebr/1A8K.mmtf 0Q4
 @<align_prot>
-1IIQ
-2UPJ
-1D4Y
-1AAQ
+1IIQ 0ZR
+2UPJ U02
+1D4Y TPV
+1AAQ PSI
 @<align_sm_ligands>
 1MSN JE2
 1MRX K57
@@ -108,12 +108,12 @@ hivproteasebr
 
 hsp90alpha
 @<reference>
-2H55 pinc_reference_files/hsp90alpha/2H55.mmtf
+2H55 pinc_reference_files/hsp90alpha/2H55.mmtf DZ8
 @<align_prot>
-1UYG
-1YC4
-2UWD
-1YET
+1UYG PU2
+1YC4 43P
+2UWD 2GG
+1YET GDM
 @<align_sm_ligands>
 3HYZ 42C
 2YEJ ZZ3
@@ -217,12 +217,12 @@ hsp90alpha
 
 pparg
 @<reference>
-2ATH pinc_reference_files/pparg/2ATH.mmtf
+2ATH pinc_reference_files/pparg/2ATH.mmtf 3EA
 @<align_prot>
-2I4J
-1FM6
-2HWQ
-1FM9
+2I4J DRJ
+1FM6 BRL
+2HWQ DRY
+1FM9 570
 @<align_sm_ligands>
 3ET3 ET1
 3CWD LNB
@@ -290,12 +290,12 @@ pparg
 
 ptp1b
 @<reference>
-1KAK pinc_reference_files/ptp1b/1KAK.mmtf
+1KAK pinc_reference_files/ptp1b/1KAK.mmtf FNP
 @<align_prot>
-1NL9
-1C85
-1G7G
-1ECV
+1NL9 989
+1C85 OBA
+1G7G INX
+1ECV 878
 @<align_sm_ligands>
 2FJM 073
 2CMA F20
@@ -353,12 +353,12 @@ ptp1b
 
 betasecretase1
 @<reference>
-2IQG pinc_reference_files/betasecretase1/2IQG.mmtf
+2IQG pinc_reference_files/betasecretase1/2IQG.mmtf F2I
 @<align_prot>
-2G94
-1W51
-2Q11
-2OHQ
+2G94 ZPQ
+1W51 L01
+2Q11 XX4
+2OHQ 7IP
 @<align_sm_ligands>
 3BUF AEG
 3CKP 012
@@ -467,12 +467,12 @@ betasecretase1
 
 mapk14
 @<reference>
-1ZYJ pinc_reference_files/mapk14/1ZYJ.mmtf
+1ZYJ pinc_reference_files/mapk14/1ZYJ.mmtf BI5
 @<align_prot>
-1W83
-1BL7
-1WBT
-2BAL
+1W83 L11
+1BL7 SB4
+1WBT WBT
+2BAL PQA
 @<align_sm_ligands>
 3K3I JZJ
 2YIS YIS
@@ -570,12 +570,12 @@ mapk14
 
 cdk2
 @<reference>
-1H1P pinc_reference_files/cdk2/1H1P.mmtf
+1H1P pinc_reference_files/cdk2/1H1P.mmtf CMG
 @<align_prot>
-1H0V
-1CKP
-1H1S
-1JVP
+1H0V UN4
+1CKP PVB
+1H1S 4SP
+1JVP LIG
 @<align_sm_ligands>
 1PYE PM1
 2VTJ LZ4
@@ -708,12 +708,12 @@ cdk2
 
 thrombin
 @<reference>
-1K21 pinc_reference_files/thrombin/1K21.mmtf
+1K21 pinc_reference_files/thrombin/1K21.mmtf IGN
 @<align_prot>
-1CA8
-1DWB
-1BMN
-1D3P
+1CA8 0KV
+1DWB BEN
+1BMN BM9
+1D3P BT3
 @<align_sm_ligands>
 2CN0 F25
 3RLY S29
@@ -833,12 +833,12 @@ thrombin
 
 carbonicanhydrase2
 @<reference>
-1IF4 pinc_reference_files/carbonicanhydrase2/1IF4.mmtf
+1IF4 pinc_reference_files/carbonicanhydrase2/1IF4.mmtf FBS
 @<align_prot>
-1G52
-1Z9Y
-1G1D
-1BN4
+1G52 F2B
+1Z9Y FUN
+1G1D FSB
+1BN4 AL9
 @<align_sm_ligands>
 2HD6 BOS
 3RYJ RYJ
@@ -972,12 +972,12 @@ carbonicanhydrase2
 
 hivrt
 @<reference>
-1RT4 pinc_reference_files/hivrt/1RT4.mmtf
+1RT4 pinc_reference_files/hivrt/1RT4.mmtf UC1
 @<align_prot>
-1RTI
-1REV
-1RT1
-1VRU
+1RTI HEF
+1REV TB9
+1RT1 MKC
+1VRU AAP
 @<align_sm_ligands>
 3LAK KR1
 3C6U M22
@@ -1029,12 +1029,12 @@ hivrt
 
 hivproteaseb1
 @<reference>
-1HVI pinc_reference_files/hivproteaseb1/1HVI.mmtf
+1HVI pinc_reference_files/hivproteaseb1/1HVI.mmtf A77
 @<align_prot>
-1MET
-1HIH
-1GNO
-1HVK
+1MET DMP
+1HIH C20
+1GNO U0E
+1HVK A79
 @<align_sm_ligands>
 1A9M U0E
 1YT9 OIS
