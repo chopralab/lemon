@@ -18,7 +18,9 @@ TEST_CASE("Kabsch") {
     std::vector<size_t> a_search;
     std::vector<size_t> a_native;
 
-    lemon::tmalign::find_operlapping_residues(frame1, frame2, a_search, a_native);
+    lemon::tmalign::find_operlapping_residues(frame1, frame2,
+                                              a_search, a_native,
+                                              "", "");
 
     auto a = frame1.positions();
     auto b = frame2.positions();
@@ -118,4 +120,28 @@ TEST_CASE("tmalign::TMscore for 1K21/2V3O") {
     auto tm = lemon::tmalign::TMscore(frame1, frame2);
     CHECK(tm.score == Approx(0.9068108101).epsilon(1e-4));
     CHECK(tm.aligned == 276);
+}
+
+TEST_CASE("tmalign::TMscore for 1K21/1ZRB") {
+    auto traj = chemfiles::Trajectory("files/1K21.mmtf.gz", 'r');
+    auto frame1 = traj.read();
+
+    traj = chemfiles::Trajectory("files/1ZRB.mmtf.gz", 'r');
+    auto frame2 = traj.read();
+
+    auto tm = lemon::tmalign::TMscore(frame1, frame2);
+    CHECK(tm.score == Approx(0.8324166043).epsilon(1e-4));
+    CHECK(tm.aligned == 248);
+}
+
+TEST_CASE("tmalign::TMscore for 1K21/1WAY") {
+    auto traj = chemfiles::Trajectory("files/1K21.mmtf.gz", 'r');
+    auto frame1 = traj.read();
+
+    traj = chemfiles::Trajectory("files/1WAY.mmtf.gz", 'r');
+    auto frame2 = traj.read();
+
+    auto tm = lemon::tmalign::TMscore(frame1, frame2);
+    CHECK(tm.score == Approx(0.8201441267).epsilon(1e-4));
+    CHECK(tm.aligned == 248);
 }

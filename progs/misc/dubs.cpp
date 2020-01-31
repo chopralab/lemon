@@ -263,8 +263,8 @@ class DUBSParser {
             }
 
             if (current_tag_ == TAG_TYPE::PEPTIDE_ALIGN ||
-                current_tag_ == TAG_TYPE::LIGAND_ALIGN ||
                 current_tag_ == TAG_TYPE::PROTEIN_ALIGN ||
+                current_tag_ == TAG_TYPE::LIGAND_ALIGN ||
                 current_tag_ == TAG_TYPE::LIGAND_NO_ALIGN) {
                 
                 parse_complex(std::move(line));
@@ -277,13 +277,15 @@ class DUBSParser {
 
         current_reference_ = std::string(split[0].begin(), split[0].end());
 
+        entries_to_use_.insert(current_reference_);
+
         std::transform(current_reference_.begin(), current_reference_.end(),
                        current_reference_.begin(), ::toupper);
 
         auto reference_path = std::string(split[1].begin(), split[1].end());
         reference_to_path_[current_reference_] = reference_path;
 
-        if (!last_line_.empty()) {
+        if (!last_line_.empty() && last_line_[0] != '#') {
             reference_to_name_[current_reference_] = last_line_;
         }
 
@@ -392,11 +394,13 @@ int main(int argc, char* argv[]) {
             lemon::align(pos, alignment.affine);
 
             result_str += " aligned to " + ref_str + " with score of " +
-                std::to_string(alignment.score);
+                std::to_string(alignment.score) +
+                "(" + std::to_string(alignment.aligned) + ")";
 
             auto name = parser.name(ref_str);
             if (!name.empty()) {
-                outdir_local += std::string(name.begin(), name.end()) + "/";
+                outdir_local += std::string(name.begin(), name.end()) + "/" +
+                    std::string(name.begin(), name.end()) + "_";
             }
         }
 
@@ -415,7 +419,7 @@ int main(int argc, char* argv[]) {
             chemfiles::Trajectory lig_trj(lig_file, 'w');
             lig_trj.write(lig);
 
-            if (!all_proteins) {
+            if (!all_proteins && !reference.empty()) {
                 continue;
             }
 

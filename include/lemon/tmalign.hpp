@@ -26,9 +26,13 @@ inline size_t find_element_by_name(const chemfiles::Frame& frame,
 }
 
 inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
-                                        const chemfiles::Frame& native,
-                                        std::vector<size_t>& a_search,
-                                        std::vector<size_t>& a_native) {
+                                               const chemfiles::Frame& native,
+                                               std::vector<size_t>& a_search,
+                                               std::vector<size_t>& a_native,
+                                               const std::string& s_chain,
+                                               const std::string& n_chain) {
+
+    // Setup which residues to return
     const auto& search_res = search.topology().residues();
     const auto& native_res = native.topology().residues();
 
@@ -38,22 +42,42 @@ inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
     auto n_ali = 0ul;
     for (const auto& s_res : search_res) {
         auto i = find_element_by_name(search, s_res, "CA");
+
         if (i == search.size()) {
             continue;
         }
-        for (const auto& n_res : native_res) {
-            if (*s_res.id() == *n_res.id() &&
-                s_res.get("chainname") == n_res.get("chainname")) {
-                auto j = find_element_by_name(native, n_res, "CA");
-                if (j == native.size()) {
-                    continue;
-                }
 
-                a_search.emplace_back(i);
-                a_native.emplace_back(j);
-                n_ali++;
-                break;
+        auto s_chain_name = s_res.get("chainname")->as_string();
+
+        // Check to see if we have forced a chain ID
+        if (!s_chain.empty() && s_chain_name != s_chain) {
+            continue;
+        }
+
+        for (const auto& n_res : native_res) {
+            if (*s_res.id() != *n_res.id()) {
+                continue;
             }
+
+            auto n_chain_name = n_res.get("chainname")->as_string();
+            if (s_chain_name != n_chain_name && s_chain.empty()) {
+                continue;
+            }
+
+            if (!n_chain.empty() && n_chain_name != n_chain) {
+                continue;
+            }
+
+            auto j = find_element_by_name(native, n_res, "CA");
+            if (j == native.size()) {
+                continue;
+            }
+
+            a_search.emplace_back(i);
+            a_native.emplace_back(j);
+            n_ali++;
+
+            break;
         }
     }
 
@@ -88,24 +112,11 @@ struct TMResult {
     Affine affine;
 };
 
-//! TMalign is an algorithm used to align protein chains in 3D space.
-//!
-//! Ported from
-//! https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f Original
-//! reference: Yang Zhang, Jeffrey Skolnick, Proteins 2004 57:702-10.
-//!
-//! Original License:
-//! Permission to use, copy, modify, and distribute this program for
-//! any purpose, with or without fee, is hereby granted, provided that
-//! the notices on the head, the reference information, and this
-//! copyright notice appear in all copies or substantial portions of
-//! the Software. It is provided "as is" without express or implied
-//! warranty.
-//! \param [in] search The frame that is being aligned to native.
-//! \param [in] native The 'native' chain that the search chain is aligned to.
-//! \return A strucure with the TMScore, and number of aligned residues
-inline TMResult TMscore(const chemfiles::Frame& search,
-                        const chemfiles::Frame& native) {
+inline TMResult TMscore_helper(const chemfiles::Frame& search,
+                               const chemfiles::Frame& native,
+                               const std::string& s_chain,
+                               const std::string& n_chain) {
+
     std::vector<size_t> aligned_search_ids;
     std::vector<size_t> aligned_native_ids;
 
@@ -115,7 +126,8 @@ inline TMResult TMscore(const chemfiles::Frame& search,
     // The number of aligned residues
     auto n_ali = find_operlapping_residues(search, native,
                                            aligned_search_ids,
-                                           aligned_native_ids);
+                                           aligned_native_ids,
+                                           s_chain, n_chain);
 
     if (n_ali == 0) {
         return {0.0, 0.0, 0, Affine{{0.0, 0.0, 0.0}, Matrix3D::unit()}};
@@ -277,6 +289,58 @@ inline TMResult TMscore(const chemfiles::Frame& search,
     }
 
     return {score_max, 0.0, n_ali, best_affine};
+}
+
+//! TMalign is an algorithm used to align protein chains in 3D space.
+//!
+//! Ported from
+//! https://zhanglab.ccmb.med.umich.edu/TM-score/TMscore_subroutine.f Original
+//! reference: Yang Zhang, Jeffrey Skolnick, Proteins 2004 57:702-10.
+//!
+//! Original License:
+//! Permission to use, copy, modify, and distribute this program for
+//! any purpose, with or without fee, is hereby granted, provided that
+//! the notices on the head, the reference information, and this
+//! copyright notice appear in all copies or substantial portions of
+//! the Software. It is provided "as is" without express or implied
+//! warranty.
+//! \param [in] search The frame that is being aligned to native.
+//! \param [in] native The 'native' chain that the search chain is aligned to.
+//! \return A strucure with the TMScore, and number of aligned residues
+inline TMResult TMscore(const chemfiles::Frame& search,
+                        const chemfiles::Frame& native) {
+    auto result = TMscore_helper(search, native, "", "");
+
+    if (result.score >= 0.75) {
+        return result;
+    }
+
+    std::set<std::string> search_names;
+    std::set<std::string> native_names;
+
+    for (auto& res : search.topology().residues()) {
+        search_names.insert(res.get("chainname")->as_string());
+    }
+
+    for (auto& res : native.topology().residues()) {
+        native_names.insert(res.get("chainname")->as_string());
+    }
+
+    for (auto& s_chain : search_names) {
+        for (auto& n_chain : native_names) {
+            auto result2 = TMscore_helper(search, native, s_chain, n_chain);
+
+            if (result2.score > 0.75) {
+                return result2;
+            }
+
+            if (result2.score > result.score) {
+                result = result2;
+            }
+        }
+    }
+
+    return result;
 }
 
 } // namespace tmalign
