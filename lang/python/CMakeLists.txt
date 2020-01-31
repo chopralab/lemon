@@ -20,11 +20,11 @@ function(add_python_test _name_)
 
     if (MSVC AND ${BUILD_SHARED_LIBS})
         set_tests_properties( py_${_name_}
-            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${CMAKE_BINARY_DIR}/chemfiles/bin/"
+            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${CMAKE_BINARY_DIR}/chemfiles_install/bin/"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${BUILD_SHARED_LIBS})
         set_tests_properties( py_${_name_}
-            PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles/lib"
+            PROPERTIES ENVIRONMENT "DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/chemfiles_install/lib"
         )
     endif()
 endfunction()
@@ -47,7 +47,7 @@ if (${LEMON_BUILD_PYTHON})
     add_python_test(small_heme)
     add_python_test(dry_small_molecule)
     add_python_test(protein_dihedral)
-    add_python_test(tmscore)
+    add_python_test(tmalign)
     add_python_test(vina)
 endif()
 

@@ -83,7 +83,7 @@ pushd .
 cd $TRAVIS_BUILD_DIR/../
 mkdir deps
 cd deps
-git clone https://github.com/frodofine/chemfiles.git -b read_from_memory_2
+git clone https://github.com/frodofine/chemfiles.git -b read_from_memory
 cd chemfiles
 mkdir build
 cd build

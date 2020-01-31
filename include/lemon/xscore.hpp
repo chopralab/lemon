@@ -298,7 +298,7 @@ create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
 //! of the Vina version of this scoring function.
 //! \param [in] frame The frame for which the ligand-protein score will be
 //!  calculated
-//! \param [in] ligand The residue ID for the ligand in the entry
+//! \param [in] ligid The residue ID for the ligand in the entry
 //! \param [in] recid The residue IDs for the protein in the entry
 //! \param [in] cutoff The interaction distance cutoff between ligand and
 //!  protein

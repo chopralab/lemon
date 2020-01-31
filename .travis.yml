@@ -1,5 +1,4 @@
 language: cpp
-sudo: false
 dist: xenial
 
 branches:
@@ -15,7 +14,7 @@ linux64_addons:
         - python3-setuptools
         - python3-pip
 
-matrix:
+jobs:
   fast_finish: true
   include:
     - name: coverage and documentation
@@ -92,7 +91,7 @@ after_success:
 
 deploy:
   - provider: pages
-    skip_cleanup: true
+    cleanup: false
     github_token: $GH_TOKEN
     local_dir: build/gh-pages
     on:
@@ -100,7 +99,7 @@ deploy:
         condition: $BUILD_DOC == true
   - provider: script
     script: ./scripts/upload_pypi.sh
-    skip_cleanup: true
+    cleanup: false
     on:
         tags: true
         condition: $DEPLOY_MACOSX_WHEEL == true
