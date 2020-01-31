@@ -8,6 +8,18 @@
 #include <iostream>
 #include <sstream>
 
+#ifndef _MSVC_LANG
+#include <sys/stat.h>
+static void mkdir(const std::string& dir) {
+    mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+}
+#else
+#include <direct.h>
+static void mkdir(const std::string& dir) {
+    _mkdir(dir.c_str());
+}
+#endif
+
 struct string_view {
 
     string_view(const char* c, size_t length) : begin_(c), length_(length) {}
@@ -86,6 +98,7 @@ class DUBSParser {
 
     enum class TAG_TYPE {
         NONE = 0,
+        LIGAND_NO_ALIGN,
         REFERENCE,
         PROTEIN_ALIGN,
         LIGAND_ALIGN,
@@ -120,6 +133,15 @@ class DUBSParser {
         }
 
         return rns->second;
+    }
+
+    void make_directories(const std::string& output_dir) const {
+        for (auto& kv : reference_to_name_) {
+            if (kv.second.empty()) {
+                continue;
+            }
+            mkdir(output_dir + kv.second);
+        }
     }
 
     std::string dump() const {
@@ -228,6 +250,7 @@ class DUBSParser {
             case TAG_TYPE::PEPTIDE_ALIGN:
             case TAG_TYPE::PROTEIN_ALIGN:
             case TAG_TYPE::LIGAND_ALIGN:
+            case TAG_TYPE::LIGAND_NO_ALIGN:
             default: // <- Shouldn't be needed
                 current_tag_ = tag;
                 continue;
@@ -241,29 +264,10 @@ class DUBSParser {
 
             if (current_tag_ == TAG_TYPE::PEPTIDE_ALIGN ||
                 current_tag_ == TAG_TYPE::LIGAND_ALIGN ||
-                current_tag_ == TAG_TYPE::PROTEIN_ALIGN) {
-                auto split = split_string(trim(line));
-                auto entry = std::string(split[0].begin(), split[0].end());
-
-                std::transform(entry.begin(), entry.end(), entry.begin(),
-                               ::toupper);
-
-                entries_to_use_.insert(entry);
-
-                if (!current_reference_.empty()) {
-                    entries_to_reference_[entry] = current_reference_;
-                    reference_entries_[current_reference_].push_back(entry);
-                }
-
-                if (current_tag_ == TAG_TYPE::PROTEIN_ALIGN) {
-                    reference_align_prot_[current_reference_].push_back(entry);
-                }
-
-                if (current_tag_ == TAG_TYPE::LIGAND_ALIGN) {
-                    auto ligand = std::string(split[1].begin(), split[1].end());
-                    entries_to_rns_[entry] = lemon::ResidueNameSet({ligand});
-                    // TODO Suppport multiple ligands
-                }
+                current_tag_ == TAG_TYPE::PROTEIN_ALIGN ||
+                current_tag_ == TAG_TYPE::LIGAND_NO_ALIGN) {
+                
+                parse_complex(std::move(line));
             }
         }
     }
@@ -286,9 +290,36 @@ class DUBSParser {
         chemfiles::Trajectory trj(reference_path, 'r');
         reference_to_structure_[current_reference_] = std::move(trj.read());
     }
+
+    void parse_complex(std::string line) {
+        auto split = split_string(trim(line));
+        auto entry = std::string(split[0].begin(), split[0].end());
+
+        std::transform(entry.begin(), entry.end(), entry.begin(), ::toupper);
+
+        entries_to_use_.insert(entry);
+
+        if (current_tag_ != TAG_TYPE::LIGAND_NO_ALIGN &&
+            !current_reference_.empty()) {
+            entries_to_reference_[entry] = current_reference_;
+            reference_entries_[current_reference_].push_back(entry);
+        }
+
+        if (current_tag_ == TAG_TYPE::PROTEIN_ALIGN) {
+            reference_align_prot_[current_reference_].push_back(entry);
+        }
+
+        if (current_tag_ == TAG_TYPE::LIGAND_ALIGN ||
+            current_tag_ == TAG_TYPE::LIGAND_NO_ALIGN ) {
+            auto ligand = std::string(split[1].begin(), split[1].end());
+            entries_to_rns_[entry] = lemon::ResidueNameSet({ligand});
+            // TODO Suppport multiple ligands
+        }
+    }
 };
 
 const std::map<std::string, DUBSParser::TAG_TYPE> DUBSParser::TAGS = {
+    {"@<no_align_sm_ligands>", TAG_TYPE::LIGAND_NO_ALIGN},
     {"@<reference>", TAG_TYPE::REFERENCE},
     {"@<align_prot>", TAG_TYPE::PROTEIN_ALIGN},
     {"@<align_sm_ligands>", TAG_TYPE::LIGAND_ALIGN},
@@ -299,11 +330,15 @@ int main(int argc, char* argv[]) {
     lemon::Options o;
     std::string outdir = ".";
     auto distance = 6.0;
-    bool dump_input = false;
+    auto dump_input = false;
+    auto all_proteins = false;
+
     o.add_option("--distance,-d", distance,
                  "Largest distance between protein and a small molecule.");
     o.add_option("--outdir,-o", outdir, "output directory");
-    o.add_option("--dump_input", dump_input, "Dump the input file (for debugging)");
+    o.add_flag("--all_proteins", all_proteins, "Include all proteins, even for "
+        "complexes tagged as small molecule only");
+    o.add_flag("--dump_input", dump_input, "Dump the input file (for debugging)");
     o.parse_command_line(argc, argv);
 
     outdir += "/";
@@ -323,8 +358,8 @@ int main(int argc, char* argv[]) {
         std::cout << parser.dump() << std::endl;
     }
 
-    auto worker = [distance, &outdir, &parser](chemfiles::Frame entry,
-                                               const std::string& PDBid) {
+    auto worker = [distance, all_proteins, &outdir, &parser]
+        (chemfiles::Frame entry, const std::string& PDBid) {
 
         auto& rns = parser.ligands(PDBid);
         if (rns.empty()) { // reference file
@@ -333,7 +368,7 @@ int main(int argc, char* argv[]) {
             chemfiles::Trajectory reference(protfile, 'w');
             reference.write(entry);
 
-            return "Added reference file: " + PDBid;
+            return "Added reference file: " + PDBid + "\n";
         }
 
         // Selection phase
@@ -344,6 +379,7 @@ int main(int argc, char* argv[]) {
 
         auto reference = parser.reference(PDBid);
         auto result_str = PDBid;
+        auto outdir_local = outdir;
 
         if (!reference.empty()) {
             auto ref_str = std::string(reference.begin(), reference.end());
@@ -355,7 +391,13 @@ int main(int argc, char* argv[]) {
             auto pos = entry.positions();
             lemon::align(pos, alignment.affine);
 
-            result_str += " aligned to " + ref_str + " with score of " + std::to_string(alignment.score); 
+            result_str += " aligned to " + ref_str + " with score of " +
+                std::to_string(alignment.score);
+
+            auto name = parser.name(ref_str);
+            if (!name.empty()) {
+                outdir_local += std::string(name.begin(), name.end()) + "/";
+            }
         }
 
         // Output phase
@@ -369,17 +411,23 @@ int main(int argc, char* argv[]) {
 
             result_str += " and ligand " + lig_name;
 
-            auto prot_file = outdir + PDBid + "_" + lig_name + ".pdb";
-            auto lig_file = outdir + PDBid + "_" + lig_name + ".sdf";
-
-            chemfiles::Trajectory prot_trj(prot_file, 'w');
+            auto lig_file = outdir_local + PDBid + "_" + lig_name + ".sdf";
             chemfiles::Trajectory lig_trj(lig_file, 'w');
-            prot_trj.write(prot);
             lig_trj.write(lig);
+
+            if (!all_proteins) {
+                continue;
+            }
+
+            auto prot_file = outdir_local + PDBid + "_" + lig_name + ".pdb";
+            chemfiles::Trajectory prot_trj(prot_file, 'w');
+            prot_trj.write(prot);
         }
 
-        return PDBid + std::to_string(ligand_ids.size());
+        return result_str + "\n";
     };
+
+    parser.make_directories(outdir);
 
     auto collector = lemon::print_combine(std::cout);
 
