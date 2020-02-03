@@ -50,7 +50,10 @@ inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
             continue;
         }
 
-        auto s_chain_name = s_res.get("chainname")->as_string();
+        auto s_chainname = s_res.get("chainname");
+        auto s_chain_name = s_chainname &&
+                            s_chainname->kind() == chemfiles::Property::STRING?
+            s_chainname->as_string() : "ZZZ";
 
         // Check to see if we have forced a chain ID
         if (!s_chain.empty() && s_chain_name != s_chain) {
@@ -62,7 +65,11 @@ inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
                 continue;
             }
 
-            auto n_chain_name = n_res.get("chainname")->as_string();
+            auto n_chainname = n_res.get("chainname");
+            auto n_chain_name = n_chainname &&
+                            n_chainname->kind() == chemfiles::Property::STRING?
+            n_chainname->as_string() : "ZZZ";
+
             if (s_chain_name != n_chain_name && s_chain.empty()) {
                 continue;
             }
