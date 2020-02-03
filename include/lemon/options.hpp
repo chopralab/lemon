@@ -46,11 +46,11 @@ class Options : public CLI::App {
 
     //! Constructor for an `Options` class which does not use custom options
     //!
-    //! This constructor is indended for users who do **not** wish to add cusom
+    //! This constructor is indended for users who do **not** wish to add custom
     //! options. The *work_dir*, *ncpu*, and *entries* options are added
     //! automatically and the arguments are parsed immediately.
-    //! \param argc The number of argments plus their values plus one. Typically
-    //!  obtained from the `main` function.
+    //! \param argc The number of arguments plus their values plus one.
+    //!  Typically obtained from the `main` function.
     //! \param argv The arguments and their values. Typically obtained from the
     //!  `main` function.
     Options(int argc, const char* const argv[]) : Options() {
@@ -61,7 +61,7 @@ class Options : public CLI::App {
     //!
     //! Use this function to read options and update the custom contains if
     //! needed. Once the options are parsed, this function will throw an error.
-    //! \param argc The number of argments plus their values plus one. Typically
+    //! \param argc The number of arguments plus their values plus one. Typically
     //!  obtained from the `main` function.
     //! \param argv The arguments and their values. Typically obtained from the
     //!  `main` function.
@@ -77,7 +77,7 @@ class Options : public CLI::App {
     //! Directory containing the MMTF or Hadoop files
     const std::string& work_dir() const { return work_dir_; }
 
-    //! Number of CPUs used to run independant jobs
+    //! Number of CPUs used to run independent jobs
     size_t ncpu() const { return ncpu_; }
 
     //! Index to preselect entries. Eg a search on RCSB

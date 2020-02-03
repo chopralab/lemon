@@ -17,9 +17,7 @@ int main(int argc, char* argv[]) {
     auto worker = [&native](chemfiles::Frame entry,
                             const std::string& pdbid) {
 
-        std::vector<chemfiles::Vector3D> junk;
-
-        auto tm = lemon::tmalign::TMscore(entry, native, junk);
+        auto tm = lemon::tmalign::TMscore(entry, native);
 
         return pdbid + "\t" +
                std::to_string(tm.score) + "\t" +

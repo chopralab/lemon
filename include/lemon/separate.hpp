@@ -17,8 +17,8 @@ namespace separate {
 //!
 //! Once a set of residues has been selected (and pruned), the residues of
 //! interest should be copied into a new `frame` so that they can written to
-//! disk separetly. This function performs this action while taking care to copy
-//! the original connectivity of the residue.
+//! disk separately. This function performs this action while taking care to
+//! copy the original connectivity of the residue.
 //! \param [in] input The original Frame from where the residues will be copied.
 //! \param [in] accepted_residues The residue IDs for the residues to be copied.
 //! \param [in,out] new_frame The frame where the residues wil be copied to.
@@ -46,7 +46,11 @@ inline void residues(const chemfiles::Frame& input,
             accepted_atoms.insert(res_atom);
         }
 
-        res_new.set("chainid", res.get("chainid")->as_string());
+        auto chainID = res.get("chainid");
+        auto newID = (chainID && chainID->kind() == chemfiles::Property::STRING)?
+            chainID->as_string() : "Z";
+
+        res_new.set("chainid", newID);
         new_frame.add_residue(std::move(res_new));
     }
 
@@ -75,8 +79,8 @@ inline void residues(const chemfiles::Frame& input,
 inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
                                double pocket_size, chemfiles::Frame& protein,
                                chemfiles::Frame& ligand) {
-    const auto& topo = input.topology();
-    const auto& residues = topo.residues();
+    const auto& topology = input.topology();
+    const auto& residues = topology.residues();
     const auto& ligand_residue = residues[ligand_id];
 
     std::list<size_t> accepted_residues;

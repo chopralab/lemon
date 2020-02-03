@@ -1,0 +1,1 @@
+This folder contains the reference protien .mmtf files for alignment using Lemon

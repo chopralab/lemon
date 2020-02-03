@@ -82,7 +82,7 @@ inline double optimal_distance(XS_TYPE xs_t1, XS_TYPE xs_t2) {
 //! An object which represents the components of XScore/Vina's scoring function
 //!
 //! The XScore/Vina scoring function is divided into five components:
-//! two guassian functions, hydrophobic interactions, repulsive forces, and
+//! two gaussian functions, hydrophobic interactions, repulsive forces, and
 //! hydrogen bonding.
 struct VinaScore {
     double g1 = 0;          //!< The small gaussian term
@@ -293,14 +293,16 @@ create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
 //! interactions
 //!
 //! The docking program AutoDOCK Vina utilizes a modified version of the XScore
-//! scoring function to evaulte the fit of a compound-protein interaction. Since
-//! the original XScore program is not open source, we've included a copy of the
-//! Vina version of this scoring function. \param [in] frame The frame for which
-//! the ligand-protein score will be calculated. \param [in] ligid The residue
-//! ID for the ligand in the entry \param [in] recid The residue IDs for the
-//! protein in the entry \param [in] cutoff The interaction distance cutoff
-//! between ligand and protein \return The five components of Vina/XScore's
-//! scoring function.
+//! scoring function to evaluate the fit of a compound-protein interaction.
+//! Since the original XScore program is not open source, we've included a copy
+//! of the Vina version of this scoring function.
+//! \param [in] frame The frame for which the ligand-protein score will be
+//!  calculated
+//! \param [in] ligid The residue ID for the ligand in the entry
+//! \param [in] recid The residue IDs for the protein in the entry
+//! \param [in] cutoff The interaction distance cutoff between ligand and
+//!  protein
+//! \return The five components of Vina/XScore's scoring function.
 template <typename Container>
 inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
                             Container recid, double cutoff = 8.0) {

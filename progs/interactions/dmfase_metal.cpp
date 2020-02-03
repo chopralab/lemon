@@ -27,10 +27,8 @@ int main(int argc, char* argv[]) {
         x.push_back(ref.positions()[loc]);
     }
 
-    std::vector<double> w(x.size(), 1.0);
-
-    auto worker = [distance, &x, w](chemfiles::Frame entry,
-                                    const std::string& pdbid) {
+    auto worker = [distance, &x](chemfiles::Frame entry,
+                                 const std::string& pdbid) {
 
         // Selection phase
         auto metals = lemon::select::metal_ions(entry);
@@ -63,45 +61,37 @@ int main(int argc, char* argv[]) {
                 result += cur_res.name() + std::to_string(*cur_res.id()) + ":" + cur_res.get("chainname")->as_string() + " ";
             }
 
-            chemfiles::Matrix3D u = chemfiles::Matrix3D::unit();
-            chemfiles::Vector3D t;
-            int err;
+            auto y_copy = y;
 
-            auto rms = lemon::tmalign::kabsch(w, x,
-                {y[0], y[1], y[2]},
-                x.size(), u, t, err
-            );
-            result += std::to_string(rms) + " ";
+            auto affine = lemon::kabsch(x, {y[0], y[1], y[2]});
+            lemon::align(y_copy, affine);
+            auto rmsd = lemon::rmsd(x, y_copy);
+            result += std::to_string(rmsd) + " ";
 
-            rms = lemon::tmalign::kabsch(w, x,
-                {y[0], y[2], y[1]},
-                x.size(), u, t, err
-            );
-            result += std::to_string(rms) + " ";
+            affine = lemon::kabsch(x, {y[0], y[2], y[1]});
+            lemon::align(y_copy, affine);
+            rmsd = lemon::rmsd(x, y_copy);
+            result += std::to_string(rmsd) + " ";
 
-            rms = lemon::tmalign::kabsch(w, x,
-                {y[1], y[0], y[2]},
-                x.size(), u, t, err
-            );
-            result += std::to_string(rms) + " ";
+            affine = lemon::kabsch(x, {y[1], y[0], y[2]});
+            lemon::align(y_copy, affine);
+            rmsd = lemon::rmsd(x, y_copy);
+            result += std::to_string(rmsd) + " ";
 
-            rms = lemon::tmalign::kabsch(w, x,
-                {y[1], y[2], y[0]},
-                x.size(), u, t, err
-            );
-            result += std::to_string(rms) + " ";
+            affine = lemon::kabsch(x, {y[1], y[2], y[0]});
+            lemon::align(y_copy, affine);
+            rmsd = lemon::rmsd(x, y_copy);
+            result += std::to_string(rmsd) + " ";
 
-            rms = lemon::tmalign::kabsch(w, x,
-                {y[2], y[0], y[1]},
-                x.size(), u, t, err
-            );
-            result += std::to_string(rms) + " ";
+            affine = lemon::kabsch(x, {y[2], y[0], y[1]});
+            lemon::align(y_copy, affine);
+            rmsd = lemon::rmsd(x, y_copy);
+            result += std::to_string(rmsd) + " ";
 
-            rms = lemon::tmalign::kabsch(w, x,
-                {y[2], y[1], y[0]},
-                x.size(), u, t, err
-            );
-            result += std::to_string(rms) + " ";
+            affine = lemon::kabsch(x, {y[2], y[1], y[0]});
+            lemon::align(y_copy, affine);
+            rmsd = lemon::rmsd(x, y_copy);
+            result += std::to_string(rmsd) + " ";
 
             result += pdbid + "\n";
         }

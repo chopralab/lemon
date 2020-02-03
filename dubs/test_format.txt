@@ -1,0 +1,44 @@
+I am a comment that should not show up
+when there is any parsing
+@<reference>
+pdbID_ref_1 path_to_reference_pdb_file_1
+@<align_prot>
+align_pdbID1
+align_pdbID2
+align_pdbID3
+@<align_sm_ligands>
+sm_pdbID_1 chemicalID_1
+sm_pdbID_2 chemicalID_2
+sm_pdbID_3 chemicalID_3
+sm_pdbID_n chemicalID_n
+@<align_non_sm_ligands>
+nsm_pdbID_1 chainID_1-residue_num_1
+nsm_pdbID_2 chainID_2-residue_num_2
+nsm_pdbID_3 chainID_3-residue_num_3
+nsm_pdbID_n chainID_n-residue_num_n
+@<end>
+Comments that 
+should 
+not show up anywhere in the parsing
+
+@<reference>
+pdbID_ref_2 path_to_reference_pdb_file_2
+@<align_prot>
+align_pdbID1
+align_pdbID2
+align_pdbID3
+@<align_sm_ligands>
+sm_pdbID_1 chemicalID_1
+sm_pdbID_2 chemicalID_2
+sm_pdbID_3 chemicalID_3
+sm_pdbID_n chemicalID_n
+@<align_non_sm_ligands>
+nsm_pdbID_1 chainID_1-residue_num_1
+nsm_pdbID_2 chainID_2-residue_num_2
+nsm_pdbID_3 chainID_3-residue_num_3
+nsm_pdbID_n chainID_n-residue_num_n
+@<end>
+
+other comments 
+dont see me in the parsing
+please

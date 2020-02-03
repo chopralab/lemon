@@ -49,13 +49,8 @@ inline void identical_residues(const chemfiles::Frame& frame,
             if (res_current.name() == res_check.name()) {
                 // We use bioassemblies because they are standardized by the
                 // protein databank
-                auto bio_current =
-                    res_current.get("assembly")
-                        ? res_current.get("assembly")->as_string()
-                        : "";
-                auto bio_check = res_check.get("assembly")
-                                     ? res_check.get("assembly")->as_string()
-                                     : "";
+                auto bio_current = res_current.get("assembly");
+                auto bio_check = res_check.get("assembly");
 
                 if (bio_current != bio_check) {
                     residue_ids.erase(check_current);
@@ -70,7 +65,7 @@ inline void identical_residues(const chemfiles::Frame& frame,
 //! Remove residues which are typically present in many crystal structures
 //!
 //! There are a common set of cofactors present in many crystal structures such
-//! as sugars and fatty acids used to induce crystalization. As a result, some
+//! as sugars and fatty acids used to induce crystallization. As a result, some
 //! users may remove these cofactors as they may match other criteria (such as
 //! being a small molecule) set by the user.
 //! \param [in] frame The `frame` containing residues of interest.

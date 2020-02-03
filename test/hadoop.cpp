@@ -22,7 +22,11 @@ TEST_CASE("Read single MMTF Sequence File") {
 
     CHECK(result.first == "1DZE");
 
-    chemfiles::Trajectory traj(std::move(result.second), "MMTF/GZ");
+    auto traj = chemfiles::Trajectory::memory_reader(
+        result.second.data(),
+        result.second.size(),
+        "MMTF/GZ"
+    );
     auto frame = traj.read();
 }
 
@@ -33,7 +37,11 @@ TEST_CASE("Read multiple MMTF Sequence File") {
     size_t count = 0;
     while (sequence.has_next()) {
         auto result = sequence.next();
-        chemfiles::Trajectory traj(std::move(result.second), "MMTF/GZ");
+        auto traj = chemfiles::Trajectory::memory_reader(
+            result.second.data(),
+            result.second.size(),
+            "MMTF/GZ"
+        );
         auto frame = traj.read();
         ++count;
     }

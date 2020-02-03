@@ -2,3 +2,4 @@
 BasedOnStyle: LLVM
 PointerBindsToType: true
 IndentWidth: 4
+FixNamespaceComments: true

@@ -1,7 +1,10 @@
 #ifndef LEMON_PARALLEL_HPP
 #define LEMON_PARALLEL_HPP
 
+#include <list>
+
 #include "lemon/hadoop.hpp"
+#include "lemon/entries.hpp"
 
 #include <chrono>
 
@@ -70,8 +73,7 @@ inline void run_parallel(Function&& worker, const std::string& p,
 #ifdef LEMON_BENCHMARK
                     auto start = std::chrono::high_resolution_clock::now();
 #endif
-                    auto traj = chemfiles::Trajectory(std::move(pair.second),
-                                                      "MMTF/GZ");
+                    auto traj = chemfiles::Trajectory::memory_reader(pair.second.data(), pair.second.size(), "MMTF/GZ");
                     auto entry = traj.read();
                     results[th].emplace_back(
                         worker(std::move(entry), pair.first));
@@ -137,8 +139,7 @@ inline void run_parallel(Function&& worker, const std::string& p,
 #ifdef LEMON_BENCHMARK
                     auto start = std::chrono::high_resolution_clock::now();
 #endif
-                    auto traj = chemfiles::Trajectory(std::move(pair.second),
-                                                      "MMTF/GZ");
+                    auto traj = chemfiles::Trajectory::memory_reader(pair.second.data(), pair.second.size(), "MMTF/GZ");
                     auto entry = traj.read();
                     mini_collector.emplace_back(
                         worker(std::move(entry), pair.first));

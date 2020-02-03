@@ -11,3 +11,5 @@
 build*/
 _skbuild
 .vs*
+*.egg
+*.egg-info

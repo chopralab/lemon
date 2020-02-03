@@ -34,6 +34,8 @@ inline size_t small_molecules(
     const std::unordered_set<std::string>& types = small_molecule_types,
     size_t min_heavy_atoms = 10) {
 
+    using chemfiles::Property;
+
     const auto& residues = frame.topology().residues();
     auto initialize_size = output.size();
 
@@ -48,8 +50,9 @@ inline size_t small_molecules(
             continue;
         }
 
-        const auto& composition_type =
-            residue.get("composition_type")->as_string();
+        auto composition_type =
+            residue.get<Property::STRING>("composition_type").value_or("");
+
         if (!types.count(composition_type)) {
             continue;
         }
@@ -133,7 +136,7 @@ inline Container metal_ions(const chemfiles::Frame& frame) {
 //! Select nucleic acid residues in a given frame
 //!
 //! This function populates the residue IDs of nucleic acid residues.
-//! We define a nuecleic acid as a residue with a chemical composition
+//! We define a nucleic acid as a residue with a chemical composition
 //! containing the *RNA* or *DNA* substring.
 //! \param [in] frame The entry containing nucleic acid residues.
 //! \param [out] output A container of residue IDs which have nucleic acid
@@ -141,13 +144,16 @@ inline Container metal_ions(const chemfiles::Frame& frame) {
 template <typename Container>
 inline size_t nucleic_acids(const chemfiles::Frame& frame, Container& output) {
 
+    using chemfiles::Property;
+
     const auto& residues = frame.topology().residues();
     auto initialize_size = output.size();
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
         const chemfiles::Residue& residue = residues[selected_residue];
-        const auto& comp_type = residue.get("composition_type")->as_string();
+        auto comp_type =
+            residue.get<Property::STRING>("composition_type").value_or("");
 
         if (comp_type.find("DNA") == std::string::npos &&
             comp_type.find("RNA") == std::string::npos) {
@@ -163,7 +169,7 @@ inline size_t nucleic_acids(const chemfiles::Frame& frame, Container& output) {
 //! Select nucleic acid residues in a given frame
 //!
 //! This function returns the residue IDs of nucleic acid residues.
-//! We define a nuecleic acid as a residue with a chemical composition
+//! We define a nucleic acid as a residue with a chemical composition
 //! containing the *RNA* or *DNA* substring.
 //! \param [in] frame The entry containing nucleic acid residues.
 //! \return output A container of residue IDs which have nucleic acid linkage
@@ -185,13 +191,16 @@ inline Container nucleic_acids(const chemfiles::Frame& frame) {
 template <typename Container>
 inline size_t peptides(const chemfiles::Frame& frame, Container& output) {
 
+    using chemfiles::Property;
+
     const auto& residues = frame.topology().residues();
     auto initialize_size = output.size();
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
         const chemfiles::Residue& residue = residues[selected_residue];
-        const auto& comp_type = residue.get("composition_type")->as_string();
+        auto comp_type =
+            residue.get<Property::STRING>("composition_type").value_or("");
 
         if (comp_type.find("PEPTIDE") == std::string::npos ||
             comp_type == "PEPTIDE-LIKE") {
