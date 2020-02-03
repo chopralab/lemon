@@ -1,4 +1,4 @@
-@<no_align_sm_ligand>
+@<no_align_sm_ligands>
 4FW3 L52
 4fW4 3P3
 4FW5 L58

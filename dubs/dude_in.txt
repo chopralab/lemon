@@ -1,4 +1,4 @@
-@<no_align_sm_ligand>
+@<no_align_sm_ligands>
 3eml ZMA
 2hzi JIN
 3bkl KAW

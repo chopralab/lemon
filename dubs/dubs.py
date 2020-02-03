@@ -92,13 +92,13 @@ def parse_input_file(fname):
             # If the line does not contain a flag
             # Add info to appropriate dictionary based of set flags
             if refFlag == 1:
-                pdbID = line.split(" ")[0].strip()
+                pdbID = line.split(" ")[0].strip().upper()
                 path = line.split(" ")[1].strip()
                 curRefPdbID = pdbID
                 pathDict[pdbID] = path
 
                 if len(line.split(" ")) == 3:
-                    chemID = line.split(" ")[2].strip()
+                    chemID = line.split(" ")[2].strip().upper()
                     referenceLigandDict[pdbID] = chemID 
             
             elif protFlag == 1:
@@ -114,6 +114,8 @@ def parse_input_file(fname):
                     alignProtLigandDict[pdbID] = [chemID]
                 else:
                     alignProtLigandDict[pdbID].append(chemID)
+
+                entries.add(pdbID)
 
             elif SMLigFlag == 1:
                 pdbID = line.split(" ")[0].strip()
@@ -132,10 +134,10 @@ def parse_input_file(fname):
                 entries.add(pdbID)
 
             elif nonSMligFlag == 1:
-                pdbID = line.split(" ")[0].strip()
-                residueCode = line.split(" ")[1].split("-")[0].strip()
-                chainID = line.split(" ")[1].split("-")[1].strip()
-                residueID = line.split(" ")[1].split("-")[2].strip()
+                pdbID = line.split(" ")[0].strip().upper()
+                residueCode = line.split(" ")[1].split("-")[0].strip().upper()
+                chainID = line.split(" ")[1].split("-")[1].strip().upper()
+                residueID = line.split(" ")[1].split("-")[2].strip().upper()
 
                 if referenceDict.get(curRefPdbID,0) == 0:
                     referenceDict[curRefPdbID] = [pdbID]
@@ -150,8 +152,8 @@ def parse_input_file(fname):
                 entries.add(pdbID)
             
             elif noAlignSMFlag == 1:
-                pdbID = line.split(" ")[0].strip()
-                chemID = line.split(" ")[1].strip()
+                pdbID = line.split(" ")[0].strip().upper()
+                chemID = line.split(" ")[1].strip().upper()
 
                 if noAlignSMDict.get(pdbID,0) == 0:
                     noAlignSMDict[pdbID] = [chemID]
@@ -161,8 +163,8 @@ def parse_input_file(fname):
                 entries.add(pdbID)
 
             elif noAlignNonSMFlag == 1:
-                pdbID = line.split(" ")[0].strip()
-                residueCode = line.split(" ")[1].split("-")[0].strip()
+                pdbID = line.split(" ")[0].strip().upper()
+                residueCode = line.split(" ")[1].split("-")[0].strip().upper()
                 chainID = line.split(" ")[1].split("-")[1].strip()
                 residueID = line.split(" ")[1].split("-")[2].strip()
 
@@ -173,14 +175,32 @@ def parse_input_file(fname):
 
                 entries.add(pdbID)
 
+# Get from the command line
+# for testing we also can hard set the path
+if len(sys.argv) > 4:
+    input_file_path = sys.argv[1]
+    hadoop_path = sys.argv[2]
+    cores = int(sys.argv[3])
+    outdir = sys.argv[4]
+else:
+    #TODO change this if needed for testing
+    print("You must give the input file, path to RCSB hadoop files, number of cores, and working directory")
+    sys.exit(1)
+
 # Define Lemon workflow class
 class MyWorkflow(lemon.Workflow):
     def __init__(self):
         lemon.Workflow.__init__(self)
         
         self.reference_structures = {}
-        for key, value in pathDict:
+        for key, value in pathDict.items():
             self.reference_structures[key] = lemon.open_file(value)
+
+        self.noAlignSMDict = noAlignSMDict
+
+        self.outdir = outdir
+
+        self.write_all_proteins = False
 
     def worker(self, entry, pdbid):
         # Define and assign the reference pdbid
@@ -201,10 +221,10 @@ class MyWorkflow(lemon.Workflow):
                 mode = 2
 
         if mode == 0:
-
-            for ligand_code in pdbIDSMDict.get(pdbid, []):
-
-                ligand_ids = lemon.select_specific_residues(entry, lemon.ResidueName(ligand_code))
+            for ligand_code in self.noAlignSMDict.get(pdbid, []):
+                rns = lemon.ResidueNameSet()
+                rns.append(lemon.ResidueName(ligand_code))
+                ligand_ids = lemon.select_specific_residues(entry, rns)
                 lemon.prune_identical_residues(entry, ligand_ids)
 
                 for ligand_id in ligand_ids:
@@ -212,17 +232,20 @@ class MyWorkflow(lemon.Workflow):
                     ligand = lemon.Frame()
 
                     lemon.separate_protein_and_ligand(entry, ligand_id, 25.0, protein, ligand)
-                    lemon.write_file(protein, pdbid + "_" + ligand_code + ".pdb")
-                    lemon.write_file(ligand, pdbid + "_" + ligand_code + ".sdf")
+                    lemon.write_file(protein, self.outdir + "/" + pdbid + "_" + ligand_code + ".pdb")
+                    lemon.write_file(ligand, self.outdir + "/" + pdbid + "_" + ligand_code + ".sdf")
 
-            return pdbid + " no alignment"
+            return pdbid + " no alignment\n"
 
         elif mode == 1:
             # If we need to align to a protein (like in PINC)
             alignment = lemon.TMscore(entry, self.reference_structures[refpdbid])
             positions = entry.positions()
             lemon.align(positions, alignment.affine)
-            return "Align Protein: " + pdbid + " to " + refpdbid + " with score of " + alignment.score
+
+            lemon.write_file(entry, self.outdir + "/" + refpdbid + "_" + pdbid + ".pdb")
+
+            return "Align Protein: " + refpdbid + "_" + pdbid + " to " + refpdbid + " with score of " + str(alignment.score) + "\n"
 
         elif mode == 2:
             # If we are doing ligand alignment, that can be done here
@@ -238,7 +261,10 @@ class MyWorkflow(lemon.Workflow):
 
                 for ligand_code in SM_ligandList:
 
-                    ligand_ids = lemon.select_specific_residues(entry, lemon.ResidueName(ligand_code))
+                    rns = lemon.ResidueNameSet()
+                    rns.append(lemon.ResidueName(ligand_code))
+
+                    ligand_ids = lemon.select_specific_residues(entry, rns)
                     lemon.prune_identical_residues(entry, ligand_ids)
 
                     for ligand_id in ligand_ids:
@@ -246,33 +272,19 @@ class MyWorkflow(lemon.Workflow):
                         ligand = lemon.Frame()
 
                         lemon.separate_protein_and_ligand(entry, ligand_id, 25.0, protein, ligand)
-                        lemon.write_file(protein, pdbid + "_" + ligand_code + ".pdb")
-                        lemon.write_file(ligand, pdbid + "_" + ligand_code + ".sdf")
+                        lemon.write_file(ligand, self.outdir + "/" + refpdbid + "_" + pdbid + "_" + ligand_code + ".sdf")
 
-            if len(Non_SM_ligandList > 0):
-                # TODO stuff here for non-small ligands
-                pass
+                        if self.write_all_proteins:
+                            lemon.write_file(protein, self.outdir + "/" + refpdbid + "_" + pdbid + "_" + ligand_code + ".pdb")
 
-            return pdbid
+            return "Align Protein: " + pdbid + " to " + refpdbid + " with score of " + str(alignment.score) + "\n"
 
     def finalize(self):
         pass
 
-# Get from the command line
-# for testing we also can hard set the path
-if len(sys.argv) > 1:
-    input_file_path = sys.argv[1]
-    hadoop_path = sys.argv[2]
-    cores = int(sys.argv[3])
-else:
-    #TODO change this if needed for testing
-    input_file_path = "format.txt"
-    hadoop_path = "../../full"
-    cores = 8
-
 # Parse the input file
 parse_input_file(input_file_path)
-
+print(pathDict)
 # Initilize the workflow
 wf = MyWorkflow()
 
