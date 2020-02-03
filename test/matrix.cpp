@@ -215,3 +215,22 @@ TEST_CASE("Kabsch") {
     CHECK(after_rmsd < before_rmsd);
     CHECK(after_rmsd == Approx(0.0).epsilon(1e-6).epsilon(1e-4));
 }
+
+TEST_CASE("Error handling") {
+    lemon::Coordinates a;
+    CHECK(lemon::center(a) == lemon::Vector3D(0.0, 0.0, 0.0));
+
+    lemon::Coordinates b;
+    CHECK(lemon::rmsd(a, b) == 0);
+
+    b.push_back({0.0, 0.0, 0.0});
+
+    CHECK_THROWS_WITH(lemon::rmsd(a, b),
+                      "lemon::rmsd(a,b): a.size() must equal b.size()");
+
+    CHECK_THROWS_WITH(lemon::covariant(a, b),
+                      "lemon::covariant(a,b): a.size() must equal b.size()");
+
+    CHECK_THROWS_WITH(lemon::kabsch(a, b),
+                      "lemon::kabsch(a,b): in.size() must equal out.size()");
+}

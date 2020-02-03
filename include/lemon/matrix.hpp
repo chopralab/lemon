@@ -18,12 +18,25 @@ using Coordinates = std::vector<Vector3D>;
 using chemfiles::cross;
 using chemfiles::dot;
 
+//! Error to issues with 
+class matrix_error : public std::logic_error {
+  public:
+    explicit matrix_error(const std::string& what_arg)
+        : std::logic_error(what_arg) {}
+    explicit matrix_error(const char* what_arg)
+        : std::logic_error(what_arg) {}
+};
+
 inline double trace(const Matrix3D& matrix) {
     return matrix[0][0] + matrix[1][1] + matrix[2][2];
 }
 
 template <typename Container = Coordinates>
 inline Matrix3D covariant(const Container& a, const Container& b) {
+
+    if (a.size() != b.size()) {
+        throw matrix_error("lemon::covariant(a,b): a.size() must equal b.size()");
+    }
 
     Matrix3D result = Matrix3D::zero();
 
@@ -40,6 +53,15 @@ inline Matrix3D covariant(const Container& a, const Container& b) {
 
 template <typename Container = Coordinates>
 inline double rmsd(const Container& a, const Container& b) {
+
+    if (a.size() != b.size()) {
+        throw matrix_error("lemon::rmsd(a,b): a.size() must equal b.size()");
+    }
+
+    if (a.size() == 0) {
+        return 0.0;
+    }
+
     double result = 0;
     for (size_t i = 0; i < a.size(); ++i) {
         auto dist =  a[i] - b[i];
@@ -51,6 +73,11 @@ inline double rmsd(const Container& a, const Container& b) {
 template <typename Container = Coordinates>
 inline Vector3D center(const Container& a) {
     Vector3D result = {0.0, 0.0, 0.0};
+
+    if (a.size() == 0) {
+        return result;
+    }
+
     for (size_t i = 0; i < a.size(); ++i) {
         result += a[i];
     }
@@ -227,20 +254,13 @@ struct Affine {
 template <typename Container = Coordinates>
 inline Affine kabsch(Container in, Container out, double eps = 1e-10) {
 
+    if (in.size() != out.size()) {
+        throw matrix_error("lemon::kabsch(a,b): in.size() must equal out.size()");
+    }
+
     // Find the centroids then shift to the origin
-    auto in_ctr = Vector3D{0.0, 0.0, 0.0};
-    auto out_ctr = Vector3D{0.0, 0.0, 0.0};
-
-    for (auto& i : in) {
-        in_ctr += i;
-    }
-
-    for (auto& i : out) {
-        out_ctr += i;
-    }
-  
-    in_ctr /= static_cast<double>(in.size());
-    out_ctr /= static_cast<double>(out.size());
+    auto in_ctr = center(in);
+    auto out_ctr = center(out);
 
     for (auto& i : in) {
         i -= in_ctr;
