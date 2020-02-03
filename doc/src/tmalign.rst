@@ -32,6 +32,6 @@ C++
 Python
 ~~~~~~
 
-.. literalinclude:: ../../lang/tests/tmscore.py
+.. literalinclude:: ../../lang/python/tests/tmalign.py
    :language: python
    :lines: 1-16

@@ -28,6 +28,6 @@ C++
 Python
 ~~~~~~
 
-.. literalinclude:: ../../lang/tests/vina.py
+.. literalinclude:: ../../lang/python/tests/vina.py
     :language: python
     :lines: 1-42

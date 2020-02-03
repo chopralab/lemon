@@ -74,7 +74,6 @@ for PYBIN in "${PYBINARIES[@]}"; do
       ${PYBIN}/pip install --upgrade -r /work/requirements-dev.txt
     fi
     ${PYBIN}/python setup.py bdist_wheel --build-type MinSizeRel -G 'Unix Makefiles' -- \
-      -DCHEMFILES_ROOT=/deps/chfl \
       -Dchemfiles_DIR=/deps/chfl/lib/cmake/chemfiles \
       -DLEMON_EXTERNAL_CHEMFILES=ON \
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE} \

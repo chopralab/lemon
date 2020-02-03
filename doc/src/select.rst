@@ -41,6 +41,6 @@ C++
 Python
 ~~~~~~
 
-.. literalinclude:: ../../lang/tests/metal_ions.py
+.. literalinclude:: ../../lang/python/tests/metal_ions.py
     :language: python
     :lines: 1-14

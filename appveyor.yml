@@ -9,7 +9,7 @@ environment:
   TWINE_USERNAME:
     secure: QHW0ZSR1Ljzd+51LcuQkvw==
   TWINE_PASSWORD:
-    secure: KOUl0H5qkKF0r5gIMkenoftnnkSCIufpCiQAURaB8Zo=
+    secure: +5HolvKfBONAJAt964XKfg==
   matrix:
     - generator: Visual Studio 15 2017 Win64
       ARCH: x64

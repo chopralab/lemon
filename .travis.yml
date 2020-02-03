@@ -6,13 +6,12 @@ branches:
     - master
     - /^v\d+\.\d+\.\d+$/
 
-linux64_addons:
-    addons: &linux64
-      apt:
-        packages:
-        - python3.5-dev
-        - python3-setuptools
-        - python3-pip
+addons:
+  apt:
+    packages:
+    - python3.5-dev
+    - python3-setuptools
+    - python3-pip
 
 jobs:
   fast_finish: true
@@ -20,7 +19,6 @@ jobs:
     - name: coverage and documentation
       os: linux
       compiler: gcc
-      addons: *linux64
       env:
         - COVERAGE: ON
         - BUILD_TYPE: Debug
@@ -30,7 +28,6 @@ jobs:
     - name: linux release
       os: linux
       compiler: gcc
-      addons: *linux64
       env:
         - COVERAGE: OFF
         - BUILD_TYPE: Release
@@ -39,7 +36,6 @@ jobs:
     - name: linux clang
       os: linux
       compiler: clang
-      addons: *linux64
       env:
         - COVERAGE: OFF
         - BUILD_TYPE: Release
@@ -62,11 +58,13 @@ jobs:
         - BUILD_DOC: OFF
 
 before_install:
-  - pip3 install --user cpp-coveralls
+  - |
+    if [[ "${COVERAGE}" == "true" ]]; then
+        pip3 install --user cpp-coveralls
+    fi
   
 script:
   - ./scripts/travis/build.sh
-#before_deploy:
   - |
     if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
         ./scripts/travis/macpython-build-wheels.sh 3.5 3.6 3.7
@@ -92,7 +90,8 @@ after_success:
 deploy:
   - provider: pages
     cleanup: false
-    github_token: $GH_TOKEN
+    skip_cleanup: true
+    token: $GH_TOKEN
     local_dir: build/gh-pages
     on:
         branch: master
@@ -100,6 +99,7 @@ deploy:
   - provider: script
     script: ./scripts/upload_pypi.sh
     cleanup: false
+    skip_cleanup: true
     on:
         tags: true
         condition: $DEPLOY_MACOSX_WHEEL == true

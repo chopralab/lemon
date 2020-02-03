@@ -42,10 +42,10 @@ Python
 
 These examples are availible in python as:
 
-.. literalinclude:: ../../lang/tests/small_molecule.py
+.. literalinclude:: ../../lang/python/tests/small_molecule.py
     :language: python
     :lines: 1-14
 
-.. literalinclude:: ../../lang/tests/small_heme.py
+.. literalinclude:: ../../lang/python/tests/small_heme.py
     :language: python
     :lines: 1-26

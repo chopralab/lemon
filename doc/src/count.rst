@@ -27,6 +27,6 @@ C++
 Python
 ~~~~~~
 
-.. literalinclude:: ../../lang/tests/residues.py
+.. literalinclude:: ../../lang/python/tests/residues.py
    :language: python
    :lines: 1-12

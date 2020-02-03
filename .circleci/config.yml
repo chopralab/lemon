@@ -25,7 +25,7 @@ jobs:
     working_dictory: ~/
     steps:
       - attach_workspace:
-        at: .
+          at: .
       - run:
           name: Upload to PyPi
           command: |
