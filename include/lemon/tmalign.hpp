@@ -36,6 +36,9 @@ inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
     const auto& search_res = search.topology().residues();
     const auto& native_res = native.topology().residues();
 
+    a_search.clear();
+    a_native.clear();
+
     a_search.reserve(search_res.size());
     a_native.reserve(native_res.size());
 
@@ -114,20 +117,12 @@ struct TMResult {
 
 inline TMResult TMscore_helper(const chemfiles::Frame& search,
                                const chemfiles::Frame& native,
-                               const std::string& s_chain,
-                               const std::string& n_chain) {
-
-    std::vector<size_t> aligned_search_ids;
-    std::vector<size_t> aligned_native_ids;
+                               const std::vector<size_t>& aligned_search_ids,
+                               const std::vector<size_t>& aligned_native_ids,
+                               unsigned long n_ali) {
 
     // pickup the aligned residues:
     auto n_seq = count_number_of_atom_names(native, "CA");
-
-    // The number of aligned residues
-    auto n_ali = find_operlapping_residues(search, native,
-                                           aligned_search_ids,
-                                           aligned_native_ids,
-                                           s_chain, n_chain);
 
     if (n_ali == 0) {
         return {0.0, 0.0, 0, Affine{{0.0, 0.0, 0.0}, Matrix3D::unit()}};
@@ -309,7 +304,15 @@ inline TMResult TMscore_helper(const chemfiles::Frame& search,
 //! \return A strucure with the TMScore, and number of aligned residues
 inline TMResult TMscore(const chemfiles::Frame& search,
                         const chemfiles::Frame& native) {
-    auto result = TMscore_helper(search, native, "", "");
+
+    auto search_align_id = std::vector<size_t>();
+    auto native_align_id = std::vector<size_t>();
+
+    auto n_ali = find_operlapping_residues(search, native,
+                                           search_align_id, native_align_id,
+                                           "", "");
+
+    auto result = TMscore_helper(search, native, search_align_id, native_align_id, n_ali);
 
     if (result.score >= 0.75) {
         return result;
@@ -319,16 +322,28 @@ inline TMResult TMscore(const chemfiles::Frame& search,
     std::set<std::string> native_names;
 
     for (auto& res : search.topology().residues()) {
-        search_names.insert(res.get("chainname")->as_string());
+        auto prop = res.get("chainname");
+        auto chainname = prop && prop->kind() == chemfiles::Property::STRING ?
+            prop->as_string() : " ";
+        search_names.insert(chainname);
     }
 
     for (auto& res : native.topology().residues()) {
-        native_names.insert(res.get("chainname")->as_string());
+        auto prop = res.get("chainname");
+        auto chainname = prop && prop->kind() == chemfiles::Property::STRING ?
+            prop->as_string() : " ";
+        native_names.insert(chainname);
     }
 
     for (auto& s_chain : search_names) {
         for (auto& n_chain : native_names) {
-            auto result2 = TMscore_helper(search, native, s_chain, n_chain);
+            n_ali = find_operlapping_residues(search, native,
+                                             search_align_id, native_align_id,
+                                             s_chain, n_chain);
+
+            auto result2 = TMscore_helper(search, native,
+                                          search_align_id, native_align_id,
+                                          n_ali);
 
             if (result2.score > 0.75) {
                 return result2;

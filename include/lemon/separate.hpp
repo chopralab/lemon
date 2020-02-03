@@ -46,7 +46,11 @@ inline void residues(const chemfiles::Frame& input,
             accepted_atoms.insert(res_atom);
         }
 
-        res_new.set("chainid", res.get("chainid")->as_string());
+        auto chainID = res.get("chainid");
+        auto newID = (chainID && chainID->kind() == chemfiles::Property::STRING)?
+            chainID->as_string() : "Z";
+
+        res_new.set("chainid", newID);
         new_frame.add_residue(std::move(res_new));
     }
 
@@ -75,8 +79,8 @@ inline void residues(const chemfiles::Frame& input,
 inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
                                double pocket_size, chemfiles::Frame& protein,
                                chemfiles::Frame& ligand) {
-    const auto& topo = input.topology();
-    const auto& residues = topo.residues();
+    const auto& topology = input.topology();
+    const auto& residues = topology.residues();
     const auto& ligand_residue = residues[ligand_id];
 
     std::list<size_t> accepted_residues;
