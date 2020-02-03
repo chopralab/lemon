@@ -25,7 +25,8 @@ jobs:
         - ASYNC: ON
         - BUILD_DOC: ON
         - PYTHON_EXECUTABLE: /usr/bin/python3.5m
-    - name: linux release
+        - SHARED_LIBS: ON
+    - name: linux release static
       os: linux
       compiler: gcc
       env:
@@ -33,6 +34,16 @@ jobs:
         - BUILD_TYPE: Release
         - ASYNC: ON
         - PYTHON_EXECUTABLE: /usr/bin/python3.5m
+        - SHARED_LIBS: OFF
+    - name: linux release static
+      os: linux
+      compiler: gcc
+      env:
+        - COVERAGE: OFF
+        - BUILD_TYPE: Release
+        - ASYNC: ON
+        - PYTHON_EXECUTABLE: /usr/bin/python3.5m
+        - SHARED_LIBS: ON
     - name: linux clang
       os: linux
       compiler: clang
@@ -41,6 +52,7 @@ jobs:
         - BUILD_TYPE: Release
         - ASYNC: ON
         - PYTHON_EXECUTABLE: /usr/bin/python3.5m
+        - SHARED_LIBS: ON
     - name: osx clang
       os: osx
       compiler: clang
@@ -50,12 +62,21 @@ jobs:
         - BUILD_TYPE: Release
         - ASYNC: OFF
         - PYTHON_EXECUTABLE: /usr/local/bin/python
+        - SHARED_LIBS: ON
     - name: osx deploy
       os: osx
       env:
         - DEPLOY_MACOSX_WHEEL: ON
         - COVERAGE: OFF
         - BUILD_DOC: OFF
+    - name: MSVC 64-bit Shared
+      os: windows
+      env:
+        - SHARED_LIBS: ON
+    - name: MSVC 64-bit Static
+      os: windows
+      env:
+        - SHARED_LIBS: OFF
 
 before_install:
   - |
@@ -67,7 +88,7 @@ script:
   - ./scripts/travis/build.sh
   - |
     if [[ "${DEPLOY_MACOSX_WHEEL}" == "true" ]]; then
-        ./scripts/travis/macpython-build-wheels.sh 3.5 3.6 3.7
+        ./scripts/travis/macpython-build-wheels.sh 3.6 3.7 3.8
     fi
 
 

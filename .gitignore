@@ -13,3 +13,4 @@ _skbuild
 .vs*
 *.egg
 *.egg-info
+dist*/

@@ -148,7 +148,7 @@ function install_macpython {
     local inst_ext
     inst_ext=$(pyinst_ext_for_version $py_version)
     local py_inst
-    py_inst=python-$py_version-macosx10.6.$inst_ext
+    py_inst=python-$py_version-macosx10.9.$inst_ext
     local inst_path
     inst_path=$DOWNLOADS_SDIR/$py_inst
     mkdir -p $DOWNLOADS_SDIR
@@ -200,11 +200,11 @@ function install_virtualenv {
 # Remove previous versions
 sudo rm -rf ${MACPYTHON_FRAMEWORK}
 
-LATEST_35=3.5.4
-LATEST_36=3.6.6
-LATEST_37=3.7.0
+LATEST_36=3.6.8
+LATEST_37=3.7.6
+LATEST_38=3.8.1
 
-for pyversion in $LATEST_35 $LATEST_36 $LATEST_37; do
+for pyversion in $LATEST_36 $LATEST_37 $LATEST_38; do
   install_macpython $pyversion
   install_pip
   install_virtualenv

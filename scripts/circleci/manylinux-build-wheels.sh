@@ -7,23 +7,14 @@ ARCH=""
 PYBINARIES=""
 PYTHON_LIBRARY=""
 
-# Versions can be restricted by passing them in as arguments to the script
-# For example,
-# manylinux-build-wheels.sh cp27mu cp35
-if [[ $# -eq 0 ]]; then
-  PYBIN=(/opt/python/*/bin)
-  PYBINARIES=()
-  for version in "${PYBIN[@]}"; do
-    if [[ ${version} == *"cp27"* || ${version} == *"cp35"* || ${version} == *"cp36"* || ${version} == *"cp37"* ]]; then
-      PYBINARIES+=(${version})
-    fi
-  done
-else
-  PYBINARIES=()
-  for version in "$@"; do
-    PYBINARIES+=(/opt/python/*${version}*/bin)
-  done
-fi
+# Find supported versions of Python
+PYBIN=(/opt/python/*/bin)
+PYBINARIES=()
+for version in "${PYBIN[@]}"; do
+  if [[ ${version} == *"cp35"* || ${version} == *"cp36"* || ${version} == *"cp37"* || ${version} == *"cp38"* ]]; then
+    PYBINARIES+=(${version})
+  fi
+done
 
 # i686 or x86_64 ?
 case $(uname -p) in
@@ -83,9 +74,10 @@ for PYBIN in "${PYBINARIES[@]}"; do
     ${PYBIN}/python setup.py clean
 done
 
-# Update wheel to switching from 'linux' to 'manylinux1' tag
 # We need to install click
 /opt/python/*cp36*/bin/pip install click
+
+# Update wheel to switching from 'linux' to 'manylinux1' tag
 for whl in dist/*linux_$(uname -p).whl; do
     /opt/python/*cp36*/bin/python /work/scripts/tag_manylinux.py ${whl}
     rm ${whl}

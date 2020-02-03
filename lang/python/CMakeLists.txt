@@ -19,8 +19,9 @@ function(add_python_test _name_)
     )
 
     if (MSVC AND ${BUILD_SHARED_LIBS})
+        get_filename_component(PYTHON_HOME_DIR ${PYTHON_EXECUTABLE} DIRECTORY)
         set_tests_properties( py_${_name_}
-            PROPERTIES ENVIRONMENT "PATH=${PATH_STRING}\;${CMAKE_BINARY_DIR}/chemfiles_install/bin/"
+            PROPERTIES ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}/chemfiles_install/bin/\;${PYTHON_HOME_DIR}"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${BUILD_SHARED_LIBS})
         set_tests_properties( py_${_name_}

@@ -126,6 +126,3 @@ for VENV in "${VENVS[@]}"; do
     # Cleanup
     ${PYTHON_EXECUTABLE} setup.py clean
 done
-
-#${DELOCATE_LISTDEPS} ${SCRIPT_DIR}/../dist/*.whl # lists library dependencies
-#${DELOCATE_WHEEL} ${SCRIPT_DIR}/../dist/*.whl # copies library dependencies into wheel
