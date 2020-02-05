@@ -1,7 +1,12 @@
 #ifndef LEMON_SCORE_HPP
 #define LEMON_SCORE_HPP
 
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
 #include <chemfiles/Frame.hpp>
+LEMON_EXTERNAL_FILE_POP
+
 #include <cmath>
 #include <set>
 #include <unordered_map>
@@ -10,25 +15,25 @@ namespace lemon {
 
 namespace xscore {
 
-enum XS_TYPE {
-    XS_TYPE_C_H = 0,
-    XS_TYPE_C_P = 1,
-    XS_TYPE_N_P = 2,
-    XS_TYPE_N_D = 3,
-    XS_TYPE_N_A = 4,
-    XS_TYPE_N_DA = 5,
-    XS_TYPE_O_P = 6, // Unused???
-    XS_TYPE_O_D = 7,
-    XS_TYPE_O_A = 8,
-    XS_TYPE_O_DA = 9,
-    XS_TYPE_S_P = 10,
-    XS_TYPE_P_P = 11,
-    XS_TYPE_F_H = 12,
-    XS_TYPE_Cl_H = 13,
-    XS_TYPE_Br_H = 14,
-    XS_TYPE_I_H = 15,
-    XS_TYPE_Metal_D = 16,
-    XS_TYPE_SKIP = 17, // Skip for calculations
+enum class XS_TYPE {
+    C_H = 0,
+    C_P = 1,
+    N_P = 2,
+    N_D = 3,
+    N_A = 4,
+    N_DA = 5,
+    O_P = 6, // Unused???
+    O_D = 7,
+    O_A = 8,
+    O_DA = 9,
+    S_P = 10,
+    P_P = 11,
+    F_H = 12,
+    Cl_H = 13,
+    Br_H = 14,
+    I_H = 15,
+    Metal_D = 16,
+    SKIP = 17, // Skip for calculations
 };
 
 const double vdw_radii[] = {
@@ -52,19 +57,44 @@ const double vdw_radii[] = {
     0.0, // Skip
 };
 
+using lemon::xscore::XS_TYPE;
+
 inline bool is_hydrophobic(XS_TYPE xs) {
-    return xs == XS_TYPE_C_H || xs == XS_TYPE_F_H || xs == XS_TYPE_Cl_H ||
-           xs == XS_TYPE_Br_H || xs == XS_TYPE_I_H;
+    switch (xs) {
+    case XS_TYPE::C_H:
+    case XS_TYPE::F_H:
+    case XS_TYPE::Cl_H:
+    case XS_TYPE::Br_H:
+    case XS_TYPE::I_H:
+        return true;
+    default:
+        return false;
+    }
 }
 
 inline bool is_acceptor(XS_TYPE xs) {
-    return xs == XS_TYPE_N_A || xs == XS_TYPE_N_DA || xs == XS_TYPE_O_A ||
-           xs == XS_TYPE_O_DA;
+    switch (xs) {
+    case XS_TYPE::N_A:
+    case XS_TYPE::N_DA:
+    case XS_TYPE::O_A:
+    case XS_TYPE::O_DA:
+        return true;
+    default:
+        return false;
+    }
 }
 
 inline bool is_donor(XS_TYPE xs) {
-    return xs == XS_TYPE_N_D || xs == XS_TYPE_N_DA || xs == XS_TYPE_O_D ||
-           xs == XS_TYPE_O_DA || xs == XS_TYPE_Metal_D;
+    switch (xs) {
+    case XS_TYPE::N_D:
+    case XS_TYPE::N_DA:
+    case XS_TYPE::O_D:
+    case XS_TYPE::O_DA:
+    case XS_TYPE::Metal_D:
+        return true;
+    default:
+        return false;
+    }
 }
 
 inline bool donor_acceptor(XS_TYPE t1, XS_TYPE t2) {
@@ -76,7 +106,8 @@ inline bool h_bond_possible(XS_TYPE t1, XS_TYPE t2) {
 }
 
 inline double optimal_distance(XS_TYPE xs_t1, XS_TYPE xs_t2) {
-    return vdw_radii[xs_t1] + vdw_radii[xs_t2];
+    return vdw_radii[static_cast<size_t>(xs_t1)] +
+           vdw_radii[static_cast<size_t>(xs_t2)];
 }
 
 //! An object which represents the components of XScore/Vina's scoring function
@@ -104,11 +135,11 @@ get_c_xs_type(const chemfiles::Topology& topo, size_t j,
         auto neighbor = (j == bond[0]) ? bond[1] : bond[0];
         auto type = *(topo[neighbor].atomic_number());
         if (!(type == 6 || type == 1)) {
-            return XS_TYPE_C_P;
+            return XS_TYPE::C_P;
         }
     }
 
-    return XS_TYPE_C_H;
+    return XS_TYPE::C_H;
 }
 
 inline bool is_in_strong_resonance(
@@ -139,15 +170,15 @@ get_n_xs_type(const chemfiles::Topology& topo, size_t j,
     auto& bonds = topo.bonds();
 
     if (bond_map.count(j) == 0) { // Typically Ammonia, assume protonated
-        return XS_TYPE_N_D;
+        return XS_TYPE::N_D;
     } else if (bond_map.count(j) == 1) { // Nitrile, monoamine, etc
         auto bond = bond_map.find(j);
         if (bond_order[bond->second] == 3) {
-            return XS_TYPE_N_A; // It can only accept - Nitrile
+            return XS_TYPE::N_A; // It can only accept - Nitrile
         } else if (bond_order[bond->second] == 2) {
-            return XS_TYPE_N_D; // Imine, or guanidine
+            return XS_TYPE::N_D; // Imine, or guanidine
         } else {
-            return XS_TYPE_N_D; // AutoDOCK labels amines as Donor only
+            return XS_TYPE::N_D; // AutoDOCK labels amines as Donor only
         }
     } else { // A linker, amide, guanidine, amine of some sort, etc,
         size_t sum_of_orders = 0;
@@ -163,18 +194,18 @@ get_n_xs_type(const chemfiles::Topology& topo, size_t j,
         }
 
         if (sum_of_hydrogens >= 2) {
-            return XS_TYPE_N_D;
+            return XS_TYPE::N_D;
         } else if (sum_of_orders == 2 && bond_map.count(j) == 2) {
             // Linking Amine/Amide or heterocycle
-            return is_withdraw ? XS_TYPE_N_P : XS_TYPE_N_D;
+            return is_withdraw ? XS_TYPE::N_P : XS_TYPE::N_D;
         } else if (sum_of_orders == 3 && bond_map.count(j) == 2) {
-            return XS_TYPE_N_A;
+            return XS_TYPE::N_A;
         } else if (sum_of_orders == 3 && !is_withdraw) {
-            return XS_TYPE_N_A; // Linking SP2 nitrogen, aromatic, etc
+            return XS_TYPE::N_A; // Linking SP2 nitrogen, aromatic, etc
         }
         // Fall through to Polar nitrogen, ie C=N=C, next to withdrawing group
     }
-    return XS_TYPE_N_P;
+    return XS_TYPE::N_P;
 }
 
 // Medium case, two bond cases - but no additional checks.
@@ -186,18 +217,18 @@ get_o_xs_type(const chemfiles::Topology& topo, size_t j,
     auto& bonds = topo.bonds();
 
     if (bond_map.count(j) == 0) { // Typically water
-        return XS_TYPE_O_DA;
+        return XS_TYPE::O_DA;
     } else if (bond_map.count(j) == 1) { // Carbonyl or alcohol
         auto bond = bond_map.find(j);
         auto bond2 = bonds[bond->second];
         auto neighbor = (j == bond2[0]) ? bond2[1] : bond2[0];
 
         if (bond_order[bond->second] == 2) {
-            return XS_TYPE_O_A; // Carbonyl
+            return XS_TYPE::O_A; // Carbonyl
         } else if (is_in_strong_resonance(topo, neighbor, bond_map)) {
-            return XS_TYPE_O_A; // Carboxylic acid, phosphate, sulfate
+            return XS_TYPE::O_A; // Carboxylic acid, phosphate, sulfate
         } else {
-            return XS_TYPE_O_DA; // Alcohol
+            return XS_TYPE::O_DA; // Alcohol
         }
     } else if (bond_map.count(j) == 2) { // alcohol or ether
         for (auto k = range.first; k != range.second; ++k) {
@@ -205,13 +236,13 @@ get_o_xs_type(const chemfiles::Topology& topo, size_t j,
             auto neighbor = (j == bond[0]) ? bond[1] : bond[0];
             auto type = *(topo[neighbor].atomic_number());
             if (type == 1) {
-                return XS_TYPE_O_DA; // Alcohol with explict H
+                return XS_TYPE::O_DA; // Alcohol with explict H
             }
         }
-        return XS_TYPE_O_A; // ether, phosphodiester, etc
+        return XS_TYPE::O_A; // ether, phosphodiester, etc
     }
     // Oddity, not possible in RCSB
-    return XS_TYPE_O_P;
+    return XS_TYPE::O_P;
 }
 
 inline XS_TYPE
@@ -222,23 +253,23 @@ get_xs_type(const chemfiles::Topology& topo, size_t j,
     switch (atomic_id) {
     // Handle 'easy' cases
     case 9:
-        return XS_TYPE_F_H;
+        return XS_TYPE::F_H;
     case 15:
-        return XS_TYPE_P_P;
+        return XS_TYPE::P_P;
     case 16:
-        return XS_TYPE_S_P;
+        return XS_TYPE::S_P;
     case 17:
-        return XS_TYPE_Cl_H;
+        return XS_TYPE::Cl_H;
     case 35:
-        return XS_TYPE_Br_H;
+        return XS_TYPE::Br_H;
     case 53:
-        return XS_TYPE_I_H;
+        return XS_TYPE::I_H;
     case 12: // Mg
     case 20: // Ca
     case 25: // Mn
     case 26: // Fe
     case 30: // Zn
-        return XS_TYPE_Metal_D;
+        return XS_TYPE::Metal_D;
     case 6:
         return get_c_xs_type(topo, j, bond_map);
     case 7:
@@ -246,7 +277,7 @@ get_xs_type(const chemfiles::Topology& topo, size_t j,
     case 8:
         return get_o_xs_type(topo, j, bond_map);
     }
-    return XS_TYPE_SKIP;
+    return XS_TYPE::SKIP;
 }
 
 inline double gaussian(double offset, double width, double r) {
@@ -322,13 +353,13 @@ inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
     auto& small_molecule = residues[ligid];
     for (auto i : small_molecule) {
         xs_types[i] = get_xs_type(topo, i, bond_map);
-        if (xs_types[i] == XS_TYPE_SKIP) {
+        if (xs_types[i] == XS_TYPE::SKIP) {
             continue;
         }
 
         for (auto k : recid) {
             for (auto j : residues[k]) {
-                if (xs_types[j] == XS_TYPE_SKIP) {
+                if (xs_types[j] == XS_TYPE::SKIP) {
                     continue;
                 }
 
