@@ -11,7 +11,11 @@
 #include <utility>
 #include <vector>
 
-#include "chemfiles/external/optional.hpp"
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#include <chemfiles/external/optional.hpp>
+LEMON_EXTERNAL_FILE_POP
 
 namespace lemon {
 

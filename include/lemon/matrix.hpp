@@ -1,13 +1,17 @@
 #ifndef LEMON_MATRIX_HPP
 #define LEMON_MATRIX_HPP
 
-#include <chemfiles/types.hpp>
-
 #include <array>
 #include <cmath>
 #include <complex>
 #include <vector>
 #include <algorithm>
+
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#include <chemfiles/types.hpp>
+LEMON_EXTERNAL_FILE_POP
 
 namespace lemon {
 
@@ -164,9 +168,9 @@ inline std::array<Z, 3> eigenvalues(const Matrix3D& m, double eps = 1e-10) {
 
 inline Vector3D cayley_hamilton(const Matrix3D& m, double e) {
     using std::fabs;
-    size_t col = (fabs(m[0][0]) > e || fabs(m[1][0]) > e || fabs(m[2][0]) > e)
-            ? 0
-            : 1;
+    auto col = (fabs(m[0][0]) > e || fabs(m[1][0]) > e || fabs(m[2][0]) > e)
+            ? 0ul
+            : 1ul;
 
     auto result = Vector3D{m[0][col], m[1][col], m[2][col]};
     return result / result.norm();

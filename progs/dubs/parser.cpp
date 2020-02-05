@@ -199,7 +199,7 @@ static DUBSParser::TAG_TYPE get_tag(const std::string& s) {
     auto a = std::string(trimmed.begin(), trimmed.end());
 
     // strip spaces
-    std::transform(a.begin(), a.end(), a.begin(), ::tolower);
+    std::transform(a.begin(), a.end(), a.begin(), lemon::tolower);
 
     auto tag = TAGS.find(a);
     if (tag == TAGS.end()) {
@@ -264,7 +264,7 @@ void DUBSParser::parse_reference(std::string line) {
     entries_to_use_.insert(current_reference_);
 
     std::transform(current_reference_.begin(), current_reference_.end(),
-                    current_reference_.begin(), ::toupper);
+                    current_reference_.begin(), lemon::toupper);
 
     auto reference_path = split[1].to_string();
     reference_to_path_[current_reference_] = reference_path;
@@ -288,7 +288,7 @@ void DUBSParser::parse_complex(std::string line) {
     auto split = split_string(trim(line));
     auto entry = split[0].to_string();
 
-    std::transform(entry.begin(), entry.end(), entry.begin(), ::toupper);
+    std::transform(entry.begin(), entry.end(), entry.begin(), lemon::toupper);
 
     entries_to_use_.insert(entry);
     entries_to_tag_[entry] = current_tag_;

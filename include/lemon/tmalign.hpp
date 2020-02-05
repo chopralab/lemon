@@ -6,7 +6,12 @@
 #include <limits>
 #include <cmath>
 
-#include "chemfiles/Frame.hpp"
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#include <chemfiles/Frame.hpp>
+LEMON_EXTERNAL_FILE_POP
+
 #include "lemon/matrix.hpp"
 
 namespace lemon {

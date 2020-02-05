@@ -1,8 +1,12 @@
 #ifndef LEMON_OPTIONS_HPP
 #define LEMON_OPTIONS_HPP
 
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
 #define CLI11_EXPERIMENTAL_OPTIONAL 0
 #include "lemon/external/CLI11.hpp"
+LEMON_EXTERNAL_FILE_POP
 
 namespace lemon {
 

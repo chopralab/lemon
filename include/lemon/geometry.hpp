@@ -1,10 +1,15 @@
 #ifndef LEMON_GEOMETRY_HPP
 #define LEMON_GEOMETRY_HPP
 
-#include "chemfiles/Frame.hpp"
 #include "lemon/constants.hpp"
 #include "lemon/residue_name.hpp"
+#include "lemon/external/gaurd.hpp"
+
 #include <string>
+
+LEMON_EXTERNAL_FILE_PUSH
+#include "chemfiles/Frame.hpp"
+LEMON_EXTERNAL_FILE_POP
 
 namespace lemon {
 

@@ -1,17 +1,22 @@
-#include "chemfiles.hpp"
-
-#pragma clang diagnostic push
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #pragma clang diagnostic ignored "-Wold-style-cast"
 #pragma clang diagnostic ignored "-Wmissing-braces"
 #pragma clang diagnostic ignored "-Wdocumentation"
 #pragma clang diagnostic ignored "-Wdeprecated"
 #pragma clang diagnostic ignored "-Wsign-conversion"
-
+#elif __GNUC__
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
 
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#include <chemfiles.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
+LEMON_EXTERNAL_FILE_POP
+
 namespace py = pybind11;
 
 template<typename T>
@@ -23,10 +28,9 @@ template<typename T>
 T get(const chemfiles::optional<T>& o) {
     if (o) {
         return *o;
-    } else {
-        throw pybind11::index_error("Cannot dereference nullopt");
     }
-    chemfiles::unreachable();
+
+    throw pybind11::index_error("Cannot dereference nullopt");
 }
 
 template<typename T, typename ret, int maxval>
@@ -40,7 +44,7 @@ ret get_index(const T& v, int i) {
     if (-i > maxval) {
         throw pybind11::index_error("index is too small");
     }
-    return v[static_cast<size_t>(maxval + i)];
+    return v[static_cast<size_t>(maxval) + static_cast<size_t>(i)];
 }
 
 template<typename T, typename ret>
@@ -266,5 +270,3 @@ void add_chemfiles_features(py::module& m) {
     m.def("write_file", write_file);
     m.def("append_file", append_file);
 }
-
-#pragma clang diagnostic pop

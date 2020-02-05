@@ -1,14 +1,14 @@
-#include "lemon/launch.hpp"
-#include "lemon/lemon.hpp"
-#include "lemon/tmalign.hpp"
-
-#include "parser.hpp"
-
 #include <map>
 
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+
+#include "parser.hpp"
+
+#include "lemon/launch.hpp"
+#include "lemon/lemon.hpp"
+#include "lemon/tmalign.hpp"
 
 int main(int argc, char* argv[]) {
     lemon::Options o;

@@ -1,7 +1,12 @@
 #ifndef DUBS_PARSER_HPP
 #define DUBS_PARSER_HPP
 
-#include "chemfiles.hpp"
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#include <chemfiles.hpp>
+LEMON_EXTERNAL_FILE_POP
+
 #include "lemon/entries.hpp"
 
 #include <string>
@@ -118,4 +123,4 @@ class DUBSParser {
     void parse_complex(std::string line);
 };
 
-#endif
+#endif // DUBS_PARSER_HPP

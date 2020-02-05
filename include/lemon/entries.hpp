@@ -16,12 +16,20 @@ namespace lemon {
 
 typedef std::unordered_set<std::string> Entries;
 
+inline std::string::value_type toupper(std::string::value_type ch) {
+    return static_cast<std::string::value_type>(std::toupper(ch));
+}
+
+inline std::string::value_type tolower(std::string::value_type ch) {
+    return static_cast<std::string::value_type>(std::tolower(ch));
+}
+
 inline Entries read_entry_file(std::istream& input) {
     Entries result;
     std::string temp;
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
-        std::transform(a.begin(), a.end(), a.begin(), ::toupper);
+        std::transform(a.begin(), a.end(), a.begin(), toupper);
         result.insert(a);
     }
     return result;
@@ -49,7 +57,7 @@ read_entry_file(std::istream& input, Entries& result,
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
 
-        std::transform(a.begin(), a.end(), a.begin(), ::toupper);
+        std::transform(a.begin(), a.end(), a.begin(), toupper);
 
         std::stringstream ss(temp);
         std::vector<std::string> residue_names;

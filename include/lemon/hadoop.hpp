@@ -1,16 +1,22 @@
 #ifndef LEMON_HADOOP_HPP
 #define LEMON_HADOOP_HPP
 
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#ifndef _MSVC_LANG
 #include <chemfiles/Frame.hpp>
 #include <chemfiles/Trajectory.hpp>
 
-#ifndef _MSVC_LANG
 #include <arpa/inet.h>
 #include <dirent.h>
 #else
 #include <WinSock2.h>
+#include <chemfiles/Frame.hpp>
+#include <chemfiles/Trajectory.hpp>
 #include <lemon/external/dirent.hpp>
 #endif
+LEMON_EXTERNAL_FILE_POP
 
 #include <cassert>
 #include <cstdint>
@@ -107,7 +113,6 @@ class Hadoop {
 //! \brief Read a directory containing hadoop sequence files
 inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
 
-    struct dirent* entry;
     DIR* dp;
     std::vector<std::string> pathvec;
     pathvec.reserve(700);
@@ -117,7 +122,8 @@ inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
         throw std::runtime_error("Path does not exist or could not be read.");
     }
 
-    while ((entry = readdir(dp))) {
+    auto entry = readdir(dp);
+    while (entry) {
         if (entry->d_name[0] == '_' || entry->d_name[0] == '.' ||
             entry->d_type != DT_REG) {
             continue;
@@ -133,6 +139,8 @@ inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
         }
         s = p + '/' + s;
         pathvec.emplace_back(s);
+
+        entry = readdir(dp);
     }
 
     closedir(dp);
