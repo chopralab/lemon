@@ -1,5 +1,37 @@
 include(ExternalProject)
 
+set(chemfiles_location ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_install)
+
+if (${BUILD_SHARED_LIBS})
+    add_library(chemfiles SHARED IMPORTED)
+    set_property(
+        TARGET chemfiles
+        PROPERTY IMPORTED_LOCATION
+        ${chemfiles_location}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}chemfiles${CMAKE_SHARED_LIBRARY_SUFFIX}
+    )
+
+    if (MSVC)
+        set_property(
+            TARGET chemfiles
+            PROPERTY IMPORTED_IMPLIB
+            ${chemfiles_location}/lib/chemfiles.lib
+        )
+
+        set(chemfiles_byproduct ${chemfiles_location}/lib/chemfiles.lib)
+    else()
+        set(chemfiles_byproduct ${chemfiles_location}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}chemfiles${CMAKE_SHARED_LIBRARY_SUFFIX})
+    endif()
+else()
+    add_library(chemfiles STATIC IMPORTED)
+    set_property(
+        TARGET chemfiles
+        PROPERTY IMPORTED_LOCATION
+            ${chemfiles_location}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}chemfiles${CMAKE_STATIC_LIBRARY_SUFFIX}
+    )
+
+    set(chemfiles_byproduct ${chemfiles_location}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}chemfiles${CMAKE_STATIC_LIBRARY_SUFFIX})
+endif()
+
 ExternalProject_Add(
     CHEMFILES
     GIT_REPOSITORY https://github.com/frodofine/chemfiles.git
@@ -12,31 +44,8 @@ ExternalProject_Add(
         -DCMAKE_BUILD_TYPE:STRING=Release
         -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
     EXCLUDE_FROM_ALL TRUE
+    BUILD_BYPRODUCTS ${chemfiles_byproduct}
 )
-
-set(chemfiles_location ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_install)
-
-if (${BUILD_SHARED_LIBS})
-    add_library(chemfiles SHARED IMPORTED)
-    set_property(
-        TARGET chemfiles
-        PROPERTY IMPORTED_LOCATION
-        ${chemfiles_location}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}chemfiles${CMAKE_SHARED_LIBRARY_SUFFIX}
-    )
-
-    set_property(
-        TARGET chemfiles
-        PROPERTY IMPORTED_IMPLIB
-            ${chemfiles_location}/lib/chemfiles.lib
-    )
-else()
-    add_library(chemfiles STATIC IMPORTED)
-    set_property(
-        TARGET chemfiles
-        PROPERTY IMPORTED_LOCATION
-            ${chemfiles_location}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}chemfiles${CMAKE_STATIC_LIBRARY_SUFFIX}
-    )
-endif()
 
 install(
     DIRECTORY

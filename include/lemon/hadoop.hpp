@@ -122,8 +122,7 @@ inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
         throw std::runtime_error("Path does not exist or could not be read.");
     }
 
-    auto entry = readdir(dp);
-    while (entry) {
+    for (auto entry = readdir(dp); entry != nullptr; entry = readdir(dp)) {
         if (entry->d_name[0] == '_' || entry->d_name[0] == '.' ||
             entry->d_type != DT_REG) {
             continue;
@@ -139,8 +138,6 @@ inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
         }
         s = p + '/' + s;
         pathvec.emplace_back(s);
-
-        entry = readdir(dp);
     }
 
     closedir(dp);
