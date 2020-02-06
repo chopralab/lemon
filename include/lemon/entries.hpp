@@ -6,6 +6,7 @@
 #include <istream>
 #include <sstream>
 #include <string>
+#include <cctype>
 #include <unordered_set>
 #include <vector>
 #include <algorithm>
