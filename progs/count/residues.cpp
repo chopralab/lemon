@@ -5,7 +5,9 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    auto worker = [](chemfiles::Frame entry, const std::string&) {
+    auto worker = [](const chemfiles::Frame& entry,
+                     const std::string& /*unused*/) -> lemon::ResidueNameCount {
+
         // Desired info is calculated directly, no pruning, output is done later
         lemon::ResidueNameCount rnc;
         lemon::count::residues(entry, rnc);

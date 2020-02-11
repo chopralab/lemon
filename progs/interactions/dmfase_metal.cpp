@@ -4,9 +4,11 @@
 #include "lemon/launch.hpp"
 #include "lemon/tmalign.hpp"
 
+auto constexpr METAL_DISTANCE = 2.4;
+
 int main(int argc, char* argv[]) {
     lemon::Options o;
-    auto distance = 2.4;
+    auto distance = METAL_DISTANCE;
     o.add_option("--distance,-d", distance,
                  "Largest distance between a metal and a small molecule.");
     std::string reference("ref.pdb");

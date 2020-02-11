@@ -68,7 +68,6 @@ int main(int argc, char* argv[]) {
     auto collector = lemon::map_combine<ImproperCounts>(sc_total);
     lemon::launch(o, worker, collector);
 
-
     for (const auto& i : sc_total) {
         std::cout << i.first.first << "\t"
                   << static_cast<double>(i.first.second) * bin_size << "\t"

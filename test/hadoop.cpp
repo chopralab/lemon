@@ -52,7 +52,7 @@ TEST_CASE("Use run_parallel") {
     std::string p("files/rcsb_hadoop");
 
     auto worker = [](const chemfiles::Frame& entry,
-                     const std::string&) {
+                     const std::string& /*unused*/) -> lemon::ResidueNameCount {
         lemon::ResidueNameCount resn_counts;
         lemon::count::residues(entry, resn_counts);
         return resn_counts;
@@ -69,7 +69,7 @@ TEST_CASE("Use run_parallel, but only for a entry") {
     std::string p("files/rcsb_hadoop");
 
     auto worker = [](const chemfiles::Frame& entry,
-                     const std::string&) {
+                     const std::string& /*unused*/) -> lemon::ResidueNameCount {
         lemon::ResidueNameCount resn_counts;
         lemon::count::residues(entry, resn_counts);
         return resn_counts;
@@ -88,7 +88,7 @@ TEST_CASE("Use run_parallel, but skip a entry") {
     std::string p("files/rcsb_hadoop");
 
     auto worker = [](const chemfiles::Frame& entry,
-                     const std::string&) {
+                     const std::string& /*unused*/) -> lemon::ResidueNameCount {
         lemon::ResidueNameCount resn_counts;
         lemon::count::residues(entry, resn_counts);
         return resn_counts;

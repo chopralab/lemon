@@ -19,10 +19,10 @@ class ResidueName : private std::array<char, 3> {
     friend bool operator!=(const ResidueName& lhs, const std::string& rhs);
     friend bool operator!=(const std::string& lhs, const ResidueName& rhs);
     friend bool operator<(const ResidueName& lhs, const ResidueName& rhs);
-    friend std::ostream& operator<<(std::ostream& os, const ResidueName&);
+    friend std::ostream& operator<<(std::ostream& os, const ResidueName& res_name);
     using super::operator[];
 
-    char check_digit_(char c) const {
+    static char check_digit_(char c) {
 #ifndef NDEBUG
         if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z'))) {
             throw std::range_error("Invalid character");
@@ -31,16 +31,16 @@ class ResidueName : private std::array<char, 3> {
         return c;
     }
 
-    char clamp_(char c) const {
+    static char clamp_(char c) {
         if (c == 0) {
-            return 36;
+            return 36; // NOLINT 36 is the maximum value
         }
 
         if (c >= '0' && c <= '9') {
             return static_cast<char>(c - '0');
         }
 
-        return static_cast<char>(10 + c - 'A');
+        return static_cast<char>(10 + c - 'A'); // NOLINT 'A' is 10
     }
 
   public:
@@ -87,8 +87,8 @@ class ResidueName : private std::array<char, 3> {
 
     unsigned short hash() const {
         return static_cast<unsigned short>(clamp_((*this)[0]) +
-                                           clamp_((*this)[1]) * 37 +
-                                           clamp_((*this)[2]) * (37 * 37));
+                                           clamp_((*this)[1]) * 37 + // NOLINT 26+10 = 37
+                                           clamp_((*this)[2]) * (37 * 37)); // NOLINT see above
     }
     const std::array<char, 3>& operator*() const { return *this; }
 };
@@ -165,8 +165,8 @@ typedef std::set<ResidueName> ResidueNameSet;
 
 inline std::ostream& operator<<(std::ostream& os, const ResidueName& res_name) {
     auto& resn = *res_name;
-    os << (resn[0] ? resn[0] : ' ') << (resn[1] ? resn[1] : ' ')
-       << (resn[2] ? resn[2] : ' ');
+    os << (resn[0] != 0 ? resn[0] : ' ') << (resn[1] != 0 ? resn[1] : ' ')
+       << (resn[2] != 0 ? resn[2] : ' ');
     return os;
 }
 

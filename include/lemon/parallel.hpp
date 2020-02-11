@@ -101,7 +101,7 @@ inline void run_parallel(Function&& worker, const std::string& p,
         i.join();
     }
     for (const auto& thread_result : results) {
-        for (auto sub_result : thread_result.second) {
+        for (const auto& sub_result : thread_result.second) {
             collector(sub_result);
         }
     }

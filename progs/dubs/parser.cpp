@@ -14,9 +14,9 @@ static void mkdir(const std::string& dir) {
 
 struct string_view {
 
+    string_view() = default;
     string_view(const char* c, size_t length) : begin_(c), length_(length) {}
     string_view(const std::string& s) : begin_(&s[0]), length_(s.length()) {}
-    string_view(const string_view& o) = default;
 
     string_view substr(size_t pos, size_t n) {
         if (pos > size()) {
@@ -223,7 +223,7 @@ void DUBSParser::parse_stream(std::istream& i) {
             break;
         case TAG_TYPE::REFERENCE:
             std::getline(i, line);
-            parse_reference(std::move(line));
+            parse_reference(line);
             current_tag_ = TAG_TYPE::NONE;
             continue;
         case TAG_TYPE::END:
@@ -251,12 +251,12 @@ void DUBSParser::parse_stream(std::istream& i) {
             current_tag_ == TAG_TYPE::LIGAND_ALIGN ||
             current_tag_ == TAG_TYPE::LIGAND_NO_ALIGN) {
                 
-            parse_complex(std::move(line));
+            parse_complex(line);
         }
     }
 }
 
-void DUBSParser::parse_reference(std::string line) {
+void DUBSParser::parse_reference(const std::string& line) {
     auto split = split_string(trim(line));
 
     current_reference_ = split[0].to_string();
@@ -276,7 +276,7 @@ void DUBSParser::parse_reference(std::string line) {
     }
 
     chemfiles::Trajectory trj(reference_path, 'r');
-    reference_to_structure_[current_reference_] = std::move(trj.read());
+    reference_to_structure_[current_reference_] = trj.read();
 
     if (split.size() >= 3) {
         auto ligand = split[2].to_string();
@@ -284,7 +284,7 @@ void DUBSParser::parse_reference(std::string line) {
     }
 }
 
-void DUBSParser::parse_complex(std::string line) {
+void DUBSParser::parse_complex(const std::string& line) {
     auto split = split_string(trim(line));
     auto entry = split[0].to_string();
 

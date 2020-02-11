@@ -169,8 +169,8 @@ inline std::array<Z, 3> eigenvalues(const Matrix3D& m, double eps = 1e-10) {
 inline Vector3D cayley_hamilton(const Matrix3D& m, double e) {
     using std::fabs;
     auto col = (fabs(m[0][0]) > e || fabs(m[1][0]) > e || fabs(m[2][0]) > e)
-            ? 0ul
-            : 1ul;
+            ? 0UL
+            : 1UL;
 
     auto result = Vector3D{m[0][col], m[1][col], m[2][col]};
     return result / result.norm();
@@ -206,7 +206,9 @@ inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
     e_vals[1] = e_vals[1].real() > std::sqrt(eps) ? e_vals[1] : zero;
     e_vals[2] = e_vals[2].real() > std::sqrt(eps) ? e_vals[2] : zero;
 
-    auto rank = (e_vals[0].real() > eps) + (e_vals[1].real() > eps) + (e_vals[2].real() > eps);
+    auto rank = static_cast<int>(e_vals[0].real() > eps) +
+                static_cast<int>(e_vals[1].real() > eps) +
+                static_cast<int>(e_vals[2].real() > eps);
 
     auto e_vecs = eigenvectors(mt_m, e_vals, eps);
 
@@ -218,7 +220,9 @@ inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
     );
     auto V = Vt.transpose();
 
-    Vector3D U_c0, U_c1, U_c2;
+    Vector3D U_c0;
+    Vector3D U_c1;
+    Vector3D U_c2;
 
     if (rank == 2) {
         U_c0 = m * Vector3D{V[0][0], V[1][0], V[2][0]};
@@ -246,7 +250,7 @@ inline SingularValueDecomposition svd(const Matrix3D& m, double eps = 1e-10) {
                       0.0, 0.0, std::sqrt(e_vals[0].real())
     );
 
-    return {std::move(O), std::move(S), std::move(V)};
+    return {O, S, V};
     // clang-format on
 }
 

@@ -118,9 +118,9 @@ class DUBSParser {
 
     void parse_stream(std::istream& i);
 
-    void parse_reference(std::string line);
+    void parse_reference(const std::string& line);
 
-    void parse_complex(std::string line);
+    void parse_complex(const std::string& line);
 };
 
 #endif // DUBS_PARSER_HPP

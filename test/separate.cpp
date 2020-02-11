@@ -20,6 +20,7 @@ TEST_CASE("Separate") {
         }
     }
 
+    // NOLINTNEXTLINE allow 15 to be magic
     lemon::separate::protein_and_ligand(frame, i, 15, protein, ligand);
 
     CHECK(ligand.size() == 41);

@@ -54,7 +54,8 @@ inline Entries read_entry_file(const std::string& input) {
 inline void
 read_entry_file(std::istream& input, Entries& result,
                 std::unordered_map<std::string, ResidueNameSet>& rnm) {
-    std::string temp, item;
+    std::string temp;
+    std::string item;
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
 

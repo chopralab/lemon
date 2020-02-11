@@ -12,7 +12,16 @@ namespace lemon {
 
 class LemonPythonBase {
   public:
-    virtual ~LemonPythonBase() {}
+    virtual ~LemonPythonBase() = default;
+    
+    LemonPythonBase() = default;
+    LemonPythonBase(const LemonPythonBase& other) = delete;
+    LemonPythonBase(LemonPythonBase&& other) noexcept = delete;
+
+    LemonPythonBase& operator=(const LemonPythonBase& other) = delete;
+    LemonPythonBase& operator=(LemonPythonBase&& other) noexcept = delete;
+
+
     virtual std::string worker(const chemfiles::Frame*, const std::string&) = 0;
     virtual void finalize() { /*Do nothing*/
     }
@@ -81,10 +90,10 @@ struct print_combine {
 //! \return 0 on success or a non-zero integer on error.
 template <typename Function, typename Collector>
 int launch(const Options& o, Function&& worker, Collector& collect) {
-    auto p = o.work_dir();
+    const auto& p = o.work_dir();
     auto threads = o.ncpu();
-    auto entries = read_entry_file(o.entries());
-    auto skip_entries = read_entry_file(o.skip_entries());
+    const auto& entries = read_entry_file(o.entries());
+    const auto& skip_entries = read_entry_file(o.skip_entries());
 
     try {
         lemon::run_parallel(worker, p, collect, threads, entries, skip_entries);

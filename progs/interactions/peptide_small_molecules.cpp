@@ -5,13 +5,13 @@
 
 int main(int argc, char* argv[]) {
     lemon::Options o;
-    auto distance = 6.0;
+    auto distance = lemon::prune::DEFAULT_DISTANCE;
     o.add_option("--distance,-d", distance,
                  "Largest distance between a protein and a small molecule.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [distance](chemfiles::Frame entry,
-                             const std::string& pdbid) {
+    auto worker = [distance](const chemfiles::Frame& entry,
+                             const std::string& pdbid) -> std::string {
 
         // Selection phase
         auto peptides = lemon::select::peptides(entry);

@@ -5,7 +5,8 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    auto worker = [](chemfiles::Frame entry, const std::string&) {
+    auto worker = [](const chemfiles::Frame& entry,
+                     const std::string& /*unused*/) -> lemon::ResidueNameCount {
 
         lemon::ResidueNameCount rnc;
 

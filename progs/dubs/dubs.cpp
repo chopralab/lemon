@@ -13,7 +13,7 @@
 int main(int argc, char* argv[]) {
     lemon::Options o;
     std::string outdir = ".";
-    auto distance = 6.0;
+    auto distance = lemon::prune::DEFAULT_DISTANCE;
     auto dump_input = false;
     auto all_proteins = false;
 
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
         // Pruning phase
         lemon::prune::identical_residues(entry, ligand_ids);
 
-        auto reference = parser.reference(PDBid);
+        const auto& reference = parser.reference(PDBid);
         auto result_str = PDBid;
         auto outdir_local = outdir;
 
@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
                 std::to_string(alignment.score) +
                 "(" + std::to_string(alignment.aligned) + ")";
 
-            auto name = parser.name(reference);
+            const auto& name = parser.name(reference);
             if (!name.empty()) {
                 outdir_local += name + "/" + name + "_";
             }
@@ -96,7 +96,10 @@ int main(int argc, char* argv[]) {
 
             result_str += " and ligand " + lig_name;
 
-            auto lig_file = outdir_local + PDBid + "_" + lig_name + ".sdf";
+            auto lig_file = outdir_local + PDBid;
+            lig_file += "_";
+            lig_file += lig_name;
+            lig_file += ".sdf";
             chemfiles::Trajectory lig_trj(lig_file, 'w');
             lig_trj.write(lig);
 
@@ -104,7 +107,10 @@ int main(int argc, char* argv[]) {
                 continue;
             }
 
-            auto prot_file = outdir_local + PDBid + "_" + lig_name + ".pdb";
+            auto prot_file = outdir_local + PDBid;
+            prot_file += "_";
+            prot_file += lig_name;
+            prot_file += ".pdb";
             chemfiles::Trajectory prot_trj(prot_file, 'w');
             prot_trj.write(prot);
         }

@@ -100,7 +100,7 @@ TEST_CASE("Residue to text") {
 
     std::stringstream ss2;
     lemon::ResidueNameCount rnc;
-    rnc[res_name] = 75;
+    rnc[res_name] = 75; // NOLINT we expect 75
     ss2 << rnc;
     CHECK(ss2.str() == "\tALA\t75");
 }

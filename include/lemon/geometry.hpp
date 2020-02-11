@@ -224,7 +224,11 @@ inline std::string dihedral_name(const chemfiles::Frame& entry,
     const auto& atom3 = entry[dihedral[2]];
     const auto& atom4 = entry[dihedral[3]];
 
-    std::string llatom, lcatom, hcatom, hhatom;
+    std::string llatom; // Left most atom
+    std::string lcatom; // Center left atom
+    std::string hcatom; // Center right
+    std::string hhatom; // Right most
+
     if (atom1.name() < atom4.name()) {
         llatom = atom1.name();
         lcatom = atom2.name();

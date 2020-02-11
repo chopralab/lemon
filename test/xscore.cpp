@@ -7,20 +7,13 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-static bool roughly(double a, double b, double tol = 1e-3) {
-    if (std::fabs(a - b) < tol) {
-        return true;    
-    }
-
-    std::cout << "Got: " << a << " but expected " << b << std::endl;
-    return false;
-}
+using Catch::Detail::Approx;
 
 TEST_CASE("Gaussian Terms") {
     double r =
         6.96584 - lemon::xscore::optimal_distance(lemon::xscore::XS_TYPE::N_A,
                                                   lemon::xscore::XS_TYPE::O_A);
-    CHECK(roughly(lemon::xscore::gaussian(3, 2, r), 0.947194));
+    CHECK(lemon::xscore::gaussian(3, 2, r) == Approx(0.947194));
 }
 
 TEST_CASE("Nitrogen atom typing") {
@@ -114,11 +107,11 @@ TEST_CASE("Scoring") {
     proteins.erase(std::remove(proteins.begin(), proteins.end(), *ade.begin()), proteins.end());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
-    CHECK(roughly(vscore.g1, 79.23012));
-    CHECK(roughly(vscore.g2, 639.67236));
-    CHECK(roughly(vscore.hydrogen, 1.96844));
-    CHECK(roughly(vscore.hydrophobic, 0.00000));
-    CHECK(roughly(vscore.rep, 2.35422));
+    CHECK(vscore.g1 == Approx(79.23012));
+    CHECK(vscore.g2 == Approx(639.67236));
+    CHECK(vscore.hydrogen == Approx(1.96844));
+    CHECK(vscore.hydrophobic == Approx(0.00000));
+    CHECK(vscore.rep == Approx(2.35422));
 }
 
 TEST_CASE("Scoring with hydrophobics") {
@@ -138,11 +131,11 @@ TEST_CASE("Scoring with hydrophobics") {
     proteins.erase(*azm.begin());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*azm.begin()), proteins);
-    CHECK(roughly(vscore.g1, 52.6882));
-    CHECK(roughly(vscore.g2, 766.766, 1e-3));
-    CHECK(roughly(vscore.hydrogen, 3.66453));
-    CHECK(roughly(vscore.hydrophobic, 4.8967));
-    CHECK(roughly(vscore.rep, 4.13918));
+    CHECK(vscore.g1 == Approx(52.6882));
+    CHECK(vscore.g2 == Approx(766.766).epsilon(1e-3));
+    CHECK(vscore.hydrogen == Approx(3.66453));
+    CHECK(vscore.hydrophobic == Approx(4.8967));
+    CHECK(vscore.rep == Approx(4.13918));
 }
 
 TEST_CASE("Dry scoring") {
@@ -163,9 +156,9 @@ TEST_CASE("Dry scoring") {
     proteins.erase(*ade.begin());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
-    CHECK(roughly(vscore.g1, 121.94136));
-    CHECK(roughly(vscore.g2, 2103.34799));
-    CHECK(roughly(vscore.hydrogen, 0.0000));
-    CHECK(roughly(vscore.hydrophobic, 60.4782));
-    CHECK(roughly(vscore.rep, 14.48645));
+    CHECK(vscore.g1 == Approx(121.94136));
+    CHECK(vscore.g2 == Approx(2103.34799));
+    CHECK(vscore.hydrogen == Approx(0.0000));
+    CHECK(vscore.hydrophobic == Approx(60.4782));
+    CHECK(vscore.rep == Approx(14.48645));
 }

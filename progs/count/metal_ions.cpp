@@ -6,8 +6,8 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    auto worker = [](chemfiles::Frame entry,
-                     const std::string& pdbid) {
+    auto worker = [](const chemfiles::Frame& entry,
+                     const std::string& pdbid) -> std::string {
 
         // Selection phase
         std::list<size_t> metal_ids;

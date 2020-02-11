@@ -123,10 +123,12 @@ struct VinaScore {
     double hydrogen = 0;    //!< The hydrogen bonding term
 };
 
+using BondMap = std::unordered_multimap<size_t, size_t>;
+
 // Easy case, just check if carbon is bound to a heteroatom
 inline XS_TYPE
 get_c_xs_type(const chemfiles::Topology& topo, size_t j,
-              const std::unordered_multimap<size_t, size_t>& bond_map) {
+              const BondMap& bond_map) {
     auto range = bond_map.equal_range(j);
     auto& bonds = topo.bonds();
 
@@ -144,7 +146,7 @@ get_c_xs_type(const chemfiles::Topology& topo, size_t j,
 
 inline bool is_in_strong_resonance(
     const chemfiles::Topology& topo, size_t j,
-    const std::unordered_multimap<size_t, size_t>& bond_map) {
+    const BondMap& bond_map) {
     auto range = bond_map.equal_range(j);
     auto& bond_order = topo.bond_orders();
     auto& bonds = topo.bonds();
@@ -164,7 +166,7 @@ inline bool is_in_strong_resonance(
 // Hard case, there's three bond counts to get, which in turn involve checks
 inline XS_TYPE
 get_n_xs_type(const chemfiles::Topology& topo, size_t j,
-              const std::unordered_multimap<size_t, size_t>& bond_map) {
+              const BondMap& bond_map) {
     auto range = bond_map.equal_range(j);
     auto& bond_order = topo.bond_orders();
     auto& bonds = topo.bonds();
@@ -175,11 +177,13 @@ get_n_xs_type(const chemfiles::Topology& topo, size_t j,
         auto bond = bond_map.find(j);
         if (bond_order[bond->second] == 3) {
             return XS_TYPE::N_A; // It can only accept - Nitrile
-        } else if (bond_order[bond->second] == 2) {
-            return XS_TYPE::N_D; // Imine, or guanidine
-        } else {
-            return XS_TYPE::N_D; // AutoDOCK labels amines as Donor only
         }
+        
+        if (bond_order[bond->second] == 2) {
+            return XS_TYPE::N_D; // Imine, or guanidine
+        }
+
+        return XS_TYPE::N_D; // AutoDOCK labels amines as Donor only
     } else { // A linker, amide, guanidine, amine of some sort, etc,
         size_t sum_of_orders = 0;
         size_t sum_of_hydrogens = 0;
@@ -188,19 +192,26 @@ get_n_xs_type(const chemfiles::Topology& topo, size_t j,
             auto bond = bonds[k->second];
             auto neighbor = (j == bond[0]) ? bond[1] : bond[0];
             auto type = *(topo[neighbor].atomic_number());
-            sum_of_hydrogens += (type == 1); // Sum explicit hydrogens
+            sum_of_hydrogens += static_cast<size_t>(type == 1); // Sum explicit hydrogens
             sum_of_orders += static_cast<size_t>(bond_order[k->second]);
-            is_withdraw += is_in_strong_resonance(topo, neighbor, bond_map);
+            is_withdraw +=
+                static_cast<size_t>(is_in_strong_resonance(topo, neighbor, bond_map));
         }
 
         if (sum_of_hydrogens >= 2) {
             return XS_TYPE::N_D;
-        } else if (sum_of_orders == 2 && bond_map.count(j) == 2) {
+        }
+
+        if (sum_of_orders == 2 && bond_map.count(j) == 2) {
             // Linking Amine/Amide or heterocycle
-            return is_withdraw ? XS_TYPE::N_P : XS_TYPE::N_D;
-        } else if (sum_of_orders == 3 && bond_map.count(j) == 2) {
+            return is_withdraw != 0U ? XS_TYPE::N_P : XS_TYPE::N_D;
+        }
+
+        if (sum_of_orders == 3 && bond_map.count(j) == 2) {
             return XS_TYPE::N_A;
-        } else if (sum_of_orders == 3 && !is_withdraw) {
+        }
+
+        if (sum_of_orders == 3 && is_withdraw == 0U) {
             return XS_TYPE::N_A; // Linking SP2 nitrogen, aromatic, etc
         }
         // Fall through to Polar nitrogen, ie C=N=C, next to withdrawing group
@@ -211,7 +222,7 @@ get_n_xs_type(const chemfiles::Topology& topo, size_t j,
 // Medium case, two bond cases - but no additional checks.
 inline XS_TYPE
 get_o_xs_type(const chemfiles::Topology& topo, size_t j,
-              const std::unordered_multimap<size_t, size_t>& bond_map) {
+              const BondMap& bond_map) {
     auto range = bond_map.equal_range(j);
     auto& bond_order = topo.bond_orders();
     auto& bonds = topo.bonds();
@@ -225,11 +236,13 @@ get_o_xs_type(const chemfiles::Topology& topo, size_t j,
 
         if (bond_order[bond->second] == 2) {
             return XS_TYPE::O_A; // Carbonyl
-        } else if (is_in_strong_resonance(topo, neighbor, bond_map)) {
-            return XS_TYPE::O_A; // Carboxylic acid, phosphate, sulfate
-        } else {
-            return XS_TYPE::O_DA; // Alcohol
         }
+
+        if (is_in_strong_resonance(topo, neighbor, bond_map)) {
+            return XS_TYPE::O_A; // Carboxylic acid, phosphate, sulfate
+        }
+
+        return XS_TYPE::O_DA; // Alcohol
     } else if (bond_map.count(j) == 2) { // alcohol or ether
         for (auto k = range.first; k != range.second; ++k) {
             auto bond = bonds[k->second];
@@ -247,28 +260,28 @@ get_o_xs_type(const chemfiles::Topology& topo, size_t j,
 
 inline XS_TYPE
 get_xs_type(const chemfiles::Topology& topo, size_t j,
-            const std::unordered_multimap<size_t, size_t>& bond_map) {
+            const BondMap& bond_map) {
     auto atomic_id = *(topo[j].atomic_number());
 
     switch (atomic_id) {
     // Handle 'easy' cases
-    case 9:
+    case 9:  // NOLINT Fluorine
         return XS_TYPE::F_H;
-    case 15:
+    case 15: // NOLINT Phosphorous
         return XS_TYPE::P_P;
-    case 16:
+    case 16: // NOLINT Sulfur
         return XS_TYPE::S_P;
-    case 17:
+    case 17: // NOLINT Chlorine
         return XS_TYPE::Cl_H;
-    case 35:
+    case 35: // NOLINT Bromine
         return XS_TYPE::Br_H;
-    case 53:
+    case 53: // NOLINT Iodine
         return XS_TYPE::I_H;
-    case 12: // Mg
-    case 20: // Ca
-    case 25: // Mn
-    case 26: // Fe
-    case 30: // Zn
+    case 12: // NOLINT Mg
+    case 20: // NOLINT Ca
+    case 25: // NOLINT Mn
+    case 26: // NOLINT Fe
+    case 30: // NOLINT Zn
         return XS_TYPE::Metal_D;
     case 6:
         return get_c_xs_type(topo, j, bond_map);
@@ -296,19 +309,26 @@ inline double repulsion(double offset, double r) {
 
 inline double slope_step(double end, double intercept, double r) {
     if(intercept < end) {
-        if(r <= intercept) return 0;
-        if(r >= end) return 1;
+        if(r <= intercept) {
+            return 0;
+        }
+        if(r >= end) {
+            return 1;
+        }
     } else {
-        if(r >= intercept) return 0;
-        if(r <= end) return 1;
+        if(r >= intercept) {
+            return 0;
+        }
+        if(r <= end) {
+            return 1;
+        }
     }
     return (r - intercept) / (end - intercept);
 }
 
 // Move to a topology.hpp file?
-inline std::unordered_multimap<size_t, size_t>
-create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
-    std::unordered_multimap<size_t, size_t> bond_map;
+inline BondMap create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
+    BondMap bond_map;
 
     // Map bonds
     for (size_t i = 0; i < bonds.size(); ++i) {
@@ -319,6 +339,9 @@ create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
 
     return bond_map;
 }
+
+//! Default maximum for interactions
+constexpr auto DEFAULT_INTERACTION_DISTANCE = 8.0;
 
 //! XScore is a 'docking' scoring function used to evaluate compound-protein
 //! interactions
@@ -336,7 +359,8 @@ create_bond_map(const std::vector<chemfiles::Bond>& bonds) {
 //! \return The five components of Vina/XScore's scoring function.
 template <typename Container>
 inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
-                            Container recid, double cutoff = 8.0) {
+                            Container recid,
+                            double cutoff = DEFAULT_INTERACTION_DISTANCE) {
     const auto& topo = frame.topology();
     const auto& residues = topo.residues();
     auto bond_map = create_bond_map(topo.bonds());
@@ -375,10 +399,10 @@ inline VinaScore vina_score(const chemfiles::Frame& frame, size_t ligid,
                 X_Score.rep += repulsion(0, r);
                 if (is_hydrophobic(xs_types[i]) &&
                     is_hydrophobic(xs_types[j])) {
-                    X_Score.hydrophobic += slope_step(0.5, 1.5, r);
+                    X_Score.hydrophobic += slope_step(0.5, 1.5, r); // NOLINT
                 }
                 if (h_bond_possible(xs_types[i], xs_types[j])) {
-                    X_Score.hydrogen += slope_step(-0.7, 0, r);
+                    X_Score.hydrogen += slope_step(-0.7, 0, r); // NOLINT
                 }
             }
         }
