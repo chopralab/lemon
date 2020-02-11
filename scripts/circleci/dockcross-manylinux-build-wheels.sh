@@ -12,7 +12,7 @@ pushd .
 mkdir deps
 cd deps
 wget --quiet https://cmake.org/files/v3.6/cmake-3.6.2-Linux-x86_64.tar.gz && tar -xvf cmake-3.6.2-Linux-x86_64.tar.gz
-git clone https://github.com/frodofine/chemfiles.git -b read_from_memory
+git clone https://github.com/chemfiles/chemfiles.git
 cd chemfiles
 mkdir build
 cd build

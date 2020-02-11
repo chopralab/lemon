@@ -34,8 +34,8 @@ endif()
 
 ExternalProject_Add(
     CHEMFILES
-    GIT_REPOSITORY https://github.com/frodofine/chemfiles.git
-    GIT_TAG read_from_memory
+    GIT_REPOSITORY https://github.com/chemfiles/chemfiles.git
+    GIT_TAG master
     SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_build
     INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_install
     CMAKE_CACHE_ARGS
