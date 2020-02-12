@@ -29,69 +29,29 @@ def parse_input_file(fname):
     # Open file and initialize flags to 0
     f = open(fname,"r")
     curRefPdbID = ""
-    refFlag = 0
-    protFlag = 0
-    SMLigFlag = 0
-    nonSMligFlag = 0
-    noAlignSMFlag = 0
-    noAlignNonSMFlag = 0
+    flag = 0
 
     for line in f:
         # Check to see if the line contains any of the tags
         # Set appropriate flags if it does
         if line.startswith("@<reference>"):
-            refFlag = 1
-            protFlag = 0
-            SMLigFlag = 0
-            nonSMligFlag = 0
-            noAlignSMFlag = 0
-            noAlignNonSMFlag = 0
+            flag = 1
         elif line.startswith("@<align_prot>"):
-            refFlag = 0
-            protFlag = 1
-            SMLigFlag = 0
-            nonSMligFlag = 0
-            noAlignSMFlag = 0
-            noAlignNonSMFlag = 0
+            flag = 2
         elif line.startswith("@<align_sm_ligands>"):
-            refFlag = 0
-            protFlag = 0
-            SMLigFlag = 1
-            nonSMligFlag = 0
-            noAlignSMFlag = 0
-            noAlignNonSMFlag = 0
+            flag = 3
         elif line.startswith("@<align_non_sm_ligands>"):
-            refFlag = 0
-            protFlag = 0
-            SMLigFlag = 0 
-            nonSMligFlag = 1
-            noAlignSMFlag = 0
-            noAlignNonSMFlag = 0
+            flag = 4
         elif line.startswith("@<no_align_sm_ligands>"):
-            refFlag = 0
-            protFlag = 0
-            SMLigFlag = 0 
-            nonSMligFlag = 0
-            noAlignSMFlag = 1
-            noAlignNonSMFlag = 0
+            flag = 5
         elif line.startswith("@<no_align_non_sm_ligands>"):
-            refFlag = 0
-            protFlag = 0
-            SMLigFlag = 0 
-            nonSMligFlag = 0
-            noAlignSMFlag = 0
-            noAlignNonSMFlag = 1
+            flag = 6
         elif line.startswith("@<end>"):
-            refFlag = 0
-            protFlag = 0
-            SMLigFlag = 0
-            nonSMligFlag = 0
-            noAlignSMFlag = 0
-            noAlignNonSMFlag = 0
+            flag = 0
         else:
             # If the line does not contain a flag
             # Add info to appropriate dictionary based of set flags
-            if refFlag == 1:
+            if flag == 1:
                 pdbID = line.split(" ")[0].strip().upper()
                 path = line.split(" ")[1].strip()
                 curRefPdbID = pdbID
@@ -101,7 +61,7 @@ def parse_input_file(fname):
                     chemID = line.split(" ")[2].strip().upper()
                     referenceLigandDict[pdbID] = chemID 
             
-            elif protFlag == 1:
+            elif flag == 2:
                 pdbID = line.split(" ")[0].strip()
                 chemID = line.split(" ")[1].strip()
 
@@ -117,7 +77,7 @@ def parse_input_file(fname):
 
                 entries.add(pdbID)
 
-            elif SMLigFlag == 1:
+            elif flag == 3:
                 pdbID = line.split(" ")[0].strip()
                 chemID = line.split(" ")[1].strip()
 
@@ -133,7 +93,7 @@ def parse_input_file(fname):
 
                 entries.add(pdbID)
 
-            elif nonSMligFlag == 1:
+            elif flag == 4:
                 pdbID = line.split(" ")[0].strip().upper()
                 residueCode = line.split(" ")[1].split("-")[0].strip().upper()
                 chainID = line.split(" ")[1].split("-")[1].strip().upper()
@@ -151,7 +111,7 @@ def parse_input_file(fname):
 
                 entries.add(pdbID)
             
-            elif noAlignSMFlag == 1:
+            elif flag == 5:
                 pdbID = line.split(" ")[0].strip().upper()
                 chemID = line.split(" ")[1].strip().upper()
 
@@ -162,7 +122,7 @@ def parse_input_file(fname):
 
                 entries.add(pdbID)
 
-            elif noAlignNonSMFlag == 1:
+            elif flag == 6:
                 pdbID = line.split(" ")[0].strip().upper()
                 residueCode = line.split(" ")[1].split("-")[0].strip().upper()
                 chainID = line.split(" ")[1].split("-")[1].strip()
