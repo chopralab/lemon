@@ -26,7 +26,7 @@ class Options : public CLI::App {
     //! options. The *work_dir*, *ncpu*, and *entries* options are added
     //! automatically and additional options can be added with the `add_option`
     //! function.
-    Options() : work_dir_("."), ncpu_(1) {
+    Options() : work_dir_(".") {
         add_option("--work_dir,-w", work_dir_,
                    "Directory containing the MMTF or Hadoop files")
             ->ignore_case()
@@ -109,7 +109,7 @@ class Options : public CLI::App {
 
   private:
     std::string work_dir_;
-    size_t ncpu_;
+    size_t ncpu_ = 1;
     std::string entries_;
     std::string skip_entries_;
 };

@@ -23,7 +23,7 @@ pushd $ROOT > /dev/null
 for file in $(find progs -name '*.?pp')
 do
     echo "===== checking ${file} ======"
-    clang-tidy-9 -p . $file -header-filter='.*'
+    clang-tidy-9 --quiet -p . $file
 done
 
 popd > /dev/null

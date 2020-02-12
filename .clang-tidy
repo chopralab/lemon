@@ -2,6 +2,8 @@
 Checks:          'clang-diagnostic-*,clang-analyzer-*,
 		              clang-*,
                   bugprone-*,
+                  modernize-*,
+                  -modernize-use-trailing-return-type,
                   misc-*,
                   -misc-noexcept-move-constructor,
                   performance-*,
@@ -19,7 +21,7 @@ Checks:          'clang-diagnostic-*,clang-analyzer-*,
                   -cppcoreguidelines-pro-type-vararg'
 
 WarningsAsErrors: ''
-HeaderFilterRegex: 'include/lemon/*.hpp'
+HeaderFilterRegex: '.*'
 AnalyzeTemporaryDtors: true
 FormatStyle:     llvm
 CheckOptions:
@@ -88,7 +90,7 @@ CheckOptions:
   - key:             cert-oop54-cpp.WarnOnlyIfThisHasSuspiciousField
     value:           '0'
   - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
-    value:           '1.0;100.0;1.0;2.0;3.0;0.1;0.5;0.75;1e-10;'
+    value:           '1.0;100.0;1.0;2.0;3.0;0.01;0.5;0.75;1e-10;'
   - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues
     value:           '1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20;27;'
   - key:             cppcoreguidelines-explicit-virtual-functions.FinalSpelling
@@ -252,7 +254,7 @@ CheckOptions:
   - key:             readability-inconsistent-declaration-parameter-name.Strict
     value:           '0'
   - key:             readability-magic-numbers.IgnoredFloatingPointValues
-    value:           '1.0;100.0;1.0;2.0;3.0;0.1;0.5;0.75;1e-10;'
+    value:           '1.0;100.0;1.0;2.0;3.0;0.01;0.5;0.75;1e-10;'
   - key:             readability-magic-numbers.IgnoredIntegerValues
     value:           '1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20;27;'
   - key:             readability-redundant-smartptr-get.IgnoreMacros

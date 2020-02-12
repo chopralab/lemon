@@ -23,7 +23,7 @@ struct string_view {
             throw std::out_of_range("string_view::substr()");
         }
 
-        return string_view(begin() + pos, std::min(n, size() - pos));
+        return {begin() + pos, std::min(n, size() - pos)};
     }
 
     char operator[](size_t pos) { return begin_[pos]; }
@@ -84,7 +84,7 @@ static string_view trim(string_view string) {
         end++;
     }
 
-    return string_view(begin, static_cast<size_t>(end - begin));
+    return {begin, static_cast<size_t>(end - begin)};
 }
 
 static const std::map<std::string, DUBSParser::TAG_TYPE> TAGS = {

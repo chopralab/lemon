@@ -122,7 +122,7 @@ inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
     pathvec.reserve(700); // NOLINT typlically 700. Keeping the magic number
 
     dp = opendir(p.c_str());
-    if (dp == NULL) {
+    if (dp == nullptr) {
         throw std::runtime_error("Path does not exist or could not be read.");
     }
 

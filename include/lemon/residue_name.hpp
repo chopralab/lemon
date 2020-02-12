@@ -159,9 +159,9 @@ inline bool operator<(const ResidueName& lhs, const ResidueName& rhs) {
     return false;
 }
 
-typedef std::unordered_map<ResidueName, std::size_t, ResidueNameHash>
-    ResidueNameCount;
-typedef std::set<ResidueName> ResidueNameSet;
+using ResidueNameCount =
+      std::unordered_map<ResidueName, std::size_t, ResidueNameHash>;
+using ResidueNameSet = std::set<ResidueName> ;
 
 inline std::ostream& operator<<(std::ostream& os, const ResidueName& res_name) {
     auto& resn = *res_name;

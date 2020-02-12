@@ -15,7 +15,7 @@
 
 namespace lemon {
 
-typedef std::unordered_set<std::string> Entries;
+using Entries = std::unordered_set<std::string>;
 
 inline std::string::value_type toupper(std::string::value_type ch) {
     return static_cast<std::string::value_type>(std::toupper(ch));
