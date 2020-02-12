@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 
 project(lemon C CXX)
 
-set(LEMON_VERSION 0.1.2)
+set(LEMON_VERSION 0.2.0)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
@@ -10,7 +10,7 @@ option(BUILD_SHARED_LIBS "Link lemon programs dynamically" ON)
 option(LEMON_TEST_ASYNC "Build an additional test for async parallelism" OFF)
 option(LEMON_BUILD_DOCS "Build documentation" OFF)
 option(LEMON_BENCHMARK "Should the programs be benchmarked?" OFF)
-option(LEMON_BUILD_PROGS "Should the tests and other programs be build" ON)
+option(LEMON_BUILD_PROGS "Should the tests and other programs be built?" ON)
 
 option(LEMON_BUILD_PYTHON "Build Python support" OFF)
 option(LEMON_EXTERNAL_CHEMFILES "Should we use an external chemfiles?" OFF)

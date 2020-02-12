@@ -2,19 +2,25 @@
 #include <iostream>
 #include <mutex>
 
+// Mac OSX problems with a tolower macro
+#include "lemon/lemon.hpp"
+#include "lemon/launch.hpp"
+#include "lemon/external/gaurd.hpp"
+
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #pragma clang diagnostic ignored "-Wold-style-cast"
 #pragma clang diagnostic ignored "-Wmissing-braces"
 #pragma clang diagnostic ignored "-Wdocumentation"
 #pragma clang diagnostic ignored "-Wdeprecated"
 #pragma clang diagnostic ignored "-Wsign-conversion"
-
+#elif __GNUC__
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
 
-// Mac OSX problems with a tolower macro
-#include "lemon/lemon.hpp"
-#include "lemon/launch.hpp"
+LEMON_EXTERNAL_FILE_PUSH
 #include <pybind11/embed.h>
+LEMON_EXTERNAL_FILE_POP
 
 namespace python = pybind11;
 

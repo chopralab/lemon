@@ -17,8 +17,8 @@ int main(int argc, char* argv[]) {
     o.add_option("--bin_size,-b", bin_size, "Size of the length(stretch) bin.");
     o.parse_command_line(argc, argv);
 
-    auto worker = [bin_size](chemfiles::Frame entry,
-                             const std::string& pdbid) {
+    auto worker = [bin_size](const chemfiles::Frame& entry,
+                             const std::string& pdbid) -> StretchCounts {
         StretchCounts bins;
 
         // Selection phase

@@ -2,13 +2,13 @@ from skbuild import setup
 
 LONG_DESCRIPTION = """Lemon is a framework and API for mining information from
 the PDB and other sources. This module provides the Python bindings to the Lemon
-framework to allow users to create Lemon workflows completly in Python without
+framework to allow users to create Lemon workflows completely in Python without
 building any C++ executable. See the documentation at
 http://chopralab.github.io/lemon"""
 
 setup(
     name= "candiy_lemon",
-    version="0.1.3",
+    version="0.2.0",
     long_description=LONG_DESCRIPTION,
     description="Mine data from the PDB in minutes",
     keywords="chemistry computational cheminformatics proteins structural biology",

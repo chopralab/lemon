@@ -5,12 +5,20 @@
 #include <list>
 
 #include "lemon/residue_name.hpp"
+
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
 #include <chemfiles.hpp>
+LEMON_EXTERNAL_FILE_POP
 
 namespace lemon {
 
 //! Prune selected residues by removing them based on a criterion
 namespace prune {
+
+//! The default distance used for pruning
+auto constexpr DEFAULT_DISTANCE = 6.0;
 
 //! Remove residues which are biologic copies of one another in a crystal
 //!
@@ -89,7 +97,8 @@ inline void cofactors(const chemfiles::Frame& frame, Container& residue_ids,
 template <typename Container1, typename Container2 = Container1>
 inline void interactions(const chemfiles::Frame& frame, Container1& residue_ids,
                          const Container2& interaction_ids,
-                         double distance_cutoff = 6.0, bool keep = true) {
+                         double distance_cutoff = DEFAULT_DISTANCE,
+                         bool keep = true) {
     const auto& residues = frame.topology().residues();
 
     residue_ids.erase(
@@ -132,7 +141,7 @@ template <typename Container1, typename Container2 = Container1>
 inline void keep_interactions(const chemfiles::Frame& frame,
                               Container1& residue_ids,
                               const Container2& interaction_ids,
-                              double distance_cutoff = 6.0) {
+                              double distance_cutoff = DEFAULT_DISTANCE) {
     interactions(frame, residue_ids, interaction_ids, distance_cutoff, true);
 }
 
@@ -152,7 +161,7 @@ template <typename Container1, typename Container2 = Container1>
 inline void remove_interactions(const chemfiles::Frame& frame,
                                 Container1& residue_ids,
                                 const Container2& interaction_ids,
-                                double distance_cutoff = 6.0) {
+                                double distance_cutoff = DEFAULT_DISTANCE) {
     interactions(frame, residue_ids, interaction_ids, distance_cutoff, false);
 }
 

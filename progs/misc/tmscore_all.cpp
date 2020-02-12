@@ -14,8 +14,8 @@ int main(int argc, char* argv[]) {
     chemfiles::Trajectory traj(reference);
     chemfiles::Frame native = traj.read();
 
-    auto worker = [&native](chemfiles::Frame entry,
-                            const std::string& pdbid) {
+    auto worker = [&native](const chemfiles::Frame& entry,
+                            const std::string& pdbid) -> std::string {
 
         auto tm = lemon::tmalign::TMscore(entry, native);
 

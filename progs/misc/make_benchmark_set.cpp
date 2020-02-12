@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
     lemon::Options o;
     std::string outdir = ".";
-    auto distance = 6.0;
+    auto distance = lemon::prune::DEFAULT_DISTANCE;
     o.add_option("--distance,-d", distance,
                  "Largest distance between protein and a small molecule.");
     o.add_option("--outdir,-o", outdir, "output directory");
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
     std::ifstream is(o.entries());
     lemon::read_entry_file(is, entries, rnms);
 
-    auto worker = [distance, &rnms, &outdir](chemfiles::Frame entry,
+    auto worker = [distance, &rnms, &outdir](const chemfiles::Frame& entry,
                                              const std::string& pdbid) {
 
         // Selection phase

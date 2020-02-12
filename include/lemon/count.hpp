@@ -8,7 +8,11 @@
 
 #include "lemon/entries.hpp"
 #include "lemon/residue_name.hpp"
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
 #include <chemfiles.hpp>
+LEMON_EXTERNAL_FILE_POP
 
 namespace lemon {
 

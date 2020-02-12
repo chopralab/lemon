@@ -62,6 +62,11 @@
 #include <utility>
 #include <vector>
 
+#ifdef __clang__
+#    pragma clang system_header
+#elif defined __GNUC__
+#    pragma GCC system_header
+#endif
 
 // Verbatim copy from CLI/Version.hpp:
 
@@ -70,9 +75,6 @@
 #define CLI11_VERSION_MINOR 7
 #define CLI11_VERSION_PATCH 0
 #define CLI11_VERSION "1.7.0"
-
-
-
 
 // Verbatim copy from CLI/Macros.hpp:
 

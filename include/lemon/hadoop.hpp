@@ -1,22 +1,29 @@
 #ifndef LEMON_HADOOP_HPP
 #define LEMON_HADOOP_HPP
 
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#ifndef _MSVC_LANG
 #include <chemfiles/Frame.hpp>
 #include <chemfiles/Trajectory.hpp>
 
-#ifndef _MSVC_LANG
 #include <arpa/inet.h>
 #include <dirent.h>
 #else
 #include <WinSock2.h>
+#include <chemfiles/Frame.hpp>
+#include <chemfiles/Trajectory.hpp>
 #include <lemon/external/dirent.hpp>
 #endif
+LEMON_EXTERNAL_FILE_POP
 
 #include <cassert>
 #include <cstdint>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <array>
 
 namespace lemon {
 
@@ -50,6 +57,8 @@ class Hadoop {
     //! PDB ID and the second contains the GZ compressed MMTF file.
     std::pair<std::string, std::vector<char>> next() { return read(); }
 
+    //! The size of the starting header
+    static auto constexpr HADOOP_HEADER_SIZE = 90;
   private:
     std::istream& stream_;
     std::string marker_ = "";
@@ -59,8 +68,8 @@ class Hadoop {
     void initialize_() {
         // Completly skip the header as it is the same in all RCSB Hadoop files
         stream_.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-        char buffer[90];
-        stream_.read(buffer, 87);
+        std::array<char, HADOOP_HEADER_SIZE> buffer;
+        stream_.read(buffer.data(), HADOOP_HEADER_SIZE - 3);
     }
 
     // Read four bytes and return as an 4 byte integer
@@ -72,10 +81,11 @@ class Hadoop {
 
     std::pair<std::string, std::vector<char>> read() {
         auto sync_check = read_int();
+        auto constexpr MARKER_SIZE = 16;
 
         if (sync_check == -1) {
-            std::vector<char> marker(16);
-            stream_.read(marker.data(), 16);
+            std::vector<char> marker(MARKER_SIZE);
+            stream_.read(marker.data(), MARKER_SIZE);
             // Only valid if using the full version
             // assert(std::string(marker.data(), 16) == marker_);
             return this->read();
@@ -93,8 +103,8 @@ class Hadoop {
         assert(sync_check >= 8);
 
         // Remove junk characters added by Java Serialization
-        char junk[4];
-        stream_.read(junk, 4);
+        std::array<char, 4> junk;
+        stream_.read(junk.data(), 4);
 
         int value_length = sync_check - key_length;
         std::vector<char> value(static_cast<size_t>(value_length - 4));
@@ -107,17 +117,16 @@ class Hadoop {
 //! \brief Read a directory containing hadoop sequence files
 inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
 
-    struct dirent* entry;
     DIR* dp;
     std::vector<std::string> pathvec;
-    pathvec.reserve(700);
+    pathvec.reserve(700); // NOLINT typlically 700. Keeping the magic number
 
     dp = opendir(p.c_str());
-    if (dp == NULL) {
+    if (dp == nullptr) {
         throw std::runtime_error("Path does not exist or could not be read.");
     }
 
-    while ((entry = readdir(dp))) {
+    for (auto entry = readdir(dp); entry != nullptr; entry = readdir(dp)) {
         if (entry->d_name[0] == '_' || entry->d_name[0] == '.' ||
             entry->d_type != DT_REG) {
             continue;
@@ -131,7 +140,8 @@ inline std::vector<std::string> read_hadoop_dir(const std::string& p) {
                 "remove files with extensions if you are sure the seqeunce "
                 "files are valid.");
         }
-        s = p + '/' + s;
+        s.insert(0, "/");
+        s.insert(0, p);
         pathvec.emplace_back(s);
     }
 

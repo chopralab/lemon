@@ -6,6 +6,7 @@
 #include <istream>
 #include <sstream>
 #include <string>
+#include <cctype>
 #include <unordered_set>
 #include <vector>
 #include <algorithm>
@@ -14,14 +15,22 @@
 
 namespace lemon {
 
-typedef std::unordered_set<std::string> Entries;
+using Entries = std::unordered_set<std::string>;
+
+inline std::string::value_type toupper(std::string::value_type ch) {
+    return static_cast<std::string::value_type>(std::toupper(ch));
+}
+
+inline std::string::value_type tolower(std::string::value_type ch) {
+    return static_cast<std::string::value_type>(std::tolower(ch));
+}
 
 inline Entries read_entry_file(std::istream& input) {
     Entries result;
     std::string temp;
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
-        std::transform(a.begin(), a.end(), a.begin(), ::toupper);
+        std::transform(a.begin(), a.end(), a.begin(), toupper);
         result.insert(a);
     }
     return result;
@@ -45,11 +54,12 @@ inline Entries read_entry_file(const std::string& input) {
 inline void
 read_entry_file(std::istream& input, Entries& result,
                 std::unordered_map<std::string, ResidueNameSet>& rnm) {
-    std::string temp, item;
+    std::string temp;
+    std::string item;
     while (std::getline(input, temp)) {
         std::string a = temp.substr(0, 4);
 
-        std::transform(a.begin(), a.end(), a.begin(), ::toupper);
+        std::transform(a.begin(), a.end(), a.begin(), toupper);
 
         std::stringstream ss(temp);
         std::vector<std::string> residue_names;

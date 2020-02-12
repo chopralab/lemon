@@ -7,8 +7,8 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    auto worker = [](chemfiles::Frame entry,
-                     const std::string& pdbid) {
+    auto worker = [](const chemfiles::Frame& entry,
+                     const std::string& pdbid) -> std::string {
 
         // Selection phase
         std::list<size_t> smallm;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
         for (auto smallm_id : smallm) {
             auto prot_copy = proteins;
 
-            lemon::prune::keep_interactions(entry, smallm, prot_copy, 8.0);
+            lemon::prune::keep_interactions(entry, smallm, prot_copy, lemon::xscore::DEFAULT_INTERACTION_DISTANCE);
             prot_copy.erase(std::remove(prot_copy.begin(), prot_copy.end(), smallm_id), prot_copy.end());
 
             auto vscore =

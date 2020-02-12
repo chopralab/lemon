@@ -14,16 +14,16 @@ static void mkdir(const std::string& dir) {
 
 struct string_view {
 
+    string_view() = default;
     string_view(const char* c, size_t length) : begin_(c), length_(length) {}
     string_view(const std::string& s) : begin_(&s[0]), length_(s.length()) {}
-    string_view(const string_view& o) = default;
 
     string_view substr(size_t pos, size_t n) {
         if (pos > size()) {
             throw std::out_of_range("string_view::substr()");
         }
 
-        return string_view(begin() + pos, std::min(n, size() - pos));
+        return {begin() + pos, std::min(n, size() - pos)};
     }
 
     char operator[](size_t pos) { return begin_[pos]; }
@@ -84,7 +84,7 @@ static string_view trim(string_view string) {
         end++;
     }
 
-    return string_view(begin, static_cast<size_t>(end - begin));
+    return {begin, static_cast<size_t>(end - begin)};
 }
 
 static const std::map<std::string, DUBSParser::TAG_TYPE> TAGS = {
@@ -199,7 +199,7 @@ static DUBSParser::TAG_TYPE get_tag(const std::string& s) {
     auto a = std::string(trimmed.begin(), trimmed.end());
 
     // strip spaces
-    std::transform(a.begin(), a.end(), a.begin(), ::tolower);
+    std::transform(a.begin(), a.end(), a.begin(), lemon::tolower);
 
     auto tag = TAGS.find(a);
     if (tag == TAGS.end()) {
@@ -223,7 +223,7 @@ void DUBSParser::parse_stream(std::istream& i) {
             break;
         case TAG_TYPE::REFERENCE:
             std::getline(i, line);
-            parse_reference(std::move(line));
+            parse_reference(line);
             current_tag_ = TAG_TYPE::NONE;
             continue;
         case TAG_TYPE::END:
@@ -251,12 +251,12 @@ void DUBSParser::parse_stream(std::istream& i) {
             current_tag_ == TAG_TYPE::LIGAND_ALIGN ||
             current_tag_ == TAG_TYPE::LIGAND_NO_ALIGN) {
                 
-            parse_complex(std::move(line));
+            parse_complex(line);
         }
     }
 }
 
-void DUBSParser::parse_reference(std::string line) {
+void DUBSParser::parse_reference(const std::string& line) {
     auto split = split_string(trim(line));
 
     current_reference_ = split[0].to_string();
@@ -264,7 +264,7 @@ void DUBSParser::parse_reference(std::string line) {
     entries_to_use_.insert(current_reference_);
 
     std::transform(current_reference_.begin(), current_reference_.end(),
-                    current_reference_.begin(), ::toupper);
+                    current_reference_.begin(), lemon::toupper);
 
     auto reference_path = split[1].to_string();
     reference_to_path_[current_reference_] = reference_path;
@@ -276,7 +276,7 @@ void DUBSParser::parse_reference(std::string line) {
     }
 
     chemfiles::Trajectory trj(reference_path, 'r');
-    reference_to_structure_[current_reference_] = std::move(trj.read());
+    reference_to_structure_[current_reference_] = trj.read();
 
     if (split.size() >= 3) {
         auto ligand = split[2].to_string();
@@ -284,11 +284,11 @@ void DUBSParser::parse_reference(std::string line) {
     }
 }
 
-void DUBSParser::parse_complex(std::string line) {
+void DUBSParser::parse_complex(const std::string& line) {
     auto split = split_string(trim(line));
     auto entry = split[0].to_string();
 
-    std::transform(entry.begin(), entry.end(), entry.begin(), ::toupper);
+    std::transform(entry.begin(), entry.end(), entry.begin(), lemon::toupper);
 
     entries_to_use_.insert(entry);
     entries_to_tag_[entry] = current_tag_;

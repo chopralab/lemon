@@ -1,4 +1,6 @@
 function(setup_prog _name_)
+    set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
+
     if(${LEMON_TEST_ASYNC})
         target_compile_definitions(${_name_} PRIVATE LEMON_USE_ASYNC=1)
     endif()
@@ -27,9 +29,7 @@ endfunction(setup_prog)
 function(add_cpp_prog _file_)
     get_filename_component(_name_ ${_file_} NAME_WE)
     set(_name_ lm_${_name_})
-
     add_executable(${_name_} ${_file_})
-    set_target_properties(${_name_} PROPERTIES LINKER_LANGUAGE CXX)
 
     setup_prog(${_name_})
 endfunction(add_cpp_prog)
@@ -48,6 +48,5 @@ endforeach(prog_file)
 # Add DUBS
 
 add_executable( dubs dubs/dubs.cpp dubs/parser.cpp )
-
 target_include_directories(dubs PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/dubs)
 setup_prog(dubs)

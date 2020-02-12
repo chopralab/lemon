@@ -17,32 +17,13 @@ if [[ ! -f "$ROOT/compile_commands.json" ]]; then
 fi
 
 HEADERS='include/lemon/*.hpp'
-CHECKS="clang-*,\
-        modernize-*,\
-        bugprone-*,\
-        misc-*,\
-            -misc-noexcept-move-constructor,\
-        performance-*,\
-        readability-*,\
-            -readability-container-size-empty,\
-            -readability-implicit-bool-cast,\
-            -readability-else-after-return,\
-        cppcoreguidelines-*,\
-            -cppcoreguidelines-pro-type-union-access,\
-            -cppcoreguidelines-pro-type-member-init,\
-            -cppcoreguidelines-pro-bounds-pointer-arithmetic,\
-            -cppcoreguidelines-pro-type-reinterpret-cast,\
-            -cppcoreguidelines-pro-bounds-constant-array-index,\
-            -cppcoreguidelines-pro-bounds-array-to-pointer-decay,\
-            -cppcoreguidelines-pro-type-vararg,\
-            "
 
 pushd $ROOT > /dev/null
 
-for file in $(find test progs -name '*.?pp')
+for file in $(find progs -name '*.?pp')
 do
     echo "===== checking ${file} ======"
-    clang-tidy-6.0 -p . -checks="${CHECKS}" -analyze-temporary-dtors -header-filter="${HEADERS}" $file
+    clang-tidy-9 --quiet -p . $file
 done
 
 popd > /dev/null

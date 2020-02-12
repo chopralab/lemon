@@ -1,21 +1,20 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "lemon/lemon.hpp"
-#include "lemon/launch.hpp"
-#include "lemon/geometry.hpp"
-#include "lemon/tmalign.hpp"
-#include "lemon/xscore.hpp"
+#include "lemon/external/gaurd.hpp"
 
-#include "chemfiles.hpp"
-
-#pragma clang diagnostic push
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #pragma clang diagnostic ignored "-Wold-style-cast"
 #pragma clang diagnostic ignored "-Wmissing-braces"
 #pragma clang diagnostic ignored "-Wdocumentation"
 #pragma clang diagnostic ignored "-Wdeprecated"
 #pragma clang diagnostic ignored "-Wsign-conversion"
-
+#elif __GNUC__
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
 
+LEMON_EXTERNAL_FILE_PUSH
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
 
@@ -32,5 +31,4 @@ PYBIND11_MODULE(lemon, m) {
     add_lemon_features(m);
     add_chemfiles_features(m);
 }
-
-#pragma clang diagnostic pop
+LEMON_EXTERNAL_FILE_POP

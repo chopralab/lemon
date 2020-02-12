@@ -5,8 +5,12 @@
 #include <set>
 #include <unordered_set>
 
-#include "chemfiles/Frame.hpp"
-#include "chemfiles/Topology.hpp"
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#include <chemfiles/Frame.hpp>
+#include <chemfiles/Topology.hpp>
+LEMON_EXTERNAL_FILE_POP
 
 namespace lemon {
 

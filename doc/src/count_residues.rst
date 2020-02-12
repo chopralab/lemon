@@ -13,7 +13,7 @@ the current thread as the key.
 
 .. literalinclude:: ../../progs/count/residues.cpp
    :language: cpp
-   :lines: 6-21
+   :lines: 6-23
    :dedent: 4
 
 Looking at a residue property

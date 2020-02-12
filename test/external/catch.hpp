@@ -1,3 +1,4 @@
+// clang-format off
 /*
  *  Catch v1.11.0
  *  Generated: 2017-10-31 13:42:42.914833
@@ -10,6 +11,16 @@
  */
 #ifndef TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
 #define TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
+
+#ifdef _MSVC_LANG
+__pragma(warning(push))
+__pragma(warning(disable : 4365))
+__pragma(warning(disable : 4388))
+__pragma(warning(disable : 5039))
+__pragma(warning(disable : 26451))
+__pragma(warning(disable : 26495))
+__pragma(warning(disable : 26812))
+#endif
 
 #define TWOBLUECUBES_CATCH_HPP_INCLUDED
 
@@ -11601,4 +11612,9 @@ using Catch::Detail::Approx;
 #    pragma GCC diagnostic pop
 #endif
 
+#ifdef _MSVC_LANG
+__pragma(warning(pop))
+#endif
+
 #endif // TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
+    // clang-format on

@@ -6,7 +6,12 @@
 #include <limits>
 #include <cmath>
 
-#include "chemfiles/Frame.hpp"
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+#include <chemfiles/Frame.hpp>
+LEMON_EXTERNAL_FILE_POP
+
 #include "lemon/matrix.hpp"
 
 namespace lemon {
@@ -42,7 +47,7 @@ inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
     a_search.reserve(search_res.size());
     a_native.reserve(native_res.size());
 
-    auto n_ali = 0ul;
+    auto n_ali = 0UL;
     for (const auto& s_res : search_res) {
         auto i = find_element_by_name(search, s_res, "CA");
 
@@ -50,7 +55,10 @@ inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
             continue;
         }
 
-        auto s_chain_name = s_res.get("chainname")->as_string();
+        auto s_chainname = s_res.get("chainname");
+        auto s_chain_name = s_chainname &&
+                            s_chainname->kind() == chemfiles::Property::STRING?
+            s_chainname->as_string() : "ZZZ";
 
         // Check to see if we have forced a chain ID
         if (!s_chain.empty() && s_chain_name != s_chain) {
@@ -62,7 +70,11 @@ inline unsigned long find_operlapping_residues(const chemfiles::Frame& search,
                 continue;
             }
 
-            auto n_chain_name = n_res.get("chainname")->as_string();
+            auto n_chainname = n_res.get("chainname");
+            auto n_chain_name = n_chainname &&
+                            n_chainname->kind() == chemfiles::Property::STRING?
+            n_chainname->as_string() : "ZZZ";
+
             if (s_chain_name != n_chain_name && s_chain.empty()) {
                 continue;
             }
@@ -129,23 +141,25 @@ inline TMResult TMscore_helper(const chemfiles::Frame& search,
     }
 
     // parameters:
+    // NOLINTNEXTLINE These are from a published algorithm
     auto d0 = 1.24 * std::pow(n_seq - 15, 1.0 / 3.0) - 1.8;
     d0 = std::max(0.5, d0);
 
+    // NOLINTNEXTLINE These are from a published algorithm
     auto d0_search = clamp(d0, 4.5, 8.0);
 
     // iterative parameters
-    auto max_iter = 20ul;      // maximum number of iterations
-    auto local_init_max = 6ul; // maximum number of local starting points
+    auto max_iter = 20UL;      // maximum number of iterations
+    auto local_init_max = 6UL; // maximum number of local starting points
 
     auto local_init = std::vector<size_t>();
     local_init.reserve(local_init_max);
 
-    auto local_init_min = std::min(n_ali, 4ul);
+    auto local_init_min = std::min(n_ali, 4UL);
 
     // Setup up the number of local structure iterations in local_init
     // The last value of this array must be less than or equal to local_init_min
-    auto n_init = 0ul; // Total number of local iterations. [0, local_init_max]
+    auto n_init = 0UL; // Total number of local iterations. [0, local_init_max]
     while (n_init < local_init_max - 1) {
         auto temp = std::pow(2.0, -1.0 * static_cast<double>(n_init));
         temp *= static_cast<double>(n_ali);
@@ -245,7 +259,7 @@ inline TMResult TMscore_helper(const chemfiles::Frame& search,
 
     for (auto local_start : local_init) {
 
-        for (auto iL = 1ul; iL <= n_ali - local_start + 1; ++iL) {
+        for (auto iL = 1UL; iL <= n_ali - local_start + 1; ++iL) {
 
             double score;
             auto cut_ids = std::vector<size_t>();
@@ -261,11 +275,11 @@ inline TMResult TMscore_helper(const chemfiles::Frame& search,
 
             if (score > score_max) {
                 score_max = score;
-                best_affine = std::move(affine);
+                best_affine = affine;
             }
 
             // iterations for extending the local search
-            for (auto it = 0ul; it <= max_iter; ++it) {
+            for (auto it = 0UL; it <= max_iter; ++it) {
                 std::tie(rotated, aligned, affine) = rotate_substructure(0, cut_ids.size(), cut_ids);
 
                 // get scores, n_cut+cut_scored_ids(i) for iteration
@@ -273,7 +287,7 @@ inline TMResult TMscore_helper(const chemfiles::Frame& search,
 
                 if (score > score_max) {
                     score_max = score;
-                    best_affine = std::move(affine);
+                    best_affine = affine;
                 }
 
                 if (cut_ids == aligned) {

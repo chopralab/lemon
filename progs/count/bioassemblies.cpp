@@ -6,7 +6,8 @@
 int main(int argc, char* argv[]) {
     lemon::Options o(argc, argv);
 
-    auto worker = [](chemfiles::Frame entry, const std::string& pdbid) {
+    auto worker = [](const chemfiles::Frame& entry,
+                     const std::string& pdbid) -> std::string {
 
         // Desired info is obtained directly
         auto result = lemon::count::residue_property(entry, "assembly");

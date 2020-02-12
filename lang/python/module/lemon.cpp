@@ -7,21 +7,24 @@
 #include "lemon/geometry.hpp"
 #include "lemon/tmalign.hpp"
 #include "lemon/xscore.hpp"
+#include "lemon/external/gaurd.hpp"
 
-#include "chemfiles.hpp"
-
-#pragma clang diagnostic push
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #pragma clang diagnostic ignored "-Wold-style-cast"
 #pragma clang diagnostic ignored "-Wmissing-braces"
 #pragma clang diagnostic ignored "-Wdocumentation"
 #pragma clang diagnostic ignored "-Wdeprecated"
 #pragma clang diagnostic ignored "-Wsign-conversion"
-
+#elif __GNUC__
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
 
+LEMON_EXTERNAL_FILE_PUSH
+#include <chemfiles.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
+LEMON_EXTERNAL_FILE_POP
 
 namespace py = pybind11;
 
@@ -324,5 +327,3 @@ void add_lemon_features(py::module& m) {
 
     m.def("TMscore", tmalign::TMscore);
 }
-
-#pragma clang diagnostic pop

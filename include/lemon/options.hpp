@@ -1,8 +1,13 @@
 #ifndef LEMON_OPTIONS_HPP
 #define LEMON_OPTIONS_HPP
 
+#include "lemon/external/gaurd.hpp"
+
+LEMON_EXTERNAL_FILE_PUSH
+// NOLINTNEXTLINE External library uses a define
 #define CLI11_EXPERIMENTAL_OPTIONAL 0
 #include "lemon/external/CLI11.hpp"
+LEMON_EXTERNAL_FILE_POP
 
 namespace lemon {
 
@@ -21,7 +26,7 @@ class Options : public CLI::App {
     //! options. The *work_dir*, *ncpu*, and *entries* options are added
     //! automatically and additional options can be added with the `add_option`
     //! function.
-    Options() : work_dir_("."), ncpu_(1) {
+    Options() : work_dir_(".") {
         add_option("--work_dir,-w", work_dir_,
                    "Directory containing the MMTF or Hadoop files")
             ->ignore_case()
@@ -53,8 +58,24 @@ class Options : public CLI::App {
     //!  Typically obtained from the `main` function.
     //! \param argv The arguments and their values. Typically obtained from the
     //!  `main` function.
-    Options(int argc, const char* const argv[]) : Options() {
+    Options(int argc, const char* const argv[]) : Options() { // NOLINT should be C-style
         parse_command_line(argc, argv);
+    }
+
+    //! Adds an option to the current workflow
+    //!
+    //! \param option_name The name of the option on the command line
+    //! \param variable The location used to store the variable
+    //! \param description The description of the new option
+    template<typename T>
+    CLI::Option *add_option(std::string option_name, T &variable,
+                       std::string description = "") noexcept {
+        try {
+            return CLI::App::add_option(option_name, variable, description, true);
+        } catch (CLI::Error& e) {
+            this->exit(e);
+            std::exit(1);
+        }
     }
 
     //! Parse the command-line arguments and update containers
@@ -65,10 +86,10 @@ class Options : public CLI::App {
     //!  obtained from the `main` function.
     //! \param argv The arguments and their values. Typically obtained from the
     //!  `main` function.
-    void parse_command_line(int argc, const char* const argv[]) {
+    void parse_command_line(int argc, const char* const argv[]) { // NOLINT should be cy-style
         try {
             parse((argc), (argv));
-        } catch (const CLI::ParseError& e) {
+        } catch (const CLI::Error& e) {
             this->exit(e);
             std::exit(1);
         }
@@ -88,7 +109,7 @@ class Options : public CLI::App {
 
   private:
     std::string work_dir_;
-    size_t ncpu_;
+    size_t ncpu_ = 1;
     std::string entries_;
     std::string skip_entries_;
 };
