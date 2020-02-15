@@ -48,10 +48,18 @@ def parse_input_file(fname):
             flag = 6
         elif line.startswith("@<end>"):
             flag = 0
+        elif line.startswith("@"):
+            print("Invalid tag (@<>) detected, please check all tags are in the proper format")
+            sys.exit(1)
         else:
             # If the line does not contain a flag
             # Add info to appropriate dictionary based of set flags
             if flag == 1:
+                # Error Check
+                if len(line.split(" ")) != 2 or len(line.split(" ")) != 3:
+                    print("Invalid input under @<reference> tag, please check to ensure proper input")
+                    sys.exit(1)
+
                 pdbID = line.split(" ")[0].strip().upper()
                 path = line.split(" ")[1].strip()
                 curRefPdbID = pdbID
@@ -62,6 +70,10 @@ def parse_input_file(fname):
                     referenceLigandDict[pdbID] = chemID 
             
             elif flag == 2:
+                if len(line.split(" ")) != 2:
+                    print("Invalid input under @<align_prot> tag, please check to ensure proper input")
+                    sys.exit(1)
+
                 pdbID = line.split(" ")[0].strip()
                 chemID = line.split(" ")[1].strip()
 
@@ -78,6 +90,10 @@ def parse_input_file(fname):
                 entries.add(pdbID)
 
             elif flag == 3:
+                if len(line.split("")) != 2:
+                    print("Invalid input under @<align_sm_ligands> tag, please check to ensure proper input")
+                    sys.exit(1)
+
                 pdbID = line.split(" ")[0].strip()
                 chemID = line.split(" ")[1].strip()
 
@@ -94,6 +110,10 @@ def parse_input_file(fname):
                 entries.add(pdbID)
 
             elif flag == 4:
+                if len(line.split(" ")) != 3:
+                    print("Invalid input under @<align_non_sm_ligands> tag, please check to ensure proper input")
+                    sys.exit(1)
+
                 pdbID = line.split(" ")[0].strip().upper()
                 residueCode = line.split(" ")[1].split("-")[0].strip().upper()
                 chainID = line.split(" ")[1].split("-")[1].strip().upper()
@@ -112,6 +132,10 @@ def parse_input_file(fname):
                 entries.add(pdbID)
             
             elif flag == 5:
+                if len(line.split(" ")) != 2:
+                    print("Invalid input under @<no_align_sm_ligands> tag, please check to ensure proper input")
+                    sys.exit(1)
+
                 pdbID = line.split(" ")[0].strip().upper()
                 chemID = line.split(" ")[1].strip().upper()
 
@@ -123,6 +147,10 @@ def parse_input_file(fname):
                 entries.add(pdbID)
 
             elif flag == 6:
+                if len(line.split(" ")) != 3:
+                    print("Invalid input under @<no_align_non_sm_ligands> tag, please check to ensure proper input")
+                    sys.exit(1)
+
                 pdbID = line.split(" ")[0].strip().upper()
                 residueCode = line.split(" ")[1].split("-")[0].strip().upper()
                 chainID = line.split(" ")[1].split("-")[1].strip()
