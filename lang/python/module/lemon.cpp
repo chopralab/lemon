@@ -225,6 +225,10 @@ void add_lemon_features(py::module& m) {
     default_id_list (*peptides)(const Frame&) = &select::peptides;
     m.def("select_peptides", peptides);
 
+    default_id_list (*residue_ids)(const Frame&, const std::set<size_t>&) = 
+        &select::residue_ids;
+    m.def("select_residue_ids", residue_ids);
+
     default_id_list (*specific_residues)(const Frame&, const ResidueNameSet&) =
         &select::specific_residues;
     m.def("select_specific_residues", specific_residues);
@@ -248,6 +252,11 @@ void add_lemon_features(py::module& m) {
     size_t (*peptides_i)(const Frame&, default_id_list&) =
         &select::peptides;
     m.def("select_peptides", peptides_i);
+
+    size_t (*residue_ids_i)(const Frame&, default_id_list&, 
+                            const std::set<size_t>&) =
+        &select::residue_ids;
+    m.def("select_residue_ids", residue_ids_i);
 
     size_t (*specific_residues_i)(const Frame&, default_id_list&,
                                   const ResidueNameSet&) =

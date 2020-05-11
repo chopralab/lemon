@@ -145,7 +145,8 @@ inline Container metal_ions(const chemfiles::Frame& frame) {
 //! containing the *RNA* or *DNA* substring.
 //! \param [in] frame The entry containing nucleic acid residues.
 //! \param [out] output A container of residue IDs which have nucleic acid
-//! linkage \return The number of added residue IDs
+//! linkage
+//! \return The number of added residue IDs
 template <typename Container>
 inline size_t nucleic_acids(const chemfiles::Frame& frame, Container& output) {
 
@@ -235,9 +236,58 @@ inline Container peptides(const chemfiles::Frame& frame) {
 //! Select residues with a given name in a given frame
 //!
 //! This function populates the residue IDs of peptides matching a given name
-//! set. \param [in] frame The entry containing residues of interest. \param
-//! [out] output The residue IDs with names that match those in `resnames`
-//! \param [in] resnames The set of residue names of interest.
+//! set.
+//! \param [in] frame The entry containing residues of interest.
+//! \param [out] output The residue IDs with names that match those in `resnames`
+//! \param [in] resnis The set of residue names of interest.
+//! \return The number of added residue IDs
+template <typename Container>
+inline size_t residue_ids(const chemfiles::Frame& frame,
+                          Container& output,
+                          const std::set<size_t>& resis) {
+
+    const auto& residues = frame.topology().residues();
+    auto initialize_size = output.size();
+
+    for (size_t selected_residue = 0; selected_residue < residues.size();
+         ++selected_residue) {
+        const auto& residue_id = residues[selected_residue].id();
+
+        if (!residue_id) {
+            continue;
+        }
+
+        if (resis.count({*residue_id}) == 0) {
+            continue;
+        }
+
+        output.insert(output.end(), selected_residue);
+    }
+
+    return output.size() - initialize_size;
+}
+
+//! Select residues with a given id in a given frame
+//!
+//! This function returns the residue IDs of peptides matching a given name set.
+//! \param [in] frame The entry containing residues of interest.
+//! \param [in] resis The set of residue ids of interest.
+//! \return The residue IDs with names that match those in `resnames`
+template <typename Container = std::list<size_t>>
+inline Container residue_ids(const chemfiles::Frame& frame,
+                             const std::set<size_t>& resis) {
+    Container contain;
+    residue_ids(frame, contain, resis);
+    return contain;
+}
+
+//! Select residues with a given id in a given frame
+//!
+//! This function populates the residue IDs of peptides matching a given id
+//! set.
+//! \param [in] frame The entry containing residues of interest.
+//! \param [out] output The residue IDs with names that match those in `resnames`
+//! \param [in] resnids The set of residue names of interest.
 //! \return The number of added residue IDs
 template <typename Container>
 inline size_t specific_residues(const chemfiles::Frame& frame,
