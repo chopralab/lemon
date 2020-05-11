@@ -44,6 +44,12 @@ inline void residues(const chemfiles::Frame& input,
         auto res_new = chemfiles::Residue(res.name(), *(res.id()));
 
         for (size_t res_atom : res) {
+
+            auto altloc = input[res_atom].get<chemfiles::Property::STRING>("altloc").value_or(" ");
+            if (altloc != " " && altloc != "A") {
+                continue;
+            }
+
             new_frame.add_atom(input[res_atom], positions[res_atom]);
             res_new.add_atom(new_frame.size() - 1);
             old_to_new.insert({res_atom, new_frame.size() - 1});

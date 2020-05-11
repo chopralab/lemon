@@ -292,7 +292,7 @@ void add_lemon_features(py::module& m) {
      **************************************************************************/
     m.def("separate_residues", separate::residues<default_id_list>);
     m.def("separate_protein_and_ligand", separate::protein_and_ligand);
-    m.def("separate_protein_and_ligands", separate::protein_and_ligands);
+    m.def("separate_protein_and_ligands", separate::protein_and_ligands<default_id_list>);
 
     /**************************************************************************
      * geometry
