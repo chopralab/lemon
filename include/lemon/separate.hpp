@@ -50,11 +50,10 @@ inline void residues(const chemfiles::Frame& input,
             accepted_atoms.insert(res_atom);
         }
 
-        auto chainID = res.get("chainid");
-        auto newID = (chainID && chainID->kind() == chemfiles::Property::STRING)?
-            chainID->as_string() : "Z";
+        for (const auto& prop : res.properties()) {
+            res_new.set(prop.first, prop.second);
+        }
 
-        res_new.set("chainid", newID);
         new_frame.add_residue(std::move(res_new));
     }
 
@@ -75,10 +74,12 @@ inline void residues(const chemfiles::Frame& input,
 //! of that ligand. This function is meant to separate a ligand and relevent
 //! *environment* into separate *frame*s s that they can written to disk.
 //! \param [in] input The original Frame from where the residues will be copied.
-//! \param [in] ligand_id The residue IDs for the ligand.
+//! \param [in] ligand_id The residue ID for the ligand.
 //! \param [in] pocket_size The radius of the ligand environment copied into
-//! protein \param [in,out] protein The frame where the protein residues wil be
-//! copied to. \param [in,out] ligand The frame where the ligand residue will be
+//! protein
+//! \param [in,out] protein The frame where the protein residues wil be
+//! copied to.
+//! \param [in,out] ligand The frame where the ligand residue will be
 //! copied to.
 inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
                                double pocket_size, chemfiles::Frame& protein,
@@ -94,6 +95,12 @@ inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
         }
 
         const auto& res = residues[res_id];
+
+        // Do some cleaning up here
+        if (res.name() == "UNX" || res.name() == "UNL") {
+            continue;
+        }
+
         for (auto prot_atom : res) {
             for (auto lig_atom : ligand_residue) {
                 if (input.distance(prot_atom, lig_atom) < pocket_size) {
@@ -109,6 +116,57 @@ inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
     lemon::separate::residues(input, std::list<size_t>({ligand_id}), ligand);
 
     ligand.set("name", ligand_residue.name());
+}
+
+//! Separate ligands and surrounding protein pocket into individual frames.
+//!
+//! The environment surrounding ligands in a protein defines the *environment*
+//! of those ligands. This function is meant to separate ligands and relevent
+//! *environment* into separate *frame*s s that they can written to disk.
+//! \param [in] input The original Frame from where the residues will be copied.
+//! \param [in] ligand_ids The residue IDs for the ligand.
+//! \param [in] pocket_size The radius of the ligand environment copied into
+//! protein
+//! \param [in,out] protein The frame where the protein residues wil be
+//! copied to.
+//! \param [in,out] ligand The frame where the ligand residue will be
+//! copied to.
+template <typename Container>
+inline void protein_and_ligands(const chemfiles::Frame& input,
+                                const Container& ligand_ids,
+                                double pocket_size, chemfiles::Frame& protein,
+                                chemfiles::Frame& ligand) {
+    const auto& topology = input.topology();
+    const auto& residues = topology.residues();
+
+    std::list<size_t> accepted_residues;
+    for (size_t res_id = 0; res_id < residues.size(); ++res_id) {
+        const auto& res = residues[res_id];
+
+        // Do some cleaning up here
+        if (res.name() == "UNX" || res.name() == "UNL") {
+            continue;
+        }
+
+        for (auto lig_res : ligand_ids) {
+            if (lig_res == res_id) {
+                break;
+            }
+
+            for (auto prot_atom : res) {
+                for (auto lig_atom : residues[lig_res]) {
+                    if (input.distance(prot_atom, lig_atom) < pocket_size) {
+                        accepted_residues.push_back(res_id);
+                        goto found_interaction;
+                    }
+                }
+            }
+        }
+    found_interaction:;
+    }
+
+    lemon::separate::residues(input, accepted_residues, protein);
+    lemon::separate::residues(input, ligand_ids, ligand);
 }
 
 } // namespace separate
