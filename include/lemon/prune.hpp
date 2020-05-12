@@ -32,8 +32,8 @@ auto constexpr DEFAULT_DISTANCE = 6.0;
 //! \param [in] frame The `frame` containing residues of interest.
 //! \param [in,out] residue_ids The residue IDs to be pruned
 template <typename Container>
-inline void identical_residues(const chemfiles::Frame& frame,
-                               Container& residue_ids) {
+inline Container identical_residues(const chemfiles::Frame& frame,
+                                    Container& residue_ids) {
     auto& residues = frame.topology().residues();
 
     auto it = residue_ids.begin();
@@ -68,6 +68,8 @@ inline void identical_residues(const chemfiles::Frame& frame,
 
         ++it;
     }
+
+    return residue_ids;
 }
 
 //! Remove residues which are typically present in many crystal structures
@@ -81,8 +83,8 @@ inline void identical_residues(const chemfiles::Frame& frame,
 //! \param [in] rns The residue names that one wishes to remove from
 //! residue_ids.
 template <typename Container>
-inline void cofactors(const chemfiles::Frame& frame, Container& residue_ids,
-                      const ResidueNameSet& rns) {
+inline Container cofactors(const chemfiles::Frame& frame, Container& residue_ids,
+                           const ResidueNameSet& rns) {
     auto& residues = frame.topology().residues();
 
     // In C++-17 there's a better version called std::erase_if
@@ -91,14 +93,18 @@ inline void cofactors(const chemfiles::Frame& frame, Container& residue_ids,
                        [&residues, &rns](size_t current) {
                            return rns.count(residues[current].name()) != 0;
                        }),
-        residue_ids.end());
+        residue_ids.end()
+    );
+
+    return residue_ids;
 }
 
 template <typename Container1, typename Container2 = Container1>
-inline void interactions(const chemfiles::Frame& frame, Container1& residue_ids,
-                         const Container2& interaction_ids,
-                         double distance_cutoff = DEFAULT_DISTANCE,
-                         bool keep = true) {
+inline Container1 interactions(const chemfiles::Frame& frame,
+                              Container1& residue_ids,
+                              const Container2& interaction_ids,
+                              double distance_cutoff = DEFAULT_DISTANCE,
+                              bool keep = true) {
     const auto& residues = frame.topology().residues();
 
     residue_ids.erase(
@@ -122,7 +128,10 @@ inline void interactions(const chemfiles::Frame& frame, Container1& residue_ids,
 
                            return keep;
                        }),
-        residue_ids.end());
+        residue_ids.end()
+    );
+
+    return residue_ids;
 }
 
 //! Remove residues which do **not** interact with a given set of other residues
@@ -138,11 +147,11 @@ inline void interactions(const chemfiles::Frame& frame, Container1& residue_ids,
 //! \param [in] distance_cutoff The distance that the residue_ids
 //!  must be within a checked residue to be included.
 template <typename Container1, typename Container2 = Container1>
-inline void keep_interactions(const chemfiles::Frame& frame,
-                              Container1& residue_ids,
-                              const Container2& interaction_ids,
-                              double distance_cutoff = DEFAULT_DISTANCE) {
-    interactions(frame, residue_ids, interaction_ids, distance_cutoff, true);
+inline Container1 keep_interactions(const chemfiles::Frame& frame,
+                                    Container1& residue_ids,
+                                    const Container2& interaction_ids,
+                                    double distance_cutoff = DEFAULT_DISTANCE) {
+    return interactions(frame, residue_ids, interaction_ids, distance_cutoff, true);
 }
 
 //! Remove residues which **do interact** with a given set of other residues
@@ -158,11 +167,11 @@ inline void keep_interactions(const chemfiles::Frame& frame,
 //! \param [in] distance_cutoff The distance that the residue_ids
 //!  must be within a checked residue to be removed.
 template <typename Container1, typename Container2 = Container1>
-inline void remove_interactions(const chemfiles::Frame& frame,
-                                Container1& residue_ids,
-                                const Container2& interaction_ids,
-                                double distance_cutoff = DEFAULT_DISTANCE) {
-    interactions(frame, residue_ids, interaction_ids, distance_cutoff, false);
+inline Container1 remove_interactions(const chemfiles::Frame& frame,
+                                      Container1& residue_ids,
+                                      const Container2& interaction_ids,
+                                      double distance_cutoff = DEFAULT_DISTANCE) {
+    return interactions(frame, residue_ids, interaction_ids, distance_cutoff, false);
 }
 
 //! Turns `residue_ids` in to intersection between it and `intersection_ids`
@@ -173,8 +182,8 @@ inline void remove_interactions(const chemfiles::Frame& frame,
 //! \param [in] intersection_ids The residue ids that the users wishes the
 //!  residue_ids to also be in.
 template <typename Container1, typename Container2 = Container1>
-inline void intersection(Container1& residue_ids,
-                         const Container2& intersection_ids) {
+inline Container1 intersection(Container1& residue_ids,
+                               const Container2& intersection_ids) {
 
     // ugly O(n*m), but gets the job done. Ideally one should use sets though.
     residue_ids.erase(
@@ -188,6 +197,8 @@ inline void intersection(Container1& residue_ids,
                 return true;
         }), residue_ids.end()
     );
+
+    return residue_ids;
 }
 
 //! Keeps residues with a given property
@@ -198,10 +209,10 @@ inline void intersection(Container1& residue_ids,
 //! \param [in] property_name The name of the property to keep
 //! \param [in] property The property that the residues must have to be kept
 template <typename Container1, typename Container2 = Container1>
-inline void has_property(const chemfiles::Frame& frame,
-                         Container1& residue_ids,
-                         const std::string& property_name,
-                         const chemfiles::Property& property) {
+inline Container1 has_property(const chemfiles::Frame& frame,
+                               Container1& residue_ids,
+                               const std::string& property_name,
+                               const chemfiles::Property& property) {
 
     residue_ids.erase(
         std::remove_if(residue_ids.begin(), residue_ids.end(),
@@ -215,6 +226,8 @@ inline void has_property(const chemfiles::Frame& frame,
                 return *prop != property;
         }), residue_ids.end()
     );
+
+    return residue_ids;
 }
 
 } // namespace prune
