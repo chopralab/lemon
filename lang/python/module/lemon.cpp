@@ -23,6 +23,7 @@
 LEMON_EXTERNAL_FILE_PUSH
 #include <chemfiles.hpp>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
 LEMON_EXTERNAL_FILE_POP
 

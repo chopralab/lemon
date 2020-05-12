@@ -64,6 +64,7 @@ class ResidueName : private std::array<char, 3> {
             break;
         }
     }
+
     ResidueName(const char* s) : super({{0, 0, 0}}) {
         switch (std::strlen(s)) {
         case 3:
@@ -84,6 +85,12 @@ class ResidueName : private std::array<char, 3> {
             break;
         }
     }
+
+    ~ResidueName() = default;
+    ResidueName(const ResidueName&) = default;
+    ResidueName& operator=(const ResidueName&) = default;
+    ResidueName(ResidueName&&) noexcept = default;
+    ResidueName& operator=(ResidueName&&) noexcept = default;
 
     unsigned short hash() const {
         return static_cast<unsigned short>(clamp_((*this)[0]) +
