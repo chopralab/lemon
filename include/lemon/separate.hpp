@@ -57,6 +57,10 @@ inline void residues(const chemfiles::Frame& input,
         }
 
         for (const auto& prop : res.properties()) {
+            if (prop.first == "chainid") {
+                res_new.set(prop.first, std::to_string(prop.second.as_string()[0]));
+                continue;
+            }
             res_new.set(prop.first, prop.second);
         }
 
