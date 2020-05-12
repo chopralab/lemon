@@ -92,3 +92,12 @@ TEST_CASE("Select peptides") {
     peptides = lemon::select::peptides(frame);
     CHECK(peptides.size() == 0);
 }
+
+TEST_CASE("Select the chain name") {
+    auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
+    auto frame = traj.read();
+
+    auto chain_a = lemon::select::residue_property(frame, "chainname", chemfiles::Property("A"));
+
+    CHECK(chain_a.size() == 273);
+}

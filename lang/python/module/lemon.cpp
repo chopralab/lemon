@@ -233,6 +233,11 @@ void add_lemon_features(py::module& m) {
         &select::specific_residues;
     m.def("select_specific_residues", specific_residues);
 
+    default_id_list (*residue_property)(const Frame&, const std::string&,
+                                        const chemfiles::Property&) =
+        &select::residue_property;
+    m.def("select_residue_property", residue_property);
+
     // Inplace
     size_t (*small_molecules_i)(const Frame&, default_id_list&,
                                 const std::unordered_set<std::string>&,
@@ -263,6 +268,12 @@ void add_lemon_features(py::module& m) {
         &select::specific_residues;
     m.def("select_specific_residues", specific_residues_i);
 
+    size_t (*residue_property_i)(const Frame&, default_id_list&,
+                                 const std::string&,
+                                 const chemfiles::Property&) =
+        &select::residue_property;
+    m.def("select_residue_property", residue_property_i);
+
     /**************************************************************************
      * Count
      **************************************************************************/
@@ -286,13 +297,39 @@ void add_lemon_features(py::module& m) {
     m.def("prune_cofactors", prune::cofactors<default_id_list>);
     m.def("keep_interactions", prune::keep_interactions<default_id_list>);
     m.def("remove_interactions", prune::remove_interactions<default_id_list>);
+    m.def("intersection", prune::intersection<default_id_list>);
+    m.def("has_property", prune::has_property<default_id_list>);
 
     /**************************************************************************
      * Separate
      **************************************************************************/
     m.def("separate_residues", separate::residues<default_id_list>);
+
+    m.def("separate_residues", [](const chemfiles::Frame& input,
+                                  const default_id_list& accepted_residues,
+                                  chemfiles::Frame& new_frame) {
+        separate::residues(input, accepted_residues, new_frame);
+    });
+
     m.def("separate_protein_and_ligand", separate::protein_and_ligand);
+
+    m.def("separate_protein_and_ligand", [](const chemfiles::Frame& input,
+                                            size_t ligand_id,
+                                            double pocket_size,
+                                            chemfiles::Frame& protein,
+                                            chemfiles::Frame& ligand) {
+        separate::protein_and_ligand(input, ligand_id, pocket_size, protein, ligand);
+    });
+
     m.def("separate_protein_and_ligands", separate::protein_and_ligands<default_id_list>);
+
+    m.def("separate_protein_and_ligands", [](const chemfiles::Frame& input,
+                                             const default_id_list& ligand_ids,
+                                             double pocket_size,
+                                             chemfiles::Frame& protein,
+                                             chemfiles::Frame& ligand) {
+        separate::protein_and_ligands(input, ligand_ids, pocket_size, protein, ligand);
+    });
 
     /**************************************************************************
      * geometry

@@ -83,3 +83,20 @@ TEST_CASE("Remove ligands that interact with water") {
     lemon::prune::remove_interactions(frame, res, hoh);
     CHECK(res.size() == 2);  // Not removed
 }
+
+TEST_CASE("Intersection of chain ID and peptides") {
+    auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
+    auto frame = traj.read();
+
+    auto res = lemon::select::peptides(frame);
+    CHECK(res.size() == 198);
+
+    auto chA = lemon::select::residue_property(frame, "chainid", "A");
+    lemon::prune::intersection(res, chA);
+    CHECK(res.size() == 99);
+
+    auto res2 = lemon::select::peptides(frame);
+    CHECK(res2.size() == 198);
+    lemon::prune::has_property(frame, res2, "chainid", "A");
+    CHECK(res2.size() == 99);
+}

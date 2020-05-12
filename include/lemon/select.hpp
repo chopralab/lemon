@@ -4,6 +4,7 @@
 #include <list>
 #include <set>
 #include <unordered_set>
+#include <string>
 
 #include "lemon/external/gaurd.hpp"
 
@@ -324,6 +325,57 @@ inline Container specific_residues(const chemfiles::Frame& frame,
     specific_residues(frame, contain, resnames);
     return contain;
 }
+
+//! Select residues with a property
+//!
+//! This function populates the residue IDs of residues with a given property
+//! \param [in] frame The entry containing residues of interest.
+//! \param [out] output The residue IDs with the given property
+//! \param [in] property_name The name of the property to select
+//! \param [in] property the property of interest
+//! \return The number of added residue IDs
+template <typename Container>
+inline size_t residue_property(const chemfiles::Frame& frame,
+                               Container& output,
+                               const std::string& property_name,
+                               const chemfiles::Property& property) {
+
+    const auto& residues = frame.topology().residues();
+    auto initialize_size = output.size();
+
+    for (size_t selected_residue = 0; selected_residue < residues.size();
+         ++selected_residue) {
+        const auto& residue = residues[selected_residue];
+        const auto res_prop = residue.get(property_name);
+
+        if (!res_prop) {
+            continue;
+        }
+
+        if (*res_prop == property) {
+            output.insert(output.end(), selected_residue);
+        }
+    }
+
+    return output.size() - initialize_size;
+}
+
+//! Select residues with a given property
+//!
+//! This function returns the residue IDs of residues with a given property
+//! \param [in] frame The entry containing residues of interest.
+//! \param [in] property_name The name of the property to select
+//! \param [in] property the property of interest
+//! \return The residue IDs with property `property`
+template <typename Container = std::list<size_t>>
+inline Container residue_property(const chemfiles::Frame& frame,
+                                  const std::string& property_name,
+                                  const chemfiles::Property& property) {
+    Container contain;
+    residue_property(frame, contain, property_name, property);
+    return contain;
+}
+
 
 } // namespace select
 

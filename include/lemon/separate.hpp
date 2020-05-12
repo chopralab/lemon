@@ -29,7 +29,8 @@ namespace separate {
 template <typename Container>
 inline void residues(const chemfiles::Frame& input,
                      const Container& accepted_residues,
-                     chemfiles::Frame& new_frame) {
+                     chemfiles::Frame& new_frame,
+                     const std::string& use_altloc = "A") {
 
     const auto& residues = input.topology().residues();
     const auto& positions = input.positions();
@@ -46,7 +47,7 @@ inline void residues(const chemfiles::Frame& input,
         for (size_t res_atom : res) {
 
             auto altloc = input[res_atom].get<chemfiles::Property::STRING>("altloc").value_or(" ");
-            if (altloc != " " && altloc != "A") {
+            if (altloc != " " && altloc != use_altloc) {
                 continue;
             }
 
@@ -93,7 +94,9 @@ inline void residues(const chemfiles::Frame& input,
 //! copied to.
 inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
                                double pocket_size, chemfiles::Frame& protein,
-                               chemfiles::Frame& ligand) {
+                               chemfiles::Frame& ligand,
+                               const std::string& altloc = "A"
+                               ) {
     const auto& topology = input.topology();
     const auto& residues = topology.residues();
     const auto& ligand_residue = residues[ligand_id];
@@ -122,8 +125,8 @@ inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
     found_interaction:;
     }
 
-    lemon::separate::residues(input, accepted_residues, protein);
-    lemon::separate::residues(input, std::list<size_t>({ligand_id}), ligand);
+    lemon::separate::residues(input, accepted_residues, protein, altloc);
+    lemon::separate::residues(input, std::list<size_t>({ligand_id}), ligand, altloc);
 
     ligand.set("name", ligand_residue.name());
 }
@@ -145,7 +148,8 @@ template <typename Container>
 inline void protein_and_ligands(const chemfiles::Frame& input,
                                 const Container& ligand_ids,
                                 double pocket_size, chemfiles::Frame& protein,
-                                chemfiles::Frame& ligand) {
+                                chemfiles::Frame& ligand,
+                                const std::string& altloc = "A") {
     const auto& topology = input.topology();
     const auto& residues = topology.residues();
 
@@ -176,7 +180,7 @@ inline void protein_and_ligands(const chemfiles::Frame& input,
     }
 
     lemon::separate::residues(input, accepted_residues, protein);
-    lemon::separate::residues(input, ligand_ids, ligand);
+    lemon::separate::residues(input, ligand_ids, ligand, altloc);
 }
 
 } // namespace separate

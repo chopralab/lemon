@@ -165,6 +165,58 @@ inline void remove_interactions(const chemfiles::Frame& frame,
     interactions(frame, residue_ids, interaction_ids, distance_cutoff, false);
 }
 
+//! Turns `residue_ids` in to intersection between it and `intersection_ids`
+//!
+//! This function is designed to keep residues which have a desirable
+//! intersection with another set of residue ids.
+//! \param [in,out] residue_ids The residue IDs to be pruned.
+//! \param [in] intersection_ids The residue ids that the users wishes the
+//!  residue_ids to also be in.
+template <typename Container1, typename Container2 = Container1>
+inline void intersection(Container1& residue_ids,
+                         const Container2& intersection_ids) {
+
+    // ugly O(n*m), but gets the job done. Ideally one should use sets though.
+    residue_ids.erase(
+        std::remove_if(residue_ids.begin(), residue_ids.end(),
+            [&intersection_ids](size_t current){
+                for (auto& i : intersection_ids){
+                    if (i == current) {
+                        return false;
+                    }
+                }
+                return true;
+        }), residue_ids.end()
+    );
+}
+
+//! Keeps residues with a given property
+//!
+//! This function is designed to keep residues which have a desirable property
+//! \param [in] frame The `frame` containing residues of interest.
+//! \param [in,out] residue_ids The residue IDs to be pruned.
+//! \param [in] property_name The name of the property to keep
+//! \param [in] property The property that the residues must have to be kept
+template <typename Container1, typename Container2 = Container1>
+inline void has_property(const chemfiles::Frame& frame,
+                         Container1& residue_ids,
+                         const std::string& property_name,
+                         const chemfiles::Property& property) {
+
+    residue_ids.erase(
+        std::remove_if(residue_ids.begin(), residue_ids.end(),
+            [&frame, &property_name, &property](size_t current){
+                auto& residue = frame.topology().residues()[current];
+                auto prop = residue.get(property_name);
+                if (!prop) {
+                    return true;
+                }
+
+                return *prop != property;
+        }), residue_ids.end()
+    );
+}
+
 } // namespace prune
 
 } // namespace lemon
