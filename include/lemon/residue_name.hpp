@@ -10,7 +10,7 @@
 
 namespace lemon {
 
-class ResidueName : private std::array<char, 3> {
+class ResidueName : public std::array<char, 3> {
     using super = std::array<char, 3>;
     friend bool operator==(const ResidueName& lhs, const ResidueName& rhs);
     friend bool operator==(const ResidueName& lhs, const std::string& rhs);
