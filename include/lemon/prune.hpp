@@ -118,7 +118,8 @@ inline Container1 interactions(const chemfiles::Frame& frame,
 
                                for (auto prot_atom : residue) {
                                    for (auto lig_atom : ligand_residue) {
-                                       if (frame.distance(prot_atom, lig_atom) <
+                                       if (distance_cutoff <= 0 || 
+                                           frame.distance(prot_atom, lig_atom) <
                                            distance_cutoff) {
                                            return !keep;
                                        }

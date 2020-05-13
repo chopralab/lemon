@@ -116,7 +116,8 @@ inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
 
         for (auto prot_atom : res) {
             for (auto lig_atom : ligand_residue) {
-                if (input.distance(prot_atom, lig_atom) < pocket_size) {
+                if (pocket_size <= 0 ||
+                    input.distance(prot_atom, lig_atom) < pocket_size) {
                     accepted_residues.push_back(res_id);
                     goto found_interaction;
                 }
@@ -171,7 +172,8 @@ inline void protein_and_ligands(const chemfiles::Frame& input,
         for (auto lig_res : ligand_ids) {
             for (auto prot_atom : res) {
                 for (auto lig_atom : residues[lig_res]) {
-                    if (input.distance(prot_atom, lig_atom) < pocket_size) {
+                    if (pocket_size <= 0 ||
+                        input.distance(prot_atom, lig_atom) < pocket_size) {
                         accepted_residues.push_back(res_id);
                         goto found_interaction;
                     }
