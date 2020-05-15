@@ -1,5 +1,7 @@
 from candiy_lemon import lemon
 import sys
+import numpy as np
+import pandas as pd
 
 # List of dictionaries to keep track of parts of the file
 
@@ -23,6 +25,58 @@ noAlignSMDict = {}
 noAlignNonSMDict = {}
 
 entries = lemon.Entries()
+
+# Method for getting binding affinity information
+# Input is list of tuple with each tuple -> (pdb_id,lig_code)
+def get_bind_affinty(bind_tup_list):
+    # We can get the csv file directly from a url using pandas
+    # Use custom columns due to some of the columns not being needed
+    binding_moad_url = "http://bindingmoad.org/files/csv/every_bind.csv"
+    binding_moad_data = pd.read_csv(binding_moad_url,usecols=[0,2,3,4,5,7,8,9],header=None)
+
+    # Set the columns manually because there is no header given
+    binding_moad_data.columns = ["ec","pdb_id","lig_code","validity","affnty_type","affnty_val","affnty_units","SMILES"]
+
+    # Create our dictionaries and varaibles here
+    pdb_id_dict = {}
+    lig_id_dict = {}
+    cur_pdb_id = ""
+
+    # Go through each of the row and add the data to the dictionaries
+    for index,row in binding_moad_data.iterrows():
+        if pd.isna(row["pdb_id"]) == False:
+            cur_pdb_id = row["pdb_id"]
+        elif (pd.isna(row["lig_code"]) == False) and (pd.isna(row["affnty_type"]) == False) and (pd.isna(row["affnty_val"]) == False) and (pd.isna(row["affnty_units"]) == False):
+            simple_lig_code = row["lig_code"].split(":")[0]
+            simple_lig_code = simple_lig_code.split(" ")
+
+            for code in simple_lig_code:
+
+                if pdb_id_dict.get(cur_pdb_id,0) == 0:
+                    pdb_id_dict[cur_pdb_id] = [code]
+                else:
+                    if simple_lig_code not in pdb_id_dict[cur_pdb_id]:
+                        pdb_id_dict[cur_pdb_id].append(code)
+
+                if lig_id_dict.get((cur_pdb_id,code),0) == 0:
+                    lig_id_dict[(cur_pdb_id,code)] = [[row["lig_code"],row["affnty_type"],row["affnty_val"],row["affnty_units"]]]
+                else:
+                    lig_id_dict[(cur_pdb_id,code)].append([row["lig_code"],row["affnty_type"],row["affnty_val"],row["affnty_units"]])
+
+    #To access the ligand we need to first check to see if the ligand exists in pdb_id_dict
+    # If this is one of the ligands availibe, then we access the tuple in the lig_id_dict with the binding affinity
+    ret_dict = {}
+    for pair in bind_tup_list:
+        pdb_id = pair[0]
+        lig_code = pair[1]
+
+        if lig_id_dict.get((pdb_id,lig_code),0) == 0:
+            ret_dict[(pdb_id,lig_code)] = "No Binding Information Found!"
+        else:
+            ret_dict[(pdb_id,lig_code)] = lig_id_dict[(pdb_id,lig_code)]
+
+    # Return the final dict, key -> (pdb_id,lig_code) and value is information on that ligand interaction
+    return ret_dict
 
 # Method for parsing a formated input file
 def parse_input_file(fname):
