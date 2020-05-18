@@ -1,8 +1,7 @@
 #ifndef LEMON_SELECT_HPP
 #define LEMON_SELECT_HPP
 
-#include <list>
-#include <set>
+#include <vector>
 #include <unordered_set>
 #include <string>
 
@@ -28,22 +27,21 @@ namespace select {
 //! Also, the selected entity must have a specified number of atoms (default
 //! 10), so that common residues such as water and metal ions are not selected.
 //! \param [in] frame The entry containing molecules of interest.
-//! \param [out] output A container filled with the small molecule residue ids
 //! \param [in] types A set of `std::string` containing the accepted chemical
 //!  chemical composition. Defaults are *NON-POLYMER*, *OTHER*, *PEPTIDE-LIKE*
 //! \param [in] min_heavy_atoms The minimum number of non-hydrogen atoms for a
 //!  residue to be classed as a small molecule.
-//! \return The number of added residue IDs
-template <typename Container>
-inline size_t small_molecules(
-    const chemfiles::Frame& frame, Container& output,
+//! \return The selected residue locations
+template <typename Container = std::vector<size_t>>
+inline Container small_molecules(
+    const chemfiles::Frame& frame,
     const std::unordered_set<std::string>& types = small_molecule_types,
     size_t min_heavy_atoms = 10) {
 
     using chemfiles::Property;
 
+    Container selection;
     const auto& residues = frame.topology().residues();
-    auto initialize_size = output.size();
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -72,33 +70,10 @@ inline size_t small_molecules(
             continue;
         }
 
-        output.insert(output.end(), selected_residue);
+        selection.insert(selection.end(), selected_residue);
     }
 
-    return output.size() - initialize_size;
-}
-
-//! Select small molecules in a given frame
-//!
-//! Use this function to find small molecules in a given `frame`. A small
-//! molecule is defined as an entity that has a given [chemical composition]
-//! (http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Items/_chem_comp.type.html).
-//! Also, the selected entity must have a specified number of atoms (default
-//! 10), so that common residues such as water and metal ions are not selected.
-//! \param [in] frame The entry containing molecules of interest.
-//! \param [in] types A set of `std::string` containing the accepted chemical
-//!  chemical composition. Defaults are *NON-POLYMER*, *OTHER*, *PEPTIDE-LIKE*
-//! \param [in] min_heavy_atoms The minimum number of non-hydrogen atoms for a
-//!  residue to be classed as a small molecule.
-//! \return A container filled with the small molecule residue ids
-template <typename Container = std::list<size_t>>
-inline Container small_molecules(
-    const chemfiles::Frame& frame,
-    const std::unordered_set<std::string>& types = small_molecule_types,
-    size_t min_heavy_atoms = 10) {
-    Container contain;
-    small_molecules(frame, contain, types, min_heavy_atoms);
-    return contain;
+    return selection;
 }
 
 //! Select metal ions in a given frame
@@ -106,37 +81,23 @@ inline Container small_molecules(
 //! This function populates the residue IDs of metal ions. We define a metal ion
 //! as a residue with a single, positively charged ion.
 //! \param [in] frame The entry containing metal ions of interest.
-//! \param [out] output A container of residue IDs which are metals.
-//! \return The number of added residue IDs
-template <typename Container>
-inline size_t metal_ions(const chemfiles::Frame& frame, Container& output) {
+//! \return The selected residue locations
+template <typename Container = std::vector<size_t>>
+inline Container metal_ions(const chemfiles::Frame& frame) {
 
     const auto& residues = frame.topology().residues();
-    auto initialize_size = output.size();
+    Container selection;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
         const auto& residue = residues[selected_residue];
 
         if (residue.size() == 1 && frame[*residue.begin()].charge() > 0.0) {
-            output.insert(output.end(), selected_residue);
+            selection.insert(selection.end(), selected_residue);
         }
     }
 
-    return output.size() - initialize_size;
-}
-
-//! Select metal ions in a given frame
-//!
-//! This function returns the residue IDs of metal ions. We define a metal ion
-//! as a residue with a single, positively charged ion.
-//! \param [in] frame The entry containing metal ions of interest.
-//! \return output A container of residue IDs which are metals.
-template <typename Container = std::list<size_t>>
-inline Container metal_ions(const chemfiles::Frame& frame) {
-    Container contain;
-    metal_ions(frame, contain);
-    return contain;
+    return selection;
 }
 
 //! Select nucleic acid residues in a given frame
@@ -145,16 +106,14 @@ inline Container metal_ions(const chemfiles::Frame& frame) {
 //! We define a nucleic acid as a residue with a chemical composition
 //! containing the *RNA* or *DNA* substring.
 //! \param [in] frame The entry containing nucleic acid residues.
-//! \param [out] output A container of residue IDs which have nucleic acid
-//! linkage
-//! \return The number of added residue IDs
-template <typename Container>
-inline size_t nucleic_acids(const chemfiles::Frame& frame, Container& output) {
+//! \return The selected residue locations
+template <typename Container = std::vector<size_t>>
+inline Container nucleic_acids(const chemfiles::Frame& frame) {
 
     using chemfiles::Property;
 
     const auto& residues = frame.topology().residues();
-    auto initialize_size = output.size();
+    Container selection;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -167,24 +126,10 @@ inline size_t nucleic_acids(const chemfiles::Frame& frame, Container& output) {
             continue;
         }
 
-        output.insert(output.end(), selected_residue);
+        selection.insert(selection.end(), selected_residue);
     }
 
-    return output.size() - initialize_size;
-}
-
-//! Select nucleic acid residues in a given frame
-//!
-//! This function returns the residue IDs of nucleic acid residues.
-//! We define a nucleic acid as a residue with a chemical composition
-//! containing the *RNA* or *DNA* substring.
-//! \param [in] frame The entry containing nucleic acid residues.
-//! \return output A container of residue IDs which have nucleic acid linkage
-template <typename Container = std::list<size_t>>
-inline Container nucleic_acids(const chemfiles::Frame& frame) {
-    Container contain;
-    nucleic_acids(frame, contain);
-    return contain;
+    return selection;
 }
 
 //! Select peptide residues in a given frame
@@ -193,15 +138,14 @@ inline Container nucleic_acids(const chemfiles::Frame& frame) {
 //! We define a peptided as a residue with a chemical composition
 //! containing the *PEPTIDE* substring which is not *PEPTIDE-LIKE*.
 //! \param [in] frame The entry containing peptide residues.
-//! \param [out] output A container of residue IDs which have peptide linkage
-//! \return The number of added residue IDs
-template <typename Container>
-inline size_t peptides(const chemfiles::Frame& frame, Container& output) {
+//! \return The selected residue locations
+template <typename Container = std::vector<size_t>>
+inline Container peptides(const chemfiles::Frame& frame) {
 
     using chemfiles::Property;
 
     const auto& residues = frame.topology().residues();
-    auto initialize_size = output.size();
+    Container selection;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -214,24 +158,10 @@ inline size_t peptides(const chemfiles::Frame& frame, Container& output) {
             continue;
         }
 
-        output.insert(output.end(), selected_residue);
+        selection.insert(selection.end(), selected_residue);
     }
 
-    return output.size() - initialize_size;
-}
-
-//! Select peptide residues in a given frame
-//!
-//! This function returns the residue IDs of peptide residues.
-//! We define a peptided as a residue with a chemical composition
-//! containing the *PEPTIDE* substring which is not *PEPTIDE-LIKE*.
-//! \param [in] frame The entry containing peptide residues.
-//! \return A container of residue IDs which have peptide linkage
-template <typename Container = std::list<size_t>>
-inline Container peptides(const chemfiles::Frame& frame) {
-    Container contain;
-    peptides(frame, contain);
-    return contain;
+    return selection;
 }
 
 //! Select residues with a given name in a given frame
@@ -239,16 +169,14 @@ inline Container peptides(const chemfiles::Frame& frame) {
 //! This function populates the residue IDs of peptides matching a given name
 //! set.
 //! \param [in] frame The entry containing residues of interest.
-//! \param [out] output The residue IDs with names that match those in `resnames`
-//! \param [in] resnis The set of residue names of interest.
-//! \return The number of added residue IDs
-template <typename Container>
-inline size_t residue_ids(const chemfiles::Frame& frame,
-                          Container& output,
-                          const std::set<size_t>& resis) {
+//! \param [in] resnis The set of residue IDs of interest.
+//! \return The selected residue locations
+template <typename Container = std::vector<size_t>>
+inline Container residue_ids(const chemfiles::Frame& frame,
+                             const std::set<size_t>& resis) {
 
     const auto& residues = frame.topology().residues();
-    auto initialize_size = output.size();
+    Container selection;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -262,41 +190,24 @@ inline size_t residue_ids(const chemfiles::Frame& frame,
             continue;
         }
 
-        output.insert(output.end(), selected_residue);
+        selection.insert(selection.end(), selected_residue);
     }
 
-    return output.size() - initialize_size;
+    return selection;
 }
 
-//! Select residues with a given id in a given frame
+//! Select residues with a given name in a given frame
 //!
-//! This function returns the residue IDs of peptides matching a given name set.
+//! This function returns a set of residue locations within a given name set
 //! \param [in] frame The entry containing residues of interest.
-//! \param [in] resis The set of residue ids of interest.
-//! \return The residue IDs with names that match those in `resnames`
-template <typename Container = std::list<size_t>>
-inline Container residue_ids(const chemfiles::Frame& frame,
-                             const std::set<size_t>& resis) {
-    Container contain;
-    residue_ids(frame, contain, resis);
-    return contain;
-}
-
-//! Select residues with a given id in a given frame
-//!
-//! This function populates the residue IDs of peptides matching a given id
-//! set.
-//! \param [in] frame The entry containing residues of interest.
-//! \param [out] output The residue IDs with names that match those in `resnames`
 //! \param [in] resnids The set of residue names of interest.
-//! \return The number of added residue IDs
-template <typename Container>
-inline size_t specific_residues(const chemfiles::Frame& frame,
-                                Container& output,
-                                const ResidueNameSet& resnames) {
+//! \return The selected residue locations
+template <typename Container = std::vector<size_t>>
+inline Container specific_residues(const chemfiles::Frame& frame,
+                                   const ResidueNameSet& resnames) {
 
     const auto& residues = frame.topology().residues();
-    auto initialize_size = output.size();
+    Container selection;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -306,42 +217,26 @@ inline size_t specific_residues(const chemfiles::Frame& frame,
             continue;
         }
 
-        output.insert(output.end(), selected_residue);
+        selection.insert(selection.end(), selected_residue);
     }
 
-    return output.size() - initialize_size;
-}
-
-//! Select residues with a given name in a given frame
-//!
-//! This function returns the residue IDs of peptides matching a given name set.
-//! \param [in] frame The entry containing residues of interest.
-//! \param [in] resnames The set of residue names of interest.
-//! \return The residue IDs with names that match those in `resnames`
-template <typename Container = std::list<size_t>>
-inline Container specific_residues(const chemfiles::Frame& frame,
-                                   const ResidueNameSet& resnames) {
-    Container contain;
-    specific_residues(frame, contain, resnames);
-    return contain;
+    return selection;
 }
 
 //! Select residues with a property
 //!
-//! This function populates the residue IDs of residues with a given property
+//! This function returns the residue locations of residues with a property
 //! \param [in] frame The entry containing residues of interest.
-//! \param [out] output The residue IDs with the given property
 //! \param [in] property_name The name of the property to select
 //! \param [in] property the property of interest
-//! \return The number of added residue IDs
-template <typename Container>
-inline size_t residue_property(const chemfiles::Frame& frame,
-                               Container& output,
-                               const std::string& property_name,
-                               const chemfiles::Property& property) {
+//! \return The selected residue locations
+template <typename Container = std::vector<size_t>>
+inline Container residue_property(const chemfiles::Frame& frame,
+                                  const std::string& property_name,
+                                  const chemfiles::Property& property) {
 
     const auto& residues = frame.topology().residues();
-    auto initialize_size = output.size();
+    Container selection;
 
     for (size_t selected_residue = 0; selected_residue < residues.size();
          ++selected_residue) {
@@ -353,29 +248,12 @@ inline size_t residue_property(const chemfiles::Frame& frame,
         }
 
         if (*res_prop == property) {
-            output.insert(output.end(), selected_residue);
+            selection.insert(selection.end(), selected_residue);
         }
     }
 
-    return output.size() - initialize_size;
+    return selection;
 }
-
-//! Select residues with a given property
-//!
-//! This function returns the residue IDs of residues with a given property
-//! \param [in] frame The entry containing residues of interest.
-//! \param [in] property_name The name of the property to select
-//! \param [in] property the property of interest
-//! \return The residue IDs with property `property`
-template <typename Container = std::list<size_t>>
-inline Container residue_property(const chemfiles::Frame& frame,
-                                  const std::string& property_name,
-                                  const chemfiles::Property& property) {
-    Container contain;
-    residue_property(frame, contain, property_name, property);
-    return contain;
-}
-
 
 } // namespace select
 

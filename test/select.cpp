@@ -61,7 +61,7 @@ TEST_CASE("Select HOH from 1OQ5") {
     auto traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto res = lemon::select::specific_residues(frame,{"HOH"});
+    const auto res = lemon::select::specific_residues(frame, {"HOH"});
     CHECK(res.size() == 233);
 
     // select by ID

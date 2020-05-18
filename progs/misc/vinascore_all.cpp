@@ -10,9 +10,9 @@ int main(int argc, char* argv[]) {
     auto worker = [](const chemfiles::Frame& entry,
                      const std::string& pdbid) -> std::string {
 
-        // Selection phase
-        std::list<size_t> smallm;
-        if (lemon::select::small_molecules(entry, smallm) == 0) {
+        // Selection phase= 
+        auto smallm = lemon::select::small_molecules(entry);
+        if (smallm.empty()) {
             return std::string("");
         }
 

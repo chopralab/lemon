@@ -98,7 +98,7 @@ TEST_CASE("Scoring") {
 
     auto small_molecule = residues[*ade.begin()];
 
-    std::list<size_t> proteins;
+    std::vector<size_t> proteins;
     for (size_t i = 0; i < residues.size(); ++i) {
         proteins.push_back(i);
     }
@@ -147,13 +147,14 @@ TEST_CASE("Dry scoring") {
 
     auto small_molecule = residues[*ade.begin()];
 
-    std::set<size_t> proteins;
+    std::vector<size_t> proteins;
     for (size_t i = 0; i < residues.size(); ++i) {
-        proteins.insert(i);
+        proteins.push_back(i);
     }
 
     lemon::prune::identical_residues(frame1, proteins);
-    proteins.erase(*ade.begin());
+    proteins.erase(std::remove(proteins.begin(), proteins.end(), *ade.begin()),
+                   proteins.end());
 
     auto vscore = lemon::xscore::vina_score(frame1, (*ade.begin()), proteins);
     CHECK(vscore.g1 == Approx(121.94136));

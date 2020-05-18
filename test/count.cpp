@@ -1,6 +1,7 @@
 #include "lemon/count.hpp"
 #include <chemfiles.hpp>
 #include <sstream>
+#include <fstream>
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"

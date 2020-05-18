@@ -1,6 +1,7 @@
 #include "lemon/prune.hpp"
 #include <chemfiles.hpp>
 #include "lemon/select.hpp"
+#include <iostream>
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
@@ -14,6 +15,7 @@ TEST_CASE("Select and prune P30 from 4XUF") {
 
     lemon::prune::identical_residues(frame, res);
     CHECK(res.size() == 1);
+    std::cout << "HERE" << std::endl;
 }
 
 TEST_CASE("Select and prune 1PG/HEM from 1D7D") {
@@ -28,6 +30,7 @@ TEST_CASE("Select and prune 1PG/HEM from 1D7D") {
 
     lemon::prune::cofactors(frame, res, lemon::common_cofactors);
     CHECK(res.size() == 0);
+    std::cout << "HERE" << std::endl;
 }
 
 TEST_CASE("Remove non-nucleic acid interactions") {
@@ -46,6 +49,7 @@ TEST_CASE("Remove non-nucleic acid interactions") {
     nas = lemon::select::nucleic_acids(frame);
     lemon::prune::keep_interactions(frame, res, nas);
     CHECK(res.size() == 1);  // Not removed
+    std::cout << "HERE" << std::endl;
 }
 
 TEST_CASE("Remove non-metal interactions") {
@@ -64,6 +68,7 @@ TEST_CASE("Remove non-metal interactions") {
     metals = lemon::select::metal_ions(frame);
     lemon::prune::keep_interactions(frame, res, metals);
     CHECK(res.size() == 1);  // Not removed
+    std::cout << "HERE" << std::endl;
 }
 
 TEST_CASE("Remove ligands that interact with water") {
@@ -82,6 +87,7 @@ TEST_CASE("Remove ligands that interact with water") {
     hoh = lemon::select::specific_residues(frame, {"HOH"});
     lemon::prune::remove_interactions(frame, res, hoh);
     CHECK(res.size() == 2);  // Not removed
+    std::cout << "HERE" << std::endl;
 }
 
 TEST_CASE("Intersection of chain ID and peptides") {
@@ -99,4 +105,5 @@ TEST_CASE("Intersection of chain ID and peptides") {
     CHECK(res2.size() == 198);
     lemon::prune::has_property(frame, res2, "chainid", "A");
     CHECK(res2.size() == 99);
+    std::cout << "HERE" << std::endl;
 }

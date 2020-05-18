@@ -44,6 +44,8 @@ class ResidueName : public std::array<char, 3> {
     }
 
   public:
+    ResidueName() : super({0, 0, 0}) {}
+
     ResidueName(const std::string& s) : super({{0, 0, 0}}) {
         switch (s.length()) {
         case 3:

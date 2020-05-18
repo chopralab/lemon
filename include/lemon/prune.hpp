@@ -36,38 +36,22 @@ inline Container identical_residues(const chemfiles::Frame& frame,
                                     Container& residue_ids) {
     auto& residues = frame.topology().residues();
 
-    auto it = residue_ids.begin();
-    while (it != residue_ids.end()) {
-        auto current_id = *it;
-        const auto& res_current = residues[current_id];
-
-        auto checking = it;
-        ++checking;
-        while (checking != residue_ids.end()) {
-            auto check_current = checking++;
-            auto check_id = *check_current;
-            const auto& res_check = residues[check_id];
-
-            // This is faster than a string comparison
-            if (res_current.size() != res_check.size()) {
-                continue;
-            }
-
-            // Are these named the same?
-            if (res_current.name() == res_check.name()) {
-                // We use bioassemblies because they are standardized by the
-                // protein databank
-                auto bio_current = res_current.get("assembly");
-                auto bio_check = res_check.get("assembly");
-
-                if (bio_current != bio_check) {
-                    residue_ids.erase(check_current);
-                }
-            }
-        }
-
-        ++it;
+    if (residue_ids.empty()) {
+        return residue_ids;
     }
+
+    auto assembly = residues[*residue_ids.begin()].get("assembly");
+
+    residue_ids.erase(
+        std::remove_if(residue_ids.begin(), residue_ids.end(),
+            [&residues, assembly](size_t current_id) {
+                auto& residue = residues[current_id];
+                auto prop = residue.get("assembly");
+
+                return prop != assembly;
+            }
+        ),
+    residue_ids.end());
 
     return residue_ids;
 }
@@ -109,26 +93,25 @@ inline Container1 interactions(const chemfiles::Frame& frame,
 
     residue_ids.erase(
         std::remove_if(residue_ids.begin(), residue_ids.end(),
-                       [&frame, &residues, &interaction_ids, distance_cutoff,
-                        keep](size_t current) {
-                           const auto& ligand_residue = residues[current];
-
-                           for (auto residue_to_check : interaction_ids) {
-                               const auto& residue = residues[residue_to_check];
-
-                               for (auto prot_atom : residue) {
-                                   for (auto lig_atom : ligand_residue) {
-                                       if (distance_cutoff <= 0 || 
-                                           frame.distance(prot_atom, lig_atom) <
-                                           distance_cutoff) {
-                                           return !keep;
-                                       }
-                                   }
-                               }
-                           }
-
-                           return keep;
-                       }),
+            [&](size_t current) {
+                const auto& ligand_residue = residues[current];
+            
+                for (auto residue_to_check : interaction_ids) {
+                    const auto& residue = residues[residue_to_check];
+            
+                    for (auto prot_atom : residue) {
+                        for (auto lig_atom : ligand_residue) {
+                            if (distance_cutoff <= 0 || 
+                                frame.distance(prot_atom, lig_atom) <
+                                distance_cutoff) {
+                                return !keep;
+                            }
+                        }
+                    }
+                }
+            
+                return keep;
+            }),
         residue_ids.end()
     );
 
@@ -209,9 +192,9 @@ inline Container1 intersection(Container1& residue_ids,
 //! \param [in,out] residue_ids The residue IDs to be pruned.
 //! \param [in] property_name The name of the property to keep
 //! \param [in] property The property that the residues must have to be kept
-template <typename Container1, typename Container2 = Container1>
-inline Container1 has_property(const chemfiles::Frame& frame,
-                               Container1& residue_ids,
+template <typename Container>
+inline Container has_property(const chemfiles::Frame& frame,
+                               Container& residue_ids,
                                const std::string& property_name,
                                const chemfiles::Property& property) {
 

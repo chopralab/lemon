@@ -3,11 +3,11 @@ import lemon
 class MyWorkflow(lemon.Workflow):
     def worker(self, entry, pdbid):
         import lemon
-        heme_names = lemon.ResidueNameSet()
-        heme_names.append(lemon.ResidueName("HEM"))
-        heme_names.append(lemon.ResidueName("HEA"))
-        heme_names.append(lemon.ResidueName("HEB"))
-        heme_names.append(lemon.ResidueName("HEC"))
+        heme_names = set()
+        heme_names.add(lemon.ResidueName("HEM"))
+        heme_names.add(lemon.ResidueName("HEA"))
+        heme_names.add(lemon.ResidueName("HEB"))
+        heme_names.add(lemon.ResidueName("HEC"))
 
         hemegs = lemon.select_specific_residues(entry, heme_names)
         smallm = lemon.select_small_molecules(entry, lemon.small_molecule_types, 10)

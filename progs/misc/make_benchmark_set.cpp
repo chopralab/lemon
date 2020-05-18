@@ -23,9 +23,8 @@ int main(int argc, char* argv[]) {
                                              const std::string& pdbid) {
 
         // Selection phase
-        std::list<size_t> smallm;
-        if (lemon::select::specific_residues(entry, smallm,
-                                             rnms[pdbid]) == 0) {
+        auto smallm = lemon::select::specific_residues(entry, rnms[pdbid]);
+        if (smallm.empty()) {
             return "Skipping " + pdbid;
         }
 

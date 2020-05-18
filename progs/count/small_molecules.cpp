@@ -10,8 +10,8 @@ int main(int argc, char* argv[]) {
                      const std::string& pdbid) -> std::string {
 
         // Selection phase
-        std::list<size_t> smallm;
-        if (lemon::select::small_molecules(entry, smallm) == 0) {
+        auto smallm = lemon::select::small_molecules(entry);
+        if (smallm.empty()) {
             return std::string("");
         }
 
