@@ -31,7 +31,7 @@ TEST_CASE("Select FE from 2WTL") {
     auto frame = traj.read();
 
     const auto res = lemon::select::metal_ions(frame);
-    CHECK(res.size() == 12);
+    CHECK(res.size() == 48);
 }
 
 TEST_CASE("Select CD from 1D7D") {
@@ -76,7 +76,7 @@ TEST_CASE("Select nothing from 2WTL") {
     auto frame = traj.read();
 
     auto res = lemon::select::small_molecules(frame);
-    CHECK(res.size() == 3); //3 UNLs exist in the structure
+    CHECK(res.size() == 12); //3 UNLs exist in the structure, there are 4 chains in biological assembly
 }
 
 TEST_CASE("Select peptides") {

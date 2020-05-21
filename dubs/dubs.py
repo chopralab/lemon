@@ -130,7 +130,7 @@ def parse_input_file(fname):
         # Add info to appropriate dictionary based of set flags
         if flag == 1:
             # Error Check
-            if len(line.split(" ")) != 2 or len(line.split(" ")) != 3:
+            if len(line.split(" ")) < 2:
                 print("Invalid input under @<reference> tag, please check to ensure proper input")
                 sys.exit(1)
 
@@ -139,12 +139,12 @@ def parse_input_file(fname):
             curRefPdbID = pdbID
             pathDict[pdbID] = path
 
-            if len(line.split(" ")) == 3:
+            if len(line.split(" ")) >= 3:
                 chemID = line.split(" ")[2].strip().upper()
                 referenceLigandDict[pdbID] = chemID 
             
         elif flag == 2:
-            if len(line.split(" ")) != 2:
+            if len(line.split(" ")) < 2:
                 print("Invalid input under @<align_prot> tag, please check to ensure proper input")
                 sys.exit(1)
 
@@ -164,7 +164,7 @@ def parse_input_file(fname):
                 entries.add(pdbID)
 
         elif flag == 3:
-            if len(line.split("")) != 2:
+            if len(line.split(" ")) < 2:
                 print("Invalid input under @<align_sm_ligands> tag, please check to ensure proper input")
                 sys.exit(1)
 
@@ -184,7 +184,7 @@ def parse_input_file(fname):
             entries.add(pdbID)
 
         elif flag == 4:
-            if len(line.split(" ")) != 3:
+            if len(line.split(" ")) < 3:
                 print("Invalid input under @<align_non_sm_ligands> tag, please check to ensure proper input")
                 sys.exit(1)
 
@@ -206,7 +206,7 @@ def parse_input_file(fname):
             entries.add(pdbID)
             
         elif flag == 5:
-            if len(line.split(" ")) != 2:
+            if len(line.split(" ")) < 2:
                 print("Invalid input under @<no_align_sm_ligands> tag, please check to ensure proper input")
                 sys.exit(1)
 
@@ -221,7 +221,7 @@ def parse_input_file(fname):
             entries.add(pdbID)
 
         elif flag == 6:
-            if len(line.split(" ")) != 3:
+            if len(line.split(" ")) < 3:
                 print("Invalid input under @<no_align_non_sm_ligands> tag, please check to ensure proper input")
                 sys.exit(1)
 
@@ -335,7 +335,9 @@ class MyWorkflow(lemon.Workflow):
             lemon.write_file(ligand, out_base + ".sdf")
 
             if len(ligand_ids) > 1:
-                print("WARNING:It appears that {} in {} is defined multiple times in the same biological assembly, only keeping the first time it appears".format(ligand_code, pdbid), file=sys.stderr)
+                print("WARNING:It appears that {} in {}".format(ligand_code, pdbid), file=sys.stderr)
+                print("        is defined multiple times in the same biological assembly,", file=sys.stderr)
+                print("        only keeping the first time it appears", file=sys.stderr)
                 break
 
     def worker(self, entry, pdbid):
