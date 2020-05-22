@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_set>
 #include <string>
+#include <cstdint>
 
 #include "lemon/external/gaurd.hpp"
 
@@ -32,7 +33,7 @@ namespace select {
 //! \param [in] min_heavy_atoms The minimum number of non-hydrogen atoms for a
 //!  residue to be classed as a small molecule.
 //! \return The selected residue locations
-template <typename Container = std::vector<size_t>>
+template <typename Container = std::vector<uint64_t>>
 inline Container small_molecules(
     const chemfiles::Frame& frame,
     const std::unordered_set<std::string>& types = small_molecule_types,
@@ -82,7 +83,7 @@ inline Container small_molecules(
 //! as a residue with a single, positively charged ion.
 //! \param [in] frame The entry containing metal ions of interest.
 //! \return The selected residue locations
-template <typename Container = std::vector<size_t>>
+template <typename Container = std::vector<uint64_t>>
 inline Container metal_ions(const chemfiles::Frame& frame) {
 
     const auto& residues = frame.topology().residues();
@@ -107,7 +108,7 @@ inline Container metal_ions(const chemfiles::Frame& frame) {
 //! containing the *RNA* or *DNA* substring.
 //! \param [in] frame The entry containing nucleic acid residues.
 //! \return The selected residue locations
-template <typename Container = std::vector<size_t>>
+template <typename Container = std::vector<uint64_t>>
 inline Container nucleic_acids(const chemfiles::Frame& frame) {
 
     using chemfiles::Property;
@@ -139,7 +140,7 @@ inline Container nucleic_acids(const chemfiles::Frame& frame) {
 //! containing the *PEPTIDE* substring which is not *PEPTIDE-LIKE*.
 //! \param [in] frame The entry containing peptide residues.
 //! \return The selected residue locations
-template <typename Container = std::vector<size_t>>
+template <typename Container = std::vector<uint64_t>>
 inline Container peptides(const chemfiles::Frame& frame) {
 
     using chemfiles::Property;
@@ -171,9 +172,9 @@ inline Container peptides(const chemfiles::Frame& frame) {
 //! \param [in] frame The entry containing residues of interest.
 //! \param [in] resnis The set of residue IDs of interest.
 //! \return The selected residue locations
-template <typename Container = std::vector<size_t>>
+template <typename Container = std::vector<uint64_t>>
 inline Container residue_ids(const chemfiles::Frame& frame,
-                             const std::set<size_t>& resis) {
+                             const std::set<uint64_t>& resis) {
 
     const auto& residues = frame.topology().residues();
     Container selection;
@@ -200,9 +201,9 @@ inline Container residue_ids(const chemfiles::Frame& frame,
 //!
 //! This function returns a set of residue locations within a given name set
 //! \param [in] frame The entry containing residues of interest.
-//! \param [in] resnids The set of residue names of interest.
+//! \param [in] resnames The set of residue names of interest.
 //! \return The selected residue locations
-template <typename Container = std::vector<size_t>>
+template <typename Container = std::vector<uint64_t>>
 inline Container specific_residues(const chemfiles::Frame& frame,
                                    const ResidueNameSet& resnames) {
 
@@ -230,7 +231,7 @@ inline Container specific_residues(const chemfiles::Frame& frame,
 //! \param [in] property_name The name of the property to select
 //! \param [in] property the property of interest
 //! \return The selected residue locations
-template <typename Container = std::vector<size_t>>
+template <typename Container = std::vector<uint64_t>>
 inline Container residue_property(const chemfiles::Frame& frame,
                                   const std::string& property_name,
                                   const chemfiles::Property& property) {

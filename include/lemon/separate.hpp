@@ -44,7 +44,7 @@ inline void residues(const chemfiles::Frame& input,
 
         auto res_new = chemfiles::Residue(res.name(), *(res.id()));
 
-        for (size_t res_atom : res) {
+        for (auto res_atom : res) {
 
             auto altloc = input[res_atom].get<chemfiles::Property::STRING>("altloc").value_or(" ");
             if (altloc != " " && altloc != use_altloc) {

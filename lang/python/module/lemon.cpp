@@ -77,7 +77,7 @@ void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t thread
     py.finalize();
 }
 
-using default_id_list = std::list<size_t>;
+using default_id_list = std::list<uint64_t>;
 inline std::ostream& operator<<(std::ostream& os, const default_id_list& idlist) {
     os << '[';
     for (auto i : idlist) {
