@@ -23,19 +23,19 @@ namespace separate {
 //! interest should be copied into a new `frame` so that they can written to
 //! disk separately. This function performs this action while taking care to
 //! copy the original connectivity of the residue.
-//! \param [in] input The original Frame from where the residues will be copied.
+//! \param [in] entry The original Frame from where the residues will be copied.
 //! \param [in] accepted_residues The residue IDs for the residues to be copied.
 //! \param [in,out] new_frame The frame where the residues wil be copied to.
 template <typename Container>
-inline void residues(const chemfiles::Frame& input,
+inline void residues(const chemfiles::Frame& entry,
                      const Container& accepted_residues,
                      chemfiles::Frame& new_frame,
                      const std::string& use_altloc = "A") {
 
-    const auto& residues = input.topology().residues();
-    const auto& positions = input.positions();
-    const auto& old_bonds = input.topology().bonds();
-    const auto& bond_ord = input.topology().bond_orders();
+    const auto& residues = entry.topology().residues();
+    const auto& positions = entry.positions();
+    const auto& old_bonds = entry.topology().bonds();
+    const auto& bond_ord = entry.topology().bond_orders();
 
     std::unordered_map<size_t, size_t> old_to_new;
     std::unordered_set<size_t> accepted_atoms;
@@ -44,14 +44,14 @@ inline void residues(const chemfiles::Frame& input,
 
         auto res_new = chemfiles::Residue(res.name(), *(res.id()));
 
-        for (auto res_atom : res) {
+        for (size_t res_atom : res) {
 
-            auto altloc = input[res_atom].get<chemfiles::Property::STRING>("altloc").value_or(" ");
+            auto altloc = entry[res_atom].get<chemfiles::Property::STRING>("altloc").value_or(" ");
             if (altloc != " " && altloc != use_altloc) {
                 continue;
             }
 
-            new_frame.add_atom(input[res_atom], positions[res_atom]);
+            new_frame.add_atom(entry[res_atom], positions[res_atom]);
             res_new.add_atom(new_frame.size() - 1);
             old_to_new.insert({res_atom, new_frame.size() - 1});
             accepted_atoms.insert(res_atom);
@@ -84,7 +84,7 @@ inline void residues(const chemfiles::Frame& input,
 //! The environment surrounding a ligand in a protein defines the *environment*
 //! of that ligand. This function is meant to separate a ligand and relevent
 //! *environment* into separate *frame*s s that they can written to disk.
-//! \param [in] input The original Frame from where the residues will be copied.
+//! \param [in] entry The original Frame from where the residues will be copied.
 //! \param [in] ligand_id The residue ID for the ligand.
 //! \param [in] pocket_size The radius of the ligand environment copied into
 //! protein
@@ -92,12 +92,12 @@ inline void residues(const chemfiles::Frame& input,
 //! copied to.
 //! \param [in,out] ligand The frame where the ligand residue will be
 //! copied to.
-inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
+inline void protein_and_ligand(const chemfiles::Frame& entry, size_t ligand_id,
                                double pocket_size, chemfiles::Frame& protein,
                                chemfiles::Frame& ligand,
                                const std::string& altloc = "A"
                                ) {
-    const auto& topology = input.topology();
+    const auto& topology = entry.topology();
     const auto& residues = topology.residues();
     const auto& ligand_residue = residues[ligand_id];
 
@@ -117,7 +117,7 @@ inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
         for (auto prot_atom : res) {
             for (auto lig_atom : ligand_residue) {
                 if (pocket_size <= 0 ||
-                    input.distance(prot_atom, lig_atom) < pocket_size) {
+                    entry.distance(prot_atom, lig_atom) < pocket_size) {
                     accepted_residues.push_back(res_id);
                     goto found_interaction;
                 }
@@ -126,8 +126,8 @@ inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
     found_interaction:;
     }
 
-    lemon::separate::residues(input, accepted_residues, protein, altloc);
-    lemon::separate::residues(input, std::list<size_t>({ligand_id}), ligand, altloc);
+    lemon::separate::residues(entry, accepted_residues, protein, altloc);
+    lemon::separate::residues(entry, std::list<size_t>({ligand_id}), ligand, altloc);
 
     ligand.set("name", ligand_residue.name());
 }
@@ -137,7 +137,7 @@ inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
 //! The environment surrounding ligands in a protein defines the *environment*
 //! of those ligands. This function is meant to separate ligands and relevent
 //! *environment* into separate *frame*s s that they can written to disk.
-//! \param [in] input The original Frame from where the residues will be copied.
+//! \param [in] entry The original Frame from where the residues will be copied.
 //! \param [in] ligand_ids The residue IDs for the ligand.
 //! \param [in] pocket_size The radius of the ligand environment copied into
 //! protein
@@ -146,12 +146,12 @@ inline void protein_and_ligand(const chemfiles::Frame& input, size_t ligand_id,
 //! \param [in,out] ligand The frame where the ligand residue will be
 //! copied to.
 template <typename Container>
-inline void protein_and_ligands(const chemfiles::Frame& input,
+inline void protein_and_ligands(const chemfiles::Frame& entry,
                                 const Container& ligand_ids,
                                 double pocket_size, chemfiles::Frame& protein,
                                 chemfiles::Frame& ligand,
                                 const std::string& altloc = "A") {
-    const auto& topology = input.topology();
+    const auto& topology = entry.topology();
     const auto& residues = topology.residues();
 
     std::list<size_t> accepted_residues;
@@ -173,7 +173,7 @@ inline void protein_and_ligands(const chemfiles::Frame& input,
             for (auto prot_atom : res) {
                 for (auto lig_atom : residues[lig_res]) {
                     if (pocket_size <= 0 ||
-                        input.distance(prot_atom, lig_atom) < pocket_size) {
+                        entry.distance(prot_atom, lig_atom) < pocket_size) {
                         accepted_residues.push_back(res_id);
                         goto found_interaction;
                     }
@@ -183,8 +183,8 @@ inline void protein_and_ligands(const chemfiles::Frame& input,
     found_interaction:;
     }
 
-    lemon::separate::residues(input, accepted_residues, protein);
-    lemon::separate::residues(input, ligand_ids, ligand, altloc);
+    lemon::separate::residues(entry, accepted_residues, protein);
+    lemon::separate::residues(entry, ligand_ids, ligand, altloc);
 }
 
 } // namespace separate
