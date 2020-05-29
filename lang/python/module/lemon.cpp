@@ -23,6 +23,7 @@
 LEMON_EXTERNAL_FILE_PUSH
 #include <chemfiles.hpp>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
 LEMON_EXTERNAL_FILE_POP
 
@@ -76,7 +77,7 @@ void run_lemon_workflow(LemonPythonBase& py, const std::string& p, size_t thread
     py.finalize();
 }
 
-using default_id_list = std::list<size_t>;
+using default_id_list = std::list<uint64_t>;
 inline std::ostream& operator<<(std::ostream& os, const default_id_list& idlist) {
     os << '[';
     for (auto i : idlist) {
@@ -93,13 +94,21 @@ std::string to_string(const T& v) {
     return ss.str();
 }
 
-std::string entries_to_string(const Entries& v) {
+std::string to_string(const Affine& affine) {
     std::stringstream ss;
-    ss << "{ ";
-    for (auto& i : v) {
-        ss << i << " ";
-    }
-    ss << "}";
+    
+    ss << "[ T( " << affine.T[0] << ", " << affine.T[1] << ", " << affine.T[2]
+       << ")";
+
+    ss << " R( [" << affine.R[0][0] << ", " << affine.R[0][1] << ", "
+       << affine.R[0][2] << "]" ;
+
+    ss << "; [" << affine.R[1][0] << ", " << affine.R[1][1] << ", "
+       << affine.R[1][2] << "]";
+
+    ss << "; [" << affine.R[2][0] << ", " << affine.R[2][1] << ", "
+       << affine.R[2][2] << "] )";
+
     return ss.str();
 }
 
@@ -127,26 +136,6 @@ void add_lemon_features(py::module& m) {
     });
 
     /**************************************************************************
-     * Entries
-     **************************************************************************/
-
-    py::class_<Entries>(m, "Entries")
-        .def(py::init<>())
-        .def("__len__", &Entries::size)
-        .def("__iter__", [](const Entries& v) {
-            return py::make_iterator(v.begin(), v.end());
-        }, py::keep_alive<0, 1>())
-        .def("add", [](Entries& v, const Entries::value_type& t) {
-            v.insert(t);
-        })
-        .def("__str__",[](const Entries& v){
-            return entries_to_string(v);
-        })
-        .def("__repl__",[](const Entries& v){
-            return "Entries {" + entries_to_string(v) + "}";
-        });
-
-    /**************************************************************************
      * Residue Name
      **************************************************************************/
     py::class_<ResidueName>(m, "ResidueName")
@@ -156,42 +145,6 @@ void add_lemon_features(py::module& m) {
         })
         .def("__repl__",[](const ResidueName& v){
             return "<ResidueName {" + to_string(v) + "}>";
-        });
-
-    py::class_<ResidueNameSet>(m, "ResidueNameSet")
-        .def(py::init<>())
-        .def("__len__", &ResidueNameSet::size)
-        .def("__iter__", [](const ResidueNameSet& v) {
-            return py::make_iterator(v.begin(), v.end());
-        }, py::keep_alive<0, 1>())
-        .def("append", [](ResidueNameSet& v, const ResidueNameSet::value_type& t) {
-            v.insert(t);
-        })
-        .def("__str__",[](const ResidueNameSet& v){
-            return to_string(v);
-        })
-        .def("__repl__",[](const ResidueNameSet& v){
-            return "ResidueNameSet {" + to_string(v) + "}";
-        });
-
-    py::bind_map<ResidueNameCount>(m, "ResidueNameCount");
-
-    void (default_id_list::*push_back)(const default_id_list::value_type&) =
-        &default_id_list::push_back;
-
-    py::class_<default_id_list>(m, "ResidueIDs")
-        .def(py::init<>())
-        .def(py::init<const default_id_list&>())
-        .def("__iter__", [](const default_id_list& v) {
-            return py::make_iterator(v.begin(), v.end());
-        }, py::keep_alive<0, 1>())
-        .def("append", push_back)
-        .def("__len__", &default_id_list::size)
-        .def("__str__",[](const default_id_list& v){
-            return to_string(v);
-        })
-        .def("__repl__",[](const default_id_list& v){
-            return "ResidueIDs {" + to_string(v) + "}";
         });
 
     /**************************************************************************
@@ -208,51 +161,15 @@ void add_lemon_features(py::module& m) {
      * Select
      **************************************************************************/
 
-    // Returns a new object
-    default_id_list (*small_molecules)(const Frame&,
-                                       const std::unordered_set<std::string>&,
-                                       size_t) =
-        &select::small_molecules;
-
-    m.def("select_small_molecules", small_molecules);
-
-    default_id_list (*metal_ions)(const Frame&) = &select::metal_ions;
-    m.def("select_metal_ions", metal_ions);
-
-    default_id_list (*nucleic_acids)(const Frame&) = &select::nucleic_acids;
-    m.def("select_nucleic_acids", nucleic_acids);
-
-    default_id_list (*peptides)(const Frame&) = &select::peptides;
-    m.def("select_peptides", peptides);
-
-    default_id_list (*specific_residues)(const Frame&, const ResidueNameSet&) =
-        &select::specific_residues;
-    m.def("select_specific_residues", specific_residues);
-
-    // Inplace
-    size_t (*small_molecules_i)(const Frame&, default_id_list&,
-                                const std::unordered_set<std::string>&,
-                                size_t) =
-        &select::small_molecules;
-
-    m.def("select_small_molecules", small_molecules_i);
-
-    size_t (*metal_ions_i)(const Frame&, default_id_list&) =
-         &select::metal_ions;
-    m.def("select_metal_ions", metal_ions_i);
-
-    size_t (*nucleic_acids_i)(const Frame&, default_id_list&) =
-        &select::nucleic_acids;
-    m.def("select_nucleic_acids", nucleic_acids_i);
-
-    size_t (*peptides_i)(const Frame&, default_id_list&) =
-        &select::peptides;
-    m.def("select_peptides", peptides_i);
-
-    size_t (*specific_residues_i)(const Frame&, default_id_list&,
-                                  const ResidueNameSet&) =
-        &select::specific_residues;
-    m.def("select_specific_residues", specific_residues_i);
+    m.def("select_small_molecules", &select::small_molecules<default_id_list>);
+    m.def("select_metal_ions", &select::metal_ions<default_id_list>);
+    m.def("select_nucleic_acids", &select::nucleic_acids<default_id_list>);
+    m.def("select_peptides", &select::peptides<default_id_list>);
+    m.def("select_residue_ids", &select::residue_ids<default_id_list>);
+    m.def("select_specific_residues",
+          &select::specific_residues<default_id_list>);
+    m.def("select_residue_property",
+          &select::residue_property<default_id_list>);
 
     /**************************************************************************
      * Count
@@ -262,10 +179,12 @@ void add_lemon_features(py::module& m) {
     m.def("count_print_residue_names",
         count::print_residue_names<default_id_list>);
 
-    void (*residues1)(const Frame&, ResidueNameCount&) = &count::residues;
+    ResidueNameCount& (*residues1)(const Frame&, ResidueNameCount&) =
+        &count::residues;
     m.def("count_residues", residues1);
 
-    void (*residues2)(const Frame&, const default_id_list&, ResidueNameCount&) =
+    ResidueNameCount& (*residues2)(const Frame&, const default_id_list&,
+                                   ResidueNameCount&) =
         &count::residues;
     m.def("count_residues", residues2);
 
@@ -277,12 +196,39 @@ void add_lemon_features(py::module& m) {
     m.def("prune_cofactors", prune::cofactors<default_id_list>);
     m.def("keep_interactions", prune::keep_interactions<default_id_list>);
     m.def("remove_interactions", prune::remove_interactions<default_id_list>);
+    m.def("intersection", prune::intersection<default_id_list>);
+    m.def("has_property", prune::has_property<default_id_list>);
 
     /**************************************************************************
      * Separate
      **************************************************************************/
     m.def("separate_residues", separate::residues<default_id_list>);
+
+    m.def("separate_residues", [](const chemfiles::Frame& input,
+                                  const default_id_list& accepted_residues,
+                                  chemfiles::Frame& new_frame) {
+        separate::residues(input, accepted_residues, new_frame);
+    });
+
     m.def("separate_protein_and_ligand", separate::protein_and_ligand);
+
+    m.def("separate_protein_and_ligand", [](const chemfiles::Frame& input,
+                                            size_t ligand_id,
+                                            double pocket_size,
+                                            chemfiles::Frame& protein,
+                                            chemfiles::Frame& ligand) {
+        separate::protein_and_ligand(input, ligand_id, pocket_size, protein, ligand);
+    });
+
+    m.def("separate_protein_and_ligands", separate::protein_and_ligands<default_id_list>);
+
+    m.def("separate_protein_and_ligands", [](const chemfiles::Frame& input,
+                                             const default_id_list& ligand_ids,
+                                             double pocket_size,
+                                             chemfiles::Frame& protein,
+                                             chemfiles::Frame& ligand) {
+        separate::protein_and_ligands(input, ligand_ids, pocket_size, protein, ligand);
+    });
 
     /**************************************************************************
      * geometry
@@ -296,7 +242,11 @@ void add_lemon_features(py::module& m) {
     /**************************************************************************
      * Matrix
      **************************************************************************/
-    py::class_<Affine>(m, "Affine"); // Python cannot modify or read this
+    py::class_<Affine>(m, "Affine") // Python cannot modify or read this
+        .def("__str__", [](const Affine& v) { return to_string(v); })
+        .def("__repl__", [](const Affine& v) {
+            return "<Affine {" + to_string(v) + "}>";
+        });
 
     Affine (*kabsch_f)(Coordinates&, Coordinates&, double) = &kabsch;
     m.def("kabsch", kabsch_f);

@@ -10,7 +10,7 @@
 
 namespace lemon {
 
-class ResidueName : private std::array<char, 3> {
+class ResidueName : public std::array<char, 3> {
     using super = std::array<char, 3>;
     friend bool operator==(const ResidueName& lhs, const ResidueName& rhs);
     friend bool operator==(const ResidueName& lhs, const std::string& rhs);
@@ -44,6 +44,8 @@ class ResidueName : private std::array<char, 3> {
     }
 
   public:
+    ResidueName() : super({0, 0, 0}) {}
+
     ResidueName(const std::string& s) : super({{0, 0, 0}}) {
         switch (s.length()) {
         case 3:
@@ -64,6 +66,7 @@ class ResidueName : private std::array<char, 3> {
             break;
         }
     }
+
     ResidueName(const char* s) : super({{0, 0, 0}}) {
         switch (std::strlen(s)) {
         case 3:
@@ -84,6 +87,12 @@ class ResidueName : private std::array<char, 3> {
             break;
         }
     }
+
+    ~ResidueName() = default;
+    ResidueName(const ResidueName&) = default;
+    ResidueName& operator=(const ResidueName&) = default;
+    ResidueName(ResidueName&&) noexcept = default;
+    ResidueName& operator=(ResidueName&&) noexcept = default;
 
     unsigned short hash() const {
         return static_cast<unsigned short>(clamp_((*this)[0]) +

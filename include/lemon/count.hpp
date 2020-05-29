@@ -26,8 +26,8 @@ namespace count {
 //! then the count of the residue is increased.
 //! \param [in] frame The frame containing residues of interest
 //! \param [in,out] resn_count A map of residue names to their respective count
-inline void residues(const chemfiles::Frame& frame,
-                     ResidueNameCount& resn_count) {
+inline ResidueNameCount& residues(const chemfiles::Frame& frame,
+                                  ResidueNameCount& resn_count) {
     auto& residues = frame.topology().residues();
 
     for (auto& residue : residues) {
@@ -40,6 +40,8 @@ inline void residues(const chemfiles::Frame& frame,
 
         ++resn_count_iterator->second;
     }
+
+    return resn_count;
 }
 
 //! Append selected residue counts in a `Frame` to a `ResidueNameCount`
@@ -51,8 +53,9 @@ inline void residues(const chemfiles::Frame& frame,
 //! \param [in] resids Residue ids to consider
 //! \param [in,out] resn_count A map of residue names to their respective count
 template <typename Container>
-inline void residues(const chemfiles::Frame& frame, const Container& resids,
-                     ResidueNameCount& resn_count) {
+inline ResidueNameCount& residues(const chemfiles::Frame& frame,
+                                  const Container& resids,
+                                  ResidueNameCount& resn_count) {
     auto& residues = frame.topology().residues();
 
     for (auto& resid : resids) {
@@ -65,6 +68,8 @@ inline void residues(const chemfiles::Frame& frame, const Container& resids,
 
         ++resn_count_iterator->second;
     }
+
+    return resn_count;
 }
 
 //! Obtain the number of times a given property occurs in a `Frame`.

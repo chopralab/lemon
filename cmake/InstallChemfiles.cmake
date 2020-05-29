@@ -34,14 +34,14 @@ endif()
 
 ExternalProject_Add(
     CHEMFILES
-    GIT_REPOSITORY https://github.com/chemfiles/chemfiles.git
-    GIT_TAG master
+    GIT_REPOSITORY https://github.com/frodofine/chemfiles.git
+    GIT_TAG merge_for_dubs
     SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_build
     INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_install
     CMAKE_CACHE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
-        -DCMAKE_BUILD_TYPE:STRING=Release
+        -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
         -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
     EXCLUDE_FROM_ALL TRUE
     BUILD_BYPRODUCTS ${chemfiles_byproduct}

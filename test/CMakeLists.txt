@@ -24,8 +24,11 @@ function(add_cpp_test _file_ _name_)
     )
 
     if (MSVC AND ${BUILD_SHARED_LIBS})
+        # We need to set the path to allow access to chemfiles.dll
+        # (and any other DLL)
+        STRING(REPLACE ";" "\\;" PATH_STRING "$ENV{PATH}")
         set_tests_properties( ${_name_}
-            PROPERTIES ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}\\chemfiles_install\\bin"
+            PROPERTIES ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}/chemfiles_install/bin/"
         )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${BUILD_SHARED_LIBS})
         set_tests_properties( ${_name_}

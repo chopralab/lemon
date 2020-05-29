@@ -8,7 +8,7 @@ http://chopralab.github.io/lemon"""
 
 setup(
     name= "candiy_lemon",
-    version="0.2.0",
+    version="0.3.0",
     long_description=LONG_DESCRIPTION,
     description="Mine data from the PDB in minutes",
     keywords="chemistry computational cheminformatics proteins structural biology",

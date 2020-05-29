@@ -1,5 +1,5 @@
 language: cpp
-dist: xenial
+dist: bionic
 
 branches:
   only:
@@ -9,7 +9,7 @@ branches:
 addons:
   apt:
     packages:
-    - python3.5-dev
+    - python3.6-dev
     - python3-setuptools
     - python3-pip
 
@@ -24,7 +24,7 @@ jobs:
         - BUILD_TYPE: Debug
         - ASYNC: ON
         - BUILD_DOC: ON
-        - PYTHON_EXECUTABLE: /usr/bin/python3.5m
+        - PYTHON_EXECUTABLE: /usr/bin/python3.6m
         - SHARED_LIBS: ON
     - name: linux release static
       os: linux
@@ -33,7 +33,7 @@ jobs:
         - COVERAGE: OFF
         - BUILD_TYPE: Release
         - ASYNC: ON
-        - PYTHON_EXECUTABLE: /usr/bin/python3.5m
+        - PYTHON_EXECUTABLE: /usr/bin/python3.6m
         - SHARED_LIBS: OFF
     - name: linux release static
       os: linux
@@ -42,7 +42,7 @@ jobs:
         - COVERAGE: OFF
         - BUILD_TYPE: Release
         - ASYNC: ON
-        - PYTHON_EXECUTABLE: /usr/bin/python3.5m
+        - PYTHON_EXECUTABLE: /usr/bin/python3.6m
         - SHARED_LIBS: ON
     - name: linux clang
       os: linux
@@ -51,7 +51,7 @@ jobs:
         - COVERAGE: OFF
         - BUILD_TYPE: Release
         - ASYNC: ON
-        - PYTHON_EXECUTABLE: /usr/bin/python3.5m
+        - PYTHON_EXECUTABLE: /usr/bin/python3.6m
         - SHARED_LIBS: ON
     - name: osx clang
       os: osx

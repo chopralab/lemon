@@ -8,7 +8,7 @@ TEST_CASE("Select PSI from 1AAQ") {
     auto traj = chemfiles::Trajectory("files/1AAQ.mmtf", 'r');
     auto frame = traj.read();
 
-    const auto& res = lemon::select::small_molecules(frame);
+    const auto res = lemon::select::small_molecules(frame);
     CHECK(res.size() == 1);
 
     size_t id = *res.begin();
@@ -19,7 +19,7 @@ TEST_CASE("Select P30 from 4XUF") {
     auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = lemon::select::small_molecules(frame);
+    const auto res = lemon::select::small_molecules(frame);
     CHECK(res.size() == 2);
 
     size_t id = *res.begin();
@@ -30,15 +30,15 @@ TEST_CASE("Select FE from 2WTL") {
     auto traj = chemfiles::Trajectory("files/2WTL.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = lemon::select::metal_ions(frame);
-    CHECK(res.size() == 12);
+    const auto res = lemon::select::metal_ions(frame);
+    CHECK(res.size() == 48);
 }
 
 TEST_CASE("Select CD from 1D7D") {
     auto traj = chemfiles::Trajectory("files/1D7D.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = lemon::select::metal_ions(frame);
+    const auto res = lemon::select::metal_ions(frame);
     CHECK(res.size() == 6);
 
     std::unordered_map<std::string, size_t> metals;
@@ -61,8 +61,14 @@ TEST_CASE("Select HOH from 1OQ5") {
     auto traj = chemfiles::Trajectory("files/1OQ5.mmtf.gz", 'r');
     auto frame = traj.read();
 
-    const auto& res = lemon::select::specific_residues(frame,{"HOH"});
+    const auto res = lemon::select::specific_residues(frame, {"HOH"});
     CHECK(res.size() == 233);
+
+    // select by ID
+    const auto res2 = lemon::select::residue_ids(frame, {701});
+    const auto& residue_701 = frame.topology().residues()[*res2.begin()];
+    CHECK(residue_701.size() == 26);
+    CHECK(residue_701.name() == "CEL");
 }
 
 TEST_CASE("Select nothing from 2WTL") {
@@ -70,7 +76,7 @@ TEST_CASE("Select nothing from 2WTL") {
     auto frame = traj.read();
 
     auto res = lemon::select::small_molecules(frame);
-    CHECK(res.size() == 3); //3 UNLs exist in the structure
+    CHECK(res.size() == 12); //3 UNLs exist in the structure, there are 4 chains in biological assembly
 }
 
 TEST_CASE("Select peptides") {
@@ -85,4 +91,13 @@ TEST_CASE("Select peptides") {
 
     peptides = lemon::select::peptides(frame);
     CHECK(peptides.size() == 0);
+}
+
+TEST_CASE("Select the chain name") {
+    auto traj = chemfiles::Trajectory("files/4XUF.mmtf.gz", 'r');
+    auto frame = traj.read();
+
+    auto chain_a = lemon::select::residue_property(frame, "chainname", chemfiles::Property("A"));
+
+    CHECK(chain_a.size() == 273);
 }

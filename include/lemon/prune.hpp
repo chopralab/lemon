@@ -32,42 +32,28 @@ auto constexpr DEFAULT_DISTANCE = 6.0;
 //! \param [in] frame The `frame` containing residues of interest.
 //! \param [in,out] residue_ids The residue IDs to be pruned
 template <typename Container>
-inline void identical_residues(const chemfiles::Frame& frame,
-                               Container& residue_ids) {
+inline Container identical_residues(const chemfiles::Frame& frame,
+                                    Container& residue_ids) {
     auto& residues = frame.topology().residues();
 
-    auto it = residue_ids.begin();
-    while (it != residue_ids.end()) {
-        auto current_id = *it;
-        const auto& res_current = residues[current_id];
-
-        auto checking = it;
-        ++checking;
-        while (checking != residue_ids.end()) {
-            auto check_current = checking++;
-            auto check_id = *check_current;
-            const auto& res_check = residues[check_id];
-
-            // This is faster than a string comparison
-            if (res_current.size() != res_check.size()) {
-                continue;
-            }
-
-            // Are these named the same?
-            if (res_current.name() == res_check.name()) {
-                // We use bioassemblies because they are standardized by the
-                // protein databank
-                auto bio_current = res_current.get("assembly");
-                auto bio_check = res_check.get("assembly");
-
-                if (bio_current != bio_check) {
-                    residue_ids.erase(check_current);
-                }
-            }
-        }
-
-        ++it;
+    if (residue_ids.empty()) {
+        return residue_ids;
     }
+
+    auto assembly = residues[*residue_ids.begin()].get("assembly");
+
+    residue_ids.erase(
+        std::remove_if(residue_ids.begin(), residue_ids.end(),
+            [&residues, assembly](size_t current_id) {
+                auto& residue = residues[current_id];
+                auto prop = residue.get("assembly");
+
+                return prop != assembly;
+            }
+        ),
+    residue_ids.end());
+
+    return residue_ids;
 }
 
 //! Remove residues which are typically present in many crystal structures
@@ -81,8 +67,8 @@ inline void identical_residues(const chemfiles::Frame& frame,
 //! \param [in] rns The residue names that one wishes to remove from
 //! residue_ids.
 template <typename Container>
-inline void cofactors(const chemfiles::Frame& frame, Container& residue_ids,
-                      const ResidueNameSet& rns) {
+inline Container cofactors(const chemfiles::Frame& frame, Container& residue_ids,
+                           const ResidueNameSet& rns) {
     auto& residues = frame.topology().residues();
 
     // In C++-17 there's a better version called std::erase_if
@@ -91,38 +77,45 @@ inline void cofactors(const chemfiles::Frame& frame, Container& residue_ids,
                        [&residues, &rns](size_t current) {
                            return rns.count(residues[current].name()) != 0;
                        }),
-        residue_ids.end());
+        residue_ids.end()
+    );
+
+    return residue_ids;
 }
 
 template <typename Container1, typename Container2 = Container1>
-inline void interactions(const chemfiles::Frame& frame, Container1& residue_ids,
-                         const Container2& interaction_ids,
-                         double distance_cutoff = DEFAULT_DISTANCE,
-                         bool keep = true) {
+inline Container1 interactions(const chemfiles::Frame& frame,
+                              Container1& residue_ids,
+                              const Container2& interaction_ids,
+                              double distance_cutoff = DEFAULT_DISTANCE,
+                              bool keep = true) {
     const auto& residues = frame.topology().residues();
 
     residue_ids.erase(
         std::remove_if(residue_ids.begin(), residue_ids.end(),
-                       [&frame, &residues, &interaction_ids, distance_cutoff,
-                        keep](size_t current) {
-                           const auto& ligand_residue = residues[current];
+            [&](size_t current) {
+                const auto& ligand_residue = residues[current];
+            
+                for (auto residue_to_check : interaction_ids) {
+                    const auto& residue = residues[residue_to_check];
+            
+                    for (auto prot_atom : residue) {
+                        for (auto lig_atom : ligand_residue) {
+                            if (distance_cutoff <= 0 || 
+                                frame.distance(prot_atom, lig_atom) <
+                                distance_cutoff) {
+                                return !keep;
+                            }
+                        }
+                    }
+                }
+            
+                return keep;
+            }),
+        residue_ids.end()
+    );
 
-                           for (auto residue_to_check : interaction_ids) {
-                               const auto& residue = residues[residue_to_check];
-
-                               for (auto prot_atom : residue) {
-                                   for (auto lig_atom : ligand_residue) {
-                                       if (frame.distance(prot_atom, lig_atom) <
-                                           distance_cutoff) {
-                                           return !keep;
-                                       }
-                                   }
-                               }
-                           }
-
-                           return keep;
-                       }),
-        residue_ids.end());
+    return residue_ids;
 }
 
 //! Remove residues which do **not** interact with a given set of other residues
@@ -138,11 +131,11 @@ inline void interactions(const chemfiles::Frame& frame, Container1& residue_ids,
 //! \param [in] distance_cutoff The distance that the residue_ids
 //!  must be within a checked residue to be included.
 template <typename Container1, typename Container2 = Container1>
-inline void keep_interactions(const chemfiles::Frame& frame,
-                              Container1& residue_ids,
-                              const Container2& interaction_ids,
-                              double distance_cutoff = DEFAULT_DISTANCE) {
-    interactions(frame, residue_ids, interaction_ids, distance_cutoff, true);
+inline Container1 keep_interactions(const chemfiles::Frame& frame,
+                                    Container1& residue_ids,
+                                    const Container2& interaction_ids,
+                                    double distance_cutoff = DEFAULT_DISTANCE) {
+    return interactions(frame, residue_ids, interaction_ids, distance_cutoff, true);
 }
 
 //! Remove residues which **do interact** with a given set of other residues
@@ -158,11 +151,67 @@ inline void keep_interactions(const chemfiles::Frame& frame,
 //! \param [in] distance_cutoff The distance that the residue_ids
 //!  must be within a checked residue to be removed.
 template <typename Container1, typename Container2 = Container1>
-inline void remove_interactions(const chemfiles::Frame& frame,
-                                Container1& residue_ids,
-                                const Container2& interaction_ids,
-                                double distance_cutoff = DEFAULT_DISTANCE) {
-    interactions(frame, residue_ids, interaction_ids, distance_cutoff, false);
+inline Container1 remove_interactions(const chemfiles::Frame& frame,
+                                      Container1& residue_ids,
+                                      const Container2& interaction_ids,
+                                      double distance_cutoff = DEFAULT_DISTANCE) {
+    return interactions(frame, residue_ids, interaction_ids, distance_cutoff, false);
+}
+
+//! Turns `residue_ids` in to intersection between it and `intersection_ids`
+//!
+//! This function is designed to keep residues which have a desirable
+//! intersection with another set of residue ids.
+//! \param [in,out] residue_ids The residue IDs to be pruned.
+//! \param [in] intersection_ids The residue ids that the users wishes the
+//!  residue_ids to also be in.
+template <typename Container1, typename Container2 = Container1>
+inline Container1 intersection(Container1& residue_ids,
+                               const Container2& intersection_ids) {
+
+    // ugly O(n*m), but gets the job done. Ideally one should use sets though.
+    residue_ids.erase(
+        std::remove_if(residue_ids.begin(), residue_ids.end(),
+            [&intersection_ids](size_t current){
+                for (auto& i : intersection_ids){
+                    if (i == current) {
+                        return false;
+                    }
+                }
+                return true;
+        }), residue_ids.end()
+    );
+
+    return residue_ids;
+}
+
+//! Keeps residues with a given property
+//!
+//! This function is designed to keep residues which have a desirable property
+//! \param [in] frame The `frame` containing residues of interest.
+//! \param [in,out] residue_ids The residue IDs to be pruned.
+//! \param [in] property_name The name of the property to keep
+//! \param [in] property The property that the residues must have to be kept
+template <typename Container>
+inline Container has_property(const chemfiles::Frame& frame,
+                               Container& residue_ids,
+                               const std::string& property_name,
+                               const chemfiles::Property& property) {
+
+    residue_ids.erase(
+        std::remove_if(residue_ids.begin(), residue_ids.end(),
+            [&frame, &property_name, &property](size_t current){
+                auto& residue = frame.topology().residues()[current];
+                auto prop = residue.get(property_name);
+                if (!prop) {
+                    return true;
+                }
+
+                return *prop != property;
+        }), residue_ids.end()
+    );
+
+    return residue_ids;
 }
 
 } // namespace prune

@@ -13,10 +13,10 @@ class MyWorkflow(lemon.Workflow):
         import math
 
         protein_only = lemon.Frame()
-        peptides = lemon.ResidueIDs()
 
-        if (lemon.select_specific_residues(entry, peptides,
-                                           lemon.common_peptides) == 0):
+        peptides = lemon.select_specific_residues(entry, lemon.common_peptides)
+
+        if (len(peptides) == 0):
             return ""
 
         lemon.separate_residues(entry, peptides, protein_only)
