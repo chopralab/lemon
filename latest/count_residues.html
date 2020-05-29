@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Example Programs for counting residues &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example programs for finding ligand interactions" href="small_molecules.html" />
+    <link rel="prev" title="Launch a Lemon workflow" href="parallel.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="parallel.html" title="Previous Chapter: Launch a Lemon workflow"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Launch a Lemo...</span>
+    </a>
+  </li>
+  <li>
+    <a href="small_molecules.html" title="Next Chapter: Example programs for finding ligand interactions"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Example progr... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example Programs for counting residues</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#a-simple-start">A simple start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#looking-at-a-residue-property">Looking at a residue property</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="example-programs-for-counting-residues">
+<span id="count-residues"></span><h1>Example Programs for counting residues<a class="headerlink" href="#example-programs-for-counting-residues" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="a-simple-start">
+<h2>A simple start<a class="headerlink" href="#a-simple-start" title="Permalink to this headline">¶</a></h2>
+<p>In our first example, we will investigate a program that counts the number of
+times all residues accur within the PDB.  In this example, we will handle
+threading ourselves by creating a map object which holds the residue keys using
+the current thread as the key.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">lemon</span><span class="o">::</span><span class="n">Options</span> <span class="n">o</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+
+<span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[](</span><span class="k">const</span> <span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span><span class="o">&amp;</span> <span class="n">entry</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="cm">/*unused*/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">lemon</span><span class="o">::</span><span class="n">ResidueNameCount</span> <span class="p">{</span>
+
+    <span class="c1">// Desired info is calculated directly, no pruning, output is done later</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">ResidueNameCount</span> <span class="n">rnc</span><span class="p">;</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">count</span><span class="o">::</span><span class="n">residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">rnc</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rnc</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">lemon</span><span class="o">::</span><span class="n">ResidueNameCount</span> <span class="n">resn_total</span><span class="p">;</span>
+<span class="k">auto</span> <span class="n">collector</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">map_combine</span><span class="o">&lt;</span><span class="n">lemon</span><span class="o">::</span><span class="n">ResidueNameCount</span><span class="o">&gt;</span><span class="p">(</span><span class="n">resn_total</span><span class="p">);</span>
+<span class="n">lemon</span><span class="o">::</span><span class="n">launch</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">worker</span><span class="p">,</span> <span class="n">collector</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">i</span> <span class="p">:</span> <span class="n">resn_total</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">.</span><span class="n">second</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="looking-at-a-residue-property">
+<h2>Looking at a residue property<a class="headerlink" href="#looking-at-a-residue-property" title="Permalink to this headline">¶</a></h2>
+<p>We can also count the number of bioassemblies in a entry:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[](</span><span class="k">const</span> <span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span><span class="o">&amp;</span> <span class="n">entry</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">pdbid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="p">{</span>
+
+    <span class="c1">// Desired info is obtained directly</span>
+    <span class="k">auto</span> <span class="n">result</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">count</span><span class="o">::</span><span class="n">residue_property</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s">&quot;assembly&quot;</span><span class="p">);</span>
+
+    <span class="c1">// Output phase</span>
+    <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">auto</span> <span class="n">collector</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">print_combine</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>or the number of alternative locations in a given entry:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[](</span><span class="k">const</span> <span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span><span class="o">&amp;</span> <span class="n">entry</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">pdbid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="p">{</span>
+
+    <span class="c1">// Desired info is obtained directly </span>
+    <span class="k">auto</span> <span class="n">result</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">count</span><span class="o">::</span><span class="n">atom_property</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s">&quot;altloc&quot;</span><span class="p">);</span>
+
+    <span class="c1">// Output phase</span>
+    <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">auto</span> <span class="n">collector</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">print_combine</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

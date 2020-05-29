@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Handling Custom Returns in C++ &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Geometry" href="geometry.html" />
+    <link rel="prev" title="Separate" href="separate.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="separate.html" title="Previous Chapter: Separate"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Separate</span>
+    </a>
+  </li>
+  <li>
+    <a href="geometry.html" title="Next Chapter: Geometry"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Geometry &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="handling-custom-returns-in-c">
+<span id="return"></span><h1>Handling Custom Returns in C++<a class="headerlink" href="#handling-custom-returns-in-c" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>C++</strong> API allows users to return custom objects from their <em>workflows</em>.</p>
+<p>To do so, the user must create a <em>functor</em> object which overloads the
+<cite>operator()</cite> function. Lemon provides two implementations for <strong>C++</strong> streams
+(such as <cite>std::cout</cite>) and associative arrays (such as <cite>std::map</cite>). These two
+examples are given below to guide users in the creation of their own custom
+functors for new types. It is recommended that the user use <strong>C++</strong> templates
+to obtain the most flexible implementations.</p>
+<dl class="cpp struct">
+<dt id="_CPPv4N5lemon13print_combineE">
+<span id="_CPPv3N5lemon13print_combineE"></span><span id="_CPPv2N5lemon13print_combineE"></span><span id="lemon::print_combine"></span><span class="target" id="structlemon_1_1print__combine"></span><em class="property">struct </em><code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">print_combine</code><a class="headerlink" href="#_CPPv4N5lemon13print_combineE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Functor to stream workflow results to an ostream object</p>
+<p>This is a template functor which streams workflow results to a <code class="docutils literal notranslate"><span class="pre">collector</span></code>. This class is typically used to stream text results from workflows to the <code class="docutils literal notranslate"><span class="pre">std::cout</span></code> object. Any class which derives from <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code> is supported. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon13print_combine13print_combineERNSt7ostreamE">
+<span id="_CPPv3N5lemon13print_combine13print_combineERNSt7ostreamE"></span><span id="_CPPv2N5lemon13print_combine13print_combineERNSt7ostreamE"></span><span id="lemon::print_combine::print_combine__osR"></span><span class="target" id="structlemon_1_1print__combine_1a845095b9b1d0a0d9b927f6265c255db8"></span><code class="sig-name descname">print_combine</code><span class="sig-paren">(</span>std::ostream &amp;<em>collector</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon13print_combine13print_combineERNSt7ostreamE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Construct a <a class="reference internal" href="#structlemon_1_1print__combine"><span class="std std-ref">print_combine</span></a> which streams results to <code class="docutils literal notranslate"><span class="pre">collector</span></code>.</p>
+<p>This contructor will create a <code class="docutils literal notranslate"><a class="reference internal" href="#structlemon_1_1print__combine"><span class="std std-ref"><span class="pre">print_combine</span></span></a></code> object which streams results to <code class="docutils literal notranslate"><span class="pre">collector</span></code>. This argument must derive from the <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code> class and therefore provide an overload to the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator. Common examples of <code class="docutils literal notranslate"><span class="pre">collector</span></code> are <code class="docutils literal notranslate"><span class="pre">std::cout</span></code> and friends. All workflow results are streamed to the <code class="docutils literal notranslate"><span class="pre">collect</span></code> after all entries have been evaluated. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collector</span></code>: An object for each workflow objects will be streamed to </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt id="_CPPv4I0EN5lemon11map_combineE">
+<span id="_CPPv3I0EN5lemon11map_combineE"></span><span id="_CPPv2I0EN5lemon11map_combineE"></span>template&lt;typename <code class="sig-name descname">Map1</code>&gt;<br /><span class="target" id="structlemon_1_1map__combine"></span><em class="property">struct </em><code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">map_combine</code><a class="headerlink" href="#_CPPv4I0EN5lemon11map_combineE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Functor to combine the results of a workflow into a map</p>
+<p>This is a template functor which opens combines the results of a workflow into a single map object. Use this class only when the work flow returns a map oject or other type of associative array. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon11map_combine11map_combineER4Map1">
+<span id="_CPPv3N5lemon11map_combine11map_combineER4Map1"></span><span id="_CPPv2N5lemon11map_combine11map_combineER4Map1"></span><span id="lemon::map_combine::map_combine__Map1R"></span><span class="target" id="structlemon_1_1map__combine_1a6237a7fb5038712e939c7d7e7fe0fdc6"></span><code class="sig-name descname">map_combine</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN5lemon11map_combineE" title="lemon::map_combine::Map1">Map1</a> &amp;<em>collector</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon11map_combine11map_combineER4Map1" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Construct a <a class="reference internal" href="#structlemon_1_1map__combine"><span class="std std-ref">map_combine</span></a> class which fills the <code class="docutils literal notranslate"><span class="pre">collector</span></code></p>
+<p>This constructor will copy all results to the <code class="docutils literal notranslate"><span class="pre">collector</span></code> object. This operation is performed when the workflow completes for all entries. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collector</span></code>: A map like object to store results in. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0ENK5lemon11map_combineclEvRK4Map2">
+<span id="_CPPv3I0ENK5lemon11map_combineclERK4Map2"></span><span id="_CPPv2I0ENK5lemon11map_combineclERK4Map2"></span>template&lt;typename <code class="sig-name descname">Map2</code> = <a class="reference internal" href="#_CPPv4I0EN5lemon11map_combineE" title="lemon::map_combine::Map1">Map1</a>&gt;<br /><span class="target" id="structlemon_1_1map__combine_1aca4b9141f658850c6e7f8831c4775c46"></span>void <code class="sig-name descname">operator()</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0ENK5lemon11map_combineclEvRK4Map2" title="lemon::map_combine::operator()::Map2">Map2</a> &amp;<em>map2</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4I0ENK5lemon11map_combineclEvRK4Map2" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a map to the current <code class="docutils literal notranslate"><span class="pre">collector</span></code>. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="python-alternative">
+<h1>Python alternative<a class="headerlink" href="#python-alternative" title="Permalink to this headline">¶</a></h1>
+<p>This feature is under current development for the <strong>Python</strong> API, but is not
+yet supported. Instead, users should store the results of their workflows in
+the <cite>self</cite> object and rely on the <cite>finalize</cite> function to analyze the result.</p>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

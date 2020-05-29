@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Prune &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Counting operations" href="count.html" />
+    <link rel="prev" title="Select" href="select.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="select.html" title="Previous Chapter: Select"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Select</span>
+    </a>
+  </li>
+  <li>
+    <a href="count.html" title="Next Chapter: Counting operations"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Counting operations &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Prune</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#provided-functions">Provided functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="prune">
+<span id="id1"></span><h1>Prune<a class="headerlink" href="#prune" title="Permalink to this headline">¶</a></h1>
+<p>After residues have been selected, one may wish to remove some residues if they
+do not fit a given criterion. The functions below allow one allow to do so.</p>
+<p>All functions are availible in both <strong>C++</strong> and <strong>Python</strong>. In <strong>Python</strong>, the
+function names should be prefixed with <cite>prune_</cite> instead of the namespace
+resolution.</p>
+<div class="section" id="provided-functions">
+<h2>Provided functions<a class="headerlink" href="#provided-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp type">
+<dt id="_CPPv4N5lemon5pruneE">
+<span id="_CPPv3N5lemon5pruneE"></span><span id="_CPPv2N5lemon5pruneE"></span><span id="lemon::prune"></span><span class="target" id="namespacelemon_1_1prune"></span><em class="property">namespace </em><code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">prune</code><a class="headerlink" href="#_CPPv4N5lemon5pruneE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prune selected residues by removing them based on a criterion. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon5prune18identical_residuesE9ContainerRKN9chemfiles5FrameER9Container">
+<span id="_CPPv3I0EN5lemon5prune18identical_residuesERKN9chemfiles5FrameER9Container"></span><span id="_CPPv2I0EN5lemon5prune18identical_residuesERKN9chemfiles5FrameER9Container"></span>template&lt;typename <code class="sig-name descname">Container</code>&gt;<br /><span class="target" id="namespacelemon_1_1prune_1a8ee77b1858c74949f96993ced7049905"></span><a class="reference internal" href="#_CPPv4I0EN5lemon5prune18identical_residuesE9ContainerRKN9chemfiles5FrameER9Container" title="lemon::prune::identical_residues::Container">Container</a> <code class="sig-name descname">identical_residues</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <a class="reference internal" href="#_CPPv4I0EN5lemon5prune18identical_residuesE9ContainerRKN9chemfiles5FrameER9Container" title="lemon::prune::identical_residues::Container">Container</a> &amp;<em>residue_ids</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon5prune18identical_residuesE9ContainerRKN9chemfiles5FrameER9Container" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove residues which are biologic copies of one another in a crystal</p>
+<p>Many crystal structures in the PDB contain two identical copies of a biological macromolecule. Since these copies are functionally identical, some users wishing to only analyze a unique set of protein chains may want to remove the identical residue copy. This function performs this operation on a given set of residue ids by comparing all the residues in the <code class="docutils literal notranslate"><span class="pre">frame</span></code>’s biological assemblies. If a residue in one assembly has the same ID as a residue in a different assembly, then the copied residue is removed. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The <code class="docutils literal notranslate"><span class="pre">frame</span></code> containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">residue_ids</span></code>: The residue IDs to be pruned </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon5prune9cofactorsE9ContainerRKN9chemfiles5FrameER9ContainerRK14ResidueNameSet">
+<span id="_CPPv3I0EN5lemon5prune9cofactorsERKN9chemfiles5FrameER9ContainerRK14ResidueNameSet"></span><span id="_CPPv2I0EN5lemon5prune9cofactorsERKN9chemfiles5FrameER9ContainerRK14ResidueNameSet"></span>template&lt;typename <code class="sig-name descname">Container</code>&gt;<br /><span class="target" id="namespacelemon_1_1prune_1a687be9d66e80c51673d3f4832def256b"></span><a class="reference internal" href="#_CPPv4I0EN5lemon5prune9cofactorsE9ContainerRKN9chemfiles5FrameER9ContainerRK14ResidueNameSet" title="lemon::prune::cofactors::Container">Container</a> <code class="sig-name descname">cofactors</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <a class="reference internal" href="#_CPPv4I0EN5lemon5prune9cofactorsE9ContainerRKN9chemfiles5FrameER9ContainerRK14ResidueNameSet" title="lemon::prune::cofactors::Container">Container</a> &amp;<em>residue_ids</em>, <em class="property">const</em> ResidueNameSet &amp;<em>rns</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon5prune9cofactorsE9ContainerRKN9chemfiles5FrameER9ContainerRK14ResidueNameSet" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove residues which are typically present in many crystal structures</p>
+<p>There are a common set of cofactors present in many crystal structures such as sugars and fatty acids used to induce crystallization. As a result, some users may remove these cofactors as they may match other criteria (such as being a small molecule) set by the user. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The <code class="docutils literal notranslate"><span class="pre">frame</span></code> containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">residue_ids</span></code>: The residue IDs to be pruned. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">rns</span></code>: The residue names that one wishes to remove from residue_ids. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN5lemon5prune12interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2db">
+<span id="_CPPv3I00EN5lemon5prune12interactionsERKN9chemfiles5FrameER10Container1RK10Container2db"></span><span id="_CPPv2I00EN5lemon5prune12interactionsERKN9chemfiles5FrameER10Container1RK10Container2db"></span>template&lt;typename <code class="sig-name descname">Container1</code>, typename <code class="sig-name descname">Container2</code> = <a class="reference internal" href="#_CPPv4I00EN5lemon5prune12interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2db" title="lemon::prune::interactions::Container1">Container1</a>&gt;<br /><span class="target" id="namespacelemon_1_1prune_1a3a4b561c108dae8a0bb94be61d783023"></span><a class="reference internal" href="#_CPPv4I00EN5lemon5prune12interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2db" title="lemon::prune::interactions::Container1">Container1</a> <code class="sig-name descname">interactions</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <a class="reference internal" href="#_CPPv4I00EN5lemon5prune12interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2db" title="lemon::prune::interactions::Container1">Container1</a> &amp;<em>residue_ids</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I00EN5lemon5prune12interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2db" title="lemon::prune::interactions::Container2">Container2</a> &amp;<em>interaction_ids</em>, double <em>distance_cutoff</em> = <a class="reference internal" href="#_CPPv4N5lemon5prune16DEFAULT_DISTANCEE" title="lemon::prune::DEFAULT_DISTANCE">DEFAULT_DISTANCE</a>, bool <em>keep</em> = true<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN5lemon5prune12interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2db" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN5lemon5prune17keep_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d">
+<span id="_CPPv3I00EN5lemon5prune17keep_interactionsERKN9chemfiles5FrameER10Container1RK10Container2d"></span><span id="_CPPv2I00EN5lemon5prune17keep_interactionsERKN9chemfiles5FrameER10Container1RK10Container2d"></span>template&lt;typename <code class="sig-name descname">Container1</code>, typename <code class="sig-name descname">Container2</code> = <a class="reference internal" href="#_CPPv4I00EN5lemon5prune17keep_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="lemon::prune::keep_interactions::Container1">Container1</a>&gt;<br /><span class="target" id="namespacelemon_1_1prune_1a954b6ac01fab4543e4fad4b8e3f7b714"></span><a class="reference internal" href="#_CPPv4I00EN5lemon5prune17keep_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="lemon::prune::keep_interactions::Container1">Container1</a> <code class="sig-name descname">keep_interactions</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <a class="reference internal" href="#_CPPv4I00EN5lemon5prune17keep_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="lemon::prune::keep_interactions::Container1">Container1</a> &amp;<em>residue_ids</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I00EN5lemon5prune17keep_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="lemon::prune::keep_interactions::Container2">Container2</a> &amp;<em>interaction_ids</em>, double <em>distance_cutoff</em> = <a class="reference internal" href="#_CPPv4N5lemon5prune16DEFAULT_DISTANCEE" title="lemon::prune::DEFAULT_DISTANCE">DEFAULT_DISTANCE</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN5lemon5prune17keep_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove residues which do <strong>not</strong> interact with a given set of other residues</p>
+<p>This function is designed to remove residues which do not have a desired interaction with the surrounding protein environment. For example, if a user is interested in small molecules that interact with a Heme group, they can use this function to remove all residues that do have this interaction. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The <code class="docutils literal notranslate"><span class="pre">frame</span></code> containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">residue_ids</span></code>: The residue IDs to be pruned. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">interaction_ids</span></code>: The residue ids that the users wishes the residue_ids to interact with. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">distance_cutoff</span></code>: The distance that the residue_ids must be within a checked residue to be included. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN5lemon5prune19remove_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d">
+<span id="_CPPv3I00EN5lemon5prune19remove_interactionsERKN9chemfiles5FrameER10Container1RK10Container2d"></span><span id="_CPPv2I00EN5lemon5prune19remove_interactionsERKN9chemfiles5FrameER10Container1RK10Container2d"></span>template&lt;typename <code class="sig-name descname">Container1</code>, typename <code class="sig-name descname">Container2</code> = <a class="reference internal" href="#_CPPv4I00EN5lemon5prune19remove_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="lemon::prune::remove_interactions::Container1">Container1</a>&gt;<br /><span class="target" id="namespacelemon_1_1prune_1a821de5980739493c5e03d7a198457171"></span><a class="reference internal" href="#_CPPv4I00EN5lemon5prune19remove_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="lemon::prune::remove_interactions::Container1">Container1</a> <code class="sig-name descname">remove_interactions</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <a class="reference internal" href="#_CPPv4I00EN5lemon5prune19remove_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="lemon::prune::remove_interactions::Container1">Container1</a> &amp;<em>residue_ids</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I00EN5lemon5prune19remove_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="lemon::prune::remove_interactions::Container2">Container2</a> &amp;<em>interaction_ids</em>, double <em>distance_cutoff</em> = <a class="reference internal" href="#_CPPv4N5lemon5prune16DEFAULT_DISTANCEE" title="lemon::prune::DEFAULT_DISTANCE">DEFAULT_DISTANCE</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN5lemon5prune19remove_interactionsE10Container1RKN9chemfiles5FrameER10Container1RK10Container2d" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove residues which <strong>do interact</strong> with a given set of other residues</p>
+<p>This function is designed to remove residues which have a undesirable interaction with the surrounding protein environment. For example, if a user is interested in small molecules that do not interact with water, they can use this function to remove all residues that interact with water. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The <code class="docutils literal notranslate"><span class="pre">frame</span></code> containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">residue_ids</span></code>: The residue IDs to be pruned. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">interaction_ids</span></code>: The residue ids that the users wishes the residue_ids to <strong>not</strong> interact with. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">distance_cutoff</span></code>: The distance that the residue_ids must be within a checked residue to be removed. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN5lemon5prune12intersectionE10Container1R10Container1RK10Container2">
+<span id="_CPPv3I00EN5lemon5prune12intersectionER10Container1RK10Container2"></span><span id="_CPPv2I00EN5lemon5prune12intersectionER10Container1RK10Container2"></span>template&lt;typename <code class="sig-name descname">Container1</code>, typename <code class="sig-name descname">Container2</code> = <a class="reference internal" href="#_CPPv4I00EN5lemon5prune12intersectionE10Container1R10Container1RK10Container2" title="lemon::prune::intersection::Container1">Container1</a>&gt;<br /><span class="target" id="namespacelemon_1_1prune_1acfaf4fdb3f884f28ddfba2bf99f68908"></span><a class="reference internal" href="#_CPPv4I00EN5lemon5prune12intersectionE10Container1R10Container1RK10Container2" title="lemon::prune::intersection::Container1">Container1</a> <code class="sig-name descname">intersection</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN5lemon5prune12intersectionE10Container1R10Container1RK10Container2" title="lemon::prune::intersection::Container1">Container1</a> &amp;<em>residue_ids</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I00EN5lemon5prune12intersectionE10Container1R10Container1RK10Container2" title="lemon::prune::intersection::Container2">Container2</a> &amp;<em>intersection_ids</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN5lemon5prune12intersectionE10Container1R10Container1RK10Container2" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Turns <code class="docutils literal notranslate"><span class="pre">residue_ids</span></code> in to intersection between it and <code class="docutils literal notranslate"><span class="pre">intersection_ids</span></code></p>
+<p>This function is designed to keep residues which have a desirable intersection with another set of residue ids. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">residue_ids</span></code>: The residue IDs to be pruned. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">intersection_ids</span></code>: The residue ids that the users wishes the residue_ids to also be in. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon5prune12has_propertyE9ContainerRKN9chemfiles5FrameER9ContainerRKNSt6stringERKN9chemfiles8PropertyE">
+<span id="_CPPv3I0EN5lemon5prune12has_propertyERKN9chemfiles5FrameER9ContainerRKNSt6stringERKN9chemfiles8PropertyE"></span><span id="_CPPv2I0EN5lemon5prune12has_propertyERKN9chemfiles5FrameER9ContainerRKNSt6stringERKN9chemfiles8PropertyE"></span>template&lt;typename <code class="sig-name descname">Container</code>&gt;<br /><span class="target" id="namespacelemon_1_1prune_1a908e0efab822e078d45c9376ae0e2186"></span><a class="reference internal" href="#_CPPv4I0EN5lemon5prune12has_propertyE9ContainerRKN9chemfiles5FrameER9ContainerRKNSt6stringERKN9chemfiles8PropertyE" title="lemon::prune::has_property::Container">Container</a> <code class="sig-name descname">has_property</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <a class="reference internal" href="#_CPPv4I0EN5lemon5prune12has_propertyE9ContainerRKN9chemfiles5FrameER9ContainerRKNSt6stringERKN9chemfiles8PropertyE" title="lemon::prune::has_property::Container">Container</a> &amp;<em>residue_ids</em>, <em class="property">const</em> std::string &amp;<em>property_name</em>, <em class="property">const</em> chemfiles::Property &amp;<em>property</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon5prune12has_propertyE9ContainerRKN9chemfiles5FrameER9ContainerRKNSt6stringERKN9chemfiles8PropertyE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Keeps residues with a given property</p>
+<p>This function is designed to keep residues which have a desirable property <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The <code class="docutils literal notranslate"><span class="pre">frame</span></code> containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">residue_ids</span></code>: The residue IDs to be pruned. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">property_name</span></code>: The name of the property to keep </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">property</span></code>: The property that the residues must have to be kept </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Variables</p>
+<dl class="cpp var">
+<dt id="_CPPv4N5lemon5prune16DEFAULT_DISTANCEE">
+<span id="_CPPv3N5lemon5prune16DEFAULT_DISTANCEE"></span><span id="_CPPv2N5lemon5prune16DEFAULT_DISTANCEE"></span><span id="lemon::prune::DEFAULT_DISTANCE__auto"></span><span class="target" id="namespacelemon_1_1prune_1a3ea196905ae82d03cbbbe8be2bef05fb"></span>auto <em class="property">constexpr</em> <code class="sig-name descname">DEFAULT_DISTANCE</code> = 6.0<a class="headerlink" href="#_CPPv4N5lemon5prune16DEFAULT_DISTANCEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The default distance used for pruning. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="c">
+<h3>C++<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h3>
+<p>The following example demonstrates how to remove cofactors and other ‘common’
+residues from a selection.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[](</span><span class="k">const</span> <span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span><span class="o">&amp;</span> <span class="n">entry</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">pdbid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="p">{</span>
+
+    <span class="c1">// Selection phase</span>
+    <span class="k">auto</span> <span class="n">smallm</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">select</span><span class="o">::</span><span class="n">small_molecules</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">smallm</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Pruning phase</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">identical_residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">);</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">::</span><span class="n">common_cofactors</span><span class="p">);</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">::</span><span class="n">common_fatty_acids</span><span class="p">);</span>
+
+    <span class="c1">// Output phase</span>
+    <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="n">lemon</span><span class="o">::</span><span class="n">count</span><span class="o">::</span><span class="n">print_residue_names</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This example extends the previous one to show how one can find only the small-
+molecules interacting with a <strong>Heme</strong> group.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[</span><span class="n">distance</span><span class="p">](</span><span class="k">const</span> <span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span><span class="o">&amp;</span> <span class="n">entry</span><span class="p">,</span>
+                         <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">pdbid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="p">{</span>
+
+    <span class="c1">// Selection phase</span>
+    <span class="k">auto</span> <span class="n">hemegs</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">select</span><span class="o">::</span><span class="n">specific_residues</span><span class="p">(</span>
+        <span class="n">entry</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;HEM&quot;</span><span class="p">,</span> <span class="s">&quot;HEA&quot;</span><span class="p">,</span> <span class="s">&quot;HEB&quot;</span><span class="p">,</span> <span class="s">&quot;HEC&quot;</span><span class="p">});</span>
+    <span class="k">auto</span> <span class="n">smallm</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">select</span><span class="o">::</span><span class="n">small_molecules</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+
+    <span class="c1">// Pruning phase</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">identical_residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">);</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">::</span><span class="n">common_cofactors</span><span class="p">);</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">::</span><span class="n">common_fatty_acids</span><span class="p">);</span>
+
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">keep_interactions</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">hemegs</span><span class="p">,</span> <span class="n">distance</span><span class="p">);</span>
+
+    <span class="c1">// Output phase</span>
+    <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="n">lemon</span><span class="o">::</span><span class="n">count</span><span class="o">::</span><span class="n">print_residue_names</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python">
+<h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
+<p>These examples are availible in python as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lemon</span>
+
+<span class="k">class</span> <span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">Workflow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">pdbid</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">lemon</span>
+        <span class="n">smallm</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">select_small_molecules</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">small_molecule_types</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Pruning phase</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_identical_residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">)</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">common_cofactors</span><span class="p">)</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">common_fatty_acids</span><span class="p">)</span>
+
+        <span class="c1"># Output phase</span>
+        <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="n">lemon</span><span class="o">.</span><span class="n">count_print_residue_names</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lemon</span>
+
+<span class="k">class</span> <span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">Workflow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">pdbid</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">lemon</span>
+        <span class="n">heme_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">heme_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">ResidueName</span><span class="p">(</span><span class="s2">&quot;HEM&quot;</span><span class="p">))</span>
+        <span class="n">heme_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">ResidueName</span><span class="p">(</span><span class="s2">&quot;HEA&quot;</span><span class="p">))</span>
+        <span class="n">heme_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">ResidueName</span><span class="p">(</span><span class="s2">&quot;HEB&quot;</span><span class="p">))</span>
+        <span class="n">heme_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">ResidueName</span><span class="p">(</span><span class="s2">&quot;HEC&quot;</span><span class="p">))</span>
+
+        <span class="n">hemegs</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">select_specific_residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">heme_names</span><span class="p">)</span>
+        <span class="n">smallm</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">select_small_molecules</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">small_molecule_types</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Pruning phase</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_identical_residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">)</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">common_cofactors</span><span class="p">)</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">common_fatty_acids</span><span class="p">)</span>
+
+        <span class="n">lemon</span><span class="o">.</span><span class="n">keep_interactions</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">hemegs</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">)</span>
+
+        <span class="c1"># Output phase</span>
+        <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="n">lemon</span><span class="o">.</span><span class="n">count_print_residue_names</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

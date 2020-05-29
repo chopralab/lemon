@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Select &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Prune" href="prune.html" />
+    <link rel="prev" title="Useful Constants" href="constants.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="constants.html" title="Previous Chapter: Useful Constants"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Useful Constants</span>
+    </a>
+  </li>
+  <li>
+    <a href="prune.html" title="Next Chapter: Prune"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Prune &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Select</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#provided-selectors">Provided selectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="select">
+<span id="id1"></span><h1>Select<a class="headerlink" href="#select" title="Permalink to this headline">¶</a></h1>
+<p>Most <strong>Lemon</strong> workflows start by selecting one or multiple sets of residues
+and performing operations on these residues. The functions below are availible
+in both <strong>C++</strong> and <strong>Python</strong>, but there are a few implementation differences
+users should note.</p>
+<p>First, the <strong>C++</strong> version of all functions are implemented as templates,
+allowing for the user to use their prefered container for storing the resulting
+residues. Second, each function has two overloads. One takes a container
+initialized by the user as an argument and subsequently populates it using the
+container’s <cite>insert</cite> method. No template arguments are required as these can be
+deduced at compile-time. An other overload initializes and populates a new
+container specified by a template argument (default is a <cite>std::list&lt;size_t&gt;</cite>).
+The choice of correct container is left to the user.</p>
+<p>In <strong>Python</strong>, both overloads are availible as well. However, due to
+restrictions imposed by <strong>Python</strong> generics, the user must use the <cite>ResidueIDs</cite>
+container. All <strong>Python</strong> functions have been prepended with <em>select_</em>.</p>
+<div class="section" id="provided-selectors">
+<h2>Provided selectors<a class="headerlink" href="#provided-selectors" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp type">
+<dt id="_CPPv4N5lemon6selectE">
+<span id="_CPPv3N5lemon6selectE"></span><span id="_CPPv2N5lemon6selectE"></span><span id="lemon::select"></span><span class="target" id="namespacelemon_1_1select"></span><em class="property">namespace </em><code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">select</code><a class="headerlink" href="#_CPPv4N5lemon6selectE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Functions to select various residue based on a given criterion. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon6select15small_moleculesE9ContainerRKN9chemfiles5FrameERKNSt13unordered_setINSt6stringEEE6size_t">
+<span id="_CPPv3I0EN5lemon6select15small_moleculesERKN9chemfiles5FrameERKNSt13unordered_setINSt6stringEEE6size_t"></span><span id="_CPPv2I0EN5lemon6select15small_moleculesERKN9chemfiles5FrameERKNSt13unordered_setINSt6stringEEE6size_t"></span>template&lt;typename <code class="sig-name descname">Container</code> = std::vector&lt;uint64_t&gt;&gt;<br /><span class="target" id="namespacelemon_1_1select_1ac605fd6ad7fcfea8a44fc1421cb3663b"></span><a class="reference internal" href="#_CPPv4I0EN5lemon6select15small_moleculesE9ContainerRKN9chemfiles5FrameERKNSt13unordered_setINSt6stringEEE6size_t" title="lemon::select::small_molecules::Container">Container</a> <code class="sig-name descname">small_molecules</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <em class="property">const</em> std::unordered_set&lt;std::string&gt; &amp;<em>types</em> = <a class="reference internal" href="constants.html#_CPPv4N5lemon20small_molecule_typesE" title="lemon::small_molecule_types">small_molecule_types</a>, size_t <em>min_heavy_atoms</em> = 10<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon6select15small_moleculesE9ContainerRKN9chemfiles5FrameERKNSt13unordered_setINSt6stringEEE6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Select small molecules in a given frame</p>
+<p>Use this function to find small molecules in a given <code class="docutils literal notranslate"><span class="pre">frame</span></code>. A small molecule is defined as an entity that has a given <a class="reference external" href="http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Items/_chem_comp.type.html">chemical composition</a>. Also, the selected entity must have a specified number of atoms (default 10), so that common residues such as water and metal ions are not selected. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The selected residue locations </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The entry containing molecules of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">types</span></code>: A set of <code class="docutils literal notranslate"><span class="pre">std::string</span></code> containing the accepted chemical chemical composition. Defaults are <em>NON-POLYMER</em>, <em>OTHER</em>, <em>PEPTIDE-LIKE</em> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">min_heavy_atoms</span></code>: The minimum number of non-hydrogen atoms for a residue to be classed as a small molecule. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon6select10metal_ionsE9ContainerRKN9chemfiles5FrameE">
+<span id="_CPPv3I0EN5lemon6select10metal_ionsERKN9chemfiles5FrameE"></span><span id="_CPPv2I0EN5lemon6select10metal_ionsERKN9chemfiles5FrameE"></span>template&lt;typename <code class="sig-name descname">Container</code> = std::vector&lt;uint64_t&gt;&gt;<br /><span class="target" id="namespacelemon_1_1select_1aea21a1f6f6f82ff16736a272641800e0"></span><a class="reference internal" href="#_CPPv4I0EN5lemon6select10metal_ionsE9ContainerRKN9chemfiles5FrameE" title="lemon::select::metal_ions::Container">Container</a> <code class="sig-name descname">metal_ions</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon6select10metal_ionsE9ContainerRKN9chemfiles5FrameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Select metal ions in a given frame</p>
+<p>This function populates the residue IDs of metal ions. We define a metal ion as a residue with a single, positively charged ion. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The selected residue locations </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The entry containing metal ions of interest. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon6select13nucleic_acidsE9ContainerRKN9chemfiles5FrameE">
+<span id="_CPPv3I0EN5lemon6select13nucleic_acidsERKN9chemfiles5FrameE"></span><span id="_CPPv2I0EN5lemon6select13nucleic_acidsERKN9chemfiles5FrameE"></span>template&lt;typename <code class="sig-name descname">Container</code> = std::vector&lt;uint64_t&gt;&gt;<br /><span class="target" id="namespacelemon_1_1select_1a04f65886ba32556ce2be97cd9c642798"></span><a class="reference internal" href="#_CPPv4I0EN5lemon6select13nucleic_acidsE9ContainerRKN9chemfiles5FrameE" title="lemon::select::nucleic_acids::Container">Container</a> <code class="sig-name descname">nucleic_acids</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon6select13nucleic_acidsE9ContainerRKN9chemfiles5FrameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Select nucleic acid residues in a given frame</p>
+<p>This function populates the residue IDs of nucleic acid residues. We define a nucleic acid as a residue with a chemical composition containing the <em>RNA</em> or <em>DNA</em> substring. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The selected residue locations </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The entry containing nucleic acid residues. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon6select8peptidesE9ContainerRKN9chemfiles5FrameE">
+<span id="_CPPv3I0EN5lemon6select8peptidesERKN9chemfiles5FrameE"></span><span id="_CPPv2I0EN5lemon6select8peptidesERKN9chemfiles5FrameE"></span>template&lt;typename <code class="sig-name descname">Container</code> = std::vector&lt;uint64_t&gt;&gt;<br /><span class="target" id="namespacelemon_1_1select_1a1a45ebfb49c8115a5c9ba0ad20ccd593"></span><a class="reference internal" href="#_CPPv4I0EN5lemon6select8peptidesE9ContainerRKN9chemfiles5FrameE" title="lemon::select::peptides::Container">Container</a> <code class="sig-name descname">peptides</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon6select8peptidesE9ContainerRKN9chemfiles5FrameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Select peptide residues in a given frame</p>
+<p>This function populates the residue IDs of peptide residues. We define a peptided as a residue with a chemical composition containing the <em>PEPTIDE</em> substring which is not <em>PEPTIDE-LIKE</em>. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The selected residue locations </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The entry containing peptide residues. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon6select11residue_idsE9ContainerRKN9chemfiles5FrameERKNSt3setI8uint64_tEE">
+<span id="_CPPv3I0EN5lemon6select11residue_idsERKN9chemfiles5FrameERKNSt3setI8uint64_tEE"></span><span id="_CPPv2I0EN5lemon6select11residue_idsERKN9chemfiles5FrameERKNSt3setI8uint64_tEE"></span>template&lt;typename <code class="sig-name descname">Container</code> = std::vector&lt;uint64_t&gt;&gt;<br /><span class="target" id="namespacelemon_1_1select_1ab0355e3800eb8d0a3567d552efb3a9df"></span><a class="reference internal" href="#_CPPv4I0EN5lemon6select11residue_idsE9ContainerRKN9chemfiles5FrameERKNSt3setI8uint64_tEE" title="lemon::select::residue_ids::Container">Container</a> <code class="sig-name descname">residue_ids</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <em class="property">const</em> std::set&lt;uint64_t&gt; &amp;<em>resis</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon6select11residue_idsE9ContainerRKN9chemfiles5FrameERKNSt3setI8uint64_tEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Select residues with a given name in a given frame</p>
+<p>This function populates the residue IDs of peptides matching a given name set. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The selected residue locations </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The entry containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">resnis</span></code>: The set of residue IDs of interest. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon6select17specific_residuesE9ContainerRKN9chemfiles5FrameERK14ResidueNameSet">
+<span id="_CPPv3I0EN5lemon6select17specific_residuesERKN9chemfiles5FrameERK14ResidueNameSet"></span><span id="_CPPv2I0EN5lemon6select17specific_residuesERKN9chemfiles5FrameERK14ResidueNameSet"></span>template&lt;typename <code class="sig-name descname">Container</code> = std::vector&lt;uint64_t&gt;&gt;<br /><span class="target" id="namespacelemon_1_1select_1a90f06241c7fc3cbafd07d934e76f7f36"></span><a class="reference internal" href="#_CPPv4I0EN5lemon6select17specific_residuesE9ContainerRKN9chemfiles5FrameERK14ResidueNameSet" title="lemon::select::specific_residues::Container">Container</a> <code class="sig-name descname">specific_residues</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <em class="property">const</em> ResidueNameSet &amp;<em>resnames</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon6select17specific_residuesE9ContainerRKN9chemfiles5FrameERK14ResidueNameSet" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Select residues with a given name in a given frame</p>
+<p>This function returns a set of residue locations within a given name set <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The selected residue locations </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The entry containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">resnames</span></code>: The set of residue names of interest. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon6select16residue_propertyE9ContainerRKN9chemfiles5FrameERKNSt6stringERKN9chemfiles8PropertyE">
+<span id="_CPPv3I0EN5lemon6select16residue_propertyERKN9chemfiles5FrameERKNSt6stringERKN9chemfiles8PropertyE"></span><span id="_CPPv2I0EN5lemon6select16residue_propertyERKN9chemfiles5FrameERKNSt6stringERKN9chemfiles8PropertyE"></span>template&lt;typename <code class="sig-name descname">Container</code> = std::vector&lt;uint64_t&gt;&gt;<br /><span class="target" id="namespacelemon_1_1select_1a9e2b2545e50abde434e0304072addbee"></span><a class="reference internal" href="#_CPPv4I0EN5lemon6select16residue_propertyE9ContainerRKN9chemfiles5FrameERKNSt6stringERKN9chemfiles8PropertyE" title="lemon::select::residue_property::Container">Container</a> <code class="sig-name descname">residue_property</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <em class="property">const</em> std::string &amp;<em>property_name</em>, <em class="property">const</em> chemfiles::Property &amp;<em>property</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon6select16residue_propertyE9ContainerRKN9chemfiles5FrameERKNSt6stringERKN9chemfiles8PropertyE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Select residues with a property</p>
+<p>This function returns the residue locations of residues with a property <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The selected residue locations </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The entry containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">property_name</span></code>: The name of the property to select </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">property</span></code>: the property of interest </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="c">
+<h3>C++<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[](</span><span class="k">const</span> <span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span><span class="o">&amp;</span> <span class="n">entry</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">pdbid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="p">{</span>
+
+    <span class="c1">// Selection phase</span>
+    <span class="k">auto</span> <span class="n">metal_ids</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">select</span><span class="o">::</span><span class="n">metal_ions</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+
+    <span class="c1">// No pruning, straight to out output phase</span>
+    <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="n">lemon</span><span class="o">::</span><span class="n">count</span><span class="o">::</span><span class="n">print_residue_names</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">metal_ids</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="k">auto</span> <span class="n">collector</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">print_combine</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python">
+<h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lemon</span>
+
+<span class="n">distance</span> <span class="o">=</span> <span class="mf">6.0</span>
+
+<span class="k">class</span> <span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">Workflow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">pdbid</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">lemon</span>
+        <span class="c1"># Selection phase</span>
+        <span class="n">metals</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">select_metal_ions</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+        <span class="c1"># Output phase</span>
+        <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="n">lemon</span><span class="o">.</span><span class="n">count_print_residue_names</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">metals</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Counting operations &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Separate" href="separate.html" />
+    <link rel="prev" title="Prune" href="prune.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="prune.html" title="Previous Chapter: Prune"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Prune</span>
+    </a>
+  </li>
+  <li>
+    <a href="separate.html" title="Next Chapter: Separate"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Separate &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Counting operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#provided-selectors">Provided selectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="counting-operations">
+<span id="calculation-count"></span><h1>Counting operations<a class="headerlink" href="#counting-operations" title="Permalink to this headline">¶</a></h1>
+<p>These operations are provided so that the user can easily count the number of
+times a given property occurs. All operations are availible in <strong>C++</strong> and
+<strong>Python</strong>. <strong>Python</strong> functions are prefixed with <cite>count_</cite> instead of using
+the namespace resolution.</p>
+<div class="section" id="provided-selectors">
+<h2>Provided selectors<a class="headerlink" href="#provided-selectors" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp type">
+<dt id="_CPPv4N5lemon5countE">
+<span id="_CPPv3N5lemon5countE"></span><span id="_CPPv2N5lemon5countE"></span><span id="lemon::count"></span><span class="target" id="namespacelemon_1_1count"></span><em class="property">namespace </em><code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">count</code><a class="headerlink" href="#_CPPv4N5lemon5countE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Count various biological features. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon5count8residuesERKN9chemfiles5FrameER16ResidueNameCount">
+<span id="_CPPv3N5lemon5count8residuesERKN9chemfiles5FrameER16ResidueNameCount"></span><span id="_CPPv2N5lemon5count8residuesERKN9chemfiles5FrameER16ResidueNameCount"></span><span id="lemon::count::residues__chemfiles::FrameCR.ResidueNameCountR"></span><span class="target" id="namespacelemon_1_1count_1a14ef595be15804ae6fafbc03c836e3f6"></span>ResidueNameCount &amp;<code class="sig-name descname">residues</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, ResidueNameCount &amp;<em>resn_count</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon5count8residuesERKN9chemfiles5FrameER16ResidueNameCount" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Append all residue counts in a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> to a <code class="docutils literal notranslate"><span class="pre">ResidueNameCount</span></code></p>
+<p>Use this function to count the all residues in <code class="docutils literal notranslate"><span class="pre">frame</span></code> using the residue name. If the residue is previously stored in the supplied <code class="docutils literal notranslate"><span class="pre">resn_count</span></code> then the count of the residue is increased. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The frame containing residues of interest </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">resn_count</span></code>: A map of residue names to their respective count </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon5count8residuesER16ResidueNameCountRKN9chemfiles5FrameERK9ContainerR16ResidueNameCount">
+<span id="_CPPv3I0EN5lemon5count8residuesERKN9chemfiles5FrameERK9ContainerR16ResidueNameCount"></span><span id="_CPPv2I0EN5lemon5count8residuesERKN9chemfiles5FrameERK9ContainerR16ResidueNameCount"></span>template&lt;typename <code class="sig-name descname">Container</code>&gt;<br /><span class="target" id="namespacelemon_1_1count_1ac6ca360c81db0a01e956b06e4a731399"></span>ResidueNameCount &amp;<code class="sig-name descname">residues</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0EN5lemon5count8residuesER16ResidueNameCountRKN9chemfiles5FrameERK9ContainerR16ResidueNameCount" title="lemon::count::residues::Container">Container</a> &amp;<em>resids</em>, ResidueNameCount &amp;<em>resn_count</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon5count8residuesER16ResidueNameCountRKN9chemfiles5FrameERK9ContainerR16ResidueNameCount" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Append selected residue counts in a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> to a <code class="docutils literal notranslate"><span class="pre">ResidueNameCount</span></code></p>
+<p>Use this function to count the residues in <code class="docutils literal notranslate"><span class="pre">frame</span></code> using the residue name with the residue ids in <code class="docutils literal notranslate"><span class="pre">resids</span></code>. If the residue is previously stored in the supplied <code class="docutils literal notranslate"><span class="pre">resn_count</span></code> then the count of the residue is increased. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The frame containing residues of interest </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">resids</span></code>: Residue ids to consider </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">resn_count</span></code>: A map of residue names to their respective count </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon5count13atom_propertyERKN9chemfiles5FrameERKNSt6stringE">
+<span id="_CPPv3N5lemon5count13atom_propertyERKN9chemfiles5FrameERKNSt6stringE"></span><span id="_CPPv2N5lemon5count13atom_propertyERKN9chemfiles5FrameERKNSt6stringE"></span><span id="lemon::count::atom_property__chemfiles::FrameCR.ssCR"></span><span class="target" id="namespacelemon_1_1count_1a01df0f76077c64bce5a3588c2947941f"></span>size_t <code class="sig-name descname">atom_property</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <em class="property">const</em> std::string &amp;<em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon5count13atom_propertyERKN9chemfiles5FrameERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Obtain the number of times a given property occurs in a <code class="docutils literal notranslate"><span class="pre">Frame</span></code>.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the number of unique alternative location names </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The frame containing atoms of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">name</span></code>: The name of the property </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon5count16residue_propertyERKN9chemfiles5FrameERKNSt6stringE">
+<span id="_CPPv3N5lemon5count16residue_propertyERKN9chemfiles5FrameERKNSt6stringE"></span><span id="_CPPv2N5lemon5count16residue_propertyERKN9chemfiles5FrameERKNSt6stringE"></span><span id="lemon::count::residue_property__chemfiles::FrameCR.ssCR"></span><span class="target" id="namespacelemon_1_1count_1ad46864b9dc8face9ebf0905a550c5e8b"></span>size_t <code class="sig-name descname">residue_property</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, <em class="property">const</em> std::string &amp;<em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon5count16residue_propertyERKN9chemfiles5FrameERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Obtain the number of bioassemblies in a <code class="docutils literal notranslate"><span class="pre">Frame</span></code>.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the number of unique bioassemblies location names </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The frame containing residues of interest. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">name</span></code>: The name of the property </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon5count19print_residue_namesENSt6stringERKN9chemfiles5FrameERK9Container">
+<span id="_CPPv3I0EN5lemon5count19print_residue_namesERKN9chemfiles5FrameERK9Container"></span><span id="_CPPv2I0EN5lemon5count19print_residue_namesERKN9chemfiles5FrameERK9Container"></span>template&lt;typename <code class="sig-name descname">Container</code>&gt;<br /><span class="target" id="namespacelemon_1_1count_1abf50f698e8158fa56dd1d25d641f0f2d"></span>std::string <code class="sig-name descname">print_residue_names</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>entry</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0EN5lemon5count19print_residue_namesENSt6stringERKN9chemfiles5FrameERK9Container" title="lemon::count::print_residue_names::Container">Container</a> &amp;<em>res_ids</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN5lemon5count19print_residue_namesENSt6stringERKN9chemfiles5FrameERK9Container" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Print select residue names and their respective counts</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a string containing the formatted output. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">entry</span></code>: The entry containing the residues of interest </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">res_ids</span></code>: The set of residue ids for printing </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="c">
+<h3>C++<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">lemon</span><span class="o">::</span><span class="n">Options</span> <span class="n">o</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+
+<span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[](</span><span class="k">const</span> <span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span><span class="o">&amp;</span> <span class="n">entry</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="cm">/*unused*/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">lemon</span><span class="o">::</span><span class="n">ResidueNameCount</span> <span class="p">{</span>
+
+    <span class="c1">// Desired info is calculated directly, no pruning, output is done later</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">ResidueNameCount</span> <span class="n">rnc</span><span class="p">;</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">count</span><span class="o">::</span><span class="n">residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">rnc</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">rnc</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">lemon</span><span class="o">::</span><span class="n">ResidueNameCount</span> <span class="n">resn_total</span><span class="p">;</span>
+<span class="k">auto</span> <span class="n">collector</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">map_combine</span><span class="o">&lt;</span><span class="n">lemon</span><span class="o">::</span><span class="n">ResidueNameCount</span><span class="o">&gt;</span><span class="p">(</span><span class="n">resn_total</span><span class="p">);</span>
+<span class="n">lemon</span><span class="o">::</span><span class="n">launch</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">worker</span><span class="p">,</span> <span class="n">collector</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">i</span> <span class="p">:</span> <span class="n">resn_total</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">.</span><span class="n">second</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python">
+<h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">lemon</span>
+
+<span class="k">class</span> <span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">Workflow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">lemon</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">Workflow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnc</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">pdbid</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">lemon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnc</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">count_residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

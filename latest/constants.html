@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Useful Constants &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Select" href="select.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="getting_started.html" title="Previous Chapter: Getting Started"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Getting Started</span>
+    </a>
+  </li>
+  <li>
+    <a href="select.html" title="Next Chapter: Select"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Select &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="useful-constants">
+<span id="constants"></span><h1>Useful Constants<a class="headerlink" href="#useful-constants" title="Permalink to this headline">¶</a></h1>
+<p>The following are potentially useful compile-time constants that maybe of help
+for writing <strong>Lemon</strong> workflows. They are all availible in the <strong>C++</strong>
+<cite>namespace</cite> <em>lemon</em> and the <strong>Python</strong> module <em>lemon</em>.</p>
+<dl class="cpp var">
+<dt id="_CPPv4N5lemon15common_peptidesE">
+<span id="_CPPv3N5lemon15common_peptidesE"></span><span id="_CPPv2N5lemon15common_peptidesE"></span><span id="lemon::common_peptides__ResidueNameSetC"></span><span class="target" id="constants_8hpp_1a03d2e1149c2d1416e54befaf5b5db6b2"></span><em class="property">const</em> ResidueNameSet <code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">common_peptides</code>{{&quot;CSD&quot;}, {&quot;PCA&quot;}, {&quot;DLE&quot;}, {&quot;KCX&quot;}, {&quot;CAS&quot;}, {&quot;CSO&quot;}, {&quot;PTR&quot;}, {&quot;CME&quot;}, {&quot;SAH&quot;}, {&quot;TPO&quot;}, {&quot;SEP&quot;}, {&quot;MLY&quot;}, {&quot;HYP&quot;}, {&quot;MSE&quot;}, {&quot;CYS&quot;}, {&quot;TRP&quot;}, {&quot;MET&quot;}, {&quot;HIS&quot;}, {&quot;TYR&quot;}, {&quot;GLN&quot;}, {&quot;PHE&quot;}, {&quot;ASN&quot;}, {&quot;PRO&quot;}, {&quot;ARG&quot;}, {&quot;THR&quot;}, {&quot;ASP&quot;}, {&quot;ILE&quot;}, {&quot;LYS&quot;}, {&quot;SER&quot;}, {&quot;GLU&quot;}, {&quot;VAL&quot;}, {&quot;GLY&quot;}, {&quot;ALA&quot;}, {&quot;LEU&quot;},}<a class="headerlink" href="#_CPPv4N5lemon15common_peptidesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common peptides in the PDB</p>
+<p>Names of the most common peptides found in the PDB. This list includes the twenty natural amino acids as well as common post-translation modifications. These were Identified using the ‘peptide_residues’ <strong>Lemon</strong> workflow.</p>
+<p>‘Non-natural’ amino acids:<ul class="simple">
+<li><p><em>CSD</em>: 3-sulfinoalanine</p></li>
+<li><p><em>PCA</em>: pyroglutamic acid</p></li>
+<li><p><em>DLE</em>: D-leucine</p></li>
+<li><p><em>KCX</em>: lysine nz-carboxylic acid</p></li>
+<li><p><em>CAS</em>: S-(dimethylarsenic) cysteine</p></li>
+<li><p><em>CSO</em>: S-hydroxycysteine</p></li>
+<li><p><em>PTR</em>: O-phosphotyrosine</p></li>
+<li><p><em>TPO</em>: phosphothreonine</p></li>
+<li><p><em>SEP</em>: phosphoserine</p></li>
+<li><p><em>CME</em>: S,S-(2-hydroxyethyl)thiocysteine</p></li>
+<li><p><em>SAH</em>: S-adenosyl-l-homocysteine</p></li>
+<li><p><em>MLY</em>: N-dimethyl-lysine</p></li>
+<li><p><em>HYP</em>: 4-hydroxyproline</p></li>
+<li><p><em>MSE</em>: selenomethionine </p></li>
+</ul>
+</p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N5lemon16common_cofactorsE">
+<span id="_CPPv3N5lemon16common_cofactorsE"></span><span id="_CPPv2N5lemon16common_cofactorsE"></span><span id="lemon::common_cofactors__ResidueNameSetC"></span><span class="target" id="constants_8hpp_1aaae433ac0c9bfbbde8dc0c29e2a6797e"></span><em class="property">const</em> ResidueNameSet <code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">common_cofactors</code>{{&quot;FAD&quot;}, {&quot;FMN&quot;}, {&quot;NAD&quot;}, {&quot;NAP&quot;}, {&quot;CLA&quot;}, {&quot;HEM&quot;}, {&quot;HEA&quot;}, {&quot;HEB&quot;}, {&quot;HEC&quot;}, {&quot;ADP&quot;}, {&quot;ATP&quot;}, {&quot;GDP&quot;}, {&quot;GTP&quot;}, {&quot;UNL&quot;}, {&quot;CIT&quot;}, {&quot;FLC&quot;}, {&quot;BE7&quot;}, {&quot;MHA&quot;}, {&quot;DHD&quot;}, {&quot;B3P&quot;}, {&quot;BTB&quot;}, {&quot;NHE&quot;}, {&quot;GOL&quot;}, {&quot;DTP&quot;}, {&quot;SAM&quot;}, {&quot;SIA&quot;}, {&quot;ICT&quot;}, {&quot;EPE&quot;}, {&quot;MES&quot;},}<a class="headerlink" href="#_CPPv4N5lemon16common_cofactorsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common co-factors in the PDB</p>
+<p>Many proteins require a cofactor to function properly. These cofators are present with the corresponding protein. Common cofactors include: flavin groups (<em>FAD</em>, <em>FMN</em>), nicotinamide groups (<em>NAD</em>, <em>NAP</em>), heme groups ( <em>HEM</em>, <em>HEA</em>, <em>HEB</em>, <em>HEC</em>), nucleotides (<em>ADP</em>, <em>ATP</em>, <em>GDP</em>, <em>GTP</em>), citric acid (<em>CIT</em>, <em>FLC</em>), and S-adenosylmethionine (<em>SAM</em>). </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N5lemon18common_fatty_acidsE">
+<span id="_CPPv3N5lemon18common_fatty_acidsE"></span><span id="_CPPv2N5lemon18common_fatty_acidsE"></span><span id="lemon::common_fatty_acids__ResidueNameSetC"></span><span class="target" id="constants_8hpp_1a25eea6a4d158bd749c1ee8666395632f"></span><em class="property">const</em> ResidueNameSet <code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">common_fatty_acids</code>{{&quot;PG6&quot;}, {&quot;PE7&quot;}, {&quot;PG5&quot;}, {&quot;PEU&quot;}, {&quot;PGE&quot;}, {&quot;PIG&quot;}, {&quot;PE8&quot;}, {&quot;PE4&quot;}, {&quot;P33&quot;}, {&quot;C8E&quot;}, {&quot;OTE&quot;}, {&quot;XPE&quot;}, {&quot;N8E&quot;}, {&quot;DR6&quot;}, {&quot;PEG&quot;}, {&quot;2PE&quot;}, {&quot;P6G&quot;}, {&quot;1PE&quot;}, {&quot;SPM&quot;}, {&quot;SPK&quot;}, {&quot;SPD&quot;}, {&quot;1PG&quot;}, {&quot;PG4&quot;}, {&quot;MYR&quot;}, {&quot;OLA&quot;}, {&quot;OLB&quot;}, {&quot;OLC&quot;}, {&quot;PLM&quot;}, {&quot;PEE&quot;}, {&quot;LHG&quot;}, {&quot;MC3&quot;}, {&quot;PAM&quot;},}<a class="headerlink" href="#_CPPv4N5lemon18common_fatty_acidsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Common fatty-acids in the PDB</p>
+<p>Several protein crystal structures contain fatty acids used to help induce crystallization. This list contains fatty acids and other ‘linear’ small molecules. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N5lemon20small_molecule_typesE">
+<span id="_CPPv3N5lemon20small_molecule_typesE"></span><span id="_CPPv2N5lemon20small_molecule_typesE"></span><span id="lemon::small_molecule_types__std::unordered_set:ss:C"></span><span class="target" id="constants_8hpp_1adc65423f98265ad8ce094917dd36a191"></span><em class="property">const</em> std::unordered_set&lt;std::string&gt; <code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">small_molecule_types</code>{{&quot;NON-POLYMER&quot;}, {&quot;OTHER&quot;}, {&quot;PEPTIDE-LIKE&quot;}}<a class="headerlink" href="#_CPPv4N5lemon20small_molecule_typesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Linkage types for small-molecules in the PDB</p>
+<p>This set contains the types of linkages used to initially identify a small molecule in a crystal structure.*PEPTIDE-LIKE* is included here becasue many drugs are classified with this linkage. </p>
+</dd></dl>
+
+<p><strong>Note</strong>: the following constant is not availible in <strong>Python</strong> as it is meant
+for launching <strong>Lemon</strong>, not for use in workflows.</p>
+<dl class="cpp var">
+<dt id="_CPPv4N5lemon13large_entriesE">
+<span id="_CPPv3N5lemon13large_entriesE"></span><span id="_CPPv2N5lemon13large_entriesE"></span><span id="lemon::large_entries__std::unordered_set:ss:C"></span><span class="target" id="constants_8hpp_1aae0edcdc9f134ef7234f79d1ea5fc9fd"></span><em class="property">const</em> std::unordered_set&lt;std::string&gt; <code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">large_entries</code>{{&quot;3J3Q&quot;}, {&quot;3J3Y&quot;}, {&quot;5Y6P&quot;}}<a class="headerlink" href="#_CPPv4N5lemon13large_entriesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>PDB entries that should be skipped as they are time consuming to calculate.</p>
+<p>These PDB entries are of virus capsids and therefore are time consuming to perform operations on. The typical user may wish to skip these entries as to reduce the total amount of time required for a <strong>Lemon</strong> workflow. These entries are indentified as they take an order of magnitude longer to perform an operation than other entries. </p>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

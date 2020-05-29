@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Read command-line options &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Launch a Lemon workflow" href="parallel.html" />
+    <link rel="prev" title="TMalign" href="tmalign.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="tmalign.html" title="Previous Chapter: TMalign"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; TMalign</span>
+    </a>
+  </li>
+  <li>
+    <a href="parallel.html" title="Next Chapter: Launch a Lemon workflow"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Launch a Lemo... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="read-command-line-options">
+<span id="invoke-options"></span><h1>Read command-line options<a class="headerlink" href="#read-command-line-options" title="Permalink to this headline">¶</a></h1>
+<dl class="cpp class">
+<dt id="_CPPv4N5lemon7OptionsE">
+<span id="_CPPv3N5lemon7OptionsE"></span><span id="_CPPv2N5lemon7OptionsE"></span><span id="lemon::Options"></span><span class="target" id="classlemon_1_1_options"></span><em class="property">class </em><code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Options</code> : <em class="property">public</em> App<a class="headerlink" href="#_CPPv4N5lemon7OptionsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <code class="docutils literal notranslate"><a class="reference internal" href="#classlemon_1_1_options"><span class="std std-ref"><span class="pre">Options</span></span></a></code> class is used to read command line arguments.</p>
+<p>A majority of <strong>Lemon</strong> workflows begin with the parsing of various command- line arguments. This class helps the user parse the most common arguments such as the directory containing the <a class="reference internal" href="parallel.html#classlemon_1_1_hadoop"><span class="std std-ref">Hadoop</span></a> sequence files, the number of cores to use for a given search or a preselected set of entries. Users can add their own options with the <code class="docutils literal notranslate"><span class="pre">add_options</span></code> member function. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon7Options7OptionsEv">
+<span id="_CPPv3N5lemon7Options7OptionsEv"></span><span id="_CPPv2N5lemon7Options7OptionsEv"></span><span id="lemon::Options::Options"></span><span class="target" id="classlemon_1_1_options_1a98f28ba39b04add914d6409000e6a003"></span><code class="sig-name descname">Options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon7Options7OptionsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Default constructor to initialize a custom <code class="docutils literal notranslate"><a class="reference internal" href="#classlemon_1_1_options"><span class="std std-ref"><span class="pre">Options</span></span></a></code> class</p>
+<p>This constructor is intended for users who wish to add their own custom options. The <em>work_dir</em>, <em>ncpu</em>, and <em>entries</em> options are added automatically and additional options can be added with the <code class="docutils literal notranslate"><span class="pre">add_option</span></code> function. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon7Options7OptionsEiA_PCKc">
+<span id="_CPPv3N5lemon7Options7OptionsEiA_PCKc"></span><span id="_CPPv2N5lemon7Options7OptionsEiA_PCKc"></span><span id="lemon::Options::Options__i.cCPCA"></span><span class="target" id="classlemon_1_1_options_1a2013d4fcd276e4a7c51622f968b41ed2"></span><code class="sig-name descname">Options</code><span class="sig-paren">(</span>int <em>argc</em>, <em class="property">const</em> char *<em class="property">const</em> <em>argv</em>[]<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon7Options7OptionsEiA_PCKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Constructor for an <code class="docutils literal notranslate"><a class="reference internal" href="#classlemon_1_1_options"><span class="std std-ref"><span class="pre">Options</span></span></a></code> class which does not use custom options</p>
+<p>This constructor is indended for users who do <strong>not</strong> wish to add custom options. The <em>work_dir</em>, <em>ncpu</em>, and <em>entries</em> options are added automatically and the arguments are parsed immediately. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The number of arguments plus their values plus one. Typically obtained from the <code class="docutils literal notranslate"><span class="pre">main</span></code> function. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The arguments and their values. Typically obtained from the <code class="docutils literal notranslate"><span class="pre">main</span></code> function. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN5lemon7Options10add_optionEPN3CLI6OptionENSt6stringER1TNSt6stringE">
+<span id="_CPPv3I0EN5lemon7Options10add_optionENSt6stringER1TNSt6stringE"></span><span id="_CPPv2I0EN5lemon7Options10add_optionENSt6stringER1TNSt6stringE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classlemon_1_1_options_1a8110ef7961f28362ff7ed75880d28a28"></span>CLI::Option *<code class="sig-name descname">add_option</code><span class="sig-paren">(</span>std::string <em>option_name</em>, <a class="reference internal" href="#_CPPv4I0EN5lemon7Options10add_optionEPN3CLI6OptionENSt6stringER1TNSt6stringE" title="lemon::Options::add_option::T">T</a> &amp;<em>variable</em>, std::string <em>description</em> = &quot;&quot;<span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4I0EN5lemon7Options10add_optionEPN3CLI6OptionENSt6stringER1TNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Adds an option to the current workflow</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">option_name</span></code>: The name of the option on the command line </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>: The location used to store the variable </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code>: The description of the new option </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon7Options18parse_command_lineEiA_PCKc">
+<span id="_CPPv3N5lemon7Options18parse_command_lineEiA_PCKc"></span><span id="_CPPv2N5lemon7Options18parse_command_lineEiA_PCKc"></span><span id="lemon::Options::parse_command_line__i.cCPCA"></span><span class="target" id="classlemon_1_1_options_1a4035b2ec483ccfce044ea4051ec0a95e"></span>void <code class="sig-name descname">parse_command_line</code><span class="sig-paren">(</span>int <em>argc</em>, <em class="property">const</em> char *<em class="property">const</em> <em>argv</em>[]<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon7Options18parse_command_lineEiA_PCKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Parse the command-line arguments and update containers</p>
+<p>Use this function to read options and update the custom contains if needed. Once the options are parsed, this function will throw an error. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The number of arguments plus their values plus one. Typically obtained from the <code class="docutils literal notranslate"><span class="pre">main</span></code> function. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The arguments and their values. Typically obtained from the <code class="docutils literal notranslate"><span class="pre">main</span></code> function. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK5lemon7Options8work_dirEv">
+<span id="_CPPv3NK5lemon7Options8work_dirEv"></span><span id="_CPPv2NK5lemon7Options8work_dirEv"></span><span id="lemon::Options::work_dirC"></span><span class="target" id="classlemon_1_1_options_1a41d2e6274ecce000d90ab39c4957c631"></span><em class="property">const</em> std::string &amp;<code class="sig-name descname">work_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5lemon7Options8work_dirEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Directory containing the MMTF or <a class="reference internal" href="parallel.html#classlemon_1_1_hadoop"><span class="std std-ref">Hadoop</span></a> files. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK5lemon7Options4ncpuEv">
+<span id="_CPPv3NK5lemon7Options4ncpuEv"></span><span id="_CPPv2NK5lemon7Options4ncpuEv"></span><span id="lemon::Options::ncpuC"></span><span class="target" id="classlemon_1_1_options_1ae4cc4eaad4f401af45edb2e5699cce66"></span>size_t <code class="sig-name descname">ncpu</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5lemon7Options4ncpuEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Number of CPUs used to run independent jobs. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK5lemon7Options7entriesEv">
+<span id="_CPPv3NK5lemon7Options7entriesEv"></span><span id="_CPPv2NK5lemon7Options7entriesEv"></span><span id="lemon::Options::entriesC"></span><span class="target" id="classlemon_1_1_options_1a378600920269ce09b8b5f7adb1ffdd15"></span><em class="property">const</em> std::string &amp;<code class="sig-name descname">entries</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5lemon7Options7entriesEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Index to preselect entries. Eg a search on RCSB. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK5lemon7Options12skip_entriesEv">
+<span id="_CPPv3NK5lemon7Options12skip_entriesEv"></span><span id="_CPPv2NK5lemon7Options12skip_entriesEv"></span><span id="lemon::Options::skip_entriesC"></span><span class="target" id="classlemon_1_1_options_1a6973b3b6caa1a94a97461eb87de4ff5b"></span><em class="property">const</em> std::string &amp;<code class="sig-name descname">skip_entries</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5lemon7Options12skip_entriesEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Index to skip entries. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

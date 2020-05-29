@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>XScore/Vina &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TMalign" href="tmalign.html" />
+    <link rel="prev" title="Geometry" href="geometry.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="geometry.html" title="Previous Chapter: Geometry"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Geometry</span>
+    </a>
+  </li>
+  <li>
+    <a href="tmalign.html" title="Next Chapter: TMalign"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">TMalign &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">XScore/Vina</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="xscore-vina">
+<h1>XScore/Vina<a class="headerlink" href="#xscore-vina" title="Permalink to this headline">¶</a></h1>
+<p>When developing a benchmarking set, a user may wish to select entries with a
+certain set of interactions.  We provide the scoring function used by the
+AutoDOCK vina software package to help users select desirable interactions.</p>
+<p><strong>Note:</strong> You will need to include the additional file: <cite>&lt;lemon/xscore.hpp&gt;</cite> to
+have access to these features.</p>
+<dl class="cpp struct">
+<dt id="_CPPv4N5lemon6xscore9VinaScoreE">
+<span id="_CPPv3N5lemon6xscore9VinaScoreE"></span><span id="_CPPv2N5lemon6xscore9VinaScoreE"></span><span id="lemon::xscore::VinaScore"></span><span class="target" id="structlemon_1_1xscore_1_1_vina_score"></span><em class="property">struct </em><code class="sig-name descname">VinaScore</code><a class="headerlink" href="#_CPPv4N5lemon6xscore9VinaScoreE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>An object which represents the components of XScore/Vina’s scoring function</p>
+<p>The XScore/Vina scoring function is divided into five components: two gaussian functions, hydrophobic interactions, repulsive forces, and hydrogen bonding. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN6xscore5lemon10vina_scoreE9VinaScoreRKN9chemfiles5FrameE6size_t9Containerd">
+<span id="_CPPv3I0EN6xscore5lemon10vina_scoreERKN9chemfiles5FrameE6size_t9Containerd"></span><span id="_CPPv2I0EN6xscore5lemon10vina_scoreERKN9chemfiles5FrameE6size_t9Containerd"></span>template&lt;typename <code class="sig-name descname">Container</code>&gt;<br /><span class="target" id="xscore_8hpp_1a04986a298fb67fadb6c2eeaaecfdb3c5"></span>VinaScore <code class="sig-prename descclassname">xscore::lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">vina_score</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>frame</em>, size_t <em>ligid</em>, <a class="reference internal" href="#_CPPv4I0EN6xscore5lemon10vina_scoreE9VinaScoreRKN9chemfiles5FrameE6size_t9Containerd" title="xscore::lemon::vina_score::Container">Container</a> <em>recid</em>, double <em>cutoff</em> = DEFAULT_INTERACTION_DISTANCE<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN6xscore5lemon10vina_scoreE9VinaScoreRKN9chemfiles5FrameE6size_t9Containerd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XScore is a ‘docking’ scoring function used to evaluate compound-protein interactions</p>
+<p>The docking program AutoDOCK Vina utilizes a modified version of the XScore scoring function to evaluate the fit of a compound-protein interaction. Since the original XScore program is not open source, we’ve included a copy of the Vina version of this scoring function. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The five components of Vina/XScore’s scoring function. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">frame</span></code>: The frame for which the ligand-protein score will be calculated </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">ligid</span></code>: The residue ID for the ligand in the entry </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">recid</span></code>: The residue IDs for the protein in the entry </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">cutoff</span></code>: The interaction distance cutoff between ligand and protein </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="c">
+<h3>C++<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[](</span><span class="k">const</span> <span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span><span class="o">&amp;</span> <span class="n">entry</span><span class="p">,</span>
+                 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">pdbid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="p">{</span>
+
+    <span class="c1">// Selection phase= </span>
+    <span class="k">auto</span> <span class="n">smallm</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">select</span><span class="o">::</span><span class="n">small_molecules</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">smallm</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Pruning phase</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">identical_residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">);</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">::</span><span class="n">common_cofactors</span><span class="p">);</span>
+    <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">::</span><span class="n">common_fatty_acids</span><span class="p">);</span>
+
+    <span class="c1">// Output phase</span>
+    <span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">residues</span> <span class="o">=</span> <span class="n">entry</span><span class="p">.</span><span class="n">topology</span><span class="p">().</span><span class="n">residues</span><span class="p">();</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span> <span class="n">proteins</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">entry</span><span class="p">.</span><span class="n">topology</span><span class="p">().</span><span class="n">residues</span><span class="p">().</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">proteins</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">result</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">smallm_id</span> <span class="p">:</span> <span class="n">smallm</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">auto</span> <span class="n">prot_copy</span> <span class="o">=</span> <span class="n">proteins</span><span class="p">;</span>
+
+        <span class="n">lemon</span><span class="o">::</span><span class="n">prune</span><span class="o">::</span><span class="n">keep_interactions</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">prot_copy</span><span class="p">,</span> <span class="n">lemon</span><span class="o">::</span><span class="n">xscore</span><span class="o">::</span><span class="n">DEFAULT_INTERACTION_DISTANCE</span><span class="p">);</span>
+        <span class="n">prot_copy</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">prot_copy</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">prot_copy</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">smallm_id</span><span class="p">),</span> <span class="n">prot_copy</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+        <span class="k">auto</span> <span class="n">vscore</span> <span class="o">=</span>
+            <span class="n">lemon</span><span class="o">::</span><span class="n">xscore</span><span class="o">::</span><span class="n">vina_score</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm_id</span><span class="p">,</span> <span class="n">prot_copy</span><span class="p">);</span>
+
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">+</span>
+            <span class="n">residues</span><span class="p">[</span><span class="n">smallm_id</span><span class="p">].</span><span class="n">name</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">+</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">vscore</span><span class="p">.</span><span class="n">g1</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">+</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">vscore</span><span class="p">.</span><span class="n">g2</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">+</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">vscore</span><span class="p">.</span><span class="n">hydrogen</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">+</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">vscore</span><span class="p">.</span><span class="n">hydrophobic</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">+</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">vscore</span><span class="p">.</span><span class="n">rep</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="python">
+<h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lemon</span>
+
+<span class="k">class</span> <span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">Workflow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">pdbid</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">lemon</span>
+
+        <span class="c1"># Selection phase</span>
+        <span class="n">smallm</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">select_small_molecules</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">small_molecule_types</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">smallm</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Pruning phase</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_identical_residues</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">)</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">common_cofactors</span><span class="p">)</span>
+        <span class="n">lemon</span><span class="o">.</span><span class="n">prune_cofactors</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">common_fatty_acids</span><span class="p">)</span>
+
+        <span class="c1"># Output phase</span>
+        <span class="n">prot</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">topology</span><span class="p">()</span><span class="o">.</span><span class="n">residues</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">resid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)):</span>
+            <span class="n">prot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
+        
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">smallm_id</span> <span class="ow">in</span> <span class="n">smallm</span><span class="p">:</span>
+            <span class="n">lig_copy</span> <span class="o">=</span> <span class="p">[</span><span class="n">smallm_id</span><span class="p">]</span>
+
+            <span class="c1"># Hack to remove self</span>
+            <span class="n">prot_copy</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">remove_interactions</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">prot</span><span class="p">,</span> <span class="n">lig_copy</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+
+            <span class="n">vscore</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">vina_score</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm_id</span><span class="p">,</span> <span class="n">prot_copy</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">)</span>
+
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> 
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">residues</span><span class="p">[</span><span class="n">smallm_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> 
+            <span class="n">result</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vscore</span><span class="o">.</span><span class="n">g1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> 
+            <span class="n">result</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vscore</span><span class="o">.</span><span class="n">g2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vscore</span><span class="o">.</span><span class="n">hydrogen</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> 
+            <span class="n">result</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vscore</span><span class="o">.</span><span class="n">hydrophobic</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vscore</span><span class="o">.</span><span class="n">rep</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

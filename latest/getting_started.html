@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Getting Started &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Useful Constants" href="constants.html" />
+    <link rel="prev" title="Lemon" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="index.html" title="Previous Chapter: Lemon"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Lemon</span>
+    </a>
+  </li>
+  <li>
+    <a href="constants.html" title="Next Chapter: Useful Constants"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Useful Constants &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#c">C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="getting-started">
+<span id="id1"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>Currently, <strong>Lemon</strong> supports development of <em>workflows</em> in both <strong>C++</strong> and
+<strong>Python</strong>. Note that <strong>Python</strong> development is split into two modes which are
+described in the documentation below.</p>
+<div class="section" id="c">
+<h2>C++<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="creating-a-new-workflow">
+<h3>Creating a new <em>workflow</em><a class="headerlink" href="#creating-a-new-workflow" title="Permalink to this headline">¶</a></h3>
+<p><strong>Lemon</strong> is a header library that requires the use of the
+<em>chemfiles</em> library (which is compiled). This means that <strong>Lemon</strong> can be used
+in <em>chemfiles</em> projects by simply copying the include directory. For simple
+<em>workflows</em>, one can add them to the <strong>Lemon</strong> build tree by creating a <em>cpp</em>
+file in one of the <em>progs</em> subdirectories (you will need to edit the
+<em>CMakeLists.txt</em> file if you create a new subdirectory). When CMake is run, it
+should automatically find your <em>cpp</em> file and add it to the build tree.</p>
+</div>
+<div class="section" id="developing-the-workflow">
+<h3>Developing the <em>workflow</em><a class="headerlink" href="#developing-the-workflow" title="Permalink to this headline">¶</a></h3>
+<p>The ‘fundamental unit’ of a <strong>Lemon</strong> workflow in <strong>C++</strong> is the <em>lambda</em>
+function. All <strong>Lemon</strong> workflows must accept the arguments of
+<cite>chemfiles::Frame</cite> and <cite>const std::string&amp;</cite>. An example is given below:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">worker</span> <span class="o">=</span> <span class="p">[](</span><span class="n">chemfiles</span><span class="o">::</span><span class="n">Frame</span> <span class="n">entry</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">pdbid</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do something cool with the entry, pdbid and store to my_result</span>
+    <span class="k">return</span> <span class="n">my_result</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Note that <cite>my_result</cite> can be of any type! There is a section on custom, user
+defined types later on in the documentation. Once created, the <em>lambda</em>
+function is passed to the <cite>launch</cite> function.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">lemon</span><span class="o">::</span><span class="n">Options</span> <span class="n">o</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+<span class="k">auto</span> <span class="n">collector</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">::</span><span class="n">print_combine</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
+<span class="n">lemon</span><span class="o">::</span><span class="n">launch</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">worker</span><span class="p">,</span> <span class="n">collector</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The meaning of <cite>print_combine</cite> is to print the results of the workflow using
+the <cite>operator&lt;&lt;</cite> and <cite>std::cout</cite>. This may need to change if the user wishes
+for a different result or returns a custom type from their workflow.</p>
+</div>
+</div>
+<div class="section" id="python">
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h2>
+<p>Development in <strong>Python</strong> can be accomplished in two ways. First, users can use
+the provided <em>pip</em> package. This is the recommend way to run <strong>Lemon</strong> in an
+environment where <strong>Python</strong> development is prefered. Second, users can the
+<cite>lemon_python</cite> program which is created when the <strong>C++</strong> code is compiled. This
+program is recommend for <strong>C++</strong> developers who like to prototype code in
+<strong>Python</strong> before coverting it to a <strong>C++</strong> only version.</p>
+<p>Note that there are minor differences between the two versions that are
+actively being resolved.</p>
+<div class="section" id="using-the-pypi-pip-package">
+<h3>Using the <em>PyPI</em> <cite>pip</cite> package<a class="headerlink" href="#using-the-pypi-pip-package" title="Permalink to this headline">¶</a></h3>
+<p>The ‘fundamental unit’ of a <strong>Lemon</strong> workflow in <strong>Python</strong> is the <cite>Workflow</cite>
+class provided in the <cite>candiy_lemon.lemon</cite> module. This class has two functions
+that should be <cite>overriden</cite> to provide optimal benefit to the author of a
+workflow. The first is the <cite>worker</cite> function, taking two additional arguments
+(other than <cite>self</cite>). The first is a <cite>lemon.Frame</cite> and the second is a
+string with the <strong>PDB</strong> id code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">candiy_lemon</span> <span class="kn">import</span> <span class="n">lemon</span> <span class="c1"># You must import lemon from the CANDIY module</span>
+
+<span class="n">min_size</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">class</span> <span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">Workflow</span><span class="p">):</span> <span class="c1"># Lemon.Workflow must be subclassed</span>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">pdbid</span><span class="p">):</span>
+        <span class="c1"># No need to reimport any objects or other items.</span>
+        <span class="c1"># All variables are carried over</span>
+        <span class="n">heme_names</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">ResidueNameSet</span><span class="p">()</span>
+
+        <span class="n">smallm</span> <span class="o">=</span> <span class="n">lemon</span><span class="o">.</span><span class="n">select_small_molecules</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">lemon</span><span class="o">.</span><span class="n">small_molecule_types</span><span class="p">,</span> <span class="n">min_size</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pdbid</span> <span class="o">+</span> <span class="n">lemon</span><span class="o">.</span><span class="n">count_print_residue_names</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">smallm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">MyWorkflow</span><span class="p">()</span>
+
+<span class="n">lemon</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s2">&quot;rcsb_hadoop&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-the-lemon-python-command">
+<h3>Using the <cite>lemon_python</cite> command<a class="headerlink" href="#using-the-lemon-python-command" title="Permalink to this headline">¶</a></h3>
+<p>The ‘fundamental unit’ of a <strong>Lemon</strong> workflow in <strong>Python</strong> is the <cite>Workflow</cite>
+class provided in the <cite>lemon</cite> module. This class has two functions that should
+be <cite>overriden</cite> to provide optimal benefit to the author of a workflow. The
+first is the <cite>worker</cite> function, taking two additional arguments (other than
+<cite>self</cite>). The first is a <cite>lemon.Frame</cite> and the second is a string with the
+<strong>PDB</strong> id code. Note that both <strong>Python 2</strong> and <strong>Python 3</strong> are supported,
+but one must be careful to select the proper version when <strong>Lemon</strong> is built.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lemon</span> <span class="c1"># Note that we are importing lemon directly</span>
+<span class="k">class</span> <span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">lemon</span><span class="o">.</span><span class="n">Workflow</span><span class="p">):</span> <span class="c1"># You must subclass Workflow</span>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span><span class="n">pdbid</span><span class="p">):</span>
+        <span class="c1"># Globals are not availible due to CPython not working properly</span>
+        <span class="kn">import</span> <span class="nn">lemon</span> <span class="c1"># You must reimport lemon here do to CPython silliness</span>
+        <span class="k">return</span> <span class="n">get</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">topology</span><span class="p">()</span><span class="o">.</span><span class="n">residue</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;chainname&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">as_string</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Unlike the <strong>C++</strong> version of the code, the <cite>worker</cite> method <em>must</em> return a
+string or have no return value. This method is called for all structures in the
+<strong>PDB</strong>. The <cite>finalize</cite> method is called when the workflow completes. A
+<strong>Python</strong> workflow is invoked by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lemon_python -p myscript.py -w /path/to/mmtf/sequence/files
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

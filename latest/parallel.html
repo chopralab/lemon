@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Launch a Lemon workflow &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example Programs for counting residues" href="count_residues.html" />
+    <link rel="prev" title="Read command-line options" href="options.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="options.html" title="Previous Chapter: Read command-line options"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Read command-...</span>
+    </a>
+  </li>
+  <li>
+    <a href="count_residues.html" title="Next Chapter: Example Programs for counting residues"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Example Progr... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Launch a <strong>Lemon</strong> workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#c-workflows">C++ Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-workflows-using-lemon-python">Python Workflows using lemon_python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prefiltering-the-pdb-with-searches-originating-on-rcsb">Prefiltering the PDB with searches originating on RCSB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#danger-zone-internal-documentation">Danger Zone: Internal documentation!</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="launch-a-lemon-workflow">
+<span id="invoke-workflow"></span><h1>Launch a <strong>Lemon</strong> workflow<a class="headerlink" href="#launch-a-lemon-workflow" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="c-workflows">
+<h2>C++ Workflows<a class="headerlink" href="#c-workflows" title="Permalink to this headline">¶</a></h2>
+<p>Since <strong>Lemon</strong> is a <em>header-only</em> library, users of the C++ API have complete
+control over how they wish to launch their workflows. The <cite>lemon::Options</cite>
+class allows users to read command line options in a consistant manner. See the
+previous section for a more indepth discussion of this class. The following
+function is used to launch a lemon workflow.</p>
+<dl class="cpp function">
+<dt id="_CPPv4I00EN5lemon6launchEiRK7OptionsRR8FunctionR9Collector">
+<span id="_CPPv3I00EN5lemon6launchERK7OptionsRR8FunctionR9Collector"></span><span id="_CPPv2I00EN5lemon6launchERK7OptionsRR8FunctionR9Collector"></span>template&lt;typename <code class="sig-name descname">Function</code>, typename <code class="sig-name descname">Collector</code>&gt;<br /><span class="target" id="launch_8hpp_1a8a10f7ff615a46f77397213889dd1df2"></span>int <code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">launch</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="options.html#_CPPv4N5lemon7OptionsE" title="lemon::Options">Options</a> &amp;<em>o</em>, <a class="reference internal" href="#_CPPv4I00EN5lemon6launchEiRK7OptionsRR8FunctionR9Collector" title="lemon::launch::Function">Function</a> &amp;&amp;<em>worker</em>, <a class="reference internal" href="#_CPPv4I00EN5lemon6launchEiRK7OptionsRR8FunctionR9Collector" title="lemon::launch::Collector">Collector</a> &amp;<em>collect</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN5lemon6launchEiRK7OptionsRR8FunctionR9Collector" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Launch a <strong>Lemon</strong> workflow.</p>
+<p>This function reads <strong>Lemon</strong> options and passes them to the appropriate <code class="docutils literal notranslate"><span class="pre">run_parallel</span></code> function. This is the main entry point of a C++ <strong>Lemon</strong> program. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success or a non-zero integer on error. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">o</span></code>: An instance of the <code class="docutils literal notranslate"><a class="reference internal" href="options.html#classlemon_1_1_options"><span class="std std-ref"><span class="pre">Options</span></span></a></code> used to pass arguments to Lemon </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">worker</span></code>: Function object representing the body of the workflow. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collect</span></code>: Function object for collect the results of <code class="docutils literal notranslate"><span class="pre">worker</span></code>. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<div class="section" id="submitting-lemon-jobs">
+<h3>Submitting <strong>Lemon</strong> jobs<a class="headerlink" href="#submitting-lemon-jobs" title="Permalink to this headline">¶</a></h3>
+<p>If a <strong>Lemon</strong> workflow does not require any custom features (IE custom options
+passed to the <cite>main</cite> function from the shell), users can use the script called
+<cite>launch_lemon.pbs</cite> to launch their workflow on PBS-based submission systems. An
+example of how to use this given below for a sample workflow.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget -N https://mmtf.rcsb.org/v1.0/hadoopfiles/full.tar
+qsub launch_lemon.pbs -v <span class="nv">LEMON_PROG</span><span class="o">=</span>protein_angle
+</pre></div>
+</div>
+<p><strong>Note:</strong> The provided script will <em>not</em> work on all systems and may need to be
+edited to work in a given computing environment.</p>
+</div>
+</div>
+<div class="section" id="python-workflows-using-lemon-python">
+<h2>Python Workflows using lemon_python<a class="headerlink" href="#python-workflows-using-lemon-python" title="Permalink to this headline">¶</a></h2>
+<p>The program <cite>lemon_python</cite> is secretly a <strong>Lemon</strong> workflow! This workflow
+searches for a class called <cite>MyWorkflow</cite> (which must subclass <cite>lemon.Workflow</cite>.
+It then instantiates this class and runs the member function <cite>Workflow.worker</cite>
+for every entry in the PDB. The member function <cite>Workflow.finalize</cite> is called
+when the workflow completes. An example of using this workflow is given below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget -N https://mmtf.rcsb.org/v1.0/hadoopfiles/full.tar
+tar xf full.tar
+lemon_python -p tmscore.py -w full/
+</pre></div>
+</div>
+<p><strong>Note:</strong> The entire python script passed to <cite>lemon_python</cite> is evaluated before
+the <cite>MyWorkflow</cite> class is instantiated. Control is not passed back to the
+script after the <cite>Worker.finalize</cite> method is called.</p>
+<div class="section" id="using-the-python-interpreter">
+<h3>Using the Python Interpreter<a class="headerlink" href="#using-the-python-interpreter" title="Permalink to this headline">¶</a></h3>
+<p>For users of the <cite>candiy_lemon</cite> PyPI package, one must submit the derived
+<strong>Lemon</strong> workflow manually using the <cite>lemon.launch</cite> function. An example is
+given below. The arguments to this function are the <cite>lemon.Workflow</cite> daughter
+class, the path to the RCSB Hadoop files and the number of cores to use.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">candiy_lemon.lemon</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">class</span> <span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">Workflow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">pdbid</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">entry</span><span class="o">.</span><span class="n">topology</span><span class="p">()</span><span class="o">.</span><span class="n">residue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;chainname&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">as_string</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="n">work</span> <span class="o">=</span> <span class="n">MyWorkflow</span><span class="p">()</span>
+
+<span class="n">launch</span><span class="p">(</span><span class="n">work</span><span class="p">,</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="prefiltering-the-pdb-with-searches-originating-on-rcsb">
+<h2>Prefiltering the PDB with searches originating on RCSB<a class="headerlink" href="#prefiltering-the-pdb-with-searches-originating-on-rcsb" title="Permalink to this headline">¶</a></h2>
+<p>The advanced search features on the RCSB website can be used to prefliter the
+PDB. First, one performs a search on the website. Then, they must obtain the
+query details by clicking the blue button on the bottom left corner of the
+search results. This will result in an XML version of their search being
+generated. This must be given as input to the script
+<cite>obtain_entries_from_search.pl</cite> provided with <strong>Lemon</strong> which will produce
+an entry file that can be passed to a workflow. An example <em>XML</em> result and
+entry file example are given below:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;orgPdbQuery&gt;</span>
+    <span class="nt">&lt;version&gt;</span>head<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;queryType&gt;</span>org.pdb.query.simple.AdvancedKeywordQuery<span class="nt">&lt;/queryType&gt;</span>
+    <span class="nt">&lt;description&gt;</span>Text Search for: hiv<span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;queryId&gt;</span>AC7A2BC3<span class="nt">&lt;/queryId&gt;</span>
+    <span class="nt">&lt;resultCount&gt;</span>2875<span class="nt">&lt;/resultCount&gt;</span>
+    <span class="nt">&lt;runtimeStart&gt;</span>2019-01-28T00:51:01Z<span class="nt">&lt;/runtimeStart&gt;</span>
+    <span class="nt">&lt;runtimeMilliseconds&gt;</span>1686<span class="nt">&lt;/runtimeMilliseconds&gt;</span>
+    <span class="nt">&lt;keywords&gt;</span>HIV<span class="nt">&lt;/keywords&gt;</span>
+<span class="nt">&lt;/orgPdbQuery&gt;</span>
+</pre></div>
+</div>
+<p>Then</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>perl obtain_entries_from_search.pl hiv_search.xml &gt; hiv_prots.lst
+tar xf full.tar
+./small_molecules -w full -e hiv_prots.lst
+</pre></div>
+</div>
+</div>
+<div class="section" id="danger-zone-internal-documentation">
+<h2>Danger Zone: Internal documentation!<a class="headerlink" href="#danger-zone-internal-documentation" title="Permalink to this headline">¶</a></h2>
+<p>These functions are internal to <strong>Lemon</strong> and not meant to be used as part of
+the external API. They are documented here for the interested reader and future
+<strong>Lemon</strong> developers.</p>
+<dl class="cpp function">
+<dt id="_CPPv4I00EN5lemon12run_parallelEvRR8FunctionRKNSt6stringER9Collector6size_tRK7EntriesRK7Entries">
+<span id="_CPPv3I00EN5lemon12run_parallelERR8FunctionRKNSt6stringER9Collector6size_tRK7EntriesRK7Entries"></span><span id="_CPPv2I00EN5lemon12run_parallelERR8FunctionRKNSt6stringER9Collector6size_tRK7EntriesRK7Entries"></span>template&lt;typename <code class="sig-name descname">Function</code>, typename <code class="sig-name descname">Collector</code>&gt;<br /><span class="target" id="parallel_8hpp_1aac516f685d12b24fae3fa2ba9f5814af"></span>void <code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">run_parallel</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN5lemon12run_parallelEvRR8FunctionRKNSt6stringER9Collector6size_tRK7EntriesRK7Entries" title="lemon::run_parallel::Function">Function</a> &amp;&amp;<em>worker</em>, <em class="property">const</em> std::string &amp;<em>p</em>, <a class="reference internal" href="#_CPPv4I00EN5lemon12run_parallelEvRR8FunctionRKNSt6stringER9Collector6size_tRK7EntriesRK7Entries" title="lemon::run_parallel::Collector">Collector</a> &amp;<em>collector</em>, size_t <em>ncpu</em> = 1, <em class="property">const</em> Entries &amp;<em>entries</em> = Entries(), <em class="property">const</em> Entries &amp;<em>skip_entries</em> = Entries()<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN5lemon12run_parallelEvRR8FunctionRKNSt6stringER9Collector6size_tRK7EntriesRK7Entries" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">run_parallel</span></code> function launches jobs which do return data.</p>
+<p>Use this function to run the <code class="docutils literal notranslate"><span class="pre">worker</span></code> function on <code class="docutils literal notranslate"><span class="pre">ncpu</span></code> threads. The <code class="docutils literal notranslate"><span class="pre">worker</span></code> should accept two arguments, a <code class="docutils literal notranslate"><span class="pre">chemfiles::Frame</span></code> and a <code class="docutils literal notranslate"><span class="pre">std::string</span></code>. It must return a value as this value will be appended, using the <code class="docutils literal notranslate"><span class="pre">combine</span></code> function object, the the <code class="docutils literal notranslate"><span class="pre">collector</span></code>. See the <code class="docutils literal notranslate"><span class="pre">Lemon</span> <span class="pre">Workflow</span></code> documention for more details. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">worker</span></code>: A function object (C++11 lambda, struct the with operator() overloaded, or std::function object) that the user wishes to apply. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">p</span></code>: A path to the <a class="reference internal" href="#classlemon_1_1_hadoop"><span class="std std-ref">Hadoop</span></a> sequence file directory. by the worker object which are appended with <code class="docutils literal notranslate"><span class="pre">combine</span></code>. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collector</span></code>: A function object that handles the output of <code class="docutils literal notranslate"><span class="pre">worker</span></code>. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">ncpu</span></code>: The number of threads to use. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">entries</span></code>: Which entries to use. Not used if blank. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">skip_entries</span></code>: Which entries to skip. Not used if blank. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt id="_CPPv4N5lemon6HadoopE">
+<span id="_CPPv3N5lemon6HadoopE"></span><span id="_CPPv2N5lemon6HadoopE"></span><span id="lemon::Hadoop"></span><span class="target" id="classlemon_1_1_hadoop"></span><em class="property">class </em><code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Hadoop</code><a class="headerlink" href="#_CPPv4N5lemon6HadoopE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <code class="docutils literal notranslate"><a class="reference internal" href="#classlemon_1_1_hadoop"><span class="std std-ref"><span class="pre">Hadoop</span></span></a></code> class is used to read input sequence files.</p>
+<p>This class reads an Apache <a class="reference internal" href="#classlemon_1_1_hadoop"><span class="std std-ref">Hadoop</span></a> Sequence file and iterates through the key/value pairs. It has been modified so that it can only read files supplied by RCSB at this location: <a class="reference external" href="https://mmtf.rcsb.org/v1.0/hadoopfiles/full.tar">Full</a> </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon6Hadoop6HadoopERNSt7istreamE">
+<span id="_CPPv3N5lemon6Hadoop6HadoopERNSt7istreamE"></span><span id="_CPPv2N5lemon6Hadoop6HadoopERNSt7istreamE"></span><span id="lemon::Hadoop::Hadoop__isR"></span><span class="target" id="classlemon_1_1_hadoop_1a2cbb089a29064527cdd458100169ab65"></span><code class="sig-name descname">Hadoop</code><span class="sig-paren">(</span>std::istream &amp;<em>stream</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon6Hadoop6HadoopERNSt7istreamE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create a <code class="docutils literal notranslate"><a class="reference internal" href="#classlemon_1_1_hadoop"><span class="std std-ref"><span class="pre">Hadoop</span></span></a></code> class using a <code class="docutils literal notranslate"><span class="pre">std::istream</span></code>.</p>
+<p>This <a class="reference internal" href="#classlemon_1_1_hadoop"><span class="std std-ref">Hadoop</span></a> constructor takes a binary stream as input. This stream must be open and contain data from a sequence file obtained from RCSB. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon6Hadoop8has_nextEv">
+<span id="_CPPv3N5lemon6Hadoop8has_nextEv"></span><span id="_CPPv2N5lemon6Hadoop8has_nextEv"></span><span id="lemon::Hadoop::has_next"></span><span class="target" id="classlemon_1_1_hadoop_1ae0a225729fe545a37ac4138c5a1ec848"></span>bool <code class="sig-name descname">has_next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon6Hadoop8has_nextEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns if a sequence file has remaining MMTF records in it.</p>
+<p>Use this function to check if the sequence file has any remaining MMTF records stored in it. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>True if another MMTF record is present. False otherwise. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon6Hadoop4nextEv">
+<span id="_CPPv3N5lemon6Hadoop4nextEv"></span><span id="_CPPv2N5lemon6Hadoop4nextEv"></span><span id="lemon::Hadoop::next"></span><span class="target" id="classlemon_1_1_hadoop_1aae4dc54b4ba3da0a99aba3362b425e0a"></span>std::pair&lt;std::string, std::vector&lt;char&gt;&gt; <code class="sig-name descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon6Hadoop4nextEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the next MMTF file.</p>
+<p>This function reads the next MMTF record from the underlying stream. Be-warned that this function does minimal error checking and should only be used if <a class="reference internal" href="#classlemon_1_1_hadoop_1ae0a225729fe545a37ac4138c5a1ec848"><span class="std std-ref">has_next()</span></a> has returned <code class="docutils literal notranslate"><span class="pre">true</span></code>. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>A pair of <code class="docutils literal notranslate"><span class="pre">std::vector&lt;char&gt;</span></code>s. The first member contains the PDB ID and the second contains the GZ compressed MMTF file. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Attributes</p>
+<dl class="cpp var">
+<dt id="_CPPv4N5lemon6Hadoop18HADOOP_HEADER_SIZEE">
+<span id="_CPPv3N5lemon6Hadoop18HADOOP_HEADER_SIZEE"></span><span id="_CPPv2N5lemon6Hadoop18HADOOP_HEADER_SIZEE"></span><span id="lemon::Hadoop::HADOOP_HEADER_SIZE__auto"></span><span class="target" id="classlemon_1_1_hadoop_1ab3101a193a8fa941122c9658d2e27f96"></span>auto <em class="property">constexpr</em> <code class="sig-name descname">HADOOP_HEADER_SIZE</code> = 90<a class="headerlink" href="#_CPPv4N5lemon6Hadoop18HADOOP_HEADER_SIZEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The size of the starting header. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon15read_hadoop_dirERKNSt6stringE">
+<span id="_CPPv3N5lemon15read_hadoop_dirERKNSt6stringE"></span><span id="_CPPv2N5lemon15read_hadoop_dirERKNSt6stringE"></span><span id="lemon::read_hadoop_dir__ssCR"></span><span class="target" id="hadoop_8hpp_1a553b2d53355137cfd67eca72e54e955a"></span>std::vector&lt;std::string&gt; <code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">read_hadoop_dir</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon15read_hadoop_dirERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Read a directory containing hadoop sequence files. </p>
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

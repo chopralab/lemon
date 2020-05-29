@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Geometry &#8212; Lemon master documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/lemon.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="XScore/Vina" href="xscore.html" />
+    <link rel="prev" title="Handling Custom Returns in C++" href="return.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/icon.svg"></span>
+          Lemon</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Navigation <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="return.html" title="Previous Chapter: Handling Custom Returns in C++"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Handling Cust...</span>
+    </a>
+  </li>
+  <li>
+    <a href="xscore.html" title="Next Chapter: XScore/Vina"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">XScore/Vina &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Useful Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prune.html">Prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="count.html">Counting operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="separate.html">Separate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html">Handling Custom Returns in C++</a></li>
+<li class="toctree-l1"><a class="reference internal" href="return.html#python-alternative">Python alternative</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Geometry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#names-of-protein-bond-groups">Names of protein bond groups</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="xscore.html">XScore/Vina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmalign.html">TMalign</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="options.html">Read command-line options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Launch a <strong>Lemon</strong> workflow</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="count_residues.html">Example Programs for counting residues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="small_molecules.html">Example programs for finding ligand interactions</a></li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="geometry">
+<span id="id1"></span><h1>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h1>
+<p><strong>Note:</strong> You will need to include the additional file: <cite>&lt;lemon/geometry.hpp&gt;</cite>
+to have access to these features.</p>
+<div class="section" id="names-of-protein-bond-groups">
+<h2>Names of protein bond groups<a class="headerlink" href="#names-of-protein-bond-groups" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp type">
+<dt id="_CPPv4N5lemon8geometryE">
+<span id="_CPPv3N5lemon8geometryE"></span><span id="_CPPv2N5lemon8geometryE"></span><span id="lemon::geometry"></span><span class="target" id="namespacelemon_1_1geometry"></span><em class="property">namespace </em><code class="sig-prename descclassname">lemon<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">geometry</code><a class="headerlink" href="#_CPPv4N5lemon8geometryE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Functions to retreive names of various bonds, angles, and dihedrals. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon8geometry18is_special_residueERKNSt6stringERK14ResidueNameSet">
+<span id="_CPPv3N5lemon8geometry18is_special_residueERKNSt6stringERK14ResidueNameSet"></span><span id="_CPPv2N5lemon8geometry18is_special_residueERKNSt6stringERK14ResidueNameSet"></span><span id="lemon::geometry::is_special_residue__ssCR.ResidueNameSetCR"></span><span class="target" id="namespacelemon_1_1geometry_1ac6ea6a311b8f697f0801bb5b6d3b28df"></span>std::string <code class="sig-name descname">is_special_residue</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>resn</em>, <em class="property">const</em> ResidueNameSet &amp;<em>resn_names</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon8geometry18is_special_residueERKNSt6stringERK14ResidueNameSet" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Is special residue. </p>
+</dd></dl>
+
+</div>
+<dl class="cpp class">
+<dt id="_CPPv4N5lemon8geometry14geometry_errorE">
+<span id="_CPPv3N5lemon8geometry14geometry_errorE"></span><span id="_CPPv2N5lemon8geometry14geometry_errorE"></span><span id="lemon::geometry::geometry_error"></span><span class="target" id="classlemon_1_1geometry_1_1geometry__error"></span><em class="property">class </em><code class="sig-name descname">geometry_error</code> : <em class="property">public</em> std::logic_error<a class="headerlink" href="#_CPPv4N5lemon8geometry14geometry_errorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;geometry.hpp&gt;</em><p>Error to handle odd geometries. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt id="_CPPv4N5lemon8geometry7proteinE">
+<span id="_CPPv3N5lemon8geometry7proteinE"></span><span id="_CPPv2N5lemon8geometry7proteinE"></span><span id="lemon::geometry::protein"></span><span class="target" id="namespacelemon_1_1geometry_1_1protein"></span><em class="property">namespace </em><code class="sig-name descname">protein</code><a class="headerlink" href="#_CPPv4N5lemon8geometry7proteinE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>For obtaining information about peptide geometry. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon8geometry7protein9bond_nameERKN9chemfiles5FrameERKN9chemfiles4BondERK14ResidueNameSet">
+<span id="_CPPv3N5lemon8geometry7protein9bond_nameERKN9chemfiles5FrameERKN9chemfiles4BondERK14ResidueNameSet"></span><span id="_CPPv2N5lemon8geometry7protein9bond_nameERKN9chemfiles5FrameERKN9chemfiles4BondERK14ResidueNameSet"></span><span id="lemon::geometry::protein::bond_name__chemfiles::FrameCR.chemfiles::BondCR.ResidueNameSetCR"></span><span class="target" id="namespacelemon_1_1geometry_1_1protein_1ab9a006160304641b60b00b8cc3de9db9"></span>std::string <code class="sig-name descname">bond_name</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>entry</em>, <em class="property">const</em> chemfiles::Bond &amp;<em>bond</em>, <em class="property">const</em> ResidueNameSet &amp;<em>special</em> = proline_res<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon8geometry7protein9bond_nameERKN9chemfiles5FrameERKN9chemfiles4BondERK14ResidueNameSet" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Obtain the name of a <code class="docutils literal notranslate"><span class="pre">bond</span></code> present in a peptide residue</p>
+<p>This function returns the ‘name’ of a given <code class="docutils literal notranslate"><span class="pre">bond</span></code> in the form {residue}_{atom1}_{atom2} for bonds within a single residue not part of the amino acid linker. For bonds within the amino acid linker, only the atom names are returned, (‘CA_C’, ‘CA_N’, ‘C_O’), unless the residue name is in <code class="docutils literal notranslate"><span class="pre">special</span></code> (C_O not included)). The default special residues are proline derivatives. For peptide bonds and disulphide bridges, ‘peptide_bond’ and ‘SG_SG’ are returned. Other types of inter-residue bonds result in a geometry error being thrown. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The name of the bond. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">entry</span></code>: Structure containing the peptide residues of interest </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">bond</span></code>: Bond which name is going to be obtained </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">special</span></code>: Residue names that should be handled differently </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon8geometry7protein10angle_nameERKN9chemfiles5FrameERKN9chemfiles5AngleE">
+<span id="_CPPv3N5lemon8geometry7protein10angle_nameERKN9chemfiles5FrameERKN9chemfiles5AngleE"></span><span id="_CPPv2N5lemon8geometry7protein10angle_nameERKN9chemfiles5FrameERKN9chemfiles5AngleE"></span><span id="lemon::geometry::protein::angle_name__chemfiles::FrameCR.chemfiles::AngleCR"></span><span class="target" id="namespacelemon_1_1geometry_1_1protein_1a44e7f1a37b52dd1db51450ebf697e62c"></span>std::string <code class="sig-name descname">angle_name</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>entry</em>, <em class="property">const</em> chemfiles::Angle &amp;<em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon8geometry7protein10angle_nameERKN9chemfiles5FrameERKN9chemfiles5AngleE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Obtain the name of an angle present in a peptide residue</p>
+<p>This function returns the ‘name’ of a given angle in the form {residue}_{atom1}_{atom2}_{atom3} for angles within a single residue not part of the amino acid linker, namely: CA_C_O, N_C_O, and O_C_OXT. Inter-residue angles not part of the linker are handled similarly, both with the exception of proline derivatives. Other types of inter-residue angles result in a geometry error being thrown. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The name of the angle. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">entry</span></code>: Structure containing the peptide residues of interest </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">angle</span></code>: angle which name is going to be obtained </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon8geometry7protein13dihedral_nameERKN9chemfiles5FrameERKN9chemfiles8DihedralERK14ResidueNameSet">
+<span id="_CPPv3N5lemon8geometry7protein13dihedral_nameERKN9chemfiles5FrameERKN9chemfiles8DihedralERK14ResidueNameSet"></span><span id="_CPPv2N5lemon8geometry7protein13dihedral_nameERKN9chemfiles5FrameERKN9chemfiles8DihedralERK14ResidueNameSet"></span><span id="lemon::geometry::protein::dihedral_name__chemfiles::FrameCR.chemfiles::DihedralCR.ResidueNameSetCR"></span><span class="target" id="namespacelemon_1_1geometry_1_1protein_1ab6b783569421dc68717eb8a76e9a3e68"></span>std::string <code class="sig-name descname">dihedral_name</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>entry</em>, <em class="property">const</em> chemfiles::Dihedral &amp;<em>dihedral</em>, <em class="property">const</em> ResidueNameSet &amp;<em>special</em> = proline_res<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon8geometry7protein13dihedral_nameERKN9chemfiles5FrameERKN9chemfiles8DihedralERK14ResidueNameSet" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Obtain the name of a dihedral present in a peptide residue</p>
+<p>This function returns the ‘name’ of a given dihedral in the form {residue}_{atom1}_{atom2}_{atom3}_{atom4} for dihedrals within a single residue not part of the amino acid linker. Namely: CA_C_N_CA, N_C_CA_N, C_CA_N_C, N_CA_C_O, and CA_N_C_O. These are tagged with the residue name if the residue is a proline derivative. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The name of the dihedral. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">entry</span></code>: Structure containing the peptide residues of interest </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">dihedral</span></code>: Dihedral which name is going to be obtained </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">special</span></code>: Residue names that should be handled differently </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5lemon8geometry7protein13improper_nameERKN9chemfiles5FrameERKN9chemfiles8ImproperERK14ResidueNameSet">
+<span id="_CPPv3N5lemon8geometry7protein13improper_nameERKN9chemfiles5FrameERKN9chemfiles8ImproperERK14ResidueNameSet"></span><span id="_CPPv2N5lemon8geometry7protein13improper_nameERKN9chemfiles5FrameERKN9chemfiles8ImproperERK14ResidueNameSet"></span><span id="lemon::geometry::protein::improper_name__chemfiles::FrameCR.chemfiles::ImproperCR.ResidueNameSetCR"></span><span class="target" id="namespacelemon_1_1geometry_1_1protein_1a34c862089e44ec650dd389ebd0543284"></span>std::string <code class="sig-name descname">improper_name</code><span class="sig-paren">(</span><em class="property">const</em> chemfiles::Frame &amp;<em>entry</em>, <em class="property">const</em> chemfiles::Improper &amp;<em>improper</em>, <em class="property">const</em> ResidueNameSet &amp;<em>special</em> = proline_res<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5lemon8geometry7protein13improper_nameERKN9chemfiles5FrameERKN9chemfiles8ImproperERK14ResidueNameSet" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Obtain the name of an improper dihedral present in a peptide residue</p>
+<p>This function returns the ‘name’ of a given improper in the form {residue}_{atom1}_{atom2}_{atom3}_{atom4} for impropers within a single residue not part of the amino acid linker (CA_C_N_O). <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The name of the improper. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">entry</span></code>: Structure containing the peptide residues of interest </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">improper</span></code>: Improper dihedral which name is going to be obtained </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">special</span></code>: Residue names that should be handled differently </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+  <footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class="pull-left">
+        &copy; Chopra Lab and Purdue University.
+    </p>
+    <p class="text-center">
+        BSD licensed on <a href="https://github.com/chopralab/lemon">Github</a>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>
