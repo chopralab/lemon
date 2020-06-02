@@ -35,7 +35,7 @@ endif()
 ExternalProject_Add(
     CHEMFILES
     GIT_REPOSITORY https://github.com/chemfiles/chemfiles.git
-    GIT_TAG master
+    GIT_TAG 0cca28aefc85ec8940e2c777edb7b2d2a95cc356
     SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_build
     INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/chemfiles_install
     CMAKE_CACHE_ARGS

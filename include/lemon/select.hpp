@@ -170,11 +170,11 @@ inline Container peptides(const chemfiles::Frame& frame) {
 //! This function populates the residue IDs of peptides matching a given name
 //! set.
 //! \param [in] frame The entry containing residues of interest.
-//! \param [in] resnis The set of residue IDs of interest.
+//! \param [in] resis The set of residue IDs of interest.
 //! \return The selected residue locations
 template <typename Container = std::vector<uint64_t>>
 inline Container residue_ids(const chemfiles::Frame& frame,
-                             const std::set<uint64_t>& resis) {
+                             const std::set<int64_t>& resis) {
 
     const auto& residues = frame.topology().residues();
     Container selection;
